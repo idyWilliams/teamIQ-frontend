@@ -1,14 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInput,
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { Search } from "lucide-react";
-import Image from "next/image";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function OrganizationDashboardLayout({
   children,

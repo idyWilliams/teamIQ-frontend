@@ -1,18 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react";
+import { AudioWaveform, Command, GalleryVerticalEnd } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
@@ -54,7 +43,7 @@ const data = {
     {
       icon: "icon-[ph--identification-badge]",
       title: "Dashboard",
-      url: "",
+      url: "/organization",
       items: [
         { title: "Overview", url: "" },
         { title: "Project Status", url: "" },
@@ -66,27 +55,27 @@ const data = {
     {
       icon: "icon-[ant-design--idcard-outlined]",
       name: "Projects",
-      url: "",
+      url: "/organization/projects",
     },
     {
       icon: "icon-[hugeicons--user-group]",
       name: "Team",
-      url: "",
+      url: "/organization/team",
     },
     {
       icon: "icon-[formkit--solana]",
       name: "Team Matrix",
-      url: "",
+      url: "/organization/team-matrix",
     },
     {
       icon: "icon-[proicons--grid]",
       name: "Apps",
-      url: "",
+      url: "/organization/app",
     },
     {
       icon: "icon-[ep--setting]",
       name: "Settings",
-      url: "",
+      url: "/organization/settings",
     },
   ],
 };

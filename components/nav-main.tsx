@@ -18,6 +18,8 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export function NavMain({
   items,
@@ -33,6 +35,8 @@ export function NavMain({
     }[];
   }[];
 }) {
+  const router = useRouter();
+
   return (
     <SidebarGroup className="">
       <SidebarGroupLabel>Pages</SidebarGroupLabel>
@@ -46,7 +50,10 @@ export function NavMain({
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
+                <SidebarMenuButton
+                  onClick={() => router.push(item.url)}
+                  tooltip={item.title}
+                >
                   {item.icon && (
                     <span className={cn(item.icon, "size-5")}></span>
                   )}
@@ -59,9 +66,9 @@ export function NavMain({
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
+                        <Link href={subItem.url}>
                           <span>{subItem.title}</span>
-                        </a>
+                        </Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}
