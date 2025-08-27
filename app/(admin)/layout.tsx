@@ -1,4 +1,14 @@
-import React from "react";
+import { AppSidebar } from "@/components/app-sidebar";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInput,
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { Search } from "lucide-react";
+import Image from "next/image";
 
 export default function OrganizationDashboardLayout({
   children,
@@ -6,14 +16,9 @@ export default function OrganizationDashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className="grid grid-cols-[1fr_3fr_1.2fr] h-screen overflow-hidden">
-      <aside className="h-full border-r p-4 lg:px-6">
-        <span>Logo</span>
-      </aside>
-      <main>{children}</main>
-      <aside className="h-full border-l p-4 lg:px-6">
-        <span>Notification</span>
-      </aside>
-    </section>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset className="flex flex-row">{children}</SidebarInset>
+    </SidebarProvider>
   );
 }
