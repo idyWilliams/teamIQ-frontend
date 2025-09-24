@@ -56,7 +56,7 @@ export default function ForgetPassword() {
         </div>
         <Button
           type="submit"
-          className="bg-[#086ACE] hover:cursor-pointer hover:bg-[#086bcebe] text-white md:mt-10 mt-6 w-full py-3 h-auto rounded-md">
+          className="bg-[#086ACE] hover:cursor-pointer hover:bg-[#086bcec0] text-white md:mt-10 mt-6 w-full py-3 h-auto rounded-md">
           Continue
         </Button>
       </form>
