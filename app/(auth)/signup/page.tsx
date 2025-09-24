@@ -63,14 +63,12 @@ export default function SignUp() {
               <div className="flex justify-center items-center gap-5 mt-8 mb-10">
                 <Button
                   variant={"ghost"}
-                  className="border rounded-full size-12 p-0"
-                >
+                  className="border rounded-full size-12 p-0">
                   <span className="icon-[devicon--google] size-5"></span>
                 </Button>
                 <Button
                   variant={"ghost"}
-                  className="border rounded-full size-12 p-0"
-                >
+                  className="border rounded-full size-12 p-0">
                   <span className="icon-[logos--microsoft-icon] size-5"></span>
                 </Button>
               </div>

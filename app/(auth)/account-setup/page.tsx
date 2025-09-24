@@ -20,7 +20,7 @@ export default function AccountSetup() {
           Account setup
         </h1>
         <p className="mt-2 font-normal">
-          Welcome “User”, Personalize your account.
+          Welcome James, Personalize your account.
         </p>
 
         <Image
@@ -74,8 +74,8 @@ export default function AccountSetup() {
           />
         </div>
       </div>
-      <Button className="bg-[#0A427B] text-white mt-10 w-full py-3 h-auto rounded-md">
-        Continue
+      <Button className="bg-[#086ACE] text-white mt-10 w-full py-3 h-auto rounded-md">
+        Submit
       </Button>
     </section>
   );
