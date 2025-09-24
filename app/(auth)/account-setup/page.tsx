@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 export default function AccountSetup() {
   return (
     <section className="max-w-lg w-full mx-4">
-      <div className="text-center mb-16">
+      <div className="text-center mb-12">
         <h1 className=" text-black text-2xl font-semibold">Account setup</h1>
         <p className="mt-2 font-normal text-[14px] md:text-[18px]">
           Welcome James, Personalize your account.
@@ -41,44 +41,30 @@ export default function AccountSetup() {
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-6">
         <div>
-          <Label
-            htmlFor="track"
-            className="mb-4 font-normal text-[16px] md:text-[18px]">
+          <Label htmlFor="track" className="mb-3 font-normal text-[17px]">
             Select Track{" "}
           </Label>
           <Select>
             <SelectTrigger className="w-full data-[placeholder]:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto bg-[#F7F7F7]">
-              <SelectValue placeholder="Select" />
+              <SelectValue placeholder="Frontend Developer" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">Frontend</SelectItem>
-              <SelectItem value="dark">Backend</SelectItem>
+              <SelectItem value="light">Frontend Developer</SelectItem>
+              <SelectItem value="dark">Backend Developer</SelectItem>
               <SelectItem value="system">QA Tester</SelectItem>
             </SelectContent>
           </Select>
         </div>
-        <div className="">
-          <Label
-            htmlFor="portfolioLink"
-            className="mb-4 font-normal text-[14px] md:text-[18px] ">
-            Portfolio Link{" "}
-            (Separate them with commas to select multiple)
-          </Label>
-          <Input
-            type="text"
-            id="portfolioLink"
-            name="portfolioLink"
-            placeholder="Enter portfolio link"
-            className="placeholder:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto bg-[#F7F7F7]"
-          />
-        </div>
         <div>
           <Label
             htmlFor="stack"
-            className="mb-4 font-normal text-[14px] md:text-[18px]">
-            Enter stack (Separate them with commas to select multiple)
+            className="mb-3 font-normal text-[17px]">
+            Enter stack
+            <span className="inline text-xs md:text-sm ">
+              (Separate them with commas to select multiple)
+            </span>
           </Label>
           <Input
             type="text"
@@ -89,7 +75,7 @@ export default function AccountSetup() {
           />
         </div>
       </div>
-      <Button className="bg-[#086ACE] text-white mt-8 md:mt-10 w-full py-3 h-auto rounded-md">
+      <Button className="bg-[#086ACE] hover:bg-[#086bcec0] hover:cursor-pointer text-white mt-6 md:mt-8 w-full py-3 h-auto rounded-md">
         Submit
       </Button>
     </section>
