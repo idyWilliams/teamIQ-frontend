@@ -14,32 +14,42 @@ import { Button } from "@/components/ui/button";
 
 export default function AccountSetup() {
   return (
-    <section className="max-w-lg w-full">
+    <section className="max-w-lg w-full mx-4">
       <div className="text-center mb-16">
-        <h1 className=" text-[#0A427B] text-2xl font-semibold">
-          Account setup
-        </h1>
-        <p className="mt-2 font-normal">
+        <h1 className=" text-black text-2xl font-semibold">Account setup</h1>
+        <p className="mt-2 font-normal text-[14px] md:text-[18px]">
           Welcome James, Personalize your account.
         </p>
 
-        <Image
-          src="/images/avatar.jpg"
-          alt="avatar"
-          width={100}
-          height={100}
-          priority
-          className="rounded-full object-center object-cover size-[90] mt-5 mx-auto"
-        />
+        <div className="">
+          <div className="flex items-center justify-center mt-5">
+            <div className="relative">
+              <Image
+                src="/images/avatar.jpg"
+                alt="avatar"
+                width={100}
+                height={100}
+                priority
+                className="rounded-full object-center object-cover size-[90]"
+              />
+              {/* Online status indicator */}
+              <span
+                className="absolute bottom-4 -right-1 md:-right-2 w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full border-2 border-white bg-[#D9D9D9]"
+                title="Online"></span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div>
-          <Label htmlFor="track" className="mb-4 font-normal">
+          <Label
+            htmlFor="track"
+            className="mb-4 font-normal text-[16px] md:text-[18px]">
             Select Track{" "}
           </Label>
           <Select>
-            <SelectTrigger className="w-full data-[placeholder]:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto">
+            <SelectTrigger className="w-full data-[placeholder]:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto bg-[#F7F7F7]">
               <SelectValue placeholder="Select" />
             </SelectTrigger>
             <SelectContent>
@@ -49,20 +59,25 @@ export default function AccountSetup() {
             </SelectContent>
           </Select>
         </div>
-        <div>
-          <Label htmlFor="portfolioLink" className="mb-4 font-normal">
-            Portfolio Link (Separate them with commas to select multiple)
+        <div className="">
+          <Label
+            htmlFor="portfolioLink"
+            className="mb-4 font-normal text-[14px] md:text-[18px] ">
+            Portfolio Link{" "}
+            (Separate them with commas to select multiple)
           </Label>
           <Input
             type="text"
             id="portfolioLink"
             name="portfolioLink"
             placeholder="Enter portfolio link"
-            className="placeholder:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto"
+            className="placeholder:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto bg-[#F7F7F7]"
           />
         </div>
         <div>
-          <Label htmlFor="stack" className="mb-4 font-normal">
+          <Label
+            htmlFor="stack"
+            className="mb-4 font-normal text-[14px] md:text-[18px]">
             Enter stack (Separate them with commas to select multiple)
           </Label>
           <Input
@@ -70,11 +85,11 @@ export default function AccountSetup() {
             id="stack"
             name="stack"
             placeholder="E.g: JavaScript, React, Python"
-            className="placeholder:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto"
+            className="placeholder:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto bg-[#F7F7F7]"
           />
         </div>
       </div>
-      <Button className="bg-[#086ACE] text-white mt-10 w-full py-3 h-auto rounded-md">
+      <Button className="bg-[#086ACE] text-white mt-8 md:mt-10 w-full py-3 h-auto rounded-md">
         Submit
       </Button>
     </section>
