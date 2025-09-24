@@ -6,7 +6,7 @@ import React from "react";
 export default function ForgetPassword() {
   return (
     <div className="max-w-lg w-full">
-      <h1 className="text-center mb-16 text-[#0A427B] text-2xl font-semibold">
+      <h1 className="text-center mb-16 text-black text-2xl font-semibold">
         Forget Password
       </h1>
       <form action="">
@@ -15,14 +15,14 @@ export default function ForgetPassword() {
             Password
           </Label>
           <Input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Enter Password"
-            className="placeholder:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto"
+            type="email"
+            id="email"
+            name="email"
+            placeholder="example@gmail.com"
+            className="placeholder:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto bg-[#F7F7F7]"
           />
         </div>
-        <Button className="bg-[#0A427B] text-white mt-20 w-full py-3 h-auto rounded-md">
+        <Button className="bg-[#086ACE] text-white mt-20 w-full py-3 h-auto rounded-md">
           Continue
         </Button>
       </form>
