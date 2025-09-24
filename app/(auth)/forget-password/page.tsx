@@ -38,7 +38,7 @@ export default function ForgetPassword() {
       </h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <Label htmlFor="email" className="mb-4 font-normal text-[15px]">
+          <Label htmlFor="email" className="mb-3 font-normal text-[15px]">
             Email Address
           </Label>
           <Input
@@ -56,7 +56,7 @@ export default function ForgetPassword() {
         </div>
         <Button
           type="submit"
-          className="bg-[#086ACE] hover:cursor-pointer hover:bg-[#086bcebe] text-white mt-10 w-full py-3 h-auto rounded-md">
+          className="bg-[#086ACE] hover:cursor-pointer hover:bg-[#086bcebe] text-white md:mt-10 mt-6 w-full py-3 h-auto rounded-md">
           Continue
         </Button>
       </form>
