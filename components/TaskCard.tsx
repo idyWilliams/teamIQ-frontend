@@ -1,12 +1,17 @@
-import { useDraggable } from '@dnd-kit/core';
-import { Task } from './types';
+import { useDraggable } from "@dnd-kit/core";
+import { Task } from "./types";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import MessageTextAltSolid from "@/components/icons/MessageTextAltSolid";
+import FileCheckFill from "@/components/icons/FileCheckFile";
+import FileAttachmentFilled from "@/components/icons/FileAttachmentFilled";
 
 type TaskCardProps = {
   task: Task;
 };
 
 export function TaskCard({ task }: TaskCardProps) {
-    const { attributes, listeners, setNodeRef, transform } = useDraggable({
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task.id,
   });
 
@@ -16,17 +21,83 @@ export function TaskCard({ task }: TaskCardProps) {
       }
     : undefined;
 
-
   return (
     <div
-    ref={setNodeRef}
+      ref={setNodeRef}
       {...listeners}
       {...attributes}
-      className="cursor-grab rounded-lg bg-white p-4 shadow-sm hover:shadow-md"
-       style={style}
+      className={`cursor-grab rounded-lg p-4 shadow-sm hover:shadow-md w-full ${
+        task.status === "IN_PROGRESS" ? "bg-[#E2F5FF]" : "bg-white"
+      }`}
+      style={style}
     >
-      <h3 className="font-medium text-blue-600">{task.title}</h3>
-      <p className="mt-2 text-sm text-blue-600">{task.description}</p>
+      <div className="pb-4 flex justify-between items-center">
+        <h6 className="font-medium text-[#0E0E0E] break-words max-w-[180px]">
+          {task.title}
+        </h6>
+        <div className="flex gap-2">
+          <FileCheckFill size="20" color={task.fileBackground} />
+          <p className={`${task.fileColor} font-extrabold text-sm`}>
+            {task?.files}
+          </p>
+        </div>
+      </div>
+      <div className="flex  gap-2 pb-4">
+        {task.taskId && (
+          <Badge className={task.taskIdColor}>{task.taskId}</Badge>
+        )}
+        {task.category && (
+          <Badge className={task.categoryColor}>{task.category}</Badge>
+        )}
+        {task.status && (
+          <Badge className={task.statusColor}>{task.status}</Badge>
+        )}
+        {/* <Badge variant="default">{task.status}</Badge> */}
+      </div>
+      <div className="mt-4 flex justify-between items-center">
+        <div className="*:data-[slot=avatar]:ring-background flex -space-x-2 *:data-[slot=avatar]:ring-2">
+          {task.avatars?.map((avatar, index) => (
+            <Avatar key={index}>
+              {avatar.src ? (
+                <AvatarImage
+                  src={avatar.src}
+                  alt={avatar.alt || avatar.fallback}
+                />
+              ) : (
+                <AvatarFallback className="bg-gray-200 text-black font-semibold text-sm flex items-center justify-center">
+                  {avatar.fallback}
+                </AvatarFallback>
+              )}
+            </Avatar>
+          ))}
+
+          {/* Extra count if more users */}
+          {task.avatars && task.avatars.length > 3 && (
+            <Avatar>
+              <AvatarFallback className="bg-gray-200 text-black font-semibold text-sm flex items-center justify-center">
+                +{task.avatars.length - 3}
+              </AvatarFallback>
+            </Avatar>
+          )}
+        </div>
+
+        <div className="flex gap-2">
+          <div className="flex gap-2">
+            <FileAttachmentFilled size="20" color={task.attahmentBackground} />
+            <p className={`${task.attachmentColor} font-extrabold text-sm`}>
+              {task?.attachments}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <MessageTextAltSolid size="20" color={task.messageBackground} />
+            <p className={`${task.messageColor} font-extrabold text-sm`}>
+              {task?.messages}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* <p className="mt-2 text-sm text-blue-600">{task.description}</p> */}
     </div>
   );
 }
