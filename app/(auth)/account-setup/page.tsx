@@ -123,7 +123,7 @@ export default function AccountSetup() {
             )}
           </div>
         </div>
-
+{/* Submition buttton */}
         <Button
           type="submit"
           className="bg-[#086ACE] hover:bg-[#086bcec0] hover:cursor-pointer text-white mt-6 md:mt-8 w-full py-3 h-auto rounded-md">
