@@ -12,7 +12,7 @@ export default function AuthLayout({
   const banner =
     pathname === "/login"
       ? "/images/userloginGraphics.png"
-      : "/images/signup-graphics.png";
+      : "/images/signup bg.jpg";
 
   if (pathname !== "/login" && pathname !== "/signup") {
     return (
@@ -26,7 +26,7 @@ export default function AuthLayout({
     <section className="grid grid-cols-2 h-screen w-full">
       <div className="relative h-full w-full p-8 bg-[#F3F9FF]">
         <h1 className="text-[#0A427B] font-medium text-4xl relative z-[1]">
-          Welcome Back!
+          TeamIQ
         </h1>
         <Image
           src={banner}
