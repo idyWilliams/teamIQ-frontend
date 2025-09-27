@@ -1,7 +1,7 @@
 "use client";
 import { DndContext } from "@dnd-kit/core";
 import { Column } from "@/components/Column";
-import { useTasks } from "@/hooks/useTasks";
+import { useTasks } from "@/store/useTask";
 import { COLUMNS, INITIAL_TASKS } from "@/components/constants";
 import {
   Select,
@@ -11,21 +11,36 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { TaskForm } from "@/components/TaskForm";
 
 export default function TasksPage() {
-  const { tasks, handleDragEnd } = useTasks(INITIAL_TASKS);
+  const { tasks, handleDragEnd, searchQuery, setSearchQuery } = useTasks();
+  console.log("Rendering TasksPage with tasks:", tasks);
+
+  const filteredTasks = tasks.filter((task) =>
+    task.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="p-4">
       <h1 className="text-xl font-semibold text-[#141414] mb-4">Task Board</h1>
+      {/* <TaskForm /> */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex-1 max-w-xs">
-          <Input type="search" placeholder="Search for a task" />
+          <Input
+            type="search"
+            placeholder="Search for a task"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
         <div className="flex gap-2">
           <Select>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Date" className="font-bold text-[#000]"/>
+              <SelectValue
+                placeholder="Date"
+                className="font-bold text-[#000]"
+              />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="lastmonth">Last Month</SelectItem>
@@ -35,7 +50,10 @@ export default function TasksPage() {
           </Select>
           <Select>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="All Tasks" className="font-bold text-[#000]"/>
+              <SelectValue
+                placeholder="All Tasks"
+                className="font-bold text-[#000]"
+              />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="backlog">Backlog</SelectItem>
@@ -51,7 +69,7 @@ export default function TasksPage() {
             <Column
               key={column.id}
               column={column}
-              tasks={tasks.filter((task) => task.status === column.id)}
+              tasks={filteredTasks.filter((task) => task.status === column.id)}
             />
           ))}
         </div>
