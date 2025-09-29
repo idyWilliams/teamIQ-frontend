@@ -14,6 +14,7 @@ export default function Home() {
       <Link href="/login">Login</Link>
       <Link href="/organization">Organizatin</Link>
       <Button onClick={handleToast}>Error</Button>
+      <Link href="/member">user</Link>
     </div>
   );
 }
