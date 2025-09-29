@@ -17,7 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { title } from "process";
+
 
 export const description = "A radar chart";
 
@@ -61,7 +61,7 @@ export default function ChartRadarDefault() {
           {chartData.map((data, i) =>
 
           
-          (<div key={i} className=" text-[#086ACE] flex justify-between p-3 w-[220px] h-[44px] items-center rounded-[8px] bg-[#f3f8ff] ">
+          (<div key={i} className=" max-lg:hidden text-[#086ACE] flex justify-between p-3 w-[220px] h-[44px] items-center rounded-[8px] bg-[#f3f8ff] ">
             <p>{data.skill} </p>
             <span>{data.percentage}</span>
           </div>))}

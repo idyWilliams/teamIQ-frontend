@@ -23,35 +23,35 @@ let mockActivities = [
     user: "Adeola",
     site: "notion",
     action: "Refactored Dashboard Component",
-    date: "025-09-23T15:00:00Z",
+    date: "2025-09-23T15:00:00Z",
   },
   {
     id: 2,
     user: "Adeola",
     site: "slack",
     action: "Scheduled board meeeting",
-    date: "025-09-23T15:00:00",
+    date: "2025-09-23T15:00:00",
   },
   {
     id: 3,
     user: "Adeola",
     site: "jira",
     action: "Built dashboard layout ",
-    date: "025-09-23T15:00:00Z",
+    date: "2025-09-23T15:00:00Z",
   },
   {
     id: 4,
     user: "Adeola",
     site: "jira",
     action: "Built team dashboard",
-    date: "025-09-23T15:00:00Z",
+    date: "2025-09-23T15:00:00Z",
   },
   {
     id: 5,
     user: "Adeola",
     site: "slack",
     action: "Built organizations dashboard",
-    date: "025-09-23T15:00:00Z",
+    date: "2025-09-23T15:00:00Z",
   },
 ];
 
@@ -80,7 +80,7 @@ export default function RecentCard() {
   });
 
   return (
-    <div>
+    <div className="h-full">
       <Card className="shadow-none h-full">
         <CardHeader className="flex flex-row max-sm:flex-col items-start justify-between gap-6 ">
           <CardTitle> Recent Activity</CardTitle>

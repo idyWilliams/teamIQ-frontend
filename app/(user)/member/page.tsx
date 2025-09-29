@@ -48,7 +48,7 @@ export default function Dashboard() {
     <div className="px-6">
       <h2 className="font-semibold pt-5 pb-9">Welcome back, James Alfred</h2>
       {/* desktop card display */}
-      <div className="hidden sm:flex gap-4 mb-12">
+      <div className="hidden sm:flex gap-4 mb-12 max-lg:flex-wrap ">
         {cards.map((card, i) => (
           <CardItem key={i} {...card} />
         ))}
@@ -80,19 +80,19 @@ export default function Dashboard() {
 </div>
       {/* Chart section */}
       <div className="flex gap-6 items-stretch max-sm:flex-col mb-12">
-        <div className="flex-2/3 ">
+        <div className="lg:flex-2/3 flex-1 ">
           <RadarChart />
         </div>
-        <div className="flex-1/3">
+        <div className="lg:flex-1/3 flex-1">
           <RadialChart />
         </div>
       </div>
       <div>
         <div className="flex gap-6 items-stretch max-sm:flex-col mb-12">
-          <div className="flex-2/3 ">
+          <div className="lg:flex-2/3 flex-1 ">
             <RecentCard />
           </div>
-          <div className="flex-1/3">
+          <div className="lg:flex-1/3 flex-1">
             <Deadline />
           </div>
         </div>

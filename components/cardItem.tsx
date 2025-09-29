@@ -17,7 +17,7 @@ type CardItemProps = {
 
 export default function CardItem({ title, avatarUrl, content }: CardItemProps) {
   return (
-    <Card className="w-full h-30 shadow-none">
+    <Card className="w-full h-30 shadow-none max-lg:w-[200px] max-sm:w-full">
       <CardHeader className="mb-[-20px]">
         <CardTitle className="">
           <div>
