@@ -18,18 +18,26 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import {
+  PasswordInput,
+  PasswordInputStrengthChecker,
+} from "../ui/password-input";
 
 // Yup Validation Schema - This defines all our validation rules
 const validationSchema = yup.object().shape({
   firstName: yup
     .string()
-    .required("First name is required").trim()
-    .matches(/^[A-Z][a-zA-Z]*$/, "First name must start with a capital letter."),
-  
+    .required("First name is required")
+    .trim()
+    .matches(
+      /^[A-Z][a-zA-Z]*$/,
+      "First name must start with a capital letter."
+    ),
 
   lastName: yup
     .string()
-    .required("Last name is required").trim()
+    .required("Last name is required")
+    .trim()
     .matches(/^[A-Z][a-zA-Z]*$/, "Last name must start with a capital letter."),
 
   userName: yup
@@ -59,7 +67,10 @@ const validationSchema = yup.object().shape({
     .matches(/[a-z]/, "Password must contain at least one lowercase letter")
     .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
     .matches(/[0-9]/, "Password must contain at least one number")
-    .matches(/[@$!%*?&]/, "Password must contain at least one special character"),
+    .matches(
+      /[.@$!%*?&]/,
+      "Password must contain at least one special character"
+    ),
 
   repeatPassword: yup
     .string()
@@ -68,20 +79,15 @@ const validationSchema = yup.object().shape({
 });
 
 function IndividualForm() {
-  // Password visibility state
-  const [showPassword, setShowPassword] = useState(false);
-  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-
-  // React Hook Form setup with Yup validation
   const {
-    register, // Function to register form fields
-    handleSubmit, // Function to handle form submission
-    control, // Control object for controlled components (like Select)
-    formState: { errors, isSubmitting }, // Form state including errors
-    reset, // Function to reset the form
-    watch, // Function to watch field values
+    register, 
+    handleSubmit,
+    control, 
+    formState: { errors, isSubmitting }, 
+    reset, 
+    watch, 
   } = useForm({
-    resolver: yupResolver(validationSchema), // Connect Yup schema
+    resolver: yupResolver(validationSchema), 
     mode: "onBlur", // Validate on blur
     reValidateMode: "onChange", // Re-validate on change
     defaultValues: {
@@ -112,6 +118,9 @@ function IndividualForm() {
     toast.error("Please fix the errors in the form");
   };
 
+  const placeHolder =
+    "!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md bg-transparent focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#086ACE] focus-visible:ring-0";
+
   return (
     <div>
       <form
@@ -129,7 +138,7 @@ function IndividualForm() {
               id="firstName"
               placeholder="First Name"
               {...register("firstName")} // Register the field with React Hook Form
-              className="placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto"
+              className={placeHolder}
             />
             {errors.firstName && (
               <span className="text-red-500 text-xs">
@@ -147,7 +156,7 @@ function IndividualForm() {
               id="lastName"
               placeholder="Last Name"
               {...register("lastName")} // Register the field with React Hook Form
-              className="placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-bas border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto"
+              className={placeHolder}
             />
             {errors.lastName && (
               <span className="text-red-500 text-xs">
@@ -166,7 +175,7 @@ function IndividualForm() {
             id="userName"
             placeholder="Characters not allowed"
             {...register("userName")} // Register the field with React Hook Form
-            className="placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-bas border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto"
+            className={placeHolder}
           />
           {errors.userName && (
             <span className="text-red-500 text-xs">
@@ -184,7 +193,7 @@ function IndividualForm() {
             id="email"
             placeholder="example@gmail.com"
             {...register("email")} // Register the field with React Hook Form
-            className="placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-bas border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto"
+            className={placeHolder}
           />
           {errors.email && (
             <span className="text-red-500 text-xs">{errors.email.message}</span>
@@ -199,7 +208,7 @@ function IndividualForm() {
             control={control}
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="w-full data-[placeholder]:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto">
+                <SelectTrigger className={`${placeHolder} w-full`}>
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent>
@@ -223,27 +232,15 @@ function IndividualForm() {
           <Label htmlFor="password" className="mb-4 font-normal">
             Password
           </Label>
-          <div className="relative w-full">
-            <Input
-              type={showPassword ? "text" : "password"}
-              id="password"
-              placeholder="Enter Password"
-              {...register("password")} // Register the field with React Hook Form
-              className="placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-bas border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto"
-            />
-            <button
-              type="button"
-              aria-label={showPassword ? "Hide password" : "Show password"}
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700"
-            >
-              {showPassword ? (
-                <EyeOff className="w-5 h-5" />
-              ) : (
-                <Eye className="w-5 h-5" />
-              )}
-            </button>
-          </div>
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <PasswordInput id="password" className={placeHolder} {...field}>
+                <PasswordInputStrengthChecker />
+              </PasswordInput>
+            )}
+          />
           {errors.password && (
             <span className="text-red-500 text-xs">
               {errors.password.message}
@@ -255,29 +252,17 @@ function IndividualForm() {
           <Label htmlFor="repeatPassword" className="mb-4 font-normal">
             Repeat Password
           </Label>
-          <div className="relative w-full">
-            <Input
-              type={showRepeatPassword ? "text" : "password"}
-              id="repeatPassword"
-              placeholder="Repeat Password"
-              {...register("repeatPassword")} // Register the field with React Hook Form
-              className="placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-bas border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto"
-            />
-            <button
-              type="button"
-              aria-label={
-                showRepeatPassword ? "Hide password" : "Show password"
-              }
-              onClick={() => setShowRepeatPassword(!showRepeatPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700"
-            >
-              {showRepeatPassword ? (
-                <EyeOff className="w-5 h-5" />
-              ) : (
-                <Eye className="w-5 h-5" />
-              )}
-            </button>
-          </div>
+          <Controller
+            name="repeatPassword"
+            control={control}
+            render={({ field }) => (
+              <PasswordInput
+                id="repeatPassword"
+                className={placeHolder}
+                {...field}
+              />
+            )}
+          />
           {errors.repeatPassword && (
             <span className="text-red-500 text-xs">
               {errors.repeatPassword.message}
