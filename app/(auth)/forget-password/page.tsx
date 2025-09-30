@@ -32,9 +32,9 @@ export default function ForgetPassword() {
   };
 
   return (
-    <div className="max-w-lg w-full mx-4">
-      <h1 className="text-center md:mb-10 mb-8 text-black text-2xl font-semibold">
-        Forgot Password
+    <div className="max-w-lg w-full">
+      <h1 className="text-center mb-16 text-black text-2xl font-semibold">
+        Forget Password
       </h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
@@ -44,8 +44,8 @@ export default function ForgetPassword() {
           <Input
             type="email"
             id="email"
+            name="email"
             placeholder="example@gmail.com"
-            {...register("email")}
             className="placeholder:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto bg-[#F7F7F7]"
           />
           {errors.email && (
@@ -54,9 +54,7 @@ export default function ForgetPassword() {
             </p>
           )}
         </div>
-        <Button
-          type="submit"
-          className="bg-[#086ACE] hover:cursor-pointer hover:bg-[#086bcec0] text-white md:mt-10 mt-6 w-full py-3 h-auto rounded-md">
+        <Button className="bg-[#086ACE] text-white mt-20 w-full py-3 h-auto rounded-md">
           Continue
         </Button>
       </form>
