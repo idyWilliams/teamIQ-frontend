@@ -20,7 +20,7 @@ export default function AuthLayout({
   return (
     <section className=" relative grid grid-cols-1   md:grid-cols-2 h-full w-full">
       {/* Left: Image (hidden on small screens) */}
-      <div className="w-full hidden md:block  md:h-screen ">
+      <div className="w-full hidden md:block  md:h-screen overflow-hidden rounded-r-4xl ">
         {" "}
         <Image
           src="/images/TeamIQLogo.png"
@@ -30,7 +30,7 @@ export default function AuthLayout({
           priority
           className=" z-99 lg:w-25  absolute top-0 md:top-10 lg:top-14 lg:left:10 md:left-7"
         />
-        <div className="h-screen w-full relative">
+        <div className="h-screen w-full relative  ">
           <Image
             src={"/images/authbg.jpg"}
             alt="login-graphics"
