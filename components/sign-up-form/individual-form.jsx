@@ -79,14 +79,14 @@ const validationSchema = yup.object().shape({
 
 function IndividualForm() {
   const {
-    register, 
+    register,
     handleSubmit,
-    control, 
-    formState: { errors, isSubmitting }, 
-    reset, 
-    watch, 
+    control,
+    formState: { errors, isSubmitting },
+    reset,
+    watch,
   } = useForm({
-    resolver: yupResolver(validationSchema), 
+    resolver: yupResolver(validationSchema),
     mode: "onBlur", // Validate on blur
     reValidateMode: "onChange", // Re-validate on change
     defaultValues: {
@@ -303,7 +303,7 @@ function IndividualForm() {
             </div>
             <p className="text-center text-sm">
               Already have an account?{" "}
-              <Link href="/signup" className="text-[#086ACE]">
+              <Link href="/login" className="text-[#086ACE]">
                 Log In
               </Link>
             </p>

@@ -8,14 +8,10 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const banner =
-    pathname === "/login"
-      ? "/images/loginGraphics.png"
-      : "/images/loginGraphics.png";
 
   if (pathname !== "/login" && pathname !== "/signup") {
     return (
-      <section className=" h-full w-full flex justify-center gap-10 items-center bg-white">
+      <section className=" h-screen w-full flex justify-center gap-10 items-center bg-white">
         {children}
       </section>
     );
@@ -36,14 +32,14 @@ export default function AuthLayout({
         />
         <div className="h-screen w-full relative">
           <Image
-            src={banner}
+            src={"/images/authbg.jpg"}
             alt="login-graphics"
             width={5000}
             height={1066}
             priority
-            className="w-full h-full"
+            className="w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none">
+          <div className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none bg-blue-950/50">
             <div className="bg-[#F3F8FF2E] text-white rounded-lg p-3 text-xs sm:text-sm md:text-[12px] lg:text-[16px]   max-w-[90%] w-full lg:w-[600px] text-left shadow-lg">
               Bridging the gap between potential and achievement by making
               progress visible and actionable
@@ -52,7 +48,7 @@ export default function AuthLayout({
         </div>
       </div>
       {/* Right: Login content (always visible, full width on mobile) */}
-      <div className="flex mt-12 md:mt-0 flex-col px-4 md:px-10 lg:px-20  justify-center items-center h-full w-full bg-white">
+      <div className="flex mt-12 md:mt-0 flex-col px-4 md:px-10 lg:px-20  justify-center items-center h-screen w-full bg-white">
         {children}
       </div>
     </section>

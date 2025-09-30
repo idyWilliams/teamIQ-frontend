@@ -64,11 +64,18 @@ export default function ResetPassword() {
                 type="button"
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-[#B3C4D6] focus:outline-none"
                 onClick={() => setShowPassword((prev) => !prev)}
-                tabIndex={-1}>
+                tabIndex={-1}
+              >
                 {showPassword ? (
-                  <Eye size={20} className="sm:w-4 text-[#939393] sm:h-4 md:w-5 md:h-5" />
+                  <Eye
+                    size={20}
+                    className="sm:w-4 text-[#939393] sm:h-4 md:w-5 md:h-5"
+                  />
                 ) : (
-                  <EyeOff size={20} className="sm:w-4 text-[#939393] sm:h-4 md:w-5 md:h-5" />
+                  <EyeOff
+                    size={20}
+                    className="sm:w-4 text-[#939393] sm:h-4 md:w-5 md:h-5"
+                  />
                 )}
               </button>
             </div>
@@ -81,7 +88,8 @@ export default function ResetPassword() {
           <div>
             <Label
               htmlFor="confirmPassword"
-              className="mb-3 font-normal text-[15px]">
+              className="mb-3 font-normal text-[15px]"
+            >
               Re-enter Password
             </Label>
             <div className="relative">
@@ -96,11 +104,18 @@ export default function ResetPassword() {
                 type="button"
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-[#B3C4D6] focus:outline-none"
                 onClick={() => setShowConfirmPassword((prev) => !prev)}
-                tabIndex={-1}>
+                tabIndex={-1}
+              >
                 {showConfirmPassword ? (
-                  <Eye size={20} className="sm:w-4 text-[#939393] sm:h-4 md:w-5 md:h-5" />
+                  <Eye
+                    size={20}
+                    className="sm:w-4 text-[#939393] sm:h-4 md:w-5 md:h-5"
+                  />
                 ) : (
-                  <EyeOff size={20} className="sm:w-4 text-[#939393] sm:h-4 md:w-5 md:h-5" />
+                  <EyeOff
+                    size={20}
+                    className="sm:w-4 text-[#939393] sm:h-4 md:w-5 md:h-5"
+                  />
                 )}
               </button>
             </div>
@@ -113,7 +128,8 @@ export default function ResetPassword() {
         </div>
         <Button
           type="submit"
-          className="bg-[#086ACE] hover:cursor-pointer hover:bg-[#086bcec0] text-white mt-10 w-full py-3 h-auto rounded-md">
+          className="bg-[#086ACE] hover:cursor-pointer hover:bg-[#086bcec0] text-white mt-10 w-full py-3 h-auto rounded-md"
+        >
           Reset
         </Button>
       </form>
