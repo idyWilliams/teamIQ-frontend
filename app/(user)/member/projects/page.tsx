@@ -6,7 +6,7 @@ import React from "react";
 export default function ProjectPage() {
   const pathname = usePathname();
   return (
-    <div>
+    <div className="w-full">
       Project Page
       <Link href={`${pathname}/isentry-website`}>One</Link>
       <Link href={`${pathname}/2`}>Two</Link>

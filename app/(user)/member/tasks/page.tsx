@@ -1,9 +1,10 @@
-import React from 'react'
+import React from "react";
+import Subnavbar from "@/components/user-dashboard-component/task/Subnavbar";
 
 export default function TasksPage() {
   return (
-    <div>
-      Task Page
-    </div>
-  )
+    <section className="flex p-1">
+      <Subnavbar />
+    </section>
+  );
 }
