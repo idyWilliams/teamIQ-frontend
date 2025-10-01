@@ -17,7 +17,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 
 // have an array of mockActivities like they are coming from backend
-let mockActivities = [
+const mockActivities = [
   {
     id: 1,
     user: "Adeola",
@@ -68,11 +68,13 @@ function timeAgo(dateString: string): string {
 }
 
 export default function RecentCard() {
+
+  // this iss the filter setup
   const [selectedSite, setSelectedSite] = useState("All");
   const [selectedDateRange, setSelectedDateRange] = useState("All");
 
   const filteredActivities = mockActivities.filter((activity) => {
-    const matchSite = selectedSite === "All" || activity.site === selectedSite;
+    const matchSite = selectedSite === "All" || selectedSite === activity.site ; // matchsite is either All or {site with task}
     const matchDate =
       selectedDateRange === "All" || activity.date === selectedDateRange;
 
