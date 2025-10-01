@@ -1,17 +1,43 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NextTopLoader from "nextjs-toploader";
-import { Toaster } from "@/components/ui/sonner";
+import localFont from "next/font/local";
+import { cn } from "@/lib/utils";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const hellix = localFont({
+  src: [
+    {
+      path: "./fonts/Hellix-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Hellix-Medium.ttf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Hellix-SemiBold.ttf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Hellix-Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Hellix-ExtraBold.ttf",
+      weight: "800",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Hellix-Black.ttf",
+      weight: "900",
+      style: "normal",
+    },
+  ],
+  // variable: "--font-hellix",
 });
 
 export const metadata: Metadata = {
@@ -26,11 +52,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={cn("antialiased", hellix.className)}>
         <NextTopLoader color="#2299DD" showSpinner />
-         <Toaster richColors expand={true} position="top-right" />
+        {/* <Toaster richColors expand={true} position="top-right" /> */}
         {children}
       </body>
     </html>
