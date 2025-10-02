@@ -164,18 +164,11 @@ export default function AssignedTeamMembers({ teamMembers = defaultTeamMembers }
 	const handleSendMessage = () => {
 		if (!selectedMember) return;
 		
-		// Option 1: Open email client
+		//Open email client
 		const mailtoLink = `mailto:${selectedMember.email}?subject=Message from Team Portal&body=Hi ${selectedMember.name},%0D%0A%0D%0A`;
 		window.location.href = mailtoLink;
 		
-		// Option 2: Navigate to messaging page (uncomment if you have one)
-		// router.push(`/messages?to=${selectedMember.email}`);
-		
-		// Option 3: Open Slack (uncomment if integrated)
-		// window.open(`slack://user?team=YOUR_TEAM_ID&id=${selectedMember.slack}`, '_blank');
-		
-		// Close modal after sending
-		// setSelectedMember(null);
+	
 	};
 
 	return (
