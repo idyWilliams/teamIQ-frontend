@@ -13,7 +13,7 @@ const AssignTeamMember = () => {
 
   return (
     <div>
-      <form
+      {/* <form
         onSubmit={handleSearch}
         style={{
           marginBottom: "1.5rem",
@@ -34,7 +34,7 @@ const AssignTeamMember = () => {
             borderRadius: 4,
           }}
         />
-      </form>
+      </form> */}
 
       <AssignedTeamMembers />
     </div>

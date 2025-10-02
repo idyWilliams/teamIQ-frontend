@@ -35,7 +35,7 @@ export default function ProjectLayout({ children }: settingProps) {
         </ul>
       </nav>
 
-      <main className="flex ">{children}</main>
+      <main className="flex">{children}</main>
     </div>
   );
 }
