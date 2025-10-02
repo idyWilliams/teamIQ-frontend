@@ -1,7 +1,11 @@
+"use client";
+
 import { Card, CardContent } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 
 const projects = [
   {
+    id: "isentry-website",
     title: "Isentry Website",
     description:
       "An elegant and interactive web platform built for Goldies, designed to highlight products, promotions, and customer stories. The project emphasizes clean design, easy navigation, and scalability to support future e-commerce integration.",
@@ -10,6 +14,7 @@ const projects = [
     bg: "bg-blue-600 text-white",
   },
   {
+    id: "goldies",
     title: "Goldies",
     description:
       "A responsive and user-friendly website developed for ISENTRY, focusing on showcasing services, company profile, and client engagement. The platform integrates modern UI/UX practices and ensures cross-device compatibility to enhance accessibility and brand visibility.",
@@ -18,6 +23,7 @@ const projects = [
     bg: "bg-black text-white",
   },
   {
+    id: "team-iq",
     title: "Team IQ",
     description:
       "A collaborative team management and productivity tool that streamlines project workflows. Team IQ includes features for project tracking, team assignments, and progress monitoring, built with scalability and real-time updates in mind to improve team collaboration and efficiency.",
@@ -26,6 +32,7 @@ const projects = [
     bg: "bg-blue-500 text-white",
   },
   {
+    id: "elevero-website",
     title: "Elevero Website",
     description:
       "A modern, professional website designed for Elevero, with a focus on delivering a smooth digital experience for visitors. It incorporates optimized performance, SEO best practices, and a visually appealing layout to strengthen brand presence and support business growth.",
@@ -36,6 +43,12 @@ const projects = [
 ];
 
 export default function ProjectScreen() {
+  const router = useRouter();
+
+  const handleProjectClick = (projectId: string) => {
+    router.push(`/member/projects/${projectId}/view`);
+  };
+
   return (
     <div className="p-8">
       {/* Page Title */}
@@ -46,7 +59,8 @@ export default function ProjectScreen() {
         {projects.map((project, index) => (
           <Card
             key={index}
-            className={`rounded-2xl shadow-lg hover:shadow-xl transition ${project.bg}`}
+            onClick={() => handleProjectClick(project.id)}
+            className={`rounded-2xl shadow-lg hover:shadow-xl transition-shadow cursor-pointer ${project.bg}`}
           >
             <CardContent className="p-6">
               {/* Project Logo */}
