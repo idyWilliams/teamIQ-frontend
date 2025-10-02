@@ -12,15 +12,16 @@ type HeaderProps = {
 const Header = ({ isMobile, onOpenNotification }: HeaderProps) => {
   return (
     <header className="h-[10%] p-2 flex items-center justify-end md:justify-between gap-4">
+       {/* Mobile View */}
       {isMobile ? (
-        // Mobile View
+        
         <>
           {/* Left - Initials */}
           <p className="text-[20px] text-[#0f1928] bg-[#ffece5] p-2 rounded-full font-bold">
             JA
           </p>
 
-          {/* Right - Search Icon & Bell */}
+          {/* Right - Bell Icon */}
           <div className="flex items-center gap-4">
             <button onClick={onOpenNotification}>
               <Bell className="text-[#292d32] w-6 h-6 cursor-pointer" />
@@ -28,6 +29,7 @@ const Header = ({ isMobile, onOpenNotification }: HeaderProps) => {
           </div>
         </>
       ) : (
+        
         // Desktop View
         <>
           {/* Left - Initials + Full Name */}
