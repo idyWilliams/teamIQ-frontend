@@ -5,7 +5,7 @@ import { sidebarLinks, SidebarLinkType } from "./data/sideLink";
 import { ChevronDown, ChevronUp, User } from "lucide-react";
 
 type SidebarProps = {
-  closeSidebar?: () => void; // make it a function instead of boolean
+  closeSidebar?: () => void; // prop type for closing sidebar
 };
 
 const Sidebar = ({ closeSidebar }: SidebarProps) => {
@@ -50,25 +50,31 @@ const Sidebar = ({ closeSidebar }: SidebarProps) => {
 
             return (
               <div key={link.label}>
-                <button
-                  onClick={() => handleParentToggle(link.label)}
+                {/* parents with links */}
+                <div
                   className={`flex items-center justify-between w-full rounded-md p-2 text-sm transition-colors cursor-pointer ${
                     isParentActive
                       ? "text-[#5395dc] bg-[#f3f8ff]"
                       : "text-gray-600 hover:bg-gray-100"
                   }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <Link href={link.url} className="flex items-center gap-3">
                     {link.icon}
                     {link.label}
-                  </div>
-                  {isCurrentParent ? (
-                    <ChevronUp size={16} />
-                  ) : (
-                    <ChevronDown size={16} />
-                  )}
-                </button>
+                  </Link>
 
+                  <button
+                    onClick={() => handleParentToggle(link.label)}
+                    className="p-1 rounded-sm hover:text-gray-600 ml-2"
+                  >
+                    {isCurrentParent ? (
+                      <ChevronUp size={16} />
+                    ) : (
+                      <ChevronDown size={16} />
+                    )}
+                  </button>
+                </div>
+                {/* display nested links if parent is active */}
                 {isCurrentParent && (
                   <div className="ml-4">
                     {link.children.map((child) => {
@@ -78,7 +84,7 @@ const Sidebar = ({ closeSidebar }: SidebarProps) => {
                           key={child.label}
                           href={child.url}
                           onClick={closeSidebar} // closes sidebar on mobile
-                          className={`flex items-center rounded-md p-2 text-sm transition-colors ${
+                          className={`flex items-center rounded-md m-1 p-2 text-sm transition-colors ${
                             isActiveChild
                               ? "text-[#5395dc] bg-[#f3f8ff] font-medium"
                               : "text-gray-600 hover:bg-gray-100"
@@ -93,7 +99,7 @@ const Sidebar = ({ closeSidebar }: SidebarProps) => {
               </div>
             );
           }
-
+          // rest of the parent links
           const isActive = pathname === link.url;
           return (
             <Link

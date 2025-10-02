@@ -5,6 +5,7 @@ import React from "react";
 
 export default function ProjectPage() {
   const pathname = usePathname();
+
   return (
     <div className="w-full">
       Project Page
