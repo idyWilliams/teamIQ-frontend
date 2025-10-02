@@ -9,6 +9,7 @@ export default function AuthLayout({
 }) {
   const pathname = usePathname();
 
+  // Non-auth routes: simple centered container
   if (pathname !== "/login" && pathname !== "/signup") {
     return (
       <section className=" h-screen w-full flex justify-center gap-10 items-center bg-white">
@@ -17,6 +18,7 @@ export default function AuthLayout({
     );
   }
 
+  // Auth routes: two-column (desktop) with full-bleed illustration
   return (
     <section className=" relative grid grid-cols-1   md:grid-cols-2 h-full w-full">
       {/* Left: Image (hidden on small screens) */}
