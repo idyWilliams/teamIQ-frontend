@@ -58,18 +58,18 @@ export default function TeamDashboardLayout({ children }: LayoutProps) {
       {isDashboardRoute ? (
         <>
           {/* Left Sidebar (30%) */}
-          <div className="hidden md:block w-[15%]">
+          <>
             <aside
-              className={`fixed md:static top-0 right-0 h-screen w-64 bg-white border-l border-neutral-300 z-40 transform transition-transform duration-300
+              className={`fixed md:static top-0 hidden md:block w-[15%] right-0 h-screen  bg-white border-l border-neutral-300 z-40 transform transition-transform duration-300
                          ${isOpen ? "translate-x-0" : "translate-x-full"} 
                          md:translate-x-0`}
             >
               <Sidebar closeSidebar={() => setIsOpen(!isOpen)} />
             </aside>
-          </div>
+          </>
 
           {/* Main dashboard (70%) */}
-          <div className="flex flex-col md:w-[70%] w-full">
+          <div className="flex flex-col md:w-[70%] w-full grow">
             {/* Header */}
             <Header
               isMobile={isMobile}

@@ -1,11 +1,13 @@
+"use client";
 import React from "react";
+import ProjectOverview from "@/components/project-overview";
 
-const ProjectOverview = () => {
+const ProjectOverViewScreen = () => {
   return (
-    <div>
-      <h1>Project Overview</h1>
-    </div>
+    <>
+      <ProjectOverview />
+    </>
   );
 };
 
-export default ProjectOverview;
+export default ProjectOverViewScreen;
