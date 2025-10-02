@@ -1,16 +1,10 @@
-"use client";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import React from "react";
+import ProjectScreen from "@/components/projectscreen";
 
-export default function ProjectPage() {
-  const pathname = usePathname();
+export default function ProjectsPage() {
   return (
-    <div className="w-full">
-      Project Page
-      <Link href={`${pathname}/isentry-website`}>One</Link>
-      <Link href={`${pathname}/2`}>Two</Link>
-      <Link href={`${pathname}/3`}>Three</Link>
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-4">Projects</h1>
+      <ProjectScreen />
     </div>
   );
 }
