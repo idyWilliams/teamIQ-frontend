@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 const columns = [
@@ -86,7 +87,7 @@ export default function Tasks() {
 											<span className="task-id">{task.id}</span>
 											<span className="task-users">
 												{task.users.map((u, i) => (
-													<img
+													<Image
 														src={u}
 														key={i}
 														className="task-avatar"
