@@ -47,7 +47,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --color-iq-100: oklch(0.7 0.1 263);
+  /* --color-iq-100: oklch(0.7 0.1 263); */
 
   /* Color codes from Figma */
   /* Primary and its shades */
@@ -167,7 +167,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground ;
   }
 }
 
