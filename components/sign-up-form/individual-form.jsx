@@ -79,14 +79,14 @@ const validationSchema = yup.object().shape({
 
 function IndividualForm() {
   const {
-    register, 
+    register,
     handleSubmit,
-    control, 
-    formState: { errors, isSubmitting }, 
-    reset, 
-    watch, 
+    control,
+    formState: { errors, isSubmitting },
+    reset,
+    watch,
   } = useForm({
-    resolver: yupResolver(validationSchema), 
+    resolver: yupResolver(validationSchema),
     mode: "onBlur", // Validate on blur
     reValidateMode: "onChange", // Re-validate on change
     defaultValues: {
@@ -127,7 +127,7 @@ function IndividualForm() {
         onSubmit={handleSubmit(onSubmit, onError)}
         noValidate
       >
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
             <Label htmlFor="firstName" className="mb-4 font-normal">
               First Name
@@ -138,9 +138,11 @@ function IndividualForm() {
               placeholder="First Name"
               {...register("firstName")} // Register the field with React Hook Form
               className={placeHolder}
+              autoComplete="given-name"
+              aria-invalid={!!errors.firstName}
             />
             {errors.firstName && (
-              <span className="text-red-500 text-xs">
+              <span className="text-red-500 text-xs mt-1 block leading-snug">
                 {errors.firstName.message}
               </span>
             )}
@@ -156,9 +158,11 @@ function IndividualForm() {
               placeholder="Last Name"
               {...register("lastName")} // Register the field with React Hook Form
               className={placeHolder}
+              autoComplete="family-name"
+              aria-invalid={!!errors.lastName}
             />
             {errors.lastName && (
-              <span className="text-red-500 text-xs">
+              <span className="text-red-500 text-xs mt-1 block leading-snug">
                 {errors.lastName.message}
               </span>
             )}
@@ -175,9 +179,11 @@ function IndividualForm() {
             placeholder="Characters not allowed"
             {...register("userName")} // Register the field with React Hook Form
             className={placeHolder}
+            autoComplete="username"
+            aria-invalid={!!errors.userName}
           />
           {errors.userName && (
-            <span className="text-red-500 text-xs">
+            <span className="text-red-500 text-xs mt-1 block leading-snug">
               {errors.userName.message}
             </span>
           )}
@@ -193,9 +199,13 @@ function IndividualForm() {
             placeholder="example@gmail.com"
             {...register("email")} // Register the field with React Hook Form
             className={placeHolder}
+            autoComplete="email"
+            aria-invalid={!!errors.email}
           />
           {errors.email && (
-            <span className="text-red-500 text-xs">{errors.email.message}</span>
+            <span className="text-red-500 text-xs mt-1 block leading-snug">
+              {errors.email.message}
+            </span>
           )}
         </div>
 
@@ -210,7 +220,7 @@ function IndividualForm() {
                 <SelectTrigger className={`${placeHolder} w-full`}>
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-60 overflow-auto">
                   {countryList.map((country) => (
                     <SelectItem key={country} value={country}>
                       {country}
@@ -221,7 +231,7 @@ function IndividualForm() {
             )}
           />
           {errors.country && (
-            <span className="text-red-500 text-xs">
+            <span className="text-red-500 text-xs mt-1 block leading-snug">
               {errors.country.message}
             </span>
           )}
@@ -241,7 +251,7 @@ function IndividualForm() {
             )}
           />
           {errors.password && (
-            <span className="text-red-500 text-xs">
+            <span className="text-red-500 text-xs mt-1 block leading-snug">
               {errors.password.message}
             </span>
           )}
@@ -263,7 +273,7 @@ function IndividualForm() {
             )}
           />
           {errors.repeatPassword && (
-            <span className="text-red-500 text-xs">
+            <span className="text-red-500 text-xs mt-1 block leading-snug">
               {errors.repeatPassword.message}
             </span>
           )}

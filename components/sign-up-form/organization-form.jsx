@@ -95,9 +95,12 @@ function OrganizationForm() {
         onSubmit={handleSubmit(onSubmit, onError)}
         noValidate
       >
-        <div className="flex gap-4 items-center justify-center">
-          <div className="flex-1">
-            <Label htmlFor="organizationName" className="mb-4 font-normal">
+        <div className="flex flex-col sm:flex-row gap-4 items-center">
+          <div className="sm:flex-2 w-full">
+            <Label
+              htmlFor="organizationName"
+              className=" font-normal block mb-2"
+            >
               Organization Name
             </Label>
             <Input
@@ -106,16 +109,18 @@ function OrganizationForm() {
               placeholder="Enter Organization Name"
               {...register("organizationName")}
               className={placeHolder}
+              autoComplete="organization"
+              aria-invalid={!!errors.organizationName}
             />
             {errors.organizationName && (
-              <span className="text-red-500 text-xs">
+              <span className="text-red-500 text-xs mt-1 block leading-snug">
                 {errors.organizationName.message}
               </span>
             )}
           </div>
 
-          <div>
-            <Label htmlFor="teamSize" className="mb-4 font-normal">
+          <div className="sm:flex-1 w-full">
+            <Label htmlFor="teamSize" className=" font-normal block mb-2">
               Team Size
             </Label>
             <Controller
@@ -123,10 +128,13 @@ function OrganizationForm() {
               control={control}
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="w-full data-[placeholder]:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto">
+                  <SelectTrigger
+                    className={`${placeHolder} w-full`}
+                    aria-invalid={!!errors.teamSize}
+                  >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-60 overflow-auto">
                     <SelectItem value="2-5">2 - 5</SelectItem>
                     <SelectItem value="6-10">6 - 10</SelectItem>
                     <SelectItem value="20+">20+</SelectItem>
@@ -135,7 +143,7 @@ function OrganizationForm() {
               )}
             />
             {errors.teamSize && (
-              <span className="text-red-500 text-xs">
+              <span className="text-red-500 text-xs mt-1 block leading-snug">
                 {errors.teamSize.message}
               </span>
             )}
@@ -152,9 +160,13 @@ function OrganizationForm() {
             placeholder="example@gmail.com"
             {...register("email")}
             className={placeHolder}
+            autoComplete="email"
+            aria-invalid={!!errors.email}
           />
           {errors.email && (
-            <span className="text-red-500 text-xs">{errors.email.message}</span>
+            <span className="text-red-500 text-xs mt-1 block leading-snug">
+              {errors.email.message}
+            </span>
           )}
         </div>
 
@@ -165,11 +177,13 @@ function OrganizationForm() {
             control={control}
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="w-full data-[placeholder]:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto">
-                  {/* unified styling */}
+                <SelectTrigger
+                  className={`${placeHolder} w-full`}
+                  aria-invalid={!!errors.country}
+                >
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-60 overflow-auto">
                   {countryList.map((country) => (
                     <SelectItem key={country} value={country}>
                       {country}
@@ -181,7 +195,7 @@ function OrganizationForm() {
           />
 
           {errors.country && (
-            <span className="text-red-500 text-xs">
+            <span className="text-red-500 text-xs mt-1 block leading-snug">
               {errors.country.message}
             </span>
           )}
@@ -201,7 +215,7 @@ function OrganizationForm() {
             )}
           />
           {errors.password && (
-            <span className="text-red-500 text-xs">
+            <span className="text-red-500 text-xs mt-1 block leading-snug">
               {errors.password.message}
             </span>
           )}
@@ -223,7 +237,7 @@ function OrganizationForm() {
             )}
           />
           {errors.repeatPassword && (
-            <span className="text-red-500 text-xs">
+            <span className="text-red-500 text-xs mt-1 block leading-snug">
               {errors.repeatPassword.message}
             </span>
           )}

@@ -9,20 +9,20 @@ export default function SignUp() {
   const [mode, setMode] = useState("individual");
   return (
     <>
-      <div className=" mx-auto max-w-lg w-full md:py-11 md:px-8 py-6 px-8">
-        <h3 className="text-[#0A427B] font-medium text-[28px] md:text-[32px] md:text-[#0B0B0B] my-4 md:my-6 text-center md:text-left ">
-          Sign up
+      <div className="mx-auto lg:max-w-lg xl:max-w-xl w-full md:px-8 md:py-6 py-5 px-5">
+        <h3 className="text-[#0A427B] lg:text-[#0B0B0B] font-semibold tracking-tight text-[26px] md:text-[32px] my-4 md:my-6 text-center lg:text-left">
+          Sign Up
         </h3>
         <Tabs value={mode} onValueChange={setMode}>
-          <TabsList className="bg-transparent  mb-6 md:mb-8 grid grid-cols-2 rounded-none shadow-none p-0 gap-2 w-full">
+          <TabsList className="bg-transparent mb-6 md:mb-8 grid grid-cols-2 rounded-none shadow-none p-0 gap-2 w-full">
             {["individual", "organization"].map((tab) => (
               <TabsTrigger
                 key={tab}
                 value={tab}
                 className={cn(
-                  "bg-transparent border-0 rounded-none shadow-none capitalize",
-                  "border-b border-[#E4E7EC] py-3 px-0 w-full text-center text-sm sm:text-base min-w-0",
-                  "data-[state=active]:shadow-none data-[state=active]:bg-transparent ",
+                  "bg-transparent border-0 rounded-none shadow-none capitalize relative",
+                  "border-b border-[#E4E7EC] py-2 sm:py-3 px-0 w-full text-center text-sm sm:text-base min-w-0 min-h-[44px]",
+                  "data-[state=active]:shadow-none data-[state=active]:bg-transparent",
                   "focus-visible:ring-0 focus-visible:ring-offset-0 ring-0 outline-none",
                   "data-[state=active]:border-b data-[state=active]:border-[#062444] data-[state=active]:font-medium data-[state=active]:text-[#062444]"
                 )}
