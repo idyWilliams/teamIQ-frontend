@@ -2,42 +2,57 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import React from "react";
-
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const banner =
-    pathname === "/login"
-      ? "/images/userloginGraphics.png"
-      : "/images/signup-graphics.png";
 
+  // Non-auth routes: simple centered container
   if (pathname !== "/login" && pathname !== "/signup") {
     return (
-      <section className=" h-screen w-full flex justify-center items-center bg-white">
+      <section className=" h-screen w-full flex justify-center gap-10 items-center bg-white">
         {children}
       </section>
     );
   }
 
+  // Auth routes: two-column (desktop) with full-bleed illustration
   return (
-    <section className="grid grid-cols-2 h-screen w-full">
-      <div className="relative h-full w-full p-8 bg-[#F3F9FF]">
-        <h1 className="text-[#0A427B] font-medium text-4xl relative z-[1]">
-          Welcome Back!
-        </h1>
+    <section className=" relative grid grid-cols-1   md:grid-cols-2 h-full w-full">
+      {/* Left: Image (hidden on small screens) */}
+      <div className="w-full hidden md:block  md:h-screen overflow-hidden rounded-r-4xl ">
+        {" "}
         <Image
-          src={banner}
-          alt="login-graphics"
-          width={2145}
-          height={3366}
+          src="/images/TeamIQLogo.png"
+          alt="TeamIQLogo"
+          width={70}
+          height={100}
           priority
-          className="absolute top-0 left-1/2 z-0 -translate-x-1/2 w-auto h-full"
+          className=" z-99 lg:w-25  absolute top-0 md:top-10 lg:top-14 lg:left:10 md:left-7"
         />
+        <div className="h-screen w-full relative  ">
+          <Image
+            src={"/images/authbg.jpg"}
+            alt="login-graphics"
+            width={5000}
+            height={1066}
+            priority
+            className="w-full h-full object-cover object-center"
+          />
+          <div className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none bg-blue-950/50">
+            <div className="bg-[#F3F8FF2E] text-white rounded-lg p-3 text-xs sm:text-sm md:text-[12px] lg:text-[16px]   max-w-[90%] w-full lg:w-[600px] text-left shadow-lg">
+              Bridging the gap between potential and achievement by making
+              progress visible and actionable
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="flex justify-center items-center">{children}</div>
+      {/* Right: Login content (always visible, full width on mobile) */}
+      <div className="flex mt-12 md:mt-0 flex-col px-4 md:px-10 lg:px-20  justify-center items-center h-screen w-full bg-white">
+        {children}
+      </div>
     </section>
   );
 }

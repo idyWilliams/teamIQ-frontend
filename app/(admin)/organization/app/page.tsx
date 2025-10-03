@@ -1,5 +1,3 @@
-import React from "react";
-
-export default function AppPage() {
-  return <div>App Integration</div>;
+export default function OrganizationAppPage() {
+  return <div>{/* Page content here */}</div>;
 }
