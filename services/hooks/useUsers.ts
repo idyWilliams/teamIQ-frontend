@@ -1,6 +1,6 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import api from "@/lib/axios";
+import api from "@/services/axios";
 
 export function useUsers() {
   return useQuery({
