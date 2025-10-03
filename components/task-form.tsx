@@ -1,4 +1,3 @@
-// TaskForm.tsx
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -23,12 +22,14 @@ interface TaskFormData {
   description: string;
 }
 
+
 interface TaskFormProps {
-  onClose?: () => void; 
+  defaultStatus?: TaskStatus; 
+  onClose?: () => void;
 }
 
 
-export const TaskForm: React.FC<{ defaultStatus?: string; onClose?: () => void }> = ({
+export const TaskForm: React.FC<TaskFormProps> = ({
   defaultStatus = "TODO",
   onClose,
 }) => {
