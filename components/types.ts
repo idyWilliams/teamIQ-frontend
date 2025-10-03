@@ -23,6 +23,8 @@ export type Task = {
   avatars?: {
     src?: string;
     alt?: string;
+    name?: string;
+    email?: string;
     fallback: string;
   }[];
 
