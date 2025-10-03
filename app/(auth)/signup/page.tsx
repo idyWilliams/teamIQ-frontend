@@ -9,7 +9,7 @@ export default function SignUp() {
   const [mode, setMode] = useState("individual");
   return (
     <>
-      <div className="mx-auto lg:max-w-lg xl:max-w-xl w-full md:px-8 md:py-6 py-5 px-5">
+      <div className="mx-auto lg:max-w-lg xl:max-w-xl w-full md:px-3 md:py-2 py-1 px-1">
         <h3 className="text-[#0A427B] lg:text-[#0B0B0B] font-semibold tracking-tight text-[26px] md:text-[32px] my-4 md:my-6 text-center lg:text-left">
           Sign Up
         </h3>

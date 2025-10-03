@@ -24,7 +24,7 @@ import {
 
 // Yup Validation Schema - This defines all our validation rules
 const validationSchema = yup.object().shape({
-  firstName: yup
+  first_name: yup
     .string()
     .required("First name is required")
     .trim()
@@ -33,13 +33,13 @@ const validationSchema = yup.object().shape({
       "First name must start with a capital letter."
     ),
 
-  lastName: yup
+  last_name: yup
     .string()
     .required("Last name is required")
     .trim()
     .matches(/^[A-Z][a-zA-Z]*$/, "Last name must start with a capital letter."),
 
-  userName: yup
+  username: yup
     .string()
     .required("User name is required")
     .min(3, "User name must be at least 3 characters")
@@ -90,9 +90,9 @@ function IndividualForm() {
     reValidateMode: "onChange", // Re-validate on change
     defaultValues: {
       // Set default form values
-      firstName: "",
-      lastName: "",
-      userName: "",
+      first_name: "",
+      last_name: "",
+      username: "",
       email: "",
       country: "",
       password: "",
@@ -128,62 +128,62 @@ function IndividualForm() {
       >
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
-            <Label htmlFor="firstName" className="mb-4 font-normal">
+            <Label htmlFor="first_name" className="mb-4 font-normal">
               First Name
             </Label>
             <Input
               type="text"
-              id="firstName"
+              id="first_name"
               placeholder="First Name"
-              {...register("firstName")} // Register the field with React Hook Form
+              {...register("first_name")} // Register the field with React Hook Form
               className={placeHolder}
               autoComplete="given-name"
-              aria-invalid={!!errors.firstName}
+              aria-invalid={!!errors.first_name}
             />
-            {errors.firstName && (
+            {errors.first_name && (
               <span className="text-red-500 text-xs mt-1 block leading-snug">
-                {errors.firstName.message}
+                {errors.first_name.message}
               </span>
             )}
           </div>
 
           <div className="flex-1">
-            <Label htmlFor="lastName" className="mb-4 font-normal">
+            <Label htmlFor="last_name" className="mb-4 font-normal">
               Last Name
             </Label>
             <Input
               type="text"
-              id="lastName"
+              id="last_name"
               placeholder="Last Name"
-              {...register("lastName")} // Register the field with React Hook Form
+              {...register("last_name")} // Register the field with React Hook Form
               className={placeHolder}
               autoComplete="family-name"
-              aria-invalid={!!errors.lastName}
+              aria-invalid={!!errors.last_name}
             />
-            {errors.lastName && (
+            {errors.last_name && (
               <span className="text-red-500 text-xs mt-1 block leading-snug">
-                {errors.lastName.message}
+                {errors.last_name.message}
               </span>
             )}
           </div>
         </div>
 
         <div>
-          <Label htmlFor="userName" className="mb-4 font-normal">
+          <Label htmlFor="username" className="mb-4 font-normal">
             User Name
           </Label>
           <Input
             type="text"
-            id="userName"
+            id="username"
             placeholder="Characters not allowed"
-            {...register("userName")} // Register the field with React Hook Form
+            {...register("username")} // Register the field with React Hook Form
             className={placeHolder}
             autoComplete="username"
-            aria-invalid={!!errors.userName}
+            aria-invalid={!!errors.username}
           />
-          {errors.userName && (
+          {errors.username && (
             <span className="text-red-500 text-xs mt-1 block leading-snug">
-              {errors.userName.message}
+              {errors.username.message}
             </span>
           )}
         </div>
@@ -310,7 +310,7 @@ function IndividualForm() {
                 <span className="icon-[logos--microsoft-icon] size-5"></span>
               </Button>
             </div>
-            <p className="text-center text-sm">
+            <p className="text-center text-sm mb-5">
               Already have an account?{" "}
               <Link href="/login" className="text-[#086ACE]">
                 Log In
