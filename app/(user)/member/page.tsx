@@ -58,7 +58,7 @@ export default function Dashboard() {
   }
   return (
     <div className="px-6">
-      <h2 className="font-semibold pt-5 pb-9">Welcome back, James Alfred</h2>
+      <h2 className="font-semibold pt-5 pb-9 text-2xl max-sm:text-xl">Welcome back, James Alfred</h2>
       {/* desktop card display */}
       <div className="hidden sm:flex gap-4 mb-12 max-lg:flex-wrap ">
         {cards.map((card, i) => (
