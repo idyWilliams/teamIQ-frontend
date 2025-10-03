@@ -51,7 +51,7 @@ export default function Dashboard() {
 
     container.addEventListener("scroll", onScroll);
     return () => container.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [loading]);
 
   if (loading) {
     return <Loading />;

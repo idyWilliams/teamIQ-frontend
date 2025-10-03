@@ -44,7 +44,7 @@ export default function ChartRadialShape() {
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square size-[300px]"
+          className="mx-auto aspect-square size-[250px] "
         >
           <RadialBarChart
             data={chartData}

@@ -59,7 +59,7 @@ export default function Deadline() {
           {mockTasks.map((tasks, i) => (
             <div
               key={i}
-              className="flex justify-between gap-5 px-[25px] items-start rounded-xl py-3 border-l-2 border-blue-500 bg-[#F7F7F7] "
+              className=" max-sm:flex-col flex justify-between gap-5 px-[25px] items-start rounded-xl py-3 border-l-2 border-blue-500 bg-[#F7F7F7] "
             >
               <div>
                 <p className="font-semibold">{tasks.task}</p>

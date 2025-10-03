@@ -45,7 +45,7 @@ export default function ChartRadarDefault() {
         <CardDescription>Overall score 70/100</CardDescription>
       </CardHeader>
       <CardContent className="pb-0">
-        <ChartContainer config={chartConfig} className="mx-auto  size-[300px]">
+        <ChartContainer config={chartConfig} className="mx-auto  size-[300px] max-sm:size-[200px] ">
           <RadarChart data={chartData}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <PolarAngleAxis dataKey="skill" />
