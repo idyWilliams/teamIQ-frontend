@@ -55,9 +55,9 @@ export const INITIAL_TASKS: Task[] = [
     messageColor: "text-[#f59e22]",
     messageBackground: "#f59e22",
     avatars: [
-    { src: "https://randomuser.me/api/portraits/men/32.jpg", alt: "User 1", fallback: "U1" },
-    { src: "https://randomuser.me/api/portraits/women/44.jpg", alt: "User 2", fallback: "U2" },
-    { fallback: "+5" } // no image, fallback only
+    { src: "https://randomuser.me/api/portraits/men/32.jpg", name : "John Doe", email:"johndoe@gmail.com", alt: "John", fallback: "JD" },
+    { src: "https://randomuser.me/api/portraits/women/44.jpg",name : "Jane Doe", email:"janedoe@gmail.com", alt: "Jane", fallback: "JD" },
+    { fallback: "+5" } 
   ]
   },
   {
