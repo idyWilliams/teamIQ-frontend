@@ -41,11 +41,11 @@ export default function ChartRadarDefault() {
   return (
     <Card className="shadow-none h-full">
       <CardHeader className="items-center pb-4">
-        <CardTitle>Skill Proficiency</CardTitle>
-        <CardDescription>Overall score 70/100</CardDescription>
+        <CardTitle className="max-sm:text-[16px] text-[20px]">Skill Proficiency</CardTitle>
+        <CardDescription className="max-sm:text-[14px] text-[18px]">Overall score 70/100</CardDescription>
       </CardHeader>
       <CardContent className="pb-0">
-        <ChartContainer config={chartConfig} className="mx-auto  size-[300px] max-sm:size-[200px] ">
+        <ChartContainer config={chartConfig} className="mx-auto  size-[300px] max-sm:size-[250px] ">
           <RadarChart data={chartData}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <PolarAngleAxis dataKey="skill" />
