@@ -82,7 +82,6 @@ export const AttachmentItem: React.FC<AttachmentItemProps> = ({
             <Button
               className="w-full bg-[#E22200] text-white hover:bg-[#C01C00]"
               onClick={() => {
-                alert(`${name} removed`);
                 setOpenDialog(false);
               }}
             >
