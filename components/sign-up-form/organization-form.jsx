@@ -24,7 +24,10 @@ const validationSchema = yup.object().shape({
   organizationName: yup
     .string()
     .required("Organization name is required")
-    .matches(/^[A-Z]*$/, "Organization name must start with a capital letter."),
+    .matches(
+      /^[A-Z][a-zA-Z]*$/,
+      "Organization name must start with a capital letter."
+    ),
   teamSize: yup
     .number()
     .min(1, "Team size must be at least 1")
@@ -55,18 +58,18 @@ const validationSchema = yup.object().shape({
 function OrganizationForm() {
   // Reusable input & select trigger style (aligned with IndividualForm)
   const placeHolder =
-    "!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md bg-transparent focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#086ACE] focus-visible:ring-0";
+    "!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md bg-[#F7F7F7] focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#086ACE] focus-visible:ring-0";
 
   const {
     register,
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-    watch,
     reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
-    mode: "onChange",
+    mode: "onBlur",
+    reValidateMode: "onChange",
     defaultValues: {
       organizationName: "",
       teamSize: "",

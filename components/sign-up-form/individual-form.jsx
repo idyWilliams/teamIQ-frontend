@@ -84,7 +84,6 @@ function IndividualForm() {
     control,
     formState: { errors, isSubmitting },
     reset,
-    watch,
   } = useForm({
     resolver: yupResolver(validationSchema),
     mode: "onBlur", // Validate on blur
@@ -118,7 +117,7 @@ function IndividualForm() {
   };
 
   const placeHolder =
-    "!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md bg-transparent focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#086ACE] focus-visible:ring-0";
+    "!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md  focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#B3C4D6] focus-visible:ring-0 bg-[#F7F7F7]";
 
   return (
     <div>
