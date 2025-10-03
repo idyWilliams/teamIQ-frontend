@@ -1,7 +1,7 @@
 "use client";
 
 import { useDroppable } from "@dnd-kit/core";
-import { TaskCard } from "./TaskCard";
+import { TaskCard } from "./task-card";
 import { Column as ColumnType, Task } from "./types";
 import { Avatar } from "@radix-ui/react-avatar";
 import DragOutline from "@/components/icons/DragOutline";
