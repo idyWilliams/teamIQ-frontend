@@ -31,6 +31,7 @@ const validationSchema = yup.object().shape({
   team_size: yup
     .number()
     .min(1, "Team size must be at least 1")
+    .typeError("Team size must be a number")
     .required("Team size is required"),
   email: yup
     .string()
