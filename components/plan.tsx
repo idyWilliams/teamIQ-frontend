@@ -48,7 +48,8 @@ export default function PlanSettings() {
             Coming Soon
           </h1>
           <p className="text-sm text-gray-600 leading-relaxed">
-            We're working on a plan designed to give you more value, flexibility, and benefits. Stay tuned, it's almost ready
+  We&apos;re working on a plan designed to give you more value, flexibility, and benefits. Stay tuned, it&apos;s almost ready.
+
           </p>
         </div>
       </div>
