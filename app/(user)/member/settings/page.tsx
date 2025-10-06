@@ -1,9 +1,11 @@
-import React from 'react'
+import React from "react";
+import { redirect } from "next/navigation";
 
 export default function SettingsPage() {
+  redirect("/member/settings");
   return (
     <div>
-      Settings Page
+      <h1>Settings</h1>
     </div>
-  )
+  );
 }
