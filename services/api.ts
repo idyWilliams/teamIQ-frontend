@@ -53,5 +53,3 @@ export const {
   integrations,
   default: defaultApi,
 } = api;
-
-export default api;
