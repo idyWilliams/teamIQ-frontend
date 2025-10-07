@@ -51,13 +51,13 @@
 
   /* Color codes from Figma */
   /* Primary and its shades */
-  --color-iq: oklch(0.3792 0.1111 253.75);
+  --color-iq: oklch(0.533 0.1742 255.41);
   --color-iq-50: oklch(0.941 0.0097 252.81);
   --color-iq-100: oklch(0.813 0.0315 249.74);
   --color-iq-200: oklch(0.7208 0.0478 248.49);
   --color-iq-300: oklch(0.588 0.0733 250.43);
   --color-iq-400: oklch(0.5055 0.0877 249.94);
-  --color-iq-500: oklch(0.3792 0.1111 253.75);
+  --color-iq-500: oklch(0.533 0.1742 255.41);
   --color-iq-600: oklch(0.3559 0.1032 253.63);
   --color-iq-700: oklch(0.3031 0.0838 252.74);
   --color-iq-800: oklch(0.2586 0.0695 253.17);
