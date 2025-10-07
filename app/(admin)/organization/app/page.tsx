@@ -1,5 +1,5 @@
+"use client";
 import React from "react";
-import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import {
@@ -9,17 +9,93 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import OrgAppCard from "@/components/org-app-card";
 
 export default function OrganizationAppPage() {
+  const [searchTerm, setSearchTerm] = React.useState("");
+
+  const app = [
+    {
+      name: "Jira",
+      logo: "/images/devicon_jira.svg",
+      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    },
+    {
+      name: "GitHub",
+      logo: "/images/github.svg",
+      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    },
+    {
+      name: "ClickUp",
+      logo: "/images/clickup.svg",
+      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    },
+    {
+      name: "GitLab",
+      logo: "/images/gitlab.svg",
+      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    },
+    {
+      name: "Figma",
+      logo: "/images/figma.svg",
+      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    },
+    {
+      name: "Slack",
+      logo: "/images/slack.svg",
+      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    },
+    {
+      name: "Discord",
+      logo: "/images/discord.svg",
+      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    },
+    {
+      name: "Azure Repos",
+      logo: "/images/Azure.svg",
+      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    },
+    {
+      name: "Teams",
+      logo: "/images/teams.svg",
+      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    },
+  ];
+
+  const filteredApps = app.filter((app) =>
+    app.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="w-full p-4">
       <h1>App</h1>
       <section className="my-4 flex items-center justify-between gap-4">
-        <div className="relative">
+        <div className="relative w-full md:w-80">
           <Input
             id="search"
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search for an app"
-            className="h-8 pl-7 w-80"
+            className="h-8 pl-7 w-full"
           />
           <Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
         </div>
@@ -36,152 +112,7 @@ export default function OrganizationAppPage() {
           </Select>
         </div>
       </section>
-      <main className="grid gap-5 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] items-stretch">
-        <article className="rounded-2xl shadow-md hover:shadow-lg transition-shadow flex flex-col justify-between p-6 h-full">
-          <div className="flex items-center gap-2 mb-3">
-            <Image
-              src="/images/devicon_jira.svg"
-              alt="Jira logo"
-              width={29}
-              height={28}
-            />
-            <h3 className="font-semibold text-base">Jira</h3>
-          </div>
-          <p className="text-black-400 text-sm leading-relaxed">
-            Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.
-          </p>
-        </article>
-        <article className="rounded-2xl shadow-md hover:shadow-lg transition-shadow flex flex-col justify-between p-6 h-full">
-          <div className="flex items-center gap-2 mb-3">
-            <Image
-              src="/images/github.svg"
-              alt="GitHub logo"
-              width={29}
-              height={28}
-            />
-            <h3 className="font-semibold text-base">GitHub</h3>
-          </div>
-          <p className="text-black-400 text-sm leading-relaxed">
-            Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.
-          </p>
-        </article>
-        <article className="rounded-2xl shadow-md hover:shadow-lg transition-shadow flex flex-col justify-between p-6 h-full">
-          <div className="flex items-center gap-2 mb-3">
-            <Image
-              src="/images/clickup.svg"
-              alt="ClickUp logo"
-              width={29}
-              height={28}
-            />
-            <h3 className="font-semibold text-base">ClickUp</h3>
-          </div>
-          <p className="text-black-400 text-sm leading-relaxed">
-            Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.
-          </p>
-        </article>
-        <article className="rounded-2xl shadow-md hover:shadow-lg transition-shadow flex flex-col justify-between p-6 h-full">
-          <div className="flex items-center gap-2 mb-3">
-            <Image
-              src="/images/gitlab.svg"
-              alt="GitLab logo"
-              width={29}
-              height={28}
-            />
-            <h3 className="font-semibold text-base">GitLab</h3>
-          </div>
-          <p className="text-black-400 text-sm leading-relaxed">
-            Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.
-          </p>
-        </article>
-        <article className="rounded-2xl shadow-md hover:shadow-lg transition-shadow flex flex-col justify-between p-6 h-full">
-          <div className="flex items-center gap-2 mb-3">
-            <Image
-              src="/images/Figma.svg"
-              alt="Figma logo"
-              width={29}
-              height={28}
-            />
-            <h3 className="font-semibold text-base">Figma</h3>
-          </div>
-          <p className="text-black-400 text-sm leading-relaxed">
-            Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.
-          </p>
-        </article>
-        <article className="rounded-2xl shadow-md hover:shadow-lg transition-shadow flex flex-col justify-between p-6 h-full">
-          <div className="flex items-center gap-2 mb-3">
-            <Image
-              src="/images/Slack.svg"
-              alt="Slack logo"
-              width={29}
-              height={28}
-            />
-            <h3 className="font-semibold text-base">Slack</h3>
-          </div>
-          <p className="text-black-400 text-sm leading-relaxed">
-            Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.
-          </p>
-        </article>
-        <article className="rounded-2xl shadow-md hover:shadow-lg transition-shadow flex flex-col justify-between p-6 h-full">
-          <div className="flex items-center gap-2 mb-3">
-            <Image
-              src="/images/discord.svg"
-              alt="Discord logo"
-              width={29}
-              height={28}
-            />
-            <h3 className="font-semibold text-base">Discord</h3>
-          </div>
-          <p className="text-black-400 text-sm leading-relaxed">
-            Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.
-          </p>
-        </article>
-        <article className="rounded-2xl shadow-md hover:shadow-lg transition-shadow flex flex-col justify-between p-6 h-full">
-          <div className="flex items-center gap-2 mb-3">
-            <Image
-              src="/images/Azure.svg"
-              alt="Azure logo"
-              width={29}
-              height={28}
-            />
-            <h3 className="font-semibold text-base">Azure Repos</h3>
-          </div>
-          <p className="text-black-400 text-sm leading-relaxed">
-            Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.
-          </p>
-        </article>
-        <article className="rounded-2xl shadow-md hover:shadow-lg transition-shadow flex flex-col justify-between p-6 h-full">
-          <div className="flex items-center gap-2 mb-3">
-            <Image
-              src="/images/teams.svg"
-              alt="Teams logo"
-              width={29}
-              height={28}
-            />
-            <h3 className="font-semibold text-base">Microsoft Teams</h3>
-          </div>
-          <p className="text-black-400 text-sm leading-relaxed">
-            Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.
-          </p>
-        </article>
-      </main>
+      <OrgAppCard apps={filteredApps} />
     </div>
   );
 }
