@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export function NavMain({
   items,
@@ -32,10 +32,14 @@ export function NavMain({
     items?: {
       title: string;
       url: string;
+      value?: string;
+      isActive?: boolean;
+      onClick?: () => void;
     }[];
   }[];
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   return (
     <SidebarGroup className="">
@@ -63,15 +67,37 @@ export function NavMain({
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <SidebarMenuSub>
-                  {item.items?.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <Link href={subItem.url}>
-                          <span>{subItem.title}</span>
-                        </Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
+                  {item.items?.map((subItem) => {
+                    // Create the URL with tab parameter
+                    const urlWithTab = subItem.value 
+                      ? `${item.url}?tab=${subItem.value}`
+                      : subItem.url;
+                    
+                    return (
+                      <SidebarMenuSubItem key={subItem.title}>
+                        <SidebarMenuSubButton 
+                          asChild
+                          isActive={subItem.isActive}
+                        >
+                          {subItem.onClick ? (
+                            <button
+                              onClick={subItem.onClick}
+                              className={cn(
+                                "w-full text-left",
+                                subItem.isActive && "bg-accent text-accent-foreground"
+                              )}
+                            >
+                              <span>{subItem.title}</span>
+                            </button>
+                          ) : (
+                            <Link href={urlWithTab}>
+                              <span>{subItem.title}</span>
+                            </Link>
+                          )}
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    );
+                  })}
                 </SidebarMenuSub>
               </CollapsibleContent>
             </SidebarMenuItem>
