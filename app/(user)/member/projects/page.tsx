@@ -1,17 +1,19 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import React from "react";
+import { usePathname } from "next/navigation";
+import ProjectCards from "./ProjectCards";
 
-export default function ProjectPage() {
+const projects = [
+  { id: "1", title: "Isentry" },
+  { id: "2", title: "Fintech App" },
+];
+export default function ProjectPage({ params }: { params: { id: string } }) {
   const pathname = usePathname();
-
   return (
     <div className="w-full">
-      Project Page
-      <Link href={`${pathname}/isentry-website`}>One</Link>
-      <Link href={`${pathname}/2`}>Two</Link>
-      <Link href={`${pathname}/3`}>Three</Link>
+      <h1 className="text-start p-3">Projects</h1>
+      <ProjectCards projects={projects} />
     </div>
   );
 }
