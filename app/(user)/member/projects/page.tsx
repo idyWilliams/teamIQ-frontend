@@ -2,7 +2,6 @@
 import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
-import ProjectCards from "./ProjectCards";
 
 const projects = [
   { id: "1", title: "Isentry" },
@@ -10,10 +9,10 @@ const projects = [
 ];
 export default function ProjectPage({ params }: { params: { id: string } }) {
   const pathname = usePathname();
+
   return (
     <div className="w-full">
       <h1 className="text-start p-3">Projects</h1>
-      <ProjectCards projects={projects} />
     </div>
   );
 }

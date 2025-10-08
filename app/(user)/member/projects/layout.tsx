@@ -10,7 +10,7 @@ type settingProps = {
 };
 
 export default function ProjectLayout({ children }: settingProps) {
-
+  const pathname = usePathname();
   return (
     <div className="w-full overflow-hidden">
       <nav className="border-b border-b-gray-400">
