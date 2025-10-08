@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from 'react';
+import { useState } from "react";
+import { Switch } from "@/components/ui/switch";
 
 interface NotificationSettings {
   pushNewTask: boolean;
@@ -24,185 +25,164 @@ export default function NotificationsSettings() {
   });
 
   const toggleNotification = (key: keyof NotificationSettings) => {
-    setNotifications(prev => ({
+    setNotifications((prev) => ({
       ...prev,
-      [key]: !prev[key]
+      [key]: !prev[key],
     }));
   };
 
   return (
     <div className="w-full">
       <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8">
-
         {/* Title */}
         <div className="mb-8 pb-8 border-b border-gray-200">
           <h1 className="text-2xl font-semibold text-gray-900 mb-2">
             Notification Settings
           </h1>
           <p className="text-sm text-gray-500">
-            Select the notifications to get about your activities
+            Select the notifications you want to receive about your activities.
           </p>
         </div>
 
-        {/* Push Notifications */}
-        <div className="mb-8 pb-8 border-b border-gray-200 flex justify-between items-start">
-          {/* Left side */}
-          <div className="mb-6">
-            <h2 className="text-base font-semibold text-gray-900 mb-1">
-              Push Notifications
-            </h2>
-            <p className="text-sm text-gray-500">Notify me when...</p>
-          </div>
+{/* Push Notifications */}
+<div className="mb-8 pb-8 border-b border-gray-200 flex justify-between items-start">
+  <div>
+    <h2 className="text-base font-semibold text-gray-900 mb-1">
+      Push Notifications
+    </h2>
+    <p className="text-sm text-gray-500">Notify me when...</p>
+  </div>
 
-          {/* Right side - checkboxes in front */}
-          <div className="flex flex-col gap-4 w-[572px]">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={notifications.pushNewTask}
-                onChange={() => toggleNotification('pushNewTask')}
-                className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm text-gray-700">New task allocation</span>
-            </label>
-
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={notifications.pushNewEvent}
-                onChange={() => toggleNotification('pushNewEvent')}
-                className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm text-gray-700">New event created</span>
-            </label>
-
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={notifications.pushNewTeam}
-                onChange={() => toggleNotification('pushNewTeam')}
-                className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm text-gray-700">Added to a new team</span>
-            </label>
-          </div>
+  <div className="flex flex-col gap-4 w-[572px]">
+    {[
+      { key: "pushNewTask", label: "New tasks allocation" },
+      { key: "pushNewEvent", label: "New event created" },
+      { key: "pushNewTeam", label: "Added to a new team" },
+    ].map(({ key, label }) => (
+      <label
+        key={key}
+        className="flex items-center gap-3 cursor-pointer text-sm text-gray-700"
+      >
+        {/* Checkbox BEFORE label */}
+        <div className="relative flex items-center justify-center">
+          <input
+            type="checkbox"
+            checked={notifications[key as keyof NotificationSettings]}
+            onChange={() =>
+              toggleNotification(key as keyof NotificationSettings)
+            }
+            className="peer appearance-none w-5 h-5 border border-gray-400 rounded-md cursor-pointer
+                       transition-all duration-200 checked:border-black checked:bg-white"
+          />
+          {/* Vector Tick */}
+          <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 14 10"
+    className="absolute opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
+    style={{
+      width: "9px",
+      height: "6px",
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+    }}
+  >
+            <path
+      d="M1 5L5 9L13 1"
+      stroke="#2563EB"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+          </svg>
         </div>
+        {label}
+      </label>
+    ))}
+  </div>
+</div>
+
 
         {/* Email Notifications */}
         <div className="mb-8 pb-8 border-b border-gray-200 flex justify-between items-start">
-          <div className="mb-6 w-[420px] h-[48px] opacity-100 gap-2">
+          <div className="max-w-sm">
             <h2 className="text-base font-semibold text-gray-900 mb-1">
               Email Notifications
             </h2>
             <p className="text-sm text-gray-500">
-              Get notifications from your organization when you are not online
+              Get updates from your organization even when you’re offline.
             </p>
           </div>
 
-          <div className="flex flex-col gap-6">
-            {/* Team Updates */}
-            <div className="flex items-center justify-between w-[572px] h-[44px] opacity-100 gap-[110px]">
-              <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-1">Team Updates</h3>
-                <p className="text-sm text-gray-500">
-                  Receive notifications for messages or mentions in team discussions.
-                </p>
-              </div>
-              <button
-                onClick={() => toggleNotification('emailTeamUpdates')}
-                className={`relative inline-flex h-6 w-11 cursor-pointer rounded-full transition-colors duration-200 ease-in-out ${
-                  notifications.emailTeamUpdates ? 'bg-blue-600' : 'bg-gray-200'
-                }`}
-              >
-                <span
-                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition ${
-                    notifications.emailTeamUpdates ? 'translate-x-5' : 'translate-x-0'
-                  }`}
+          <div className="flex flex-col gap-6 w-[572px]">
+            {[
+              {
+                key: "emailTeamUpdates",
+                title: "Team Updates",
+                desc: "Receive notifications for team discussions and mentions.",
+              },
+              {
+                key: "emailProjectUpdates",
+                title: "Project Updates",
+                desc: "Receive notifications for project messages and progress.",
+              },
+              {
+                key: "emailDailySummaries",
+                title: "Daily Summaries",
+                desc: "Receive a summary of daily progress and updates.",
+              },
+            ].map(({ key, title, desc }) => (
+              <div key={key} className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-1">
+                    {title}
+                  </h3>
+                  <p className="text-sm text-gray-500">{desc}</p>
+                </div>
+                <Switch
+                  checked={notifications[key as keyof NotificationSettings]}
+                  onCheckedChange={() =>
+                    toggleNotification(key as keyof NotificationSettings)
+                  }
+                  className="data-[state=checked]:bg-blue-600"
                 />
-              </button>
-            </div>
-
-            {/* Project Updates */}
-            <div className="flex items-center justify-between w-[572px] h-[44px] opacity-100 gap-[110px]">
-              <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-1">Project Updates</h3>
-                <p className="text-sm text-gray-500">
-                  Receive notifications for messages on project updates.
-                </p>
               </div>
-              <button
-                onClick={() => toggleNotification('emailProjectUpdates')}
-                className={`relative inline-flex h-6 w-11 cursor-pointer rounded-full transition-colors duration-200 ease-in-out ${
-                  notifications.emailProjectUpdates ? 'bg-blue-600' : 'bg-gray-200'
-                }`}
-              >
-                <span
-                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition ${
-                    notifications.emailProjectUpdates ? 'translate-x-5' : 'translate-x-0'
-                  }`}
-                />
-              </button>
-            </div>
-
-            {/* Daily Summaries */}
-            <div className="flex items-center justify-between w-[572px] h-[44px] opacity-100 gap-[110px]">
-              <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-1">Daily Summaries</h3>
-                <p className="text-sm text-gray-500">
-                  Receive summaries for project progress and daily activities.
-                </p>
-              </div>
-              <button
-                onClick={() => toggleNotification('emailDailySummaries')}
-                className={`relative inline-flex h-6 w-11 cursor-pointer rounded-full transition-colors duration-200 ease-in-out ${
-                  notifications.emailDailySummaries ? 'bg-blue-600' : 'bg-gray-200'
-                }`}
-              >
-                <span
-                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition ${
-                    notifications.emailDailySummaries ? 'translate-x-5' : 'translate-x-0'
-                  }`}
-                />
-              </button>
-            </div>
+            ))}
           </div>
         </div>
 
         {/* In-App Notifications */}
-        <div className="mb-8 pb-8 border-b border-gray-200 flex justify-between items-start">
-          <div className="mb-6 max-w-sm">
+        <div className="flex justify-between items-start">
+          <div className="max-w-sm">
             <h2 className="text-base font-semibold text-gray-900 mb-1">
               In-App Notifications
             </h2>
             <p className="text-sm text-gray-500">
-              Customize alerts for immediate updates
+              Control alerts and reminders inside the app.
             </p>
           </div>
 
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between w-[572px] h-[44px] opacity-100 gap-[110px]">
+          <div className="flex flex-col gap-4 w-[572px]">
+            <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-1">Daily Summaries</h3>
+                <h3 className="text-sm font-medium text-gray-900 mb-1">
+                  Daily Summaries
+                </h3>
                 <p className="text-sm text-gray-500">
-                  Receive summaries for project progress and daily activities.
+                  Receive in-app updates on project and team progress.
                 </p>
               </div>
-              <button
-                onClick={() => toggleNotification('inAppDailySummaries')}
-                className={`relative inline-flex h-6 w-11 cursor-pointer rounded-full transition-colors duration-200 ease-in-out ${
-                  notifications.inAppDailySummaries ? 'bg-blue-600' : 'bg-gray-200'
-                }`}
-              >
-                <span
-                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition ${
-                    notifications.inAppDailySummaries ? 'translate-x-5' : 'translate-x-0'
-                  }`}
-                />
-              </button>
+              <Switch
+                checked={notifications.inAppDailySummaries}
+                onCheckedChange={() =>
+                  toggleNotification("inAppDailySummaries")
+                }
+                className="data-[state=checked]:bg-blue-600"
+              />
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
