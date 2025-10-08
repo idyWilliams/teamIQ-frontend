@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { useSearchParams, useRouter } from "next/navigation";
 import { AudioWaveform, Command, GalleryVerticalEnd } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -46,9 +45,9 @@ const data = {
       title: "Dashboard",
       url: "/organization",
       items: [
-        { title: "Overview", url: "", value: "overview" },
-        { title: "Project Status", url: "", value: "project-status" },
-        { title: "Team", url: "", value: "team" },
+        { title: "Overview", url: "" },
+        { title: "Project Status", url: "" },
+        { title: "Team", url: "" },
       ],
     },
   ],
@@ -82,32 +81,13 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const activeTab = searchParams.get("tab") || "overview";
-
-  const handleSubNavClick = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("tab", value);
-    router.replace(`?${params.toString()}`, { scroll: false });
-  };
-
-  const navMainWithHandlers = data.navMain.map(item => ({
-    ...item,
-    items: item.items.map(subItem => ({
-      ...subItem,
-      isActive: subItem.value === activeTab,
-      onClick: () => handleSubNavClick(subItem.value),
-    })),
-  }));
-
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent className="gap-y-0">
-        <NavMain items={navMainWithHandlers} />
+        <NavMain items={data.navMain} />
         <NavProjects projects={data.others} />
       </SidebarContent>
       <SidebarFooter>
