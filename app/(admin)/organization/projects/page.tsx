@@ -19,7 +19,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Calendar, Circle, Plus } from "lucide-react";
 
-// ✅ Mock Image Component (no Next.js loader required)
+// ✅ Mock Image Component (works without Next.js loader)
 const Image = ({ src, alt, width, height, className }) => (
   <div
     style={{
@@ -49,9 +49,9 @@ const projects = [
   },
   {
     id: 2,
-    name: "Project Alpha",
+    name: "Project XYZ",
     app: ["slack", "github"],
-    teamLead: "Uzair Ul Haq",
+    teamLead: "Kate Morrison",
     teamMembers: ["Ava", "Ryan", "Noah"],
     startDate: "Jan 20, 2025",
     endDate: "Mar 30, 2025",
@@ -60,9 +60,9 @@ const projects = [
   },
   {
     id: 3,
-    name: "Project Omega",
+    name: "Project XYZ",
     app: ["figma", "jira"],
-    teamLead: "Sristika Gautam",
+    teamLead: "Kate Morrison",
     teamMembers: ["Ben", "Ella", "Mark", "Zoe"],
     startDate: "Feb 1, 2025",
     endDate: "May 10, 2025",
@@ -71,9 +71,9 @@ const projects = [
   },
   {
     id: 4,
-    name: "Project Delta",
+    name: "Project XYZ",
     app: ["github", "firebase", "slack"],
-    teamLead: "Andrew Johnson",
+    teamLead: "Kate Morrison",
     teamMembers: ["Fatima", "Sifan", "Adefolayo"],
     startDate: "Jan 10, 2025",
     endDate: "Jun 1, 2025",
@@ -82,9 +82,9 @@ const projects = [
   },
   {
     id: 5,
-    name: "Project Nova",
+    name: "Project XYZ",
     app: ["jira", "gitlab"],
-    teamLead: "Monsurat Anny",
+    teamLead: "Kate Morrison",
     teamMembers: ["Andrew", "Kabreer", "Suraya"],
     startDate: "Mar 1, 2025",
     endDate: "Jun 15, 2025",
@@ -93,7 +93,7 @@ const projects = [
   },
 ];
 
-const iconMap: Record<string, string> = {
+const iconMap = {
   slack: "/images/slack.png",
   jira: "/images/jira.png",
   github: "/images/github.png",
@@ -104,9 +104,9 @@ const iconMap: Record<string, string> = {
 
 export default function ProjectsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [sorting, setSorting] = useState([]);
+  const [sorting, setSorting] = useState([{ id: "progress", desc: true }]);
 
-  const columnHelper = createColumnHelper<typeof projects[0]>();
+  const columnHelper = createColumnHelper();
 
   const columns = useMemo(
     () => [
@@ -161,7 +161,7 @@ export default function ProjectsPage() {
                 {members.slice(0, 2).map((member, i) => (
                   <Image
                     key={i}
-                    src={`/images/member.png`}
+                    src="/images/member.png"
                     alt={member}
                     width={28}
                     height={28}
@@ -258,7 +258,10 @@ export default function ProjectsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
         <h1 className="text-xl sm:text-2xl font-semibold">Projects</h1>
-        <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2">
+        <Button
+          onClick={() => setIsModalOpen(true)}
+          className="flex items-center gap-2"
+        >
           <Plus size={18} /> New Project
         </Button>
       </div>
@@ -272,14 +275,15 @@ export default function ProjectsPage() {
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="p-3 text-left font-semibold text-gray-700 cursor-pointer select-none"
+                    className="p-3 text-left font-semibold text-gray-700 cursor-pointer select-none hover:text-blue-700 transition"
                     onClick={header.column.getToggleSortingHandler()}
                   >
                     {flexRender(header.column.columnDef.header, header.getContext())}
-                    {{
-                      asc: " 🔼",
-                      desc: " 🔽",
-                    }[header.column.getIsSorted() as string] ?? null}
+                    {header.column.getIsSorted()
+                      ? header.column.getIsSorted() === "asc"
+                        ? " 🔼"
+                        : " 🔽"
+                      : ""}
                   </th>
                 ))}
               </tr>
@@ -287,7 +291,10 @@ export default function ProjectsPage() {
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="border-t hover:bg-gray-50 transition-all">
+              <tr
+                key={row.id}
+                className="border-t hover:bg-gray-50 transition-all rounded-md"
+              >
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id} className="p-3 align-middle">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -300,27 +307,30 @@ export default function ProjectsPage() {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-end items-center gap-3 mt-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <span className="text-sm text-gray-600">
-          Page {table.getState().pagination.pageIndex + 1} of{" "}
-          {table.getPageCount()}
-        </span>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-4 text-sm text-gray-600">
+        <p>Total Projects: {projects.length}</p>
+        <div className="flex items-center gap-3 mt-2 sm:mt-0">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <span>
+            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div>
       </div>
 
       {/* Modal */}
