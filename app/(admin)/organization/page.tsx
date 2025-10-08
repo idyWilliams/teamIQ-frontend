@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Search } from "lucide-react";
 import { SidebarInput, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
+import ProjectStatus from "@/components/project-status";
 
 export default function OverviewPage() {
   return (
@@ -50,6 +51,7 @@ export default function OverviewPage() {
           </div>
           <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
         </div>
+        {/* <ProjectStatus /> */}
       </div>
       <div className=" w-[300px] h-full border-l"></div>
     </>
