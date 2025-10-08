@@ -2,20 +2,16 @@
 import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
-import ProjectCards from "./ProjectCards";
 
-
-
-const projects  = [
-  { id: "1", title: "Isentry" },
-  { id: "2", title: "Fintech App" },
-];
-export default function ProjectPage({ params }: { params: { id: string } }) {
+export default function ProjectPage() {
   const pathname = usePathname();
+
   return (
     <div className="w-full">
-      <h1 className="text-start p-3">Projects</h1>
-      <ProjectCards projects={projects}/>
+      Project Page
+      <Link href={`${pathname}/isentry-website`}>One</Link>
+      <Link href={`${pathname}/2`}>Two</Link>
+      <Link href={`${pathname}/3`}>Three</Link>
     </div>
   );
 }
