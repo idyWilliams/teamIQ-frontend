@@ -1,31 +1,15 @@
 "use client";
 
 import React from "react";
-import { useSearchParams, useRouter } from "next/navigation";
 import DashbordOverview from "@/components/overview";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProjectStatus from "@/components/project-status";
 import Team from "@/components/team";
 
 export default function OverviewPage() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  const activeTab = searchParams.get("tab") || "overview";
-
-  const handleTabChange = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("tab", value);
-    router.replace(`?${params.toString()}`, { scroll: false });
-  };
-
   return (
     <div className="h-full">
-      <Tabs
-        value={activeTab}
-        onValueChange={handleTabChange}
-        className="h-full flex flex-col"
-      >
+      <Tabs defaultValue="overview" className="h-full flex flex-col">
         <TabsList
           className="
             grid w-full max-w-md grid-cols-3 shrink-0
