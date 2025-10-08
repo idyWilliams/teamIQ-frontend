@@ -1,18 +1,23 @@
 "use client";
 
 import { ReactNode } from "react";
+<<<<<<< Updated upstream
 import { usePathname } from "next/navigation";
 import { projectsTabs } from "@/components/user-dashboard-component/data/projectTabs";
 import Link from "next/link";
+=======
+
+>>>>>>> Stashed changes
 
 type settingProps = {
   children: ReactNode;
 };
 
 export default function ProjectLayout({ children }: settingProps) {
-  const pathname = usePathname();
+
   return (
     <div className="w-full overflow-hidden">
+<<<<<<< Updated upstream
       <nav className="border-b border-b-gray-400">
         <ul className="flex items-center justify-start gap-3 md:gap-10 space-x-6 md:space-x-10 max-w-full">
           {projectsTabs.map((tabs) => {
@@ -35,6 +40,8 @@ export default function ProjectLayout({ children }: settingProps) {
         </ul>
       </nav>
 
+=======
+>>>>>>> Stashed changes
       <main className="flex ">{children}</main>
     </div>
   );
