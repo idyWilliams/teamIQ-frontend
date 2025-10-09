@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Input } from "../ui/input";
-import { Search, Bell } from "lucide-react";
+import React from 'react';
+import { Input } from '../ui/input';
+import { Search, Bell } from 'lucide-react';
 
 type HeaderProps = {
   isMobile?: boolean;
@@ -11,43 +11,44 @@ type HeaderProps = {
 
 const Header = ({ isMobile, onOpenNotification }: HeaderProps) => {
   return (
-    <header className="h-[10%] p-2 flex items-center justify-end md:justify-between gap-4">
-       {/* Mobile View */}
+    <header className="flex h-[10%] items-center justify-end gap-4 p-2 md:justify-between">
+      {/* Mobile View */}
       {isMobile ? (
-        
         <>
           {/* Left - Initials */}
-          <p className="text-[20px] text-[#0f1928] bg-[#ffece5] p-2 rounded-full font-bold">
+          <p className="rounded-full bg-[#ffece5] p-2 text-[20px] font-bold text-[#0f1928]">
             JA
           </p>
 
           {/* Right - Bell Icon */}
           <div className="flex items-center gap-4">
             <button onClick={onOpenNotification}>
-              <Bell className="text-[#292d32] w-6 h-6 cursor-pointer" />
+              <Bell className="h-6 w-6 cursor-pointer text-[#292d32]" />
             </button>
           </div>
         </>
       ) : (
-        
         // Desktop View
         <>
           {/* Left - Initials + Full Name */}
-          <p className="text-[#909090]">
-            <span className="font-bold">JA</span> James Alfred
-          </p>
+          <div className="inline-flex items-center gap-2">
+            <span className="flex size-10 items-center justify-center rounded-full bg-[#FFECE5] font-bold text-neutral-800">
+              JA
+            </span>
+            <span className="font-bold text-neutral-800">James Alfred</span>
+          </div>
 
           {/* Right - Search Input + Bell */}
           <div className="flex items-center gap-4">
             <div className="relative">
-              <Search className="text-[#bac0cc] absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
+              <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#bac0cc]" />
               <Input
                 type="text"
                 placeholder="Search for anything"
-                className="pl-10 w-[348px] text-[#393939] placeholder:text-[#bac0cc] focus:ring-0"
+                className="w-[348px] pl-10 text-[#393939] placeholder:text-[#bac0cc] focus:ring-0"
               />
             </div>
-            <Bell className="text-[#86898c] w-6 h-6 cursor-pointer" />
+            <Bell className="h-6 w-6 cursor-pointer text-[#86898c]" />
           </div>
         </>
       )}

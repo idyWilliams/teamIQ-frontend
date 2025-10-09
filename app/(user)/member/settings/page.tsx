@@ -1,10 +1,12 @@
+'use client';
 import NotificationsSettings from '@/components/notification ';
 import PlanSettings from '@/components/plan';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 export default function SettingsPage() {
   return (
     <section className="">
-      <Tabs defaultValue="my-details" className="w-full p-0">
+      <Tabs className="w-full p-0">
         <TabsList className="w-full grow justify-start rounded-none border-b bg-transparent p-0">
           {SettingsTabDetails.map(tab => (
             <TabsTrigger
