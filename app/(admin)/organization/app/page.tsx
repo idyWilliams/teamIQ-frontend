@@ -11,74 +11,146 @@ import {
 } from "@/components/ui/select";
 import OrgAppCard from "@/components/org-app-card";
 
+const app = [
+  {
+    name: "Jira",
+    logo: "/images/devicon_jira.svg",
+    description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    integrations: [
+      {
+        title: "Isentry Website",
+        logo: "/images/devicon_jira.svg",
+        description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+              senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
+      },
+    ],
+  },
+  {
+    name: "GitHub",
+    logo: "/images/github.svg",
+    description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    integrations: [
+      {
+        title: "GitHub Actions",
+        logo: "/images/github.svg",
+        description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+              senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
+      },
+    ],
+  },
+  {
+    name: "ClickUp",
+    logo: "/images/clickup.svg",
+    description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    integrations: [
+      {
+        title: "ClickUp API",
+        logo: "/images/clickup.svg",
+        description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+              senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
+      },
+    ],
+  },
+  {
+    name: "GitLab",
+    logo: "/images/gitlab.svg",
+    description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    integrations: [
+      {
+        title: "GitLab CI/CD",
+        logo: "/images/gitlab.svg",
+        description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+              senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
+      },
+    ],
+  },
+  {
+    name: "Figma",
+    logo: "/images/figma.svg",
+    description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    integrations: [
+      {
+        title: "Figma API",
+        logo: "/images/figma.svg",
+        description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+              senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
+      },
+    ],
+  },
+  {
+    name: "Slack",
+    logo: "/images/slack.svg",
+    description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    integrations: [
+      {
+        title: "Slack API",
+        logo: "/images/slack.svg",
+        description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+              senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
+      },
+    ],
+  },
+  {
+    name: "Discord",
+    logo: "/images/discord.svg",
+    description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    integrations: [
+      {
+        title: "Discord Bots",
+        logo: "/images/discord.svg",
+        description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+              senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
+      },
+    ],
+  },
+  {
+    name: "Azure Repos",
+    logo: "/images/Azure.svg",
+    description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    integrations: [
+      {
+        title: "Azure DevOps",
+        logo: "/images/Azure.svg",
+        description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+              senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
+      },
+    ],
+  },
+  {
+    name: "Teams",
+    logo: "/images/teams.svg",
+    description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+            cursus lectus diam sit convallis dui nunc.`,
+    integrations: [
+      {
+        title: "Microsoft Teams",
+        logo: "/images/teams.svg",
+        description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+              senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
+      },
+    ],
+  },
+];
+
 export default function OrganizationAppPage() {
   const [searchTerm, setSearchTerm] = React.useState("");
-
-  const app = [
-    {
-      name: "Jira",
-      logo: "/images/devicon_jira.svg",
-      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.`,
-    },
-    {
-      name: "GitHub",
-      logo: "/images/github.svg",
-      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.`,
-    },
-    {
-      name: "ClickUp",
-      logo: "/images/clickup.svg",
-      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.`,
-    },
-    {
-      name: "GitLab",
-      logo: "/images/gitlab.svg",
-      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.`,
-    },
-    {
-      name: "Figma",
-      logo: "/images/figma.svg",
-      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.`,
-    },
-    {
-      name: "Slack",
-      logo: "/images/slack.svg",
-      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.`,
-    },
-    {
-      name: "Discord",
-      logo: "/images/discord.svg",
-      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.`,
-    },
-    {
-      name: "Azure Repos",
-      logo: "/images/Azure.svg",
-      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.`,
-    },
-    {
-      name: "Teams",
-      logo: "/images/teams.svg",
-      description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-            senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-            cursus lectus diam sit convallis dui nunc.`,
-    },
-  ];
 
   const filteredApps = app.filter((app) =>
     app.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -86,7 +158,7 @@ export default function OrganizationAppPage() {
 
   return (
     <div className="w-full p-4">
-      <h1>App</h1>
+      <h1 className="font-bold">Apps</h1>
       <section className="my-4 flex items-center justify-between gap-4">
         <div className="relative w-full md:w-80">
           <Input
@@ -105,9 +177,15 @@ export default function OrganizationAppPage() {
               <SelectValue placeholder="All Apps" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="app1">App 1</SelectItem>
-              <SelectItem value="app2">App 2</SelectItem>
-              <SelectItem value="app3">App 3</SelectItem>
+              <SelectItem value="app1">Jira</SelectItem>
+              <SelectItem value="app2">Slack</SelectItem>
+              <SelectItem value="app3">Discord</SelectItem>
+              <SelectItem value="app4">GitHub</SelectItem>
+              <SelectItem value="app5">GitLab</SelectItem>
+              <SelectItem value="app6">ClickUp</SelectItem>
+              <SelectItem value="app7">Figma</SelectItem>
+              <SelectItem value="app8">Azure Repos</SelectItem>
+              <SelectItem value="app9">Teams</SelectItem>
             </SelectContent>
           </Select>
         </div>
