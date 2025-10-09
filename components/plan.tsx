@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 export default function PlanSettings() {
   return (
     <div className="w-full">
@@ -8,10 +10,12 @@ export default function PlanSettings() {
           {/* UFO Illustration */}
           <div className="mb-8 relative inline-block">
             {/* Replace the SVG with your UFO image */}
-            <img
+            <Image
               src="/images/save.png"
               alt="UFO illustration"
               className="w-48 h-auto mx-auto"
+              fill
+              priority
             />
           </div>
 
