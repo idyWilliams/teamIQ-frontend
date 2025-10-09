@@ -42,7 +42,7 @@ export default function Login() {
   };
 
   return (
-    <div className=" w-full mx-auto">
+    <div className=" w-full mx-auto lg:max-w-lg xl:max-w-xl">
       <h3 className="text-[#0B0B0B] font-medium text-4xl mb-10">Login</h3>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div>
@@ -54,7 +54,7 @@ export default function Login() {
             id="email"
             placeholder="example@gmail.com"
             {...register("email")}
-            className="placeholder:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto"
+            className="placeholder:text-[#B3C4D6] bg-[#F7F7F7] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto"
           />
           {errors.email && (
             <p className="text-red-500 text-sm mt-1">
@@ -72,7 +72,7 @@ export default function Login() {
               id="password"
               placeholder="Enter Password"
               {...register("password")}
-              className="placeholder:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto pr-10"
+              className="placeholder:text-[#B3C4D6] bg-[#F7F7F7] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto pr-10"
             />
             <button
               type="button"
