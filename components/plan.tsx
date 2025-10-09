@@ -1,28 +1,27 @@
-"use client";
+'use client';
 
-import Image from "next/image";
+import Image from 'next/image';
 
 export default function PlanSettings() {
   return (
     <div className="w-full">
-      <div className="bg-white rounded-lg shadow-sm p-8 sm:p-12">
-        <div className="max-w-md mx-auto text-center">
+      <div className="bg-white sm:p-12">
+        <div className="mx-auto max-w-md text-center">
           {/* UFO Illustration */}
-          <div className="mb-8 relative inline-block">
+          <div className="relative mb-8 inline-block">
             {/* Replace the SVG with your UFO image */}
             <Image
               src="/images/save.png"
               alt="UFO illustration"
-              className="w-48 h-auto mx-auto"
-              fill
-              priority
+              width={412}
+              height={291}
             />
           </div>
 
-          <h1 className="text-2xl font-semibold text-gray-900 mb-3">
+          <h1 className="mb-3 text-2xl font-semibold text-gray-900">
             Coming Soon
           </h1>
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm leading-relaxed text-gray-600">
             We&apos;re working on a plan designed to give you more value,
             flexibility, and benefits. Stay tuned, it&apos;s almost ready.
           </p>
