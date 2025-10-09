@@ -32,38 +32,44 @@ const Datas = [
 const ProjectStatus = () => {
   return (
     <>
-      <div className="p-4 space-y-6">
-        <div className="flex justify-between mb-3">
-          <h2 className="text-[#0E0E0E] font-semibold text-1">
-            Project Status Summary
-          </h2>
-          <h2 className="text-[#0E0E0E] font-semibold text-1">
-            View Project List
-          </h2>
-        </div>
-
-        <div>
-          <div className="flex gap-4 flex-col">
-            {Datas.map((data, index) => (
-              <div
-                key={index}
-                className="border-l-[#086ACE] border-l-1 border bg-muted/50 rounded-lg px-5 py-3"
-              >
-                <div className="flex justify-between mb-1 items-center">
-                  <h3 className="text-[14px] text-[#141414] font-semibold">
-                    {data.name}
-                  </h3>
-                  <div className="text-[#8A8CD9] text-[12px] flex items-center justify-center">
-                    <Dot className="text-[12px]" /> <span>{data.status}</span>
-                  </div>
-                </div>
-                <p className="text-[#626262] text-[12px]">{data.description}</p>
-                <p className="text-[#626262] text-[12px]">{data.Date}</p>
-              </div>
-            ))}
+      <div className="flex justify-between gap-4 p-4 space-y-6">
+        {" "}
+        <div className="w-[65%]">
+          <div className="flex justify-between mb-3">
+            <h2 className="text-[#0E0E0E] font-semibold text-1">
+              Project Status Summary
+            </h2>
+            <h2 className="text-[#0E0E0E] font-semibold text-1">
+              View Project List
+            </h2>
           </div>
-          <ActiveBlockers blockers={activeBlockers} />
+
+          <div>
+            <div className="flex gap-4 flex-col">
+              {Datas.map((data, index) => (
+                <div
+                  key={index}
+                  className="border-l-[#086ACE] border-l-1 border bg-muted/50 rounded-lg px-5 py-3">
+                  <div className="flex justify-between mb-1 items-center">
+                    <h3 className="text-[14px] text-[#141414] font-semibold">
+                      {data.name}
+                    </h3>
+                    <div className="text-[#8A8CD9] text-[12px] flex items-center justify-center">
+                      <Dot className="text-[12px]" /> <span>{data.status}</span>
+                    </div>
+                  </div>
+                  <p className="text-[#626262] text-[12px]">
+                    {data.description}
+                  </p>
+                  <p className="text-[#626262] text-[12px]">{data.Date}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
+        <div>
+          <ActiveBlockers blockers={activeBlockers} />
+        </div>{" "}
       </div>
     </>
   );
