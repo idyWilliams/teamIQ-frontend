@@ -1,59 +1,96 @@
-import Image from "next/image";
+"use client";
+
 import React from "react";
-import { Label } from "@/components/ui/label";
-import { Search } from "lucide-react";
-import { SidebarInput, SidebarTrigger } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
+import DashbordOverview from "@/components/overview";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProjectStatus from "@/components/project-status";
+import Team from "@/components/team";
 
 export default function OverviewPage() {
   return (
-    <>
-      <div className="grow">
-        <header className="h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
-            <div className="flex grow justify-between items-center">
-              <div className="flex gap-3 items-center py-3">
-                <Image
-                  src="/images/avatar.jpg"
-                  alt="avatar"
-                  width={100}
-                  height={100}
-                  priority
-                  className="rounded-full object-center object-cover size-6"
-                />
-                <span>Isentry Technology</span>
-              </div>
-              <div className="relative">
-                <Label htmlFor="search" className="sr-only">
-                  Search
-                </Label>
-                <SidebarInput
-                  id="search"
-                  placeholder="Type to search..."
-                  className="h-8 pl-7"
-                />
-                <Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
-              </div>
-            </div>
+    <div className="h-full">
+      <Tabs defaultValue="overview" className="h-full flex flex-col">
+        <TabsList
+          className="
+             w-full  
+            bg-transparent gap-2 p-0
+            border-b border-gray-200 rounded-none grow
+            border-t-0 border-l-0 border-r-0 justify-start
+          "
+        >
+          <TabsTrigger
+            value="overview"
+            className="
+              relative
+              text-gray-600 w-fit grow-0
+              data-[state=active]:text-[#086ACE]
+              data-[state=active]:shadow-none
+              after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0
+              after:bg-[#086ACE] after:transition-all after:duration-300
+              data-[state=active]:after:w-full
+              border-none rounded-none
+              bg-transparent px-2 py-2
+              data-[state=active]:bg-transparent 
+            "
+          >
+            Overview
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="project-status"
+            className="
+              relative
+              text-gray-600
+              data-[state=active]:text-[#086ACE]
+              data-[state=active]:shadow-none
+              after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0
+              after:bg-[#086ACE] after:transition-all after:duration-300
+              data-[state=active]:after:w-full grow-0
+              border-none rounded-none
+              bg-transparent px-2 py-2 w-fit
+              data-[state=active]:bg-transparent
+            "
+          >
+            Project Status
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="team"
+            className="
+              relative
+              text-gray-600
+              data-[state=active]:text-[#086ACE]
+              data-[state=active]:shadow-none
+              after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0
+              after:bg-[#086ACE] after:transition-all after:duration-300
+              data-[state=active]:after:w-full
+              border-none rounded-none grow-0
+              bg-transparent px-2 py-2
+              data-[state=active]:bg-transparent
+            "
+          >
+            Team
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="flex-1 mt-4 min-h-0">
+          <div className="h-full overflow-auto">
+            <DashbordOverview />
           </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
+        </TabsContent>
+
+        <TabsContent value="project-status" className="flex-1 mt-4 min-h-0">
+          <div className="h-full overflow-auto">
+            <ProjectStatus />
           </div>
-          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
-        </div>
-      </div>
-      <ProjectStatus />
-      <div className=" w-[300px] h-full border-l"></div>
-    </>
+        </TabsContent>
+
+        <TabsContent value="team" className="flex-1 mt-4 min-h-0">
+          <div className="h-full overflow-auto">
+            <Team />
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }
