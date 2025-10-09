@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { sidebarLinks, SidebarLinkType } from './data/sideLink';
@@ -17,7 +17,7 @@ const STYLES = {
   inactiveChild: 'text-neutral-800',
 } as const;
 
-const Sidebar = ({ closeSidebar, className = '' }: SidebarProps) => {
+const SidebarMain = ({ closeSidebar, className = '' }: SidebarProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isParentActiveOpen, setIsParentActiveOpen] = useState<string | null>(
@@ -83,6 +83,14 @@ const Sidebar = ({ closeSidebar, className = '' }: SidebarProps) => {
         onLinkClick={closeSidebar}
       />
     </aside>
+  );
+};
+
+const Sidebar = ({ closeSidebar, className }: SidebarProps) => {
+  return (
+    <Suspense fallback={<>Loading SideBar</>}>
+      <SidebarMain closeSidebar={closeSidebar} className={className} />
+    </Suspense>
   );
 };
 

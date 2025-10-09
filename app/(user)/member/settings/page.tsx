@@ -8,7 +8,7 @@ export default function SettingsPage() {
     <section className="">
       <Tabs className="w-full p-0">
         <TabsList className="w-full grow justify-start rounded-none border-b bg-transparent p-0">
-          {SettingsTabDetails.map(tab => (
+          {settingsTabDetails.map(tab => (
             <TabsTrigger
               key={tab.key}
               value={tab.key}
@@ -19,7 +19,7 @@ export default function SettingsPage() {
           ))}
         </TabsList>
 
-        {SettingsTabDetails.map(tab => (
+        {settingsTabDetails.map(tab => (
           <TabsContent key={tab.key} value={tab.key} className="pt-10">
             {tab.content}
           </TabsContent>
@@ -29,7 +29,7 @@ export default function SettingsPage() {
   );
 }
 
-const SettingsTabDetails = [
+const settingsTabDetails = [
   { key: 'my-details', label: 'My Details', content: <p>My Details</p> },
   {
     key: 'notifications',
