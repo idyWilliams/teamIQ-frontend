@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import React from "react";
+import { cn } from "@/lib/utils";
 export default function AuthLayout({
   children,
 }: {
@@ -9,6 +10,7 @@ export default function AuthLayout({
 }) {
   const pathname = usePathname();
 
+  // Non-auth routes: simple centered container
   if (pathname !== "/login" && pathname !== "/signup") {
     return (
       <section className=" h-screen w-full flex justify-center gap-10 items-center bg-white">
@@ -17,11 +19,21 @@ export default function AuthLayout({
     );
   }
 
+  // Auth routes: two-column (desktop) with full-bleed illustration
+  const isLogin = pathname === "/login";
+
+  const formColClass = cn(
+    "h-screen overflow-y-auto bg-white px-4 sm:px-8 lg:px-12",
+    // width + horizontal centering wrapper behaviour delegated to child page
+    isLogin
+      ? "flex items-center justify-center" // center login vertically
+      : "flex justify-center pt-6 pb-10" // top-align signup (and future similar) so header is visible
+  );
+
   return (
-    <section className=" relative grid grid-cols-1   md:grid-cols-2 h-full w-full">
-      {/* Left: Image (hidden on small screens) */}
-      <div className="w-full hidden md:block  md:h-screen overflow-hidden rounded-r-4xl ">
-        {" "}
+    <section className="grid h-screen w-full grid-cols-1 lg:grid-cols-2 relative">
+      {/* Illustration column (desktop only) */}
+      <div className="hidden lg:block sticky top-0 h-screen w-full">
         <Image
           src="/images/TeamIQLogo.png"
           alt="TeamIQLogo"
@@ -47,10 +59,8 @@ export default function AuthLayout({
           </div>
         </div>
       </div>
-      {/* Right: Login content (always visible, full width on mobile) */}
-      <div className="flex mt-12 md:mt-0 flex-col px-4 md:px-10 lg:px-20  justify-center items-center h-screen w-full bg-white">
-        {children}
-      </div>
+      {/* Form column (scrollable on desktop, full-width on mobile) */}
+      <div className={formColClass}>{children}</div>
     </section>
   );
 }

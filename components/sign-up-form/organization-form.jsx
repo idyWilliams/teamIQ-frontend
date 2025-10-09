@@ -21,13 +21,17 @@ import {
 } from "../ui/password-input";
 
 const validationSchema = yup.object().shape({
-  organizationName: yup
+  organization_name: yup
     .string()
     .required("Organization name is required")
-    .matches(/^[A-Z]*$/, "Organization name must start with a capital letter."),
-  teamSize: yup
+    .matches(
+      /^[A-Z][a-zA-Z]*$/,
+      "Organization name must start with a capital letter."
+    ),
+  team_size: yup
     .number()
     .min(1, "Team size must be at least 1")
+    .typeError("Team size must be a number")
     .required("Team size is required"),
   email: yup
     .string()
@@ -55,21 +59,21 @@ const validationSchema = yup.object().shape({
 function OrganizationForm() {
   // Reusable input & select trigger style (aligned with IndividualForm)
   const placeHolder =
-    "!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md bg-transparent focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#086ACE] focus-visible:ring-0";
+    "!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md bg-[#F7F7F7] focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#086ACE] focus-visible:ring-0";
 
   const {
     register,
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-    watch,
     reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
-    mode: "onChange",
+    mode: "onBlur",
+    reValidateMode: "onChange",
     defaultValues: {
-      organizationName: "",
-      teamSize: "",
+      organization_name: "",
+      team_size: "",
       email: "",
       country: "",
       password: "",
@@ -79,6 +83,7 @@ function OrganizationForm() {
 
   const onSubmit = (data) => {
     console.log("User Input:", data);
+
     toast.success("Form submitted successfully!");
     reset();
   };
@@ -95,48 +100,62 @@ function OrganizationForm() {
         onSubmit={handleSubmit(onSubmit, onError)}
         noValidate
       >
-        <div className="flex gap-4 items-center justify-center">
-          <div className="flex-1">
-            <Label htmlFor="organizationName" className="mb-4 font-normal">
+        <div className="flex flex-col sm:flex-row gap-4 items-center">
+          <div className="sm:flex-2 w-full">
+            <Label
+              htmlFor="organization_name"
+              className=" font-normal block mb-4"
+            >
               Organization Name
             </Label>
             <Input
               type="text"
-              id="organizationName"
+              id="organization_name"
               placeholder="Enter Organization Name"
-              {...register("organizationName")}
+              {...register("organization_name")}
               className={placeHolder}
+              autoComplete="organization"
+              aria-invalid={!!errors.organization_name}
             />
-            {errors.organizationName && (
-              <span className="text-red-500 text-xs">
-                {errors.organizationName.message}
+            {errors.organization_name && (
+              <span className="text-red-500 text-xs mt-1 block leading-snug">
+                {errors.organization_name.message}
               </span>
             )}
           </div>
 
-          <div>
-            <Label htmlFor="teamSize" className="mb-4 font-normal">
+          <div className="sm:flex-1 w-full">
+            <Label htmlFor="team_size" className=" font-normal block mb-4">
               Team Size
             </Label>
             <Controller
-              name="teamSize"
+              name="team_size"
               control={control}
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="w-full data-[placeholder]:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto">
+                  <SelectTrigger
+                    className={`${placeHolder} w-full`}
+                    aria-invalid={!!errors.team_size}
+                  >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="2-5">2 - 5</SelectItem>
-                    <SelectItem value="6-10">6 - 10</SelectItem>
-                    <SelectItem value="20+">20+</SelectItem>
+                  <SelectContent className="max-h-60 overflow-auto">
+                    <SelectItem value="1">1</SelectItem>
+                    <SelectItem value="2">2</SelectItem>
+                    <SelectItem value="3">3</SelectItem>
+                    <SelectItem value="4">4</SelectItem>
+                    <SelectItem value="5">5</SelectItem>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                    <SelectItem value="100">100</SelectItem>
                   </SelectContent>
                 </Select>
               )}
             />
-            {errors.teamSize && (
-              <span className="text-red-500 text-xs">
-                {errors.teamSize.message}
+            {errors.team_size && (
+              <span className="text-red-500 text-xs mt-1 block leading-snug">
+                {errors.team_size.message}
               </span>
             )}
           </div>
@@ -152,9 +171,13 @@ function OrganizationForm() {
             placeholder="example@gmail.com"
             {...register("email")}
             className={placeHolder}
+            autoComplete="email"
+            aria-invalid={!!errors.email}
           />
           {errors.email && (
-            <span className="text-red-500 text-xs">{errors.email.message}</span>
+            <span className="text-red-500 text-xs mt-1 block leading-snug">
+              {errors.email.message}
+            </span>
           )}
         </div>
 
@@ -165,11 +188,13 @@ function OrganizationForm() {
             control={control}
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="w-full data-[placeholder]:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto">
-                  {/* unified styling */}
+                <SelectTrigger
+                  className={`${placeHolder} w-full`}
+                  aria-invalid={!!errors.country}
+                >
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-60 overflow-auto">
                   {countryList.map((country) => (
                     <SelectItem key={country} value={country}>
                       {country}
@@ -181,7 +206,7 @@ function OrganizationForm() {
           />
 
           {errors.country && (
-            <span className="text-red-500 text-xs">
+            <span className="text-red-500 text-xs mt-1 block leading-snug">
               {errors.country.message}
             </span>
           )}
@@ -201,7 +226,7 @@ function OrganizationForm() {
             )}
           />
           {errors.password && (
-            <span className="text-red-500 text-xs">
+            <span className="text-red-500 text-xs mt-1 block leading-snug">
               {errors.password.message}
             </span>
           )}
@@ -223,7 +248,7 @@ function OrganizationForm() {
             )}
           />
           {errors.repeatPassword && (
-            <span className="text-red-500 text-xs">
+            <span className="text-red-500 text-xs mt-1 block leading-snug">
               {errors.repeatPassword.message}
             </span>
           )}
@@ -231,7 +256,7 @@ function OrganizationForm() {
 
         <div className="mt-10">
           <Button
-            className="bg-[#0A427B] text-white w-full py-3 h-auto rounded-md"
+            className="bg-[#0A427B] text-white w-full py-3 px-6 md:px-4  h-auto rounded-md"
             type="submit"
             disabled={isSubmitting}
           >
@@ -261,7 +286,7 @@ function OrganizationForm() {
                 <span className="icon-[logos--microsoft-icon] size-5"></span>
               </Button>
             </div>
-            <p className="text-center text-sm">
+            <p className="text-center text-sm mb-5">
               Already have an account?{" "}
               <Link href="/login" className="text-[#086ACE]">
                 Log In

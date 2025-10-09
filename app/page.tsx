@@ -4,6 +4,7 @@ import Link from "next/link";
 // import { toast } from "sonner";
 
 export default function Home() {
+ 
   return (
     <div className="relative w-full h-screen overflow-hidden">
       <Image

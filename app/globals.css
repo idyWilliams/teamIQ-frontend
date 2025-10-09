@@ -47,7 +47,39 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --color-iq-100: oklch(0.7 0.1 263);
+  /* --color-iq-100: oklch(0.7 0.1 263); */
+
+  /* Color codes from Figma */
+  /* Primary and its shades */
+  --color-iq: oklch(0.3792 0.1111 253.75);
+  --color-iq-50: oklch(0.941 0.0097 252.81);
+  --color-iq-100: oklch(0.813 0.0315 249.74);
+  --color-iq-200: oklch(0.7208 0.0478 248.49);
+  --color-iq-300: oklch(0.588 0.0733 250.43);
+  --color-iq-400: oklch(0.5055 0.0877 249.94);
+  --color-iq-500: oklch(0.3792 0.1111 253.75);
+  --color-iq-600: oklch(0.3559 0.1032 253.63);
+  --color-iq-700: oklch(0.3031 0.0838 252.74);
+  --color-iq-800: oklch(0.2586 0.0695 253.17);
+  --color-iq-900: oklch(0.2227 0.0558 250.86);
+
+  /* Success and its shades */
+  --color-iq-suc: oklch(0.85 0.1335 180.01);
+  --color-iq-suc-100: oklch(0.955 0.0422 183.67);
+  --color-iq-suc-200: oklch(0.85 0.1335 180.01);
+  --color-iq-suc-300: oklch(0.7269 0.131 177.56);
+
+  /* Warning and its shades */
+  --color-iq-war: oklch(0.7586 0.1424 67.14);
+  --color-iq-war-100: oklch(0.9273 0.0448 72.66);
+  --color-iq-war-200: oklch(0.6769 0.0263 259.81);
+  --color-iq-war-300: oklch(0.6155 0.1345 63.31);
+
+  /* Error and its shades */
+  --color-iq-err: oklch(0.7807 0.1288 31.22);
+  --color-iq-err-100: oklch(0.931 0 0);
+  --color-iq-err-200: oklch(0.7807 0.1288 31.22);
+  --color-iq-err-300: oklch(0.584 0.2252 31.37);
 }
 
 :root {
@@ -137,3 +169,68 @@
     @apply bg-background text-foreground;
   }
 }
+
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+@keyframes wave {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-50px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes wave-slow {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-30px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes wave-delayed {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-40px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.wave-animation {
+  animation: wave 4s ease-in-out infinite;
+}
+
+.wave-animation-slow {
+  animation: wave-slow 5s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
+
+.wave-animation-delayed {
+  animation: wave-delayed 6s ease-in-out infinite;
+  animation-delay: 0.7s;
+}
+
+.wave-mask {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: wave 4s linear infinite;
+}
+
+

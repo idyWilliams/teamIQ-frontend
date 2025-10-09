@@ -66,16 +66,17 @@ export default function ProjectScreen() {
             <CardContent className="p-0 flex flex-col h-full">
               {/* Project Logo Section - Colored Background */}
               <div className="flex items-center justify-center h-28 relative overflow-hidden p-4">
-  <img
-    src={project.logo}
-    alt={`${project.title} logo`}
-    className="w-full h-full object-contain"
-    onError={(e) => {
-      e.currentTarget.style.display = 'none';
-    }}
-  />
-</div>
-
+                <Image
+                  src={project.logo}
+                  width={200}
+                  height={100}
+                  alt={`${project.title} logo`}
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              </div>
 
               {/* Project Info Section - White Background */}
               <div className="bg-white p-4 flex-1 flex flex-col min-h-0">
@@ -90,8 +91,10 @@ export default function ProjectScreen() {
                 <div className="flex items-center gap-1.5 mt-auto">
                   <div className="flex -space-x-1.5">
                     {Array.from({ length: 6 }).map((_, i) => (
-                      <img
+                      <Image
                         key={i}
+                        width={30}
+                        height={30}
                         src={`https://i.pravatar.cc/40?img=${i + 10}`}
                         alt={`Team member ${i + 1}`}
                         className="w-6 h-6 rounded-full border-2 border-white object-cover bg-gray-200"
