@@ -1,6 +1,13 @@
 "use client";
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts";
 
 import {
   Card,
@@ -36,7 +43,7 @@ const chartData = [
 const chartConfig = {
   completion: {
     label: "Task Completion",
-    color: "#B3C4D6", 
+    color: "#B3C4D6",
   },
 } satisfies ChartConfig;
 
@@ -48,31 +55,31 @@ export default function ChartLineDefault() {
         <CardDescription>Monthly task completion rate</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ChartContainer config={chartConfig} className="h-[300px]">
+        <ChartContainer config={chartConfig} className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData}>
               <ChartTooltip content={<ChartTooltipContent />} />
               <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-              <XAxis 
-                dataKey="month" 
+              <XAxis
+                dataKey="month"
                 axisLine={false}
                 tickLine={false}
                 tickMargin={10}
               />
-              <YAxis 
+              <YAxis
                 axisLine={false}
                 tickLine={false}
                 tickMargin={10}
                 ticks={[0, 25, 50, 75, 100]}
                 domain={[0, 100]}
               />
-              <Line 
-                type="monotone" 
-                dataKey="completion" 
-                stroke="#B3C4D6" 
+              <Line
+                type="monotone"
+                dataKey="completion"
+                stroke="#B3C4D6"
                 strokeWidth={3}
-                dot={{ fill: "#B3C4D6", strokeWidth: 2, r: 4 }} 
-                activeDot={{ r: 6, fill: "#B3C4D6" }} 
+                dot={{ fill: "#B3C4D6", strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6, fill: "#B3C4D6" }}
               />
             </LineChart>
           </ResponsiveContainer>

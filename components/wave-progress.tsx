@@ -1,7 +1,7 @@
 // components/wave-progress.tsx
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface WaveProgressProps {
@@ -20,9 +20,7 @@ export function WaveProgressCard({ progressData }: WaveProgressCardProps) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <CardTitle>
-          Team Skills Overview
-        </CardTitle>
+        <CardTitle>Team Skills Overview</CardTitle>
         <button className="flex items-center gap-1 text-[#086ACE] hover:text-blue-700 transition-colors group text-sm">
           <span className="font-medium">View More</span>
           <svg
@@ -42,10 +40,10 @@ export function WaveProgressCard({ progressData }: WaveProgressCardProps) {
       </CardHeader>
       <CardContent>
         <div
-          className="flex gap-1 justify-items-center items-start"
-          style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))",
-          }}
+          className="lg:grid-cols-4 xl:grid-cols-5 gap-1 grid justify-items-center items-start"
+          // style={{
+          //   gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))",
+          // }}
         >
           {progressData.map((progress, index) => (
             <WaveProgress
@@ -63,12 +61,12 @@ export function WaveProgressCard({ progressData }: WaveProgressCardProps) {
   );
 }
 
-export function WaveProgress({ 
-  percentage, 
-  label, 
-  subtitle, 
+export function WaveProgress({
+  percentage,
+  label,
+  subtitle,
   backgroundColor = "#FBFBFB",
-  waveColor = "red"
+  waveColor = "red",
 }: WaveProgressProps) {
   const [animatedPercentage, setAnimatedPercentage] = useState(0);
 
@@ -81,70 +79,71 @@ export function WaveProgress({
 
   const waveColors = {
     red: {
-      primary: '#ef4444',
-      secondary: '#f87171',
-      tertiary: '#fca5a5'
+      primary: "#ef4444",
+      secondary: "#f87171",
+      tertiary: "#fca5a5",
     },
     blue: {
-      primary: '#3b82f6',
-      secondary: '#60a5fa',
-      tertiary: '#93c5fd'
+      primary: "#3b82f6",
+      secondary: "#60a5fa",
+      tertiary: "#93c5fd",
     },
     green: {
-      primary: '#10b981',
-      secondary: '#34d399',
-      tertiary: '#6ee7b7'
+      primary: "#10b981",
+      secondary: "#34d399",
+      tertiary: "#6ee7b7",
     },
     yellow: {
-      primary: '#eab308',
-      secondary: '#facc15',
-      tertiary: '#fde047'
+      primary: "#eab308",
+      secondary: "#facc15",
+      tertiary: "#fde047",
     },
     purple: {
-      primary: '#8b5cf6',
-      secondary: '#a78bfa',
-      tertiary: '#c4b5fd'
-    }
+      primary: "#8b5cf6",
+      secondary: "#a78bfa",
+      tertiary: "#c4b5fd",
+    },
   };
 
-  const currentWaveColors = waveColors[waveColor as keyof typeof waveColors] || waveColors.red;
+  const currentWaveColors =
+    waveColors[waveColor as keyof typeof waveColors] || waveColors.red;
 
   return (
-    <div className="flex flex-col items-center gap-1 p-1">
+    <div className="flex flex-col w-full items-center gap-1 p-1">
       {/* Wave Progress Container */}
-      <div 
-        className="relative w-[100px] h-[100px] rounded-lg overflow-hidden border border-blue-200"
+      <div
+        className="relative w-[150px] h-[180px] grow rounded-lg overflow-hidden border border-blue-200"
         style={{ backgroundColor }}
       >
         {/* Wave Animation Container */}
-        <div 
+        <div
           className="absolute bottom-0 left-0 right-0 transition-all duration-1000 ease-out overflow-hidden"
           style={{ height: `${animatedPercentage}%` }}
         >
           <div className="absolute bottom-0 left-0 right-0 top-0">
             {/* Wave pattern */}
             <div className="absolute bottom-0 w-[200%] h-full wave-animation">
-              <svg 
-                viewBox="0 0 200 100" 
+              <svg
+                viewBox="0 0 200 100"
                 className="w-full h-full"
                 preserveAspectRatio="none"
               >
-                <path 
-                  d="M0 50 Q50 30 100 50 T200 50 L200 100 L0 100 Z" 
+                <path
+                  d="M0 50 Q50 30 100 50 T200 50 L200 100 L0 100 Z"
                   fill={currentWaveColors.primary}
                 />
               </svg>
             </div>
-            
+
             {/* Secondary wave */}
             <div className="absolute bottom-0 w-[200%] h-full wave-animation-slow">
-              <svg 
-                viewBox="0 0 200 100" 
+              <svg
+                viewBox="0 0 200 100"
                 className="w-full h-full"
                 preserveAspectRatio="none"
               >
-                <path 
-                  d="M0 60 Q60 40 120 60 T200 60 L200 100 L0 100 Z" 
+                <path
+                  d="M0 60 Q60 40 120 60 T200 60 L200 100 L0 100 Z"
                   fill={currentWaveColors.secondary}
                   opacity="0.6"
                 />
@@ -152,7 +151,7 @@ export function WaveProgress({
             </div>
           </div>
         </div>
-        
+
         <div className="absolute bottom-1 left-0 right-0 flex flex-col items-center justify-center">
           <span className="text-white text-base font-bold drop-shadow-md z-10 leading-none">
             {percentage}%
@@ -162,9 +161,11 @@ export function WaveProgress({
           </span>
         </div>
       </div>
-      
+
       <div className="flex flex-col text-center">
-        <span className="text-xs text-black font-semibold leading-tight">{subtitle}</span>
+        <span className="text-xs text-black font-semibold leading-tight">
+          {subtitle}
+        </span>
       </div>
     </div>
   );

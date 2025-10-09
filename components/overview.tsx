@@ -2,7 +2,7 @@ import React from "react";
 import CardItem from "./cardItem";
 import ChartLineDefault from "./chart-line";
 import ActiveBlockers from "./active-blockers";
-import { WaveProgressCard } from "./wave-progress"; 
+import { WaveProgressCard } from "./wave-progress";
 import { dashboardCards, activeBlockers, progressData } from "@/constants";
 
 const DashbordOverview = () => {
@@ -11,13 +11,13 @@ const DashbordOverview = () => {
       <div>
         <div className="hidden sm:flex gap-3 max-lg:flex-wrap">
           {dashboardCards.map((card, i) => (
-            <CardItem key={i} {...card}  />
+            <CardItem key={i} {...card} />
           ))}
         </div>
       </div>
 
       <div className="flex gap-4">
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-2 space-y-4 grow">
           <WaveProgressCard progressData={progressData} />
           <div className="mt-6">
             <ChartLineDefault />

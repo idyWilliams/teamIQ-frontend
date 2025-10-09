@@ -12,17 +12,17 @@ export default function OverviewPage() {
       <Tabs defaultValue="overview" className="h-full flex flex-col">
         <TabsList
           className="
-            grid w-full max-w-md grid-cols-3 shrink-0
+             w-full  
             bg-transparent gap-2 p-0
-            border-b border-gray-200
-            border-t-0 border-l-0 border-r-0
+            border-b border-gray-200 rounded-none grow
+            border-t-0 border-l-0 border-r-0 justify-start
           "
         >
           <TabsTrigger
             value="overview"
             className="
               relative
-              text-gray-600
+              text-gray-600 w-fit grow-0
               data-[state=active]:text-[#086ACE]
               data-[state=active]:shadow-none
               after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0
@@ -30,7 +30,7 @@ export default function OverviewPage() {
               data-[state=active]:after:w-full
               border-none rounded-none
               bg-transparent px-2 py-2
-              data-[state=active]:bg-transparent
+              data-[state=active]:bg-transparent 
             "
           >
             Overview
@@ -45,9 +45,9 @@ export default function OverviewPage() {
               data-[state=active]:shadow-none
               after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0
               after:bg-[#086ACE] after:transition-all after:duration-300
-              data-[state=active]:after:w-full
+              data-[state=active]:after:w-full grow-0
               border-none rounded-none
-              bg-transparent px-2 py-2
+              bg-transparent px-2 py-2 w-fit
               data-[state=active]:bg-transparent
             "
           >
@@ -64,7 +64,7 @@ export default function OverviewPage() {
               after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0
               after:bg-[#086ACE] after:transition-all after:duration-300
               data-[state=active]:after:w-full
-              border-none rounded-none
+              border-none rounded-none grow-0
               bg-transparent px-2 py-2
               data-[state=active]:bg-transparent
             "
