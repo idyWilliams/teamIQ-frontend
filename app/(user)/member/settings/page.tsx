@@ -1,11 +1,10 @@
-import React from "react";
-import { redirect } from "next/navigation";
+import SettingsTabs from "@/components/settings";
 
 export default function SettingsPage() {
-  redirect("/member/settings");
   return (
-    <div>
-      <h1>Settings</h1>
-    </div>
+    <main className="p-6 sm:p-10">
+      <h1 className="text-3xl font-bold mb-6"></h1>
+      <SettingsTabs />
+    </main>
   );
 }
