@@ -50,8 +50,9 @@ export default function OrganizationDashboardLayout({
             </div>
           </header>
           
-          <div className="flex-1 min-h-0 overflow-auto hide-scrollbar">
-            <div className="min-w-full w-max">{children}</div>
+          {/* 1. overflow-auto; 2. min-w-full,w-max */}
+          <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden hide-scrollbar">
+            <div className="w-full">{children}</div>
           </div>
         </div>
        

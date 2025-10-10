@@ -26,23 +26,23 @@ type Integration = {
 function OrgAppCard({ apps }: { apps: App[] }) {
   const [open, setOpen] = React.useState(false);
   const [selectedApp, setSelectedApp] = React.useState<null | App>(null);
-
-  const handleOpenDetail = (app: App) => {
+  const [mode, setMode] = React.useState("integrated-projects");
+  const handleOpenCard = (app: App) => {
     setSelectedApp(app);
     setOpen(true);
   };
 
-  const [mode, setMode] = React.useState("integrated-projects");
+  
 
   return (
     <>
-      <div className="grid gap-5 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] items-stretch">
+      <div className="grid gap-5 grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-stretch">
         {apps.length > 0 ? (
           apps.map((app) => (
             <div
               key={app.name}
               className="cursor-pointer rounded-2xl shadow-md hover:shadow-lg transition-shadow flex flex-col justify-between p-6 h-full"
-              onClick={() => handleOpenDetail(app)}
+              onClick={() => handleOpenCard(app)}
             >
               <div className="flex items-center gap-2 mb-3">
                 <Image
@@ -64,6 +64,7 @@ function OrgAppCard({ apps }: { apps: App[] }) {
           </p>
         )}
       </div>
+
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className={cn("flex flex-col w-[90vw] max-w-md md:max-w-xl lg:max-w-2xl h-[90vh]")}>
           <div className="flex items-center gap-4 mb-4 ">
