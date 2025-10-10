@@ -19,12 +19,22 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Calendar, Circle, Plus } from "lucide-react";
 
-// ✅ Mock Image Component (works without Next.js loader)
-const Image = ({ src, alt, width, height, className }) => (
+/* -----------------------------
+   ✅ Image Component (Safe)
+------------------------------ */
+type ImageProps = {
+  src: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  className?: string;
+};
+
+const Image: React.FC<ImageProps> = ({ src, alt, width, height, className }) => (
   <div
     style={{
-      width: `${width}px`,
-      height: `${height}px`,
+      width: width ? `${width}px` : "100%",
+      height: height ? `${height}px` : "100%",
       backgroundImage: `url(${src})`,
       backgroundSize: "cover",
       backgroundPosition: "center",
@@ -34,8 +44,25 @@ const Image = ({ src, alt, width, height, className }) => (
   />
 );
 
-// ✅ Mock project data
-const projects = [
+/* -----------------------------
+   ✅ Define Project Type
+------------------------------ */
+type Project = {
+  id: number;
+  name: string;
+  app: string[];
+  teamLead: string;
+  teamMembers: string[];
+  startDate: string;
+  endDate: string;
+  status: "In Progress" | "Complete" | "Pending";
+  progress: number;
+};
+
+/* -----------------------------
+   ✅ Mock Data
+------------------------------ */
+const projects: Project[] = [
   {
     id: 1,
     name: "Project XYZ",
@@ -93,7 +120,10 @@ const projects = [
   },
 ];
 
-const iconMap = {
+/* -----------------------------
+   ✅ Icon Map
+------------------------------ */
+const iconMap: Record<string, string> = {
   slack: "/images/slack.png",
   jira: "/images/jira.png",
   github: "/images/github.png",
@@ -102,11 +132,14 @@ const iconMap = {
   firebase: "/images/clickup.png",
 };
 
+/* -----------------------------
+   ✅ Main Component
+------------------------------ */
 export default function ProjectsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sorting, setSorting] = useState([{ id: "progress", desc: true }]);
 
-  const columnHelper = createColumnHelper();
+  const columnHelper = createColumnHelper<Project>();
 
   const columns = useMemo(
     () => [
@@ -119,20 +152,23 @@ export default function ProjectsPage() {
 
       columnHelper.accessor("app", {
         header: "App",
-        cell: (info) => (
-          <div className="flex gap-2 items-center">
-            {info.getValue().map((app, i) => (
-              <Image
-                key={i}
-                src={iconMap[app]}
-                alt={app}
-                width={22}
-                height={22}
-                className="rounded-full border border-gray-200"
-              />
-            ))}
-          </div>
-        ),
+        cell: (info) => {
+          const apps = info.getValue();
+          return (
+            <div className="flex gap-2 items-center">
+              {apps.map((app, i) => (
+                <Image
+                  key={i}
+                  src={iconMap[app]}
+                  alt={app}
+                  width={22}
+                  height={22}
+                  className="rounded-full border border-gray-200"
+                />
+              ))}
+            </div>
+          );
+        },
       }),
 
       columnHelper.accessor("teamLead", {
@@ -228,16 +264,21 @@ export default function ProjectsPage() {
 
       columnHelper.accessor("progress", {
         header: "Progress",
-        cell: (info) => (
-          <div className="flex items-center gap-2 w-full min-w-[120px]">
-            <Progress
-              value={info.getValue()}
-              status={info.row.original.status}
-              className="flex-1"
-            />
-            <span className="text-xs text-gray-500">{info.getValue()}%</span>
-          </div>
-        ),
+        cell: (info) => {
+          const row = info.row.original;
+          return (
+            <div className="flex items-center gap-2 w-full min-w-[120px]">
+              <Progress
+                value={info.getValue()}
+                status={row.status as "In Progress" | "Complete" | "Pending"}
+                className="flex-1"
+              />
+              <span className="text-xs text-gray-500">
+                {info.getValue()}%
+              </span>
+            </div>
+          );
+        },
       }),
     ],
     []
@@ -278,7 +319,10 @@ export default function ProjectsPage() {
                     className="p-3 text-left font-semibold text-gray-700 cursor-pointer select-none hover:text-blue-700 transition"
                     onClick={header.column.getToggleSortingHandler()}
                   >
-                    {flexRender(header.column.columnDef.header, header.getContext())}
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
                     {header.column.getIsSorted()
                       ? header.column.getIsSorted() === "asc"
                         ? " 🔼"
