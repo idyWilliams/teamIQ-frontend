@@ -2,11 +2,24 @@
 import NotificationsSettings from '@/components/notification ';
 import PlanSettings from '@/components/plan';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default function SettingsPage() {
+function Settings() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchparams = useSearchParams();
+  const activeTab = searchparams.get('tab') || 'my-details';
+
   return (
     <section className="">
-      <Tabs className="w-full p-0">
+      <Tabs
+        value={activeTab}
+        onValueChange={(value: string) =>
+          router.push(`${pathname}?tab=${value}`)
+        }
+        className="w-full p-0"
+      >
         <TabsList className="w-full grow justify-start rounded-none border-b bg-transparent p-0">
           {settingsTabDetails.map(tab => (
             <TabsTrigger
@@ -26,6 +39,15 @@ export default function SettingsPage() {
         ))}
       </Tabs>
     </section>
+  );
+}
+
+//  You need to wrapper any component that uses useSearchParams in a Suspense boundary with a fallback which can be a skeleton loader
+export default function SettingsPage() {
+  return (
+    <Suspense fallback={'Loading...'}>
+      <Settings />
+    </Suspense>
   );
 }
 
