@@ -1,11 +1,11 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 import {
   BookUser,
   FolderOpenDot,
   UsersRound,
   Sparkles,
   Settings,
-} from "lucide-react";
+} from 'lucide-react';
 
 export type SidebarLinkType = {
   label: string;
@@ -16,39 +16,39 @@ export type SidebarLinkType = {
 
 export const sidebarLinks: SidebarLinkType[] = [
   {
-    label: "Dashboard",
+    label: 'Dashboard',
     icon: <BookUser />,
-    url: "/member",
+    url: '/member',
   },
   {
-    label: "Projects",
+    label: 'Projects',
     icon: <FolderOpenDot />,
-    url: "/member/projects",
+    url: '/member/projects',
     children: [
-      { label: "Project Overview", url: "/member/projects/project-overview" },
-      { label: "Task", url: "/member/projects/task" },
+      { label: 'Project Overview', url: '/member/projects/project-overview' },
+      { label: 'Task', url: '/member/projects/task' },
       {
-        label: "Assigned Team Members",
-        url: "/member/projects/assign-team-member",
+        label: 'Assigned Team Members',
+        url: '/member/projects/assign-team-member',
       },
     ],
   },
   {
-    label: "Tasks",
+    label: 'Tasks',
     icon: <UsersRound />,
-    url: "/member/tasks",
+    url: '/member/tasks',
   },
 
-  { label: "My Skills", icon: <Sparkles />, url: "/member/my-skills" },
+  { label: 'My Skills', icon: <Sparkles />, url: '/member/my-skills' },
   {
-    label: "Settings",
+    label: 'Settings',
     icon: <Settings />,
-    url: "/member/settings",
+    url: '/member/settings',
     children: [
-      { label: "My Details", url: "/member/settings/my-details" },
-      { label: "Notifications", url: "/member/settings/notifications" },
-      { label: "Password", url: "/member/settings/password" },
-      { label: "Plan", url: "/member/settings/plan" },
+      { label: 'My Details', url: '/member/settings?tab=my-details' },
+      { label: 'Notifications', url: '/member/settings?tab=notifications' },
+      { label: 'Password', url: '/member/settings?tab=password' },
+      { label: 'Plan', url: '/member/settings?tab=plan' },
     ],
   },
 ];
