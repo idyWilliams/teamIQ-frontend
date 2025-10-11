@@ -1,3 +1,5 @@
+// This page renders the Organization Apps catalog with a search and filter bar.
+// It's a client component because it manages search/filter state.
 'use client';
 import React from 'react';
 import { Input } from '@/components/ui/input';
@@ -11,6 +13,7 @@ import {
 } from '@/components/ui/select';
 import OrgAppCard from '@/components/org-app-card';
 
+// Mock data for apps and their integrations displayed on the page.
 const app = [
   {
     name: 'Jira',
@@ -22,6 +25,7 @@ const app = [
       {
         title: 'Isentry Website',
         logo: '/images/devicon_jira.svg',
+        member: 3,
         description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
               senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
       },
@@ -35,8 +39,9 @@ const app = [
             cursus lectus diam sit convallis dui nunc.`,
     integrations: [
       {
-        title: 'GitHub Actions',
+        title: 'Isentry Website',
         logo: '/images/github.svg',
+        member: 3,
         description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
               senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
       },
@@ -50,8 +55,9 @@ const app = [
             cursus lectus diam sit convallis dui nunc.`,
     integrations: [
       {
-        title: 'ClickUp API',
+        title: 'Isentry Website',
         logo: '/images/clickup.svg',
+        member: 3,
         description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
               senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
       },
@@ -65,8 +71,9 @@ const app = [
             cursus lectus diam sit convallis dui nunc.`,
     integrations: [
       {
-        title: 'GitLab CI/CD',
+        title: 'Isentry Website',
         logo: '/images/gitlab.svg',
+        member: 3,
         description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
               senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
       },
@@ -80,8 +87,9 @@ const app = [
             cursus lectus diam sit convallis dui nunc.`,
     integrations: [
       {
-        title: 'Figma API',
+        title: 'Isentry Website',
         logo: '/images/figma.svg',
+        member: 3,
         description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
               senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
       },
@@ -95,8 +103,9 @@ const app = [
             cursus lectus diam sit convallis dui nunc.`,
     integrations: [
       {
-        title: 'Slack API',
+        title: 'Isentry Website',
         logo: '/images/slack.svg',
+        member: 3,
         description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
               senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
       },
@@ -110,8 +119,9 @@ const app = [
             cursus lectus diam sit convallis dui nunc.`,
     integrations: [
       {
-        title: 'Discord Bots',
+        title: 'Isentry Website',
         logo: '/images/discord.svg',
+        member: 3,
         description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
               senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
       },
@@ -125,8 +135,9 @@ const app = [
             cursus lectus diam sit convallis dui nunc.`,
     integrations: [
       {
-        title: 'Azure DevOps',
+        title: 'Isentry Website',
         logo: '/images/Azure.svg',
+        member: 3,
         description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
               senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
       },
@@ -140,8 +151,9 @@ const app = [
             cursus lectus diam sit convallis dui nunc.`,
     integrations: [
       {
-        title: 'Microsoft Teams',
+        title: 'Isentry Website',
         logo: '/images/teams.svg',
+        member: 3,
         description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
               senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
       },
@@ -149,13 +161,22 @@ const app = [
   },
 ];
 
+/**
+ * OrganizationAppPage
+ * Renders the Apps catalog: a search field, a dropdown filter, and a grid of app cards.
+ * State: filters { searchApp, appName }
+ * - searchApp filters by app name 
+ * - appName selects a specific app or 'all'
+ */
 export default function OrganizationAppPage() {
 
+  // Local UI state for search and select filter.
   const [filters, setFilters] = React.useState({
     searchApp: '',
     appName: 'all',
   });
 
+  // Compute apps that match both the search query and the dropdown filter.
   const filteredApps = app.filter(app => {
     const matchesSearchCard = app.name
       .toLowerCase()
@@ -165,13 +186,16 @@ export default function OrganizationAppPage() {
     return matchesSearchCard && matchesAppName;
   });
 
+  // Update search text as the user types.
   const handleSearchCard = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters(prev => ({
       ...prev,
-      searchTerm: e.target.value,
+      // Note: keep the key name aligned with state (searchApp)
+      searchApp: e.target.value,
     }));
   };
 
+  // Update the selected app filter from the dropdown.
   const handleAppName = (appName: string) => {
     setFilters(prev => ({
       ...prev,
@@ -179,6 +203,9 @@ export default function OrganizationAppPage() {
     }));
   };
 
+    {
+      /* Container padding; outer scrolling is controlled by the (admin)/layout */
+    }
   return (
     <div className="w-full p-4">
       <h1 className="font-bold">Apps</h1>
@@ -195,6 +222,7 @@ export default function OrganizationAppPage() {
           <Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
         </div>
         <div>
+          {/* App name filter; 'all' shows every app */}
           <Select value={filters.appName} onValueChange={handleAppName}>
             <SelectTrigger className="w-42">
               <SelectValue placeholder="All Apps" />
@@ -214,7 +242,8 @@ export default function OrganizationAppPage() {
           </Select>
         </div>
       </section>
+      {/* Grid of app cards; clicking a card opens a dialog with details/tabs */}
       <OrgAppCard apps={filteredApps} />
-    </div>
-  );
+    </div>  
+  );  
 }
