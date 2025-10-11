@@ -6,7 +6,7 @@ import RadarChart from "@/components/radar-chart";
 import RadialChart from "@/components/radial-chart";
 import RecentCard from "@/components/recent-card";
 import Deadline from "@/components/deadline-card";
-import Loading from "@/components/dashboardSkeleton"
+import Loading from "@/components/dashboardSkeleton";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
@@ -78,7 +78,7 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
- {/* indicator button container */}
+        {/* indicator button container */}
         <div className="flex gap-2 justify-center mt-4">
           {cards.map((_, i) => (
             <button
