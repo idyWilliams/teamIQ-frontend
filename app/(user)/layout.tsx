@@ -98,7 +98,9 @@ export default function TeamDashboardLayout({ children }: LayoutProps) {
             />
 
             {/* Main content */}
-            <main className="flex-1 p-4">{children}</main>
+            <main className="flex-1 p-4 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {children}
+            </main>
           </div>
 
           {/* Right Sidebar (15%) */}
