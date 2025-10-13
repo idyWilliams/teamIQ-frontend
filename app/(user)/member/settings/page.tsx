@@ -9,3 +9,6 @@ export default function SettingsPage() {
     </div>
   );
 }
+
+
+//  shadcn tab component 

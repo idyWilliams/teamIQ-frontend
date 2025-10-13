@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { settingsTabs } from "@/components/user-dashboard-component/data/settingsTabs";
 import Link from "next/link";
 
+
 type settingProps = {
   children: ReactNode;
 };
@@ -36,6 +37,7 @@ export default function SettingLayout({ children }: settingProps) {
       </nav>
 
       <main className="flex ">{children}</main>
+     
     </div>
   );
 }

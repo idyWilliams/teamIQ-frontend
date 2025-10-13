@@ -6,7 +6,11 @@ import RadarChart from "@/components/radar-chart";
 import RadialChart from "@/components/radial-chart";
 import RecentCard from "@/components/recent-card";
 import Deadline from "@/components/deadline-card";
-import Loading from "@/components/dashboardSkeleton"
+import Loading from "@/components/dashboardSkeleton";
+
+import Password from "@/components/settings-component/password";
+
+import Details from "@/components/settings-component/my-details";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
@@ -58,7 +62,9 @@ export default function Dashboard() {
   }
   return (
     <div className="px-6">
-      <h2 className="font-semibold pt-5 pb-9 text-2xl max-sm:text-xl">Welcome back, James Alfred</h2>
+      <h2 className="font-semibold pt-5 pb-9 text-2xl max-sm:text-xl">
+        Welcome back, James Alfred
+      </h2>
       {/* desktop card display */}
       <div className="hidden sm:flex gap-4 mb-12 max-lg:flex-wrap ">
         {cards.map((card, i) => (
@@ -78,7 +84,7 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
- {/* indicator button container */}
+        {/* indicator button container */}
         <div className="flex gap-2 justify-center mt-4">
           {cards.map((_, i) => (
             <button
@@ -107,7 +113,16 @@ export default function Dashboard() {
           <div className="lg:flex-1/3 flex-1">
             <Deadline />
           </div>
+          <div>
+           
+          </div>
         </div>
+      </div>
+      <div>
+        <Password />
+      </div>
+       <div>
+        <Details />
       </div>
     </div>
   );
