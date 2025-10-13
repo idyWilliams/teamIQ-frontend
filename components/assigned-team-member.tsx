@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import TeamMemberCard from '@/components/MemberCardItem';
 
 interface TopSkill {
 	name: string;
@@ -241,31 +242,16 @@ export default function AssignedTeamMembers({ teamMembers = defaultTeamMembers }
 				</div>
 			</div>
 
-			{/* Team Grid - Responsive with reduced spacing */}
+			{/* Team Grid - Now using reusable TeamMemberCard */}
 			<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
 				{teamMembers.map((member) => (
-					<div
+					<TeamMemberCard
 						key={member.name}
+						name={member.name}
+						role={member.role}
+						avatar={member.avatar}
 						onClick={() => handleMemberClick(member)}
-						className="flex flex-col items-center p-4 border border-gray-200 rounded-lg bg-white cursor-pointer hover:border-blue-500 hover:shadow-md transition-all"
-					>
-						<Image
-							src={member.avatar}
-							alt={`${member.name} profile picture`}
-							width={64}
-							height={64}
-							className="w-16 h-16 rounded-full object-cover mb-3"
-						/>
-						<div className="text-center w-full">
-							<h3 className="font-semibold text-gray-900 mb-1 text-sm truncate">
-								{member.name}
-							</h3>
-							<div className="flex items-center justify-center gap-1.5">
-								<span className="w-1.5 h-1.5 bg-blue-500 rounded-full flex-shrink-0"></span>
-								<span className="text-xs text-blue-600 truncate">{member.role}</span>
-							</div>
-						</div>
-					</div>
+					/>
 				))}
 			</div>
 
