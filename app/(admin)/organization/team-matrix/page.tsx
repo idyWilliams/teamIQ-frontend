@@ -1,13 +1,11 @@
-import React from 'react'
-import TeamSkillStrength from '@/components/organization-dashboard-components/teamSkillStrength';
-import ProjectReadiness from '@/components/organization-dashboard-components/projectReadiness';
+import React from 'react';
+import Matrix from '@/components/matrix';
 
 export default function TeamMatrixPage() {
   return (
     <>
       <section>
-        <TeamSkillStrength />
-        <ProjectReadiness />
+        <Matrix />
       </section>
     </>
   );

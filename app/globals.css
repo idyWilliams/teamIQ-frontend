@@ -77,7 +77,7 @@
 
   /* Error and its shades */
   --color-iq-err: oklch(0.7807 0.1288 31.22);
-  --color-iq-err-100: oklch(0.931 0 0);
+  --color-iq-err-100: oklch(0.9462 0.0269 28.95);
   --color-iq-err-200: oklch(0.7807 0.1288 31.22);
   --color-iq-err-300: oklch(0.584 0.2252 31.37);
 }
