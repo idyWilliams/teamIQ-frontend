@@ -13,51 +13,98 @@ interface WaveProgressProps {
 }
 
 interface WaveProgressCardProps {
-  progressData: WaveProgressProps[];
+  progressData?: WaveProgressProps[];
+  title?: string;
+  showButton?: boolean;
 }
 
-export function WaveProgressCard({ progressData }: WaveProgressCardProps) {
+export function WaveProgressCard({ progressData, title, showButton = true }: WaveProgressCardProps) {
+  const defaultData: WaveProgressProps[] = [
+    {
+      percentage: 50,
+      label: "2-4 member are Strong",
+      subtitle: "React",
+      waveColor: "purple",
+    },
+    {
+      percentage: 70,
+      label: "2-4 member are Strong",
+      subtitle: "Node.js",
+      waveColor: "yellow",
+    },
+    {
+      percentage: 50,
+      label: "2-4 member are Strong",
+      subtitle: "TypeScript",
+      waveColor: "pink",
+    },
+    {
+      percentage: 50,
+      label: "2-4 member are Strong",
+      subtitle: "TypeScript",
+      waveColor: "orange",
+    },
+    {
+      percentage: 50,
+      label: "2-4 member are Strong",
+      subtitle: "Golang",
+      waveColor: "blue",
+    },
+    {
+      percentage: 50,
+      label: "2-4 member are Strong",
+      subtitle: "Golang",
+      waveColor: "green",
+    },
+  ];
+
+   const dataToRender = progressData?.length ? progressData : defaultData;
+  
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <CardTitle>Team Skills Overview</CardTitle>
-        <button className="flex items-center gap-1 text-[#086ACE] hover:text-blue-700 transition-colors group text-sm">
-          <span className="font-medium">View More</span>
-          <svg
-            className="w-3 h-3 transition-transform group-hover:translate-x-1"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+    <div className="m-6 border-gray-50">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+          <CardTitle>{title || "Team Skills Overview"}</CardTitle>
+          {showButton && (
+            <button className="flex items-center gap-1 text-[#086ACE] hover:text-blue-700 transition-colors group text-sm">
+              <span className="font-medium">View More</span>
+              <svg
+                className="w-3 h-3 transition-transform group-hover:translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          )}
+        </CardHeader>
+        <CardContent>
+          <div
+            className="lg:grid-cols-4 xl:grid-cols-5 gap-1 grid justify-items-center items-start"
+            // style={{
+            //   gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))",
+            // }}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </button>
-      </CardHeader>
-      <CardContent>
-        <div
-          className="lg:grid-cols-4 xl:grid-cols-5 gap-1 grid justify-items-center items-start"
-          // style={{
-          //   gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))",
-          // }}
-        >
-          {progressData.map((progress, index) => (
-            <WaveProgress
-              key={index}
-              percentage={progress.percentage}
-              label={progress.label}
-              subtitle={progress.subtitle}
-              backgroundColor={progress.backgroundColor}
-              waveColor={progress.waveColor}
-            />
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+            {dataToRender.map((progress, index) => (
+              <WaveProgress
+                key={index}
+                percentage={progress.percentage}
+                label={progress.label}
+                subtitle={progress.subtitle}
+                backgroundColor={progress.backgroundColor}
+                waveColor={progress.waveColor}
+              />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 

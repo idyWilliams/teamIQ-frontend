@@ -9,7 +9,7 @@ interface TopSkill {
   color: string;
 }
 
-interface TeamMember {
+export interface TeamMember {
   name: string;
   role: string;
   avatar: string;
@@ -28,7 +28,7 @@ interface AssignedTeamMembersProps {
   teamMembers?: TeamMember[];
 }
 
-const defaultTeamMembers: TeamMember[] = [
+export const defaultTeamMembers: TeamMember[] = [
   {
     name: "Kristin Watson",
     role: "Product Designer",
