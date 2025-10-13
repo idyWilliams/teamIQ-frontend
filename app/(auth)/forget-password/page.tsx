@@ -19,7 +19,6 @@ const schema = yup.object().shape({
 export default function ForgetPassword() {
   // Initializing react-hook-form with Yup
   const {
-    register,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -32,13 +31,13 @@ export default function ForgetPassword() {
   };
 
   return (
-    <div className="max-w-lg w-full">
+    <div className="max-w-lg w-full mx-4">
       <h1 className="text-center mb-16 text-black text-2xl font-semibold">
         Forget Password
       </h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <Label htmlFor="email" className="mb-3 font-normal text-[15px]">
+          <Label htmlFor="email" className="mb-2 font-normal text-[15px]">
             Email Address
           </Label>
           <Input
@@ -54,7 +53,7 @@ export default function ForgetPassword() {
             </p>
           )}
         </div>
-        <Button className="bg-[#086ACE] text-white mt-20 w-full py-3 h-auto rounded-md">
+        <Button className="bg-[#086ACE] text-white mt-10 w-full py-3 h-auto rounded-md">
           Continue
         </Button>
       </form>

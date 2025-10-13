@@ -6,11 +6,7 @@ import RadarChart from "@/components/radar-chart";
 import RadialChart from "@/components/radial-chart";
 import RecentCard from "@/components/recent-card";
 import Deadline from "@/components/deadline-card";
-import Loading from "@/components/dashboardSkeleton";
-
-import Password from "@/components/settings-component/password";
-
-import Details from "@/components/settings-component/my-details";
+import Loading from "@/components/dashboardSkeleton"
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
