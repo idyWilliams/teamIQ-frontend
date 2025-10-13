@@ -28,7 +28,7 @@ const InviteTable = () => {
           {data.map((row, idx) => (
             <TableRow
               key={row.id}
-              className={`${idx % 2 === 1 ? "bg-[#f8f9fb]" : "bg-[#ffffff]"}`}
+              className={`${idx % 2 === 1 ? "bg-[#f8f9fb]" : "bg-[#ffffff]"} `}
             >
               <TableCell className='h-[40px] border-b border-[#1c1c1c0d]'>{row.name}</TableCell>
               <TableCell className='h-[40px] border-b border-[#1c1c1c0d]'>{row.employmentType}</TableCell>
@@ -52,4 +52,4 @@ const InviteTable = () => {
   )
 }
 
-export default InviteTable
+export default InviteTable;

@@ -5,6 +5,7 @@ import { AudioWaveform, Command, GalleryVerticalEnd } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
+import NavSettings from "./NavSettings";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
@@ -72,12 +73,21 @@ const data = {
       name: "Apps",
       url: "/organization/app",
     },
+  ],
+   settings: [
     {
       icon: "icon-[ep--setting]",
-      name: "Settings",
+      title: "Settings",
       url: "/organization/settings",
+      items: [
+        {title: "Profile", url: ""},
+        {title: "Team Members", url: ""},
+        {title: "Integrated Apps", url: ""},
+        {title: "plan", url: ""},
+      ],
     },
-  ],
+   ], 
+ 
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -87,8 +97,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent className="gap-y-0">
-        <NavMain items={data.navMain} />
+        <NavMain items={data.navMain}/>
         <NavProjects projects={data.others} />
+        <NavSettings settings={data.settings}/>
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
@@ -97,3 +108,4 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     </Sidebar>
   );
 }
+
