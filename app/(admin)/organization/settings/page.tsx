@@ -1,22 +1,85 @@
-import { Button } from "@/components/ui/button";
+"use client";
+
+import React, { ReactNode, useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import React from "react";
+import ProfilePage from "./profile/page";
+import TeamMemberPage from "./team-members/page";
+import IntegratedApps from "./integrated-apps/page";
+import Plan from "./plan/page";
+
+
+type TablistType = {
+  label: string;
+  key: string;
+  path: string;
+  content: ReactNode;
+}
+
+const tablist: TablistType[] = [
+  {label: "Profile", key: "profile", path: "/organization/settings/profile", content: <ProfilePage/>},
+  {label: "Team Members", key: "team-members", path: "/organization/settings/team-members", content: <TeamMemberPage/>},
+  {label: "Integrated Apps", key: "integrated-apps", path: "/organization/settings/integrated-apps", content: <IntegratedApps/>},
+  {label: "Plan", key: "plan", path: "/organization/settings/plan", content: <Plan/>},
+]
 
 export default function SettingsPage() {
-  return <div> <Button className="" variant="outline">Get started</Button>
+  const pathname = usePathname();
+  const router = useRouter();
+
+ const activeTab = () => {
+  const currentTab = tablist.find((tab) => pathname === tab.path);
+  return (currentTab?.key || tablist[0].key)
+ }
+
+
+ const handleTabToggle = (value: string) => {
+    const selectedTab = tablist.find((tab) => tab.key === value);
+    if(selectedTab){
+      router.push(selectedTab.path)
+    }
+ }
+
+  return <section className="w-full overflow-hidden"> 
   
-    <Tabs>
-      <TabsList className="">
-        <TabsTrigger className="" value="login"> 
-          Login
-        </TabsTrigger>
-         <TabsTrigger value="signup"> 
-          Signup
-        </TabsTrigger>
+    <Tabs value={activeTab()} onValueChange={ handleTabToggle} className="h-full p-4">
+      <TabsList className="w-full flex items-center
+       justify-between 
+       bg-transparent gap-2 border-b
+       border-gray-400
+       rounded-none">
+       {tablist.map(({label, key}) => {
+        return (<TabsTrigger key={key} 
+          value={key}
+          className="relative w-fit 
+          text-gray-600 
+          cursor-pointer text-sm 
+          md:text-base 
+          rounded-none border-none 
+           bg-transparent px-2 py-2  
+          after:absolute 
+          after:bottom-0 
+          after:left-0 
+          after:h-[2px]
+          after:w-0 
+          after:bg-[#086ACE]
+          after:transition-all
+          after:duration-300 
+          font-semibold 
+          data-[state=active]:shadow-none 
+          data-[state=active]:text-[#086ACE]
+          data-[state=active]:after:w-full 
+          data-[state=active]:bg-transparent 
+          data-[state=active]:border-none 
+          ">{label}</TabsTrigger>)
+       })}     
       </TabsList>
-      <TabsContent value="login">
-        Login
-      </TabsContent>
+     {tablist.map(({key, content}) => {
+      return (
+        <TabsContent key={key} value={key}>{content}</TabsContent>
+      )
+     })}
   </Tabs>
-  </div>;
+  </section>;
 }
+
