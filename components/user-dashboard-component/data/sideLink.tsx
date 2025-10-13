@@ -12,6 +12,7 @@ export type SidebarLinkType = {
   icon?: ReactNode;
   url: string;
   children?: SidebarLinkType[];
+  dynamicChildren?: (projectId: string) => SidebarLinkType[];
 };
 
 export const sidebarLinks: SidebarLinkType[] = [
@@ -24,12 +25,15 @@ export const sidebarLinks: SidebarLinkType[] = [
     label: 'Projects',
     icon: <FolderOpenDot />,
     url: '/member/projects',
-    children: [
-      { label: 'Project Overview', url: '/member/projects/project-overview' },
-      { label: 'Task', url: '/member/projects/task' },
+    dynamicChildren: (projectId: string) => [
+      {
+        label: 'Project Overview',
+        url: `/member/projects/${projectId}?tab=overview`,
+      },
+      { label: 'Tasks', url: `/member/projects/${projectId}?tab=tasks` },
       {
         label: 'Assigned Team Members',
-        url: '/member/projects/assign-team-member',
+        url: `/member/projects/${projectId}?tab=assign-team-member`,
       },
     ],
   },
