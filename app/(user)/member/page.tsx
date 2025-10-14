@@ -114,12 +114,7 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      <div>
-        <Password />
-      </div>
-       <div>
-        <Details />
-      </div>
+      
     </div>
   );
 }

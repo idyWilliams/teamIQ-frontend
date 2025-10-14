@@ -79,17 +79,17 @@ const MyDetails = () => {
 
   const Accounts = [
     {
-      avatarUrl: "images/basil_windows-outline.svg",
+      avatarUrl: "/images/basil_windows-outline.svg",
       device: "Windows",
       time: "12 mins ago",
     },
     {
-      avatarUrl: "images/fluent_phone-24-regular.svg",
+      avatarUrl: "/images/fluent_phone-24-regular.svg",
       device: "SamsungA23",
       time: "1hr ago",
     },
     {
-      avatarUrl: "images/basil_windows-outline.svg",
+      avatarUrl: "/images/basil_windows-outline.svg",
       device: "Windows",
       time: "2hr  ago",
     },
@@ -191,7 +191,7 @@ const MyDetails = () => {
             Edit
             <Avatar>
               <AvatarImage
-                src={"images/tabler_edit.svg"}
+                src={"/images/tabler_edit.svg"}
                 alt="edit"
               ></AvatarImage>
               <AvatarFallback>E</AvatarFallback>
@@ -240,7 +240,7 @@ const MyDetails = () => {
                       Edit
                       <Avatar>
                         <AvatarImage
-                          src={"images/tabler_edit.svg"}
+                          src={"/images/tabler_edit.svg"}
                           alt="edit"
                         ></AvatarImage>
                         <AvatarFallback>E</AvatarFallback>
@@ -256,7 +256,7 @@ const MyDetails = () => {
                   Edit
                   <Avatar>
                     <AvatarImage
-                      src={"images/tabler_edit.svg"}
+                      src={"/images/tabler_edit.svg"}
                       alt="edit"
                     ></AvatarImage>
                     <AvatarFallback>E</AvatarFallback>
