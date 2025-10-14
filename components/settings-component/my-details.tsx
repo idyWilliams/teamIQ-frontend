@@ -230,71 +230,74 @@ const MyDetails = () => {
 
       {/* details edit my information */}
       <div className="my-12">
-        {infos.map(info => (
-          <div
-            key={info.key}
-            className="border-b-border flex w-full justify-between gap-2 rounded-[8px] border-b-1 px-6 py-3"
-          >
-            <div className="flex gap-x-15 max-sm:flex-col">
-              <p className="font-medium max-sm:text-sm">{info.label}</p>
-              {editingInfo === info.key ? (
-                <input
-                  className="max-sm:text-sm"
-                  value={formData[info.key]}
-                  onChange={e => handleChange(info.key, e.target.value)}
-                  autoFocus
-                />
-              ) : (
-                <p className="text-left max-sm:text-sm">{formData[info.key]}</p>
-              )}
-            </div>
-            <div>
-              {/* 1st condition = if button is editable let it work */}
-              {info.editable ? (
-                <>
-                  {/* 2nd condition = if edit button is clicked chnage to save */}
-                  {editingInfo === info.key ? (
-                    <button
-                      className="text-primary-foreground bg-iq rounded-[7px] px-3 py-1 text-sm max-sm:text-xs"
-                      onClick={handleSaveInfo}
-                    >
-                      save
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => setEditingInfo(info.key)}
-                      className="text-iq flex max-sm:text-sm"
-                    >
-                      Edit
-                      <Avatar>
-                        <AvatarImage
-                          src={'/images/tabler_edit.svg'}
-                          alt="edit"
-                        ></AvatarImage>
-                        <AvatarFallback>E</AvatarFallback>
-                      </Avatar>
-                    </button>
-                  )}
-                </>
-              ) : (
-                <button
-                  disabled
-                  className="text-iq flex cursor-not-allowed opacity-30 max-sm:text-sm"
-                >
-                  Edit
-                  <Avatar>
-                    <AvatarImage
-                      src={'/images/tabler_edit.svg'}
-                      alt="edit"
-                    ></AvatarImage>
-                    <AvatarFallback>E</AvatarFallback>
-                  </Avatar>
-                </button>
-              )}
-            </div>
-          </div>
-        ))}
+  {infos.map(info => (
+    <div
+      key={info.key}
+      className="flex w-full items-center justify-between gap-2 border-b-[1px] border-b-border px-6 py-3 rounded-[8px]"
+    >
+      {/* Left: Label + Input/Text */}
+      <div className="flex items-center  max-sm:flex-col max-sm:items-start max-sm:gap-y-1">
+        <p className="font-medium max-sm:text-sm w-[130px]">{info.label}</p>
+
+        {editingInfo === info.key ? (
+          <input
+            className="max-sm:text-sm border border-border rounded-md  py-1 focus:outline-none focus:ring-2 focus:ring-iq"
+            value={formData[info.key]}
+            onChange={e => handleChange(info.key, e.target.value)}
+            autoFocus
+          />
+        ) : (
+          <p className="text-left max-sm:text-sm">{formData[info.key]}</p>
+        )}
       </div>
+
+      {/* Right: Edit/Save button */}
+      <div className="flex items-center">
+        {info.editable ? (
+          editingInfo === info.key ? (
+            <button
+              className="bg-iq text-primary-foreground rounded-[7px] px-3 py-1 text-sm max-sm:text-xs"
+              onClick={handleSaveInfo}
+            >
+              Save
+            </button>
+          ) : (
+            <button
+              onClick={() => setEditingInfo(info.key)}
+              className="flex items-center text-iq max-sm:text-sm gap-1"
+            >
+              Edit
+              <Avatar>
+                <AvatarImage
+                  src="/images/tabler_edit.svg"
+                  alt="edit"
+                  className="size-4"
+                />
+                <AvatarFallback>E</AvatarFallback>
+              </Avatar>
+            </button>
+          )
+        ) : (
+          <button
+            disabled
+            className="flex items-center text-iq opacity-30 cursor-not-allowed max-sm:text-sm gap-1"
+          >
+            Edit
+            <Avatar>
+              <AvatarImage
+                src="/images/tabler_edit.svg"
+                alt="edit"
+                className="size-4"
+              />
+              <AvatarFallback>E</AvatarFallback>
+            </Avatar>
+          </button>
+        )}
+      </div>
+    </div>
+  ))}
+</div>
+
 
       {/* details connected accounts section */}
       <div className="flex flex-col gap-2">
