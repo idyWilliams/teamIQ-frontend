@@ -12,14 +12,14 @@ import {
 
 const PendingTable = () => {
   return (
-    <div>
-         <Table className='h-[60%]'>
-        <TableHeader className="w-[700px] h-[40px] boder-b p-2 gap-4">
+    <div className='w-[65%] overflow-x-auto'>
+         <Table className=''>
+        <TableHeader className="w-full] h-[40px] boder-b p-2 gap-4">
           <TableRow className='w-full'>
-            <TableHead className='w-[120px] h-[20px] border-l p-2'>Name</TableHead>
-            <TableHead className='w-[120px] h-[20px] border-l p-2'>Stack</TableHead>
-            <TableHead className='w-[150px] h-[20px] border-l p-2'>Date</TableHead>
-            <TableHead  className='w-[220px] h-[20px] border-l p-2'>Status</TableHead>
+            <TableHead className='border-l p-2'>Name</TableHead>
+            <TableHead className='border-l p-2'>Stack</TableHead>
+            <TableHead className='border-l p-2'>Date</TableHead>
+            <TableHead  className='border-l p-2'>Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -27,22 +27,29 @@ const PendingTable = () => {
             <TableRow
               key={row.id}
             >
-              <TableCell className='h-[40px] border-b border-[#1c1c1c0d]'>{row.name}</TableCell>
-              <TableCell className='h-[40px] border-b border-[#1c1c1c0d]'>{row.stack}</TableCell>
-              <TableCell className='h-[40px] border-b border-[#1c1c1c0d]'>{row.dateSent}</TableCell>
-              <TableCell className='flex items-center justify-center gap-2 h-[40px] border-b border-[#1c1c1c0d]'>
+              <TableCell className='border-b border-[#1c1c1c0d]'>{row.name}</TableCell>
+              <TableCell className='border-b border-[#1c1c1c0d]'>{row.stack}</TableCell>
+              <TableCell className='border-b border-[#1c1c1c0d]'>{row.dateSent}</TableCell>
+              <TableCell className='border-b border-[#1c1c1c0d]'>
+                <div className='flex items-center justify-center gap-2'>
                 <Button
                   size="sm"
-                  className="text-[#ffffff] bg-[#086ace] px-3 py-2 whitespace-nowrap cursor-pointer"
+                  className="text-[#ffffff] bg-[#086ace] 
+                  w-[120px]  hover:bg-transparent hover:text-[#086ace]
+                   whitespace-nowrap cursor-pointer"
                 >               
                 Resend Invite
                 </Button>
                 <Button
                   size="sm"
-                  className="text-[#086ace] bg-[#ffffff] border border-[#086ace] px-3 py-2 whitespace-nowrap cursor-pointer"
+                  className="text-[#086ace] bg-[#ffffff]
+                   w-[120px] border border-[#086ace] 
+                    hover:bg-[#086ace] hover:text-[#ffffff] 
+                    whitespace-nowrap cursor-pointer"
                 >               
                 Revoke Invite
                 </Button>
+                </div>
                 </TableCell>
             </TableRow>
           ))}

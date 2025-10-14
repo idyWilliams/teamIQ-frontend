@@ -78,7 +78,7 @@ const data = {
     {
       icon: "icon-[ep--setting]",
       title: "Settings",
-      url: "/organization/settings",
+      url: "/organization/settings?tab=profile",
       items: [
         {title: "Profile", url: ""},
         {title: "Team Members", url: ""},

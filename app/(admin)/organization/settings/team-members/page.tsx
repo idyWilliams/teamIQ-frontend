@@ -6,12 +6,12 @@ import PendingTable from '../../components/member-group/PendingTable'
 
 const TeamMemberPage = () => {
   return (
-    <div className='flex flex-col justify-center p-1  '>
-      <div className='flex items-center justify-center gap-3 py-12 border-b'>
+    <div className='flex flex-col justify-center p-1'>
+      <div className='flex items-center justify-center gap-3 py-0 p-3 border-b'>
       <InviteMembers/>
       <InviteTable/>
       </div>
-      <div className='flex items-center justify-center gap-3 py-12'>
+      <div className='flex items-center justify-center py-12 gap-3'>
       <PendingInvite/>
       <PendingTable/>    
      </div>

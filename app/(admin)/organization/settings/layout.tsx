@@ -1,7 +1,7 @@
 "use client";
 
 import React, { ReactNode } from "react";
-import { usePathname} from "next/navigation";
+import { usePathname, useRouter} from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProfilePage from "./profile/page";
 import TeamMemberPage from "./team-members/page";
@@ -25,24 +25,26 @@ const tablist: TablistType[] = [
 
 export default function SettingsLayout({children}:{children: ReactNode}) {
   const pathname = usePathname();
+  const router = useRouter();
 
 
- const activeTab = () => {
-  const currentTab = tablist.find((tab) => pathname === tab.path);
-  return (currentTab?.key || tablist[0].key)
- }
+  const activeTab = () => {
+    const currentTab = tablist.find((tab) => pathname === tab.path);
+    return (currentTab?.key || tablist[0].key)
+   }
+  
+  
+   const handleTabToggle = (value: string) => {
+      const selectedTab = tablist.find((tab) => tab.key === value);
+      if(selectedTab){
+        router.push(selectedTab.path)
+      }
+   }
 
 
-//  const handleTabToggle = (value: string) => {
-//     const selectedTab = tablist.find((tab) => tab.key === value);
-//     if(selectedTab){
-//       router.push(selectedTab.path)
-//     }
-//  }
-
-  return<section className="">
-  <Tabs className="w-full p-0">
-    <TabsList className="w-full grow justify-start 
+  return<section className="w-full overflow-hidden">
+  <Tabs value={activeTab()} onValueChange={handleTabToggle} className="w-full p-0 mx-auto">
+    <TabsList  className="w-full shrink-0 justify-center 
     rounded-none border-b bg-transparent p-0">
       {tablist.map(({key, label}) => (
         <TabsTrigger
@@ -61,7 +63,7 @@ export default function SettingsLayout({children}:{children: ReactNode}) {
         </TabsTrigger>
       ))}
     </TabsList>
-
+      
     {tablist.map(({content,key}) => (
       <TabsContent key={key} value={key} className="pt-10">
         {content}
