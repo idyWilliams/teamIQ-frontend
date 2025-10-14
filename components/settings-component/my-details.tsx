@@ -1,14 +1,14 @@
-"use client";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { useState } from "react";
-import React from "react";
+'use client';
+import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
+import { useState } from 'react';
+import React from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 const MyDetails = () => {
   // two modal states
@@ -16,18 +16,18 @@ const MyDetails = () => {
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
 
   // which image is being edited
-  const [editType, setEditType] = useState<"profile" | "cover" | null>(null);
+  const [editType, setEditType] = useState<'profile' | 'cover' | null>(null);
 
   // store images
   const [images, setImages] = useState({
-    profile: "/placeholder-profile.jpg",
-    cover: "/placeholder-cover.jpg",
+    profile: '/placeholder-profile.jpg',
+    cover: '/placeholder-cover.jpg',
   });
   // preview for upload
   const [preview, setPreview] = useState<string | null>(null);
 
   // handle choosing image type
-  const handleChoose = (type: "profile" | "cover") => {
+  const handleChoose = (type: 'profile' | 'cover') => {
     setEditType(type);
     setIsMainDialogOpen(false);
     setIsUploadDialogOpen(true);
@@ -45,7 +45,7 @@ const MyDetails = () => {
   // save new image
   const handleSave = () => {
     if (editType && preview) {
-      setImages((prev) => ({ ...prev, [editType]: preview }));
+      setImages(prev => ({ ...prev, [editType]: preview }));
     }
     handleCancel(); // reset everything
   };
@@ -60,38 +60,38 @@ const MyDetails = () => {
 
   // mock user data
   const user = {
-    name: "James Alfred",
-    phone: "09012345678",
-    location: "Abuja, Nigeria",
-    email: "james@gmail.com",
+    name: 'James Alfred',
+    phone: '09012345678',
+    location: 'Abuja, Nigeria',
+    email: 'james@gmail.com',
   };
 
   type Userkeys = keyof typeof user;
 
   const infos: { key: Userkeys; label: string; editable: boolean }[] = [
-    { key: "name", label: "Full Name:", editable: true },
-    { key: "email", label: "Email Address:", editable: false },
-    { key: "phone", label: "Contact:", editable: true },
-    { key: "location", label: "Location:", editable: true },
+    { key: 'name', label: 'Full Name:', editable: true },
+    { key: 'email', label: 'Email Address:', editable: false },
+    { key: 'phone', label: 'Contact:', editable: true },
+    { key: 'location', label: 'Location:', editable: true },
   ];
 
   //   mock connected accounts data
 
   const Accounts = [
     {
-      avatarUrl: "/images/basil_windows-outline.svg",
-      device: "Windows",
-      time: "12 mins ago",
+      avatarUrl: '/images/basil_windows-outline.svg',
+      device: 'Windows',
+      time: '2025-09-23T15:00:00Z',
     },
     {
-      avatarUrl: "/images/fluent_phone-24-regular.svg",
-      device: "SamsungA23",
-      time: "1hr ago",
+      avatarUrl: '/images/fluent_phone-24-regular.svg',
+      device: 'SamsungA23',
+      time: '2025-09-23T15:00:00Z',
     },
     {
-      avatarUrl: "/images/basil_windows-outline.svg",
-      device: "Windows",
-      time: "2hr  ago",
+      avatarUrl: '/images/basil_windows-outline.svg',
+      device: 'Windows',
+      time: '2025-09-23T15:00:00Z',
     },
   ];
 
@@ -101,42 +101,61 @@ const MyDetails = () => {
 
   // function for changing users data
   function handleChange(key: string, value: string) {
-    setFormData((prev) => ({ ...prev, [key]: value }));
+    setFormData(prev => ({ ...prev, [key]: value }));
   }
 
   // function for saving data
   function handleSaveInfo() {
     setEditingInfo(null);
   }
+
+  // this functions to show how last time user connected with a device
+  function timeAgo(dateString: string): string {
+    const now = new Date();
+    const activityDate = new Date(dateString);
+    const diff = Math.floor((now.getTime() - activityDate.getTime()) / 1000);
+
+    if (diff < 60) return 'justnow';
+    if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+    return `${Math.floor(diff / 86400)} days ago`;
+  }
+
   return (
     <div>
       {/* details cover picture */}
       <div className="relative">
-        <div className=" h-[200px] max-sm:h-[150px] w-full rounded-tl-[96px] opacity-70 bg-muted-foreground mt-10">
+        <div className="bg-muted-foreground mt-10 h-[200px] w-full rounded-tl-[96px] opacity-70 max-sm:h-[150px]">
           <img
             src={images.cover}
             alt="Cover"
-            className=" object-cover h-[200px] max-sm:h-[150px] w-full rounded-tl-[96px]"
+            className="h-[200px] w-full rounded-tl-[96px] object-cover max-sm:h-[150px]"
           />
         </div>
-        <div className="border-5 border-primary-foreground absolute rounded-full max-sm:size-[85px] size-[150px] bg-iq top-[75%] left-[10%]  ">
+        <div className="border-primary-foreground bg-iq absolute top-[75%] left-[10%] size-[150px] rounded-full border-5 max-sm:size-[85px]">
           <img
             src={images.profile}
             alt="Profile"
-            className="max-sm:size-[80px] size-[142px] rounded-full object-cover"
+            className="size-[142px] rounded-full object-cover max-sm:size-[80px]"
           />
         </div>
       </div>
- {/* --- FIRST MODAL (choose what to edit) --- */}
+      {/* --- FIRST MODAL (choose what to edit) --- */}
       <Dialog open={isMainDialogOpen} onOpenChange={setIsMainDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Image</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-4">
-            <Button onClick={() => handleChoose("profile")}>Upload Profile Picture</Button>
-            <Button onClick={() => handleChoose("cover")}>Upload Cover Image</Button>
-            <Button variant="outline" onClick={handleCancel}>Cancel</Button>
+            <Button onClick={() => handleChoose('profile')}>
+              Upload Profile Picture
+            </Button>
+            <Button onClick={() => handleChoose('cover')}>
+              Upload Cover Image
+            </Button>
+            <Button variant="outline" onClick={handleCancel}>
+              Cancel
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -146,18 +165,22 @@ const MyDetails = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {editType === "profile" ? "Upload Profile Picture" : "Upload Cover Image"}
+              {editType === 'profile'
+                ? 'Upload Profile Picture'
+                : 'Upload Cover Image'}
             </DialogTitle>
           </DialogHeader>
 
           {!preview ? (
             <>
-              <p className="text-sm text-muted-foreground mb-3">
+              <p className="text-muted-foreground mb-3 text-sm">
                 Select a new image to upload.
               </p>
               <input type="file" accept="image/*" onChange={handleFileChange} />
-              <div className="flex justify-end mt-4">
-                <Button variant="outline" onClick={handleCancel}>Cancel</Button>
+              <div className="mt-4 flex justify-end">
+                <Button variant="outline" onClick={handleCancel}>
+                  Cancel
+                </Button>
               </div>
             </>
           ) : (
@@ -166,11 +189,13 @@ const MyDetails = () => {
                 src={preview}
                 alt="Preview"
                 className={`w-full rounded-lg object-cover ${
-                  editType === "profile" ? "h-32" : "h-40"
+                  editType === 'profile' ? 'h-32' : 'h-40'
                 }`}
               />
-              <div className="flex justify-between mt-4">
-                <Button variant="outline" onClick={handleCancel}>Cancel</Button>
+              <div className="mt-4 flex justify-between">
+                <Button variant="outline" onClick={handleCancel}>
+                  Cancel
+                </Button>
                 <Button onClick={handleSave}>Save</Button>
               </div>
             </>
@@ -180,18 +205,21 @@ const MyDetails = () => {
 
       {/* details profile pic  */}
 
-      <div className="flex items-center justify-between px-6 pt-7 ">
-        <div className="ml-[26%] max-sm:ml-0 max-sm:mt-8 ">
+      <div className="flex items-center justify-between px-6 pt-7">
+        <div className="ml-[26%] max-sm:mt-8 max-sm:ml-0">
           <p>Profile</p>
           <p>Update your details</p>
         </div>
 
         <div>
-          <button onClick={() => setIsMainDialogOpen(true)} className="flex text-iq max-sm:text-sm  ">
+          <button
+            onClick={() => setIsMainDialogOpen(true)}
+            className="text-iq flex max-sm:text-sm"
+          >
             Edit
             <Avatar>
               <AvatarImage
-                src={"/images/tabler_edit.svg"}
+                src={'/images/tabler_edit.svg'}
                 alt="edit"
               ></AvatarImage>
               <AvatarFallback>E</AvatarFallback>
@@ -202,10 +230,10 @@ const MyDetails = () => {
 
       {/* details edit my information */}
       <div className="my-12">
-        {infos.map((info) => (
+        {infos.map(info => (
           <div
             key={info.key}
-            className="gap-2 flex w-full justify-between py-3 px-6 border-b-1 border-b-border rounded-[8px] "
+            className="border-b-border flex w-full justify-between gap-2 rounded-[8px] border-b-1 px-6 py-3"
           >
             <div className="flex gap-x-15 max-sm:flex-col">
               <p className="font-medium max-sm:text-sm">{info.label}</p>
@@ -213,7 +241,7 @@ const MyDetails = () => {
                 <input
                   className="max-sm:text-sm"
                   value={formData[info.key]}
-                  onChange={(e) => handleChange(info.key, e.target.value)}
+                  onChange={e => handleChange(info.key, e.target.value)}
                   autoFocus
                 />
               ) : (
@@ -227,7 +255,7 @@ const MyDetails = () => {
                   {/* 2nd condition = if edit button is clicked chnage to save */}
                   {editingInfo === info.key ? (
                     <button
-                      className="max-sm:text-xs text-sm text-primary-foreground rounded-[7px] bg-iq px-3 py-1 "
+                      className="text-primary-foreground bg-iq rounded-[7px] px-3 py-1 text-sm max-sm:text-xs"
                       onClick={handleSaveInfo}
                     >
                       save
@@ -235,12 +263,12 @@ const MyDetails = () => {
                   ) : (
                     <button
                       onClick={() => setEditingInfo(info.key)}
-                      className="flex text-iq max-sm:text-sm "
+                      className="text-iq flex max-sm:text-sm"
                     >
                       Edit
                       <Avatar>
                         <AvatarImage
-                          src={"/images/tabler_edit.svg"}
+                          src={'/images/tabler_edit.svg'}
                           alt="edit"
                         ></AvatarImage>
                         <AvatarFallback>E</AvatarFallback>
@@ -251,12 +279,12 @@ const MyDetails = () => {
               ) : (
                 <button
                   disabled
-                  className="max-sm:text-sm opacity-30 cursor-not-allowed flex text-iq "
+                  className="text-iq flex cursor-not-allowed opacity-30 max-sm:text-sm"
                 >
                   Edit
                   <Avatar>
                     <AvatarImage
-                      src={"/images/tabler_edit.svg"}
+                      src={'/images/tabler_edit.svg'}
                       alt="edit"
                     ></AvatarImage>
                     <AvatarFallback>E</AvatarFallback>
@@ -269,27 +297,27 @@ const MyDetails = () => {
       </div>
 
       {/* details connected accounts section */}
-      <div className="flex gap-2 flex-col">
-        <p className="text-[18px] font-medium mb-4">Connected Accounts</p>
+      <div className="flex flex-col gap-2">
+        <p className="mb-4 text-[18px] font-medium">Connected Accounts</p>
         {Accounts.map((acc, i) => (
           <div
             key={i}
-            className="border-1 border-border py-3 px-4 max-w-[350px] rounded-[8px] flex justify-between items-center"
+            className="border-border flex max-w-[350px] items-center justify-between rounded-[8px] border-1 px-4 py-3"
           >
             <div>
-              <div className="flex gap-1 items-center ">
+              <div className="flex items-center gap-1">
                 <Avatar>
                   <AvatarImage src={acc.avatarUrl} alt="device"></AvatarImage>
                   <AvatarFallback>D</AvatarFallback>
                 </Avatar>
-                <p>{acc.device}</p>{" "}
+                <p>{acc.device}</p>{' '}
               </div>
-              <p className="text-sm text-muted-foreground">
-                last seen {acc.time}
+              <p className="text-muted-foreground text-sm">
+                {timeAgo(acc.time)}
               </p>
             </div>
             <Avatar>
-              <AvatarImage src={"images/minus-cirlce.svg"} alt="circle" />
+              <AvatarImage src={'images/minus-cirlce.svg'} alt="circle" />
               <AvatarFallback>O</AvatarFallback>
             </Avatar>
           </div>
