@@ -1,5 +1,7 @@
 'use client';
 import NotificationsSettings from '@/components/notification ';
+import Password from '@/components/settings-component/password';
+import MyDetails from '@/components/settings-component/my-details';
 import PlanSettings from '@/components/plan';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -52,12 +54,12 @@ export default function SettingsPage() {
 }
 
 const settingsTabDetails = [
-  { key: 'my-details', label: 'My Details', content: <p>My Details</p> },
+  { key: 'my-details', label: 'My Details', content:   <MyDetails/> },
   {
     key: 'notifications',
     label: 'Notifications',
     content: <NotificationsSettings />,
   },
-  { key: 'password', label: 'Password', content: <>Password</> },
+  { key: 'password', label: 'Password', content:      <Password/>},
   { key: 'plan', label: 'Plan', content: <PlanSettings /> },
 ];

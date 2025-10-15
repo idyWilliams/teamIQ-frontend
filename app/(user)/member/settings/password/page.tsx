@@ -1,9 +1,11 @@
+"use client"
+
 import React from 'react'
 
-export default function Password() {
+export default function myPassword() {
   return (
     <div>
-      <h1 className="">Password Page</h1>
+
     </div>
   )
 }
