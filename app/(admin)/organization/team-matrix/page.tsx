@@ -1,9 +1,12 @@
-import React from 'react'
+import React from 'react';
+import Matrix from '@/components/matrix';
 
 export default function TeamMatrixPage() {
   return (
-    <div>
-      Team Matrix
-    </div>
-  )
+    <>
+      <section>
+        <Matrix />
+      </section>
+    </>
+  );
 }

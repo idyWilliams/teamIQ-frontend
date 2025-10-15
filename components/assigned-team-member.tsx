@@ -6,157 +6,164 @@ import Link from 'next/link';
 import TeamMemberCard from '@/components/MemberCardItem';
 
 interface TopSkill {
-	name: string;
-	rating: number;
-	color: string;
+  name: string;
+  rating: number;
+  color: string;
 }
 
-interface TeamMember {
-	name: string;
-	role: string;
-	avatar: string;
-	rating: number;
-	status: string;
-	email: string;
-	slack: string;
-	skills: string[];
-	specialties: string[];
-	tasksCompleted: number;
-	monthlyKPI: number;
-	topSkills: TopSkill[];
+export interface TeamMember {
+  name: string;
+  role: string;
+  avatar: string;
+  rating: number;
+  status: string;
+  email: string;
+  slack: string;
+  skills: string[];
+  specialties: string[];
+  tasksCompleted: number;
+  monthlyKPI: number;
+  topSkills: TopSkill[];
 }
 
 interface AssignedTeamMembersProps {
-	teamMembers?: TeamMember[];
+  teamMembers?: TeamMember[];
 }
 
-const defaultTeamMembers: TeamMember[] = [
-	{
-		name: 'Kristin Watson',
-		role: 'Product Designer',
-		avatar: '/images/avatar.jpg',
-		rating: 4.3,
-		status: 'Available',
-		email: 'kristinwaston@company.com',
-		slack: 'kristinwaston@company.com',
-		skills: ['Node.js', 'Python', 'PostgreSQL', 'Redis', 'React', 'Microservices'],
-		specialties: ['API Design', 'Database Optimization', 'System Architecture'],
-		tasksCompleted: 123,
-		monthlyKPI: 67,
-		topSkills: [
-			{ name: 'React', rating: 70, color: 'bg-purple-500' },
-			{ name: 'React', rating: 70, color: 'bg-blue-500' },
-			{ name: 'React', rating: 70, color: 'bg-orange-500' }
-		]
-	},
-	{
-		name: 'Robert Fox',
-		role: 'Backend Developer',
-		avatar: '/images/gent.jpg',
-		rating: 4.5,
-		status: 'Available',
-		email: 'robertfox@company.com',
-		slack: 'robertfox@company.com',
-		skills: ['Node.js', 'Python', 'PostgreSQL'],
-		specialties: ['API Design', 'Database Optimization'],
-		tasksCompleted: 98,
-		monthlyKPI: 72,
-		topSkills: [
-			{ name: 'Node.js', rating: 85, color: 'bg-green-500' },
-			{ name: 'Python', rating: 80, color: 'bg-blue-500' },
-			{ name: 'PostgreSQL', rating: 75, color: 'bg-indigo-500' }
-		]
-	},
-	{
-		name: 'Darrell Steward',
-		role: 'Product Manager',
-		avatar: '/images/gent1.jpg',
-		rating: 4.7,
-		status: 'Busy',
-		email: 'darrellsteward@company.com',
-		slack: 'darrellsteward@company.com',
-		skills: ['Agile', 'Scrum', 'Leadership'],
-		specialties: ['Product Strategy', 'Team Management'],
-		tasksCompleted: 145,
-		monthlyKPI: 89,
-		topSkills: [
-			{ name: 'Leadership', rating: 90, color: 'bg-yellow-500' },
-			{ name: 'Agile', rating: 85, color: 'bg-red-500' },
-			{ name: 'Strategy', rating: 88, color: 'bg-pink-500' }
-		]
-	},
-	{
-		name: 'Leslie Alexander',
-		role: 'Frontend Developer',
-		avatar: '/images/lady.jpg',
-		rating: 4.4,
-		status: 'Available',
-		email: 'lesliealexander@company.com',
-		slack: 'lesliealexander@company.com',
-		skills: ['React', 'TypeScript', 'CSS'],
-		specialties: ['UI Development', 'Performance Optimization'],
-		tasksCompleted: 112,
-		monthlyKPI: 78,
-		topSkills: [
-			{ name: 'React', rating: 88, color: 'bg-blue-500' },
-			{ name: 'TypeScript', rating: 82, color: 'bg-blue-600' },
-			{ name: 'CSS', rating: 85, color: 'bg-pink-500' }
-		]
-	},
-	{
-		name: 'Esther Howard',
-		role: 'Product Designer',
-		avatar: '/images/lady1.jpg',
-		rating: 4.6,
-		status: 'Available',
-		email: 'estherhoward@company.com',
-		slack: 'estherhoward@company.com',
-		skills: ['Figma', 'UI/UX', 'Prototyping'],
-		specialties: ['User Research', 'Design Systems'],
-		tasksCompleted: 87,
-		monthlyKPI: 71,
-		topSkills: [
-			{ name: 'Figma', rating: 92, color: 'bg-purple-500' },
-			{ name: 'UI/UX', rating: 88, color: 'bg-indigo-500' },
-			{ name: 'Prototyping', rating: 85, color: 'bg-blue-500' }
-		]
-	},
-	{
-		name: 'Jacob Jones',
-		role: 'QA Tester',
-		avatar: '/images/gent2.jpg',
-		rating: 4.2,
-		status: 'Available',
-		email: 'jacobjones@company.com',
-		slack: 'jacobjones@company.com',
-		skills: ['Selenium', 'Jest', 'Cypress'],
-		specialties: ['Test Automation', 'Bug Tracking'],
-		tasksCompleted: 156,
-		monthlyKPI: 82,
-		topSkills: [
-			{ name: 'Selenium', rating: 87, color: 'bg-green-500' },
-			{ name: 'Jest', rating: 80, color: 'bg-red-500' },
-			{ name: 'Cypress', rating: 83, color: 'bg-teal-500' }
-		]
-	},
-	{
-		name: 'Floyd Miles',
-		role: 'Content Writer',
-		avatar: '/images/gent4.jpg',
-		rating: 4.8,
-		status: 'Available',
-		email: 'floydmiles@company.com',
-		slack: 'floydmiles@company.com',
-		skills: ['Copywriting', 'SEO', 'Research'],
-		specialties: ['Technical Writing', 'Content Strategy'],
-		tasksCompleted: 201,
-		monthlyKPI: 94,
-		topSkills: [
-			{ name: 'Copywriting', rating: 95, color: 'bg-orange-500' },
-			{ name: 'SEO', rating: 88, color: 'bg-green-500' },
-			{ name: 'Research', rating: 90, color: 'bg-blue-500' }
-		]
-	},
+export const defaultTeamMembers: TeamMember[] = [
+  {
+    name: "Kristin Watson",
+    role: "Product Designer",
+    avatar: "/images/avatar.jpg",
+    rating: 4.3,
+    status: "Available",
+    email: "kristinwaston@company.com",
+    slack: "kristinwaston@company.com",
+    skills: [
+      "Node.js",
+      "Python",
+      "PostgreSQL",
+      "Redis",
+      "React",
+      "Microservices",
+    ],
+    specialties: ["API Design", "Database Optimization", "System Architecture"],
+    tasksCompleted: 123,
+    monthlyKPI: 67,
+    topSkills: [
+      { name: "React", rating: 70, color: "bg-purple-500" },
+      { name: "React", rating: 70, color: "bg-blue-500" },
+      { name: "React", rating: 70, color: "bg-orange-500" },
+    ],
+  },
+  {
+    name: "Robert Fox",
+    role: "Backend Developer",
+    avatar: "/images/gent.jpg",
+    rating: 4.5,
+    status: "Available",
+    email: "robertfox@company.com",
+    slack: "robertfox@company.com",
+    skills: ["Node.js", "Python", "PostgreSQL"],
+    specialties: ["API Design", "Database Optimization"],
+    tasksCompleted: 98,
+    monthlyKPI: 72,
+    topSkills: [
+      { name: "Node.js", rating: 85, color: "bg-green-500" },
+      { name: "Python", rating: 80, color: "bg-blue-500" },
+      { name: "PostgreSQL", rating: 75, color: "bg-indigo-500" },
+    ],
+  },
+  {
+    name: "Darrell Steward",
+    role: "Product Manager",
+    avatar: "/images/gent1.jpg",
+    rating: 4.7,
+    status: "Busy",
+    email: "darrellsteward@company.com",
+    slack: "darrellsteward@company.com",
+    skills: ["Agile", "Scrum", "Leadership"],
+    specialties: ["Product Strategy", "Team Management"],
+    tasksCompleted: 145,
+    monthlyKPI: 89,
+    topSkills: [
+      { name: "Leadership", rating: 90, color: "bg-yellow-500" },
+      { name: "Agile", rating: 85, color: "bg-red-500" },
+      { name: "Strategy", rating: 88, color: "bg-pink-500" },
+    ],
+  },
+  {
+    name: "Leslie Alexander",
+    role: "Frontend Developer",
+    avatar: "/images/lady.jpg",
+    rating: 4.4,
+    status: "Available",
+    email: "lesliealexander@company.com",
+    slack: "lesliealexander@company.com",
+    skills: ["React", "TypeScript", "CSS"],
+    specialties: ["UI Development", "Performance Optimization"],
+    tasksCompleted: 112,
+    monthlyKPI: 78,
+    topSkills: [
+      { name: "React", rating: 88, color: "bg-blue-500" },
+      { name: "TypeScript", rating: 82, color: "bg-blue-600" },
+      { name: "CSS", rating: 85, color: "bg-pink-500" },
+    ],
+  },
+  {
+    name: "Esther Howard",
+    role: "Product Designer",
+    avatar: "/images/lady1.jpg",
+    rating: 4.6,
+    status: "Available",
+    email: "estherhoward@company.com",
+    slack: "estherhoward@company.com",
+    skills: ["Figma", "UI/UX", "Prototyping"],
+    specialties: ["User Research", "Design Systems"],
+    tasksCompleted: 87,
+    monthlyKPI: 71,
+    topSkills: [
+      { name: "Figma", rating: 92, color: "bg-purple-500" },
+      { name: "UI/UX", rating: 88, color: "bg-indigo-500" },
+      { name: "Prototyping", rating: 85, color: "bg-blue-500" },
+    ],
+  },
+  {
+    name: "Jacob Jones",
+    role: "QA Tester",
+    avatar: "/images/gent2.jpg",
+    rating: 4.2,
+    status: "Available",
+    email: "jacobjones@company.com",
+    slack: "jacobjones@company.com",
+    skills: ["Selenium", "Jest", "Cypress"],
+    specialties: ["Test Automation", "Bug Tracking"],
+    tasksCompleted: 156,
+    monthlyKPI: 82,
+    topSkills: [
+      { name: "Selenium", rating: 87, color: "bg-green-500" },
+      { name: "Jest", rating: 80, color: "bg-red-500" },
+      { name: "Cypress", rating: 83, color: "bg-teal-500" },
+    ],
+  },
+  {
+    name: "Floyd Miles",
+    role: "Content Writer",
+    avatar: "/images/gent4.jpg",
+    rating: 4.8,
+    status: "Available",
+    email: "floydmiles@company.com",
+    slack: "floydmiles@company.com",
+    skills: ["Copywriting", "SEO", "Research"],
+    specialties: ["Technical Writing", "Content Strategy"],
+    tasksCompleted: 201,
+    monthlyKPI: 94,
+    topSkills: [
+      { name: "Copywriting", rating: 95, color: "bg-orange-500" },
+      { name: "SEO", rating: 88, color: "bg-green-500" },
+      { name: "Research", rating: 90, color: "bg-blue-500" },
+    ],
+  },
 ];
 
 export default function AssignedTeamMembers({ teamMembers = defaultTeamMembers }: AssignedTeamMembersProps) {
@@ -203,10 +210,10 @@ export default function AssignedTeamMembers({ teamMembers = defaultTeamMembers }
 		};
 	}, [isDialogOpen]);
 
-	return (
-		<div className="w-full">
-			{/* Tabs */}
-			<div className="flex gap-6 border-b border-gray-200 mb-6">
+  return (
+    <div className="w-full">
+      {/* Tabs */}
+      {/* <div className="flex gap-6 border-b border-gray-200 mb-6">
 				<Link href="/member/projects" className="pb-3 px-1 text-gray-500 hover:text-gray-700 transition-colors">
 					Project Overview
 				</Link>
@@ -216,10 +223,10 @@ export default function AssignedTeamMembers({ teamMembers = defaultTeamMembers }
 				<Link href="/member/projects/team" className="pb-3 px-1 text-blue-600 font-medium border-b-2 border-blue-600">
 					Assigned Team Members
 				</Link>
-			</div>
+			</div> */}
 
 			{/* Search Bar */}
-			<div className="mb-6">
+			<div className="my-6">
 				<div className="relative w-full max-w-sm">
 					<svg
 						className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
