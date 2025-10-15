@@ -12,7 +12,7 @@ import {
 
 const PendingTable = () => {
   return (
-    <div className='w-[65%] overflow-x-auto'>
+    <div className='w-[70%] overflow-x-auto'>
          <Table className=''>
         <TableHeader className="w-full] h-[40px] boder-b p-2 gap-4">
           <TableRow className='w-full'>
