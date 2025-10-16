@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { Calendar, Circle, Plus } from "lucide-react";
+import StepFour from "@/components/step-four";
 
 /* -----------------------------
    ✅ Image Component (Safe)
@@ -379,16 +380,8 @@ export default function ProjectsPage() {
 
       {/* Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>New Project</DialogTitle>
-          </DialogHeader>
-          <p className="text-gray-600 mb-4">
-            This modal is currently blank — form integration will come after backend setup.
-          </p>
-          <Button variant="secondary" onClick={() => setIsModalOpen(false)}>
-            Close
-          </Button>
+        <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto w-full !important">
+          <StepFour />
         </DialogContent>
       </Dialog>
     </div>
