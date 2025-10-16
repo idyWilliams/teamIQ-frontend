@@ -8,7 +8,6 @@ import TeamPage from "./team-page";
 export default function Team() {
   return (
     <div className="space-y-4">
-      <h2 className="text-base">Team</h2>
 
 <div className= "flex gap-2">
       <TeamPage />
