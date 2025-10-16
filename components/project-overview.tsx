@@ -4,6 +4,7 @@ import LinkedDocs from './linked-docs';
 import AiSummary from './ai-summary';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from './ui/button';
+import { usePathname } from 'next/navigation';
 const dummyStacks = [
   { imgSrc: '/images/nodejs.png', stack: 'NodeJS' },
   { imgSrc: '/images/figma.png', stack: 'Figma' },
@@ -22,9 +23,9 @@ const dummyLinkedDocs = [
   'Project_Plan.docx',
   'Design_Mockups.sketch',
 ];
-
 const ProjectOverview = () => {
   const isMobile = useIsMobile();
+  const pathname = usePathname();
 
   return (
     <div className="flex h-screen gap-[32px] p-[24px]">
@@ -37,14 +38,16 @@ const ProjectOverview = () => {
         )}
 
         <div>
-          <div className='flex justify-between items-center mb-4'>
+          <div className="mb-4 flex items-center justify-between">
             {' '}
             <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
               Description
             </h2>
-            <Button className="bg-[#086ACE] px-[24px] py-[16px] text-[14px] text-[#FFFFFA]">
-              Edit Project
-            </Button>
+            {pathname.includes('/organization') && (
+              <Button className="bg-[#086ACE] px-[24px] py-[16px] text-[14px] text-[#FFFFFA] hover:bg-[#086bcee0]">
+                Edit Project
+              </Button>
+            )}
           </div>
           <p className="text-[13px] leading-relaxed lg:text-[14px]">
             Lorem ipsum dolor sit amet consectetur. Sed est vel id gravida orci
