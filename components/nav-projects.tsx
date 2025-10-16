@@ -1,4 +1,5 @@
 "use client";
+
 import { type LucideIcon } from "lucide-react";
 import {
   SidebarGroup,
@@ -9,15 +10,18 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-export function NavProjects({
-  projects,
-}: {
-  projects: {
+type NavProjectsProps = {
+  projects :{
     name: string;
     url: string;
     icon: LucideIcon | any;
-  }[];
-}) {
+  }[]
+  
+}
+
+
+export function NavProjects({
+  projects}:   NavProjectsProps ) {
   // const { isMobile } = useSidebar();
 
   return (

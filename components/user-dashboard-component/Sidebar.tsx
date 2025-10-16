@@ -24,6 +24,12 @@ const SidebarMain = ({ closeSidebar, className = '' }: SidebarProps) => {
     null
   );
 
+  // Extract project ID from URL if we're on a project page
+  const getProjectId = useCallback(() => {
+    const projectMatch = pathname.match(/\/member\/projects\/([^\/\?]+)/);
+    return projectMatch ? projectMatch[1] : null;
+  }, [pathname]);
+
   // Memoized path checking function
   const isPathActive = useCallback(
     (link: SidebarLinkType): boolean => {
@@ -63,8 +69,26 @@ const SidebarMain = ({ closeSidebar, className = '' }: SidebarProps) => {
     setIsParentActiveOpen(prevLabel => (prevLabel === label ? null : label));
   }, []);
 
-  // Memoized sidebar links to prevent unnecessary re-renders
-  const memoizedSidebarLinks = useMemo(() => sidebarLinks, []);
+  // Memoized sidebar links with dynamic children based on project ID
+  const memoizedSidebarLinks = useMemo(() => {
+    const projectId = getProjectId();
+    return sidebarLinks.map(link => {
+      if (link.dynamicChildren && projectId) {
+        return {
+          ...link,
+          children: link.dynamicChildren(projectId),
+        };
+      }
+      // For Projects link, only show children when on a specific project page
+      if (link.label === 'Projects' && !projectId) {
+        return {
+          ...link,
+          children: undefined, // No children when not on a specific project
+        };
+      }
+      return link;
+    });
+  }, [getProjectId]);
 
   return (
     <aside
