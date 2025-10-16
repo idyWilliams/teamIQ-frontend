@@ -34,7 +34,7 @@ function ProjectDetails() {
         </TabsList>
 
         {projectsTabs.map(tab => (
-          <TabsContent key={tab.value} value={tab.value} className="pt-10">
+          <TabsContent key={tab.value} value={tab.value} className="pt-10 ml-4">
             {tab.content}
           </TabsContent>
         ))}
