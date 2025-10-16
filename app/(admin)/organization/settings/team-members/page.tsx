@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import InviteMembers from '../../components/member-group/InviteMembers';
-import InviteTable from '../../components/member-group/InviteTable';
+import InviteMembers from '@/app/(admin)/organization/components/member-group/InviteMembers';
+import InviteTable from '@/app/(admin)/organization/components/member-group/InviteTable';
 import PendingInvite from '../../components/member-group/PendingInvite';
-import PendingTable from '../../components/member-group/PendingTable';
-import InviteTeamMemberModal from '../../components/InviteTeamMemberModal';
+import PendingTable from '@/app/(admin)/organization/components/member-group/PendingInvite';
+import InviteTeamMemberModal from '@/app/(admin)/organization/components/member-group/InviteTeamMemberModal';
 
 const TeamMemberPage = () => {
   const [modalOpen, setModalOpen] = useState(false);

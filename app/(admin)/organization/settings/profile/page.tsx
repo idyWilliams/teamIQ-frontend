@@ -1,9 +1,18 @@
-import React from 'react'
+import React from 'react';
+import OrganisationProfile from '../../components/profile-data/OrganisationProfile';
+import CompanyLogo from '../../components/profile-data/CompanyLogo';
 
 const ProfilePage = () => {
   return (
-    <div>ProfilePage</div>
-  )
-}
+    <section className="flex w-full items-start justify-center gap-7 pt-0">
+      <div className="w-[70%]">
+        <OrganisationProfile />
+      </div>
+      <div className="w-[30%]">
+        <CompanyLogo />
+      </div>
+    </section>
+  );
+};
 
-export default ProfilePage
+export default ProfilePage;
