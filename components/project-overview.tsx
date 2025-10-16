@@ -38,7 +38,7 @@ const ProjectOverview = () => {
         )}
 
         <div>
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-2 flex items-center justify-between">
             {' '}
             <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
               Description
