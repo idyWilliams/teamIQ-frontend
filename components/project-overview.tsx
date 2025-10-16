@@ -3,6 +3,7 @@ import IconList from "./ui/icon-list";
 import LinkedDocs from "./linked-docs";
 import AiSummary from "./ai-summary";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Button } from "./ui/button";
 
 const dummyStacks = [
   { imgSrc: "/images/nodejs.png", stack: "NodeJS" },
@@ -23,7 +24,12 @@ const dummyLinkedDocs = [
   "Design_Mockups.sketch",
 ];
 
-const ProjectOverview = () => {
+interface ProjectOverviewProps {
+  id?: string | number;
+  edit: boolean;
+}
+
+const ProjectOverview = ({edit} : ProjectOverviewProps) => {
   const isMobile = useIsMobile();
 
   return (
@@ -37,9 +43,13 @@ const ProjectOverview = () => {
         )}
 
         <div>
-          <h2 className="font-bold mb-[12px] text-[14px] lg:text-[16px]">
+          <div className="flex items-center justify-between">
+            <h2 className="font-bold mb-[12px] text-[14px] lg:text-[16px]">
             Description
           </h2>
+            {edit &&<Button className="bg-blue-700">Edit</Button>}
+          </div>
+          
           <p className="leading-relaxed text-[13px] lg:text-[14px]">
             Lorem ipsum dolor sit amet consectetur. Sed est vel id gravida orci
             nascetur tincidunt amet. Vestibulum eu sagittis ac elementum nam
