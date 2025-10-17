@@ -42,8 +42,9 @@ export function NavProjects({ projects }: NavProjectsProps) {
                     : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                 )}
               >
-                <Link href={`${item.url}/overview`} className="flex items-center w-full">
-                  {/* Blue Active Bar */}
+                {/* ✅ Navigates directly to /organization/projects */}
+                <Link href={item.url} className="flex items-center w-full">
+                  {/* Blue Active Left Border */}
                   {isActive && (
                     <span className="absolute left-0 top-0 h-full w-[3px] bg-blue-600 rounded-r-md" />
                   )}

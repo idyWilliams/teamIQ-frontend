@@ -22,9 +22,21 @@ const data = {
     avatar: "/avatars/shadcn.jpg",
   },
   teams: [
-    { name: "Acme Inc", logo: GalleryVerticalEnd, plan: "Enterprise" },
-    { name: "Acme Corp.", logo: AudioWaveform, plan: "Startup" },
-    { name: "Evil Corp.", logo: Command, plan: "Free" },
+    {
+      name: "Acme Inc",
+      logo: GalleryVerticalEnd,
+      plan: "Enterprise",
+    },
+    {
+      name: "Acme Corp.",
+      logo: AudioWaveform,
+      plan: "Startup",
+    },
+    {
+      name: "Evil Corp.",
+      logo: Command,
+      plan: "Free",
+    },
   ],
   navMain: [
     {
@@ -56,7 +68,11 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" className="bg-white border-r border-gray-200" {...props}>
+    <Sidebar
+      collapsible="icon"
+      className="bg-white border-r border-gray-200"
+      {...props}
+    >
       <SidebarHeader className="py-3 border-b border-gray-100">
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>

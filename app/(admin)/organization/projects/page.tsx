@@ -13,13 +13,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Calendar, Circle, MoreHorizontal, Plus } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+import { Calendar, Circle, Plus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -30,7 +24,6 @@ import {
 
 /* ----------------------------------------------------------------------
    🧩 IMAGE WRAPPER COMPONENT
-   Helps safely render logos or avatars (e.g. team members, tools).
 ------------------------------------------------------------------------ */
 type ImageProps = {
   src: string;
@@ -55,9 +48,7 @@ const Image: React.FC<ImageProps> = ({ src, alt, width, height, className }) => 
 );
 
 /* ----------------------------------------------------------------------
-   📁 PROJECT TYPE DEFINITION
-   This defines the data structure for each project.
-   🔗 Backend note: Replace with real API response later.
+   📁 PROJECT TYPE + MOCK DATA
 ------------------------------------------------------------------------ */
 type Project = {
   id: number;
@@ -71,10 +62,6 @@ type Project = {
   progress: number;
 };
 
-/* ----------------------------------------------------------------------
-   💾 MOCK DATA (temporary for UI)
-   🔗 Backend note: Replace this with data fetched from an API.
------------------------------------------------------------------------- */
 const projects: Project[] = [
   {
     id: 1,
@@ -111,14 +98,14 @@ const projects: Project[] = [
   },
   {
     id: 4,
-    name: "Project QRS",
-    app: ["jira", "gitlab"],
+    name: "Project XYZ",
+    app: ["slack", "jira", "gitlab"],
     teamLead: "Kate Morrison",
-    teamMembers: ["Andrew", "Kabreer", "Suraya"],
-    startDate: "Mar 1, 2025",
-    endDate: "Jun 15, 2025",
+    teamMembers: ["Mia", "Tom", "Leo", "Tina"],
+    startDate: "Feb 15, 2025",
+    endDate: "Apr 20, 2025",
     status: "In Progress",
-    progress: 70,
+    progress: 65,
   },
   {
     id: 5,
@@ -144,20 +131,41 @@ const projects: Project[] = [
   },
   {
     id: 7,
-    name: "Project QRS",
-    app: ["jira", "gitlab"],
+    name: "Project XYZ",
+    app: ["slack", "jira", "gitlab"],
     teamLead: "Kate Morrison",
-    teamMembers: ["Andrew", "Kabreer", "Suraya"],
-    startDate: "Mar 1, 2025",
-    endDate: "Jun 15, 2025",
+    teamMembers: ["Mia", "Tom", "Leo", "Tina"],
+    startDate: "Feb 15, 2025",
+    endDate: "Apr 20, 2025",
     status: "In Progress",
-    progress: 70,
+    progress: 65,
+  },
+  {
+    id: 8,
+    name: "Project ABC",
+    app: ["slack", "github"],
+    teamLead: "Kate Morrison",
+    teamMembers: ["Ava", "Ryan", "Noah"],
+    startDate: "Jan 20, 2025",
+    endDate: "Mar 30, 2025",
+    status: "Pending",
+    progress: 25,
+  },
+  {
+    id: 9,
+    name: "Project LMN",
+    app: ["github", "firebase", "slack"],
+    teamLead: "Kate Morrison",
+    teamMembers: ["Fatima", "Sifan", "Adefolayo"],
+    startDate: "Jan 10, 2025",
+    endDate: "Jun 1, 2025",
+    status: "Complete",
+    progress: 100,
   },
 ];
 
 /* ----------------------------------------------------------------------
    🧭 ICON MAP
-   Maps app names to their logos (Figma, Slack, GitHub, etc.)
 ------------------------------------------------------------------------ */
 const iconMap: Record<string, string> = {
   slack: "/images/slack.png",
@@ -176,12 +184,8 @@ export default function ProjectsPage() {
   const [sorting, setSorting] = useState([{ id: "progress", desc: true }]);
   const columnHelper = createColumnHelper<Project>();
 
-  /* ------------------------------------------------------------------
-     🧩 TABLE COLUMNS SETUP
-  ------------------------------------------------------------------- */
   const columns = useMemo(
     () => [
-      // ✅ Project Name column
       columnHelper.accessor("name", {
         header: "Project Name",
         cell: (info) => (
@@ -194,7 +198,6 @@ export default function ProjectsPage() {
         ),
       }),
 
-      // ✅ Connected Apps column
       columnHelper.accessor("app", {
         header: "App",
         cell: (info) => (
@@ -213,7 +216,6 @@ export default function ProjectsPage() {
         ),
       }),
 
-      // ✅ Team Lead column
       columnHelper.accessor("teamLead", {
         header: "Team Lead",
         cell: (info) => (
@@ -230,7 +232,6 @@ export default function ProjectsPage() {
         ),
       }),
 
-      // ✅ Team Members column
       columnHelper.accessor("teamMembers", {
         header: "Team Members",
         cell: (info) => {
@@ -259,7 +260,6 @@ export default function ProjectsPage() {
         },
       }),
 
-      // ✅ Dates
       columnHelper.accessor("startDate", {
         header: "Start Date",
         cell: (info) => (
@@ -279,17 +279,10 @@ export default function ProjectsPage() {
         ),
       }),
 
-      // ✅ Status + Dot indicator
       columnHelper.accessor("status", {
         header: "Status",
         cell: (info) => {
           const status = info.getValue();
-          const color =
-            status === "Complete"
-              ? "text-green-500"
-              : status === "In Progress"
-              ? "text-blue-500"
-              : "text-yellow-500";
           const dotColor =
             status === "Complete"
               ? "green"
@@ -299,13 +292,12 @@ export default function ProjectsPage() {
           return (
             <div className="flex items-center gap-2">
               <Circle size={8} fill={dotColor} />
-              <span className={`font-medium ${color}`}>{status}</span>
+              <span className="font-medium text-gray-700">{status}</span>
             </div>
           );
         },
       }),
 
-      // ✅ Progress Bar
       columnHelper.accessor("progress", {
         header: "Progress",
         cell: (info) => (
@@ -315,39 +307,10 @@ export default function ProjectsPage() {
           </div>
         ),
       }),
-
-      // ✅ Actions Dropdown
-      columnHelper.display({
-        id: "actions",
-        header: "",
-        cell: ({ row }) => (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="p-1 hover:bg-gray-100 rounded-full">
-                <MoreHorizontal size={18} />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-28">
-              <DropdownMenuItem asChild>
-                <Link href={`/organization/projects/${row.original.id}`}>
-                  View
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>Edit</DropdownMenuItem>
-              <DropdownMenuItem className="text-red-600">
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ),
-      }),
     ],
     []
   );
 
-  /* ------------------------------------------------------------------
-     ⚙️ Initialize Table + Pagination
-  ------------------------------------------------------------------- */
   const table = useReactTable({
     data: projects,
     columns,
@@ -356,20 +319,11 @@ export default function ProjectsPage() {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    initialState: {
-      pagination: {
-        pageIndex: 0,
-        pageSize: 5, // 👈 show only 3 per page
-      },
-    },
+    initialState: { pagination: { pageIndex: 0, pageSize: 5 } },
   });
 
-  /* ------------------------------------------------------------------
-     🧠 RENDER UI
-  ------------------------------------------------------------------- */
   return (
     <div className="p-6 bg-white rounded-lg shadow-sm w-full overflow-hidden">
-      {/* =================== PAGE HEADER =================== */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
         <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
           Projects
@@ -379,7 +333,6 @@ export default function ProjectsPage() {
         </Button>
       </div>
 
-      {/* =================== TABLE =================== */}
       <div className="overflow-x-auto">
         <table className="w-full text-sm border-collapse">
           <thead>
@@ -404,12 +357,16 @@ export default function ProjectsPage() {
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="border-t hover:bg-gray-50 transition">
-                {row.getVisibleCells().map((cell, index) => (
+              <tr
+                key={row.id}
+                onClick={() =>
+                  (window.location.href = `/organization/projects/${row.original.id}`)
+                }
+                className="border-t cursor-pointer transition"
+              >
+                {row.getVisibleCells().map((cell) => (
                   <td key={cell.id} className="p-2">
-                    <Link key={index} href={`/organization/projects/${cell.id}`}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </Link>
                   </td>
                 ))}
               </tr>
@@ -418,16 +375,13 @@ export default function ProjectsPage() {
         </table>
       </div>
 
-      {/* =================== FOOTER / PAGINATION =================== */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-3 py-4 mt-4 border-t border-gray-200 text-sm">
         <p className="text-gray-600">
           Showing{" "}
           <span className="font-semibold">
-            {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}
-            –
+            {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}–
             {Math.min(
-              (table.getState().pagination.pageIndex + 1) *
-                table.getState().pagination.pageSize,
+              (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
               projects.length
             )}
           </span>{" "}
@@ -453,7 +407,7 @@ export default function ProjectsPage() {
         </div>
       </div>
 
-      {/* =================== ADD PROJECT MODAL =================== */}
+      {/* Add Project Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
@@ -462,8 +416,6 @@ export default function ProjectsPage() {
               Fill in the project details below.
             </DialogDescription>
           </DialogHeader>
-
-          {/* 🔗 Backend note: This form will later POST data to the API */}
           <form className="space-y-4 mt-4">
             <div>
               <label className="block text-sm font-medium mb-1">
@@ -475,13 +427,8 @@ export default function ProjectsPage() {
                 placeholder="Enter project name"
               />
             </div>
-
             <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-              >
+              <Button variant="outline" type="button" onClick={() => setIsModalOpen(false)}>
                 Cancel
               </Button>
               <Button type="submit">Create Project</Button>
