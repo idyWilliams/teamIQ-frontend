@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -8,17 +8,18 @@ import {
   getPaginationRowModel,
   flexRender,
   createColumnHelper,
-} from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
+} from '@tanstack/react-table';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Progress } from "@/components/ui/progress";
-import { Calendar, Circle, Plus } from "lucide-react";
-import StepFour from "@/components/step-four";
+} from '@/components/ui/dialog';
+import { Progress } from '@/components/ui/progress';
+import { Calendar, Circle, Plus } from 'lucide-react';
+import StepperModal from '@/components/stepper-components/steps/stepper-modal';
+
 
 /* -----------------------------
    ✅ Image Component (Safe)
@@ -31,14 +32,20 @@ type ImageProps = {
   className?: string;
 };
 
-const Image: React.FC<ImageProps> = ({ src, alt, width, height, className }) => (
+const Image: React.FC<ImageProps> = ({
+  src,
+  alt,
+  width,
+  height,
+  className,
+}) => (
   <div
     style={{
-      width: width ? `${width}px` : "100%",
-      height: height ? `${height}px` : "100%",
+      width: width ? `${width}px` : '100%',
+      height: height ? `${height}px` : '100%',
       backgroundImage: `url(${src})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
     }}
     className={className}
     title={alt}
@@ -56,7 +63,7 @@ type Project = {
   teamMembers: string[];
   startDate: string;
   endDate: string;
-  status: "In Progress" | "Complete" | "Pending";
+  status: 'In Progress' | 'Complete' | 'Pending';
   progress: number;
 };
 
@@ -66,57 +73,57 @@ type Project = {
 const projects: Project[] = [
   {
     id: 1,
-    name: "Project XYZ",
-    app: ["slack", "jira", "gitlab"],
-    teamLead: "Kate Morrison",
-    teamMembers: ["Mia", "Tom", "Leo", "Tina"],
-    startDate: "Feb 15, 2025",
-    endDate: "Apr 20, 2025",
-    status: "In Progress",
+    name: 'Project XYZ',
+    app: ['slack', 'jira', 'gitlab'],
+    teamLead: 'Kate Morrison',
+    teamMembers: ['Mia', 'Tom', 'Leo', 'Tina'],
+    startDate: 'Feb 15, 2025',
+    endDate: 'Apr 20, 2025',
+    status: 'In Progress',
     progress: 65,
   },
   {
     id: 2,
-    name: "Project XYZ",
-    app: ["slack", "github"],
-    teamLead: "Kate Morrison",
-    teamMembers: ["Ava", "Ryan", "Noah"],
-    startDate: "Jan 20, 2025",
-    endDate: "Mar 30, 2025",
-    status: "Pending",
+    name: 'Project XYZ',
+    app: ['slack', 'github'],
+    teamLead: 'Kate Morrison',
+    teamMembers: ['Ava', 'Ryan', 'Noah'],
+    startDate: 'Jan 20, 2025',
+    endDate: 'Mar 30, 2025',
+    status: 'Pending',
     progress: 25,
   },
   {
     id: 3,
-    name: "Project XYZ",
-    app: ["figma", "jira"],
-    teamLead: "Kate Morrison",
-    teamMembers: ["Ben", "Ella", "Mark", "Zoe"],
-    startDate: "Feb 1, 2025",
-    endDate: "May 10, 2025",
-    status: "In Progress",
+    name: 'Project XYZ',
+    app: ['figma', 'jira'],
+    teamLead: 'Kate Morrison',
+    teamMembers: ['Ben', 'Ella', 'Mark', 'Zoe'],
+    startDate: 'Feb 1, 2025',
+    endDate: 'May 10, 2025',
+    status: 'In Progress',
     progress: 50,
   },
   {
     id: 4,
-    name: "Project XYZ",
-    app: ["github", "firebase", "slack"],
-    teamLead: "Kate Morrison",
-    teamMembers: ["Fatima", "Sifan", "Adefolayo"],
-    startDate: "Jan 10, 2025",
-    endDate: "Jun 1, 2025",
-    status: "Complete",
+    name: 'Project XYZ',
+    app: ['github', 'firebase', 'slack'],
+    teamLead: 'Kate Morrison',
+    teamMembers: ['Fatima', 'Sifan', 'Adefolayo'],
+    startDate: 'Jan 10, 2025',
+    endDate: 'Jun 1, 2025',
+    status: 'Complete',
     progress: 100,
   },
   {
     id: 5,
-    name: "Project XYZ",
-    app: ["jira", "gitlab"],
-    teamLead: "Kate Morrison",
-    teamMembers: ["Andrew", "Kabreer", "Suraya"],
-    startDate: "Mar 1, 2025",
-    endDate: "Jun 15, 2025",
-    status: "In Progress",
+    name: 'Project XYZ',
+    app: ['jira', 'gitlab'],
+    teamLead: 'Kate Morrison',
+    teamMembers: ['Andrew', 'Kabreer', 'Suraya'],
+    startDate: 'Mar 1, 2025',
+    endDate: 'Jun 15, 2025',
+    status: 'In Progress',
     progress: 70,
   },
 ];
@@ -125,12 +132,12 @@ const projects: Project[] = [
    ✅ Icon Map
 ------------------------------ */
 const iconMap: Record<string, string> = {
-  slack: "/images/slack.png",
-  jira: "/images/jira.png",
-  github: "/images/github.png",
-  gitlab: "/images/gitlab.png",
-  figma: "/images/figma.png",
-  firebase: "/images/clickup.png",
+  slack: '/images/slack.png',
+  jira: '/images/jira.png',
+  github: '/images/github.png',
+  gitlab: '/images/gitlab.png',
+  figma: '/images/figma.png',
+  firebase: '/images/clickup.png',
 };
 
 /* -----------------------------
@@ -138,25 +145,25 @@ const iconMap: Record<string, string> = {
 ------------------------------ */
 export default function ProjectsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [sorting, setSorting] = useState([{ id: "progress", desc: true }]);
+  const [sorting, setSorting] = useState([{ id: 'progress', desc: true }]);
 
   const columnHelper = createColumnHelper<Project>();
 
   const columns = useMemo(
     () => [
-      columnHelper.accessor("name", {
-        header: "Project Name",
-        cell: (info) => (
+      columnHelper.accessor('name', {
+        header: 'Project Name',
+        cell: info => (
           <span className="font-medium text-gray-800">{info.getValue()}</span>
         ),
       }),
 
-      columnHelper.accessor("app", {
-        header: "App",
-        cell: (info) => {
+      columnHelper.accessor('app', {
+        header: 'App',
+        cell: info => {
           const apps = info.getValue();
           return (
-            <div className="flex gap-2 items-center">
+            <div className="flex items-center gap-2">
               {apps.map((app, i) => (
                 <Image
                   key={i}
@@ -172,9 +179,9 @@ export default function ProjectsPage() {
         },
       }),
 
-      columnHelper.accessor("teamLead", {
-        header: "Team Lead",
-        cell: (info) => (
+      columnHelper.accessor('teamLead', {
+        header: 'Team Lead',
+        cell: info => (
           <div className="flex items-center gap-3">
             <Image
               src="/images/profile.2.jpg"
@@ -183,14 +190,14 @@ export default function ProjectsPage() {
               height={32}
               className="rounded-full border border-gray-300 object-cover"
             />
-            <span className="text-gray-700 font-medium">{info.getValue()}</span>
+            <span className="font-medium text-gray-700">{info.getValue()}</span>
           </div>
         ),
       }),
 
-      columnHelper.accessor("teamMembers", {
-        header: "Team Members",
-        cell: (info) => {
+      columnHelper.accessor('teamMembers', {
+        header: 'Team Members',
+        cell: info => {
           const members = info.getValue();
           return (
             <div className="flex items-center">
@@ -203,13 +210,13 @@ export default function ProjectsPage() {
                     width={28}
                     height={28}
                     className={`rounded-full border-2 border-white object-cover ${
-                      i === 0 ? "z-10" : "z-0"
+                      i === 0 ? 'z-10' : 'z-0'
                     }`}
                   />
                 ))}
               </div>
               {members.length > 2 && (
-                <span className="ml-3 text-gray-600 text-xs font-semibold">
+                <span className="ml-3 text-xs font-semibold text-gray-600">
                   +{members.length - 2}
                 </span>
               )}
@@ -218,9 +225,9 @@ export default function ProjectsPage() {
         },
       }),
 
-      columnHelper.accessor("startDate", {
-        header: "Start Date",
-        cell: (info) => (
+      columnHelper.accessor('startDate', {
+        header: 'Start Date',
+        cell: info => (
           <div className="flex items-center gap-2 text-gray-600">
             <Calendar size={14} />
             {info.getValue()}
@@ -228,9 +235,9 @@ export default function ProjectsPage() {
         ),
       }),
 
-      columnHelper.accessor("endDate", {
-        header: "End Date",
-        cell: (info) => (
+      columnHelper.accessor('endDate', {
+        header: 'End Date',
+        cell: info => (
           <div className="flex items-center gap-2 text-gray-600">
             <Calendar size={14} />
             {info.getValue()}
@@ -238,22 +245,22 @@ export default function ProjectsPage() {
         ),
       }),
 
-      columnHelper.accessor("status", {
-        header: "Status",
-        cell: (info) => {
+      columnHelper.accessor('status', {
+        header: 'Status',
+        cell: info => {
           const status = info.getValue();
           const color =
-            status === "Complete"
-              ? "text-green-600"
-              : status === "In Progress"
-              ? "text-blue-600"
-              : "text-yellow-600";
+            status === 'Complete'
+              ? 'text-green-600'
+              : status === 'In Progress'
+                ? 'text-blue-600'
+                : 'text-yellow-600';
           const dotColor =
-            status === "Complete"
-              ? "green"
-              : status === "In Progress"
-              ? "blue"
-              : "orange";
+            status === 'Complete'
+              ? 'green'
+              : status === 'In Progress'
+                ? 'blue'
+                : 'orange';
           return (
             <div className="flex items-center gap-2">
               <Circle size={8} fill={dotColor} />
@@ -263,20 +270,18 @@ export default function ProjectsPage() {
         },
       }),
 
-      columnHelper.accessor("progress", {
-        header: "Progress",
-        cell: (info) => {
+      columnHelper.accessor('progress', {
+        header: 'Progress',
+        cell: info => {
           const row = info.row.original;
           return (
-            <div className="flex items-center gap-2 w-full min-w-[120px]">
+            <div className="flex w-full min-w-[120px] items-center gap-2">
               <Progress
                 value={info.getValue()}
-                status={row.status as "In Progress" | "Complete" | "Pending"}
+                status={row.status as 'In Progress' | 'Complete' | 'Pending'}
                 className="flex-1"
               />
-              <span className="text-xs text-gray-500">
-                {info.getValue()}%
-              </span>
+              <span className="text-xs text-gray-500">{info.getValue()}%</span>
             </div>
           );
         },
@@ -296,10 +301,10 @@ export default function ProjectsPage() {
   });
 
   return (
-    <div className="p-4 sm:p-6 bg-white rounded-lg shadow-sm">
+    <div className="rounded-lg bg-white p-4 shadow-sm sm:p-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
-        <h1 className="text-xl sm:text-2xl font-semibold">Projects</h1>
+      <div className="mb-6 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
+        <h1 className="text-xl font-semibold sm:text-2xl">Projects</h1>
         <Button
           onClick={() => setIsModalOpen(true)}
           className="flex items-center gap-2"
@@ -310,14 +315,14 @@ export default function ProjectsPage() {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-[900px] w-full border-collapse text-sm">
+        <table className="w-full min-w-[900px] border-collapse text-sm">
           <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="bg-gray-100 border-b">
-                {headerGroup.headers.map((header) => (
+            {table.getHeaderGroups().map(headerGroup => (
+              <tr key={headerGroup.id} className="border-b bg-gray-100">
+                {headerGroup.headers.map(header => (
                   <th
                     key={header.id}
-                    className="p-3 text-left font-semibold text-gray-700 cursor-pointer select-none hover:text-blue-700 transition"
+                    className="cursor-pointer p-3 text-left font-semibold text-gray-700 transition select-none hover:text-blue-700"
                     onClick={header.column.getToggleSortingHandler()}
                   >
                     {flexRender(
@@ -325,22 +330,22 @@ export default function ProjectsPage() {
                       header.getContext()
                     )}
                     {header.column.getIsSorted()
-                      ? header.column.getIsSorted() === "asc"
-                        ? " 🔼"
-                        : " 🔽"
-                      : ""}
+                      ? header.column.getIsSorted() === 'asc'
+                        ? ' 🔼'
+                        : ' 🔽'
+                      : ''}
                   </th>
                 ))}
               </tr>
             ))}
           </thead>
           <tbody>
-            {table.getRowModel().rows.map((row) => (
+            {table.getRowModel().rows.map(row => (
               <tr
                 key={row.id}
-                className="border-t hover:bg-gray-50 transition-all rounded-md"
+                className="rounded-md border-t transition-all hover:bg-gray-50"
               >
-                {row.getVisibleCells().map((cell) => (
+                {row.getVisibleCells().map(cell => (
                   <td key={cell.id} className="p-3 align-middle">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
@@ -352,9 +357,9 @@ export default function ProjectsPage() {
       </div>
 
       {/* Pagination */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mt-4 text-sm text-gray-600">
+      <div className="mt-4 flex flex-col items-center justify-between text-sm text-gray-600 sm:flex-row">
         <p>Total Projects: {projects.length}</p>
-        <div className="flex items-center gap-3 mt-2 sm:mt-0">
+        <div className="mt-2 flex items-center gap-3 sm:mt-0">
           <Button
             variant="outline"
             size="sm"
@@ -364,7 +369,7 @@ export default function ProjectsPage() {
             Previous
           </Button>
           <span>
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            Page {table.getState().pagination.pageIndex + 1} of{' '}
             {table.getPageCount()}
           </span>
           <Button
@@ -380,8 +385,8 @@ export default function ProjectsPage() {
 
       {/* Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto w-full !important">
-          <StepFour />
+        <DialogContent className="w-[900px] sm:!max-w-[900px] overflow-y-auto max-h-[90vh]">
+          <StepperModal />
         </DialogContent>
       </Dialog>
     </div>
