@@ -233,4 +233,10 @@
   animation: wave 4s linear infinite;
 }
 
+[data-slot="radio-group-indicator"] .fill-primary {
+  fill: #086ACE !important;
+}
+
+
+
 
