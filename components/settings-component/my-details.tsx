@@ -128,14 +128,14 @@ const MyDetails = () => {
         <div className="bg-muted-foreground mt-10 h-[200px] w-full rounded-tl-[96px]  max-sm:h-[150px]">
           <img
             src={images.cover}
-            alt="Cover"
+            
             className="h-[200px] w-full rounded-tl-[96px] object-cover max-sm:h-[150px]"
           />
         </div>
         <div className="border-primary-foreground bg-iq absolute top-[75%] left-[10%] size-[150px] rounded-full border-5 max-sm:size-[85px]">
           <img
             src={images.profile}
-            alt="Profile"
+           
             className="size-[142px] rounded-full object-cover max-sm:size-[80px]"
           />
         </div>
@@ -207,7 +207,7 @@ const MyDetails = () => {
       {/* details profile pic  */}
 
       <div className="flex items-center justify-between px-6 pt-7">
-        <div className="ml-[26%] max-sm:mt-8 max-sm:ml-0">
+        <div className="ml-[30%] max-sm:mt-8 max-sm:ml-0">
           <p>Profile</p>
           <p>Update your details</p>
         </div>
