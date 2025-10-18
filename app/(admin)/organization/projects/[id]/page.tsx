@@ -31,7 +31,7 @@ export default function ProjectDetails() {
               data-[state=active]:after:w-full
               border-none rounded-none
               bg-transparent px-2 py-2
-              data-[state=active]:bg-transparent 
+              data-[state=active]:bg-transparent
             "
           >
             Project Overview
@@ -74,7 +74,7 @@ export default function ProjectDetails() {
 
         <TabsContent value="overview" className="flex-1 mt-4 min-h-0">
           <div className="h-full overflow-auto">
-            <ProjectOverview id={id} edit={true} />
+            <ProjectOverview id={String(id)} edit={true} />
           </div>
         </TabsContent>
 
