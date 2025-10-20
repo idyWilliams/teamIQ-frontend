@@ -26,10 +26,10 @@ const dummyLinkedDocs = [
 
 interface ProjectOverviewProps {
   id?: string | number;
-  edit: boolean;
+  edit?: boolean;
 }
 
-const ProjectOverview = ({edit} : ProjectOverviewProps) => {
+const ProjectOverview = ({ id = "", edit = false }: ProjectOverviewProps) => {
   const isMobile = useIsMobile();
 
   return (
