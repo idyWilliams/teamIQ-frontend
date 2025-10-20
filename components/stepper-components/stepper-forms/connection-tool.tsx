@@ -3,19 +3,25 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { RadioGroup, RadioGroupItem } from '../../ui/radio-group';
 import { Label } from '../../ui/label';
-import { Select, SelectTrigger, SelectValue } from '../../ui/select';
+import {
+  Select,
+  SelectGroup,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '../../ui/select';
 import { SelectContent, SelectItem } from '@radix-ui/react-select';
 import Link from 'next/link';
 import { Input } from '../../ui/input';
 import { Switch } from '../../ui/switch';
 import { Button } from '../../ui/button';
 
-
 interface ConnectionToolProps {
   onSubmit?: () => void;
+  hideButton?: boolean;
 }
 
-const ConnectionTool = ({ onSubmit }: ConnectionToolProps) => {
+const ConnectionTool = ({ onSubmit, hideButton }: ConnectionToolProps) => {
   const {
     register,
     handleSubmit,
@@ -27,12 +33,12 @@ const ConnectionTool = ({ onSubmit }: ConnectionToolProps) => {
   };
 
   return (
-    <div className="mt-2 ">
-      <p className="text-normal text-base max-w-[440px]">
-        Set up the tool for this project to help synchronize your activities with 
-        your preferred tool.
+    <div className="mt-2">
+      <p className="text-normal max-w-[440px] text-base">
+        Set up the tool for this project to help synchronize your activities
+        with your preferred tool.
       </p>
-      
+
       <form onSubmit={handleSubmit(handleFormSubmit)} className="mt-8">
         <RadioGroup defaultValue="new-channel">
           <div className="flex items-center gap-3">
@@ -56,7 +62,7 @@ const ConnectionTool = ({ onSubmit }: ConnectionToolProps) => {
             </Label>
           </div>
         </RadioGroup>
-        
+
         <div className="mt-4 grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-2">
             <Label className="text-base font-normal">App</Label>
@@ -64,26 +70,30 @@ const ConnectionTool = ({ onSubmit }: ConnectionToolProps) => {
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Slack" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="slack">Slack</SelectItem>
+              <SelectContent position="popper" className='bg-white'>
+                <SelectGroup>
+                  {/* <SelectLabel>Apps</SelectLabel> */}
+                  <SelectItem value="slack">Slack</SelectItem>
+                  <SelectItem value="teams">Microsoft Teams</SelectItem>
+                  <SelectItem value="discord">Discord</SelectItem>
+                </SelectGroup>
               </SelectContent>
             </Select>
           </div>
           <div className="grid flex-col gap-2">
-            <Label className="text-base font-normal">
-              Integration Method
-            </Label>
+            <Label className="text-base font-normal">Integration Method</Label>
             <Select>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="API Key" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="method">Method</SelectItem>
+              <SelectContent position="popper" className='bg-white'>
+                <SelectItem value="oauth">OAuth</SelectItem>
+                <SelectItem value="webhook">Webhook</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
-        
+
         <div className="text-normal mt-5 text-sm text-[#434343]">
           <p>
             1. Go to the{' '}
@@ -92,17 +102,15 @@ const ConnectionTool = ({ onSubmit }: ConnectionToolProps) => {
             </Link>{' '}
             and create a free account (you will need to confirm your email).
           </p>
-          <p>
-            2. After that go to your settings, under profile click API key.
-          </p>
+          <p>2. After that go to your settings, under profile click API key.</p>
           <p>3. Generate API and paste below.</p>
         </div>
-        
+
         <div className="mt-4 gap-2">
           <Label className="text-normal text-base">Access Token</Label>
           <Input placeholder="2873DEDPJXKWK" />
         </div>
-        
+
         <div className="mt-4 flex items-center justify-between">
           <div className="flex flex-col">
             <p>Post PMT updates</p>
@@ -115,7 +123,7 @@ const ConnectionTool = ({ onSubmit }: ConnectionToolProps) => {
             className="data-[state=checked]:bg-[#086ACE]"
           />
         </div>
-        
+
         <div className="mt-4 flex items-center justify-between">
           <div className="flex flex-col">
             <p className="text-base font-normal text-[#0B0B0B]">
@@ -130,7 +138,7 @@ const ConnectionTool = ({ onSubmit }: ConnectionToolProps) => {
             className="data-[state=checked]:bg-[#086ACE]"
           />
         </div>
-        
+
         <div className="mt-4 flex items-center justify-between">
           <div className="flex flex-col">
             <p className="text-base font-normal text-[#0B0B0B]">
@@ -145,7 +153,7 @@ const ConnectionTool = ({ onSubmit }: ConnectionToolProps) => {
             className="data-[state=checked]:bg-[#086ACE]"
           />
         </div>
-        
+
         <div className="mt-4 flex items-center justify-between">
           <div className="flex flex-col">
             <p className="text-base font-normal text-[#0B0B0B]">
@@ -160,13 +168,13 @@ const ConnectionTool = ({ onSubmit }: ConnectionToolProps) => {
             className="data-[state=checked]:bg-[#086ACE]"
           />
         </div>
-        
-        <Button 
-          className="mt-4 w-full bg-[#086ACE] p-6 text-base font-semibold cursor-pointer" 
+
+        {!hideButton &&<Button
+          className="mt-4 w-full cursor-pointer bg-[#086ACE] p-6 text-base font-semibold "
           type="submit"
         >
           Next
-        </Button>
+        </Button>}
       </form>
     </div>
   );

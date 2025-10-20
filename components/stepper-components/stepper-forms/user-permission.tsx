@@ -9,6 +9,7 @@ import { Avatar, AvatarImage } from '../../ui/avatar';
 
 interface UserPermissionProps {
   onSubmit?: () => void;
+  hideButton?: boolean; 
 }
 
 interface TeamMember {
@@ -19,7 +20,7 @@ interface TeamMember {
   lead?: boolean;
 }
 
-const UserPermission = ({ onSubmit }: UserPermissionProps) => {
+const UserPermission = ({ onSubmit, hideButton }: UserPermissionProps) => {
   const [teamList, setTeamList] = useState<TeamMember[]>(
     initialTeamList.map(member => ({
       ...member,
@@ -119,14 +120,14 @@ const UserPermission = ({ onSubmit }: UserPermissionProps) => {
         })}
       </div>
 
-      <div className="mt-8">
+      {!hideButton &&<div className="mt-8">
         <Button
           onClick={onSubmit}
           className="w-full cursor-pointer bg-[#086ACE] p-6 text-base font-semibold"
         >
           Next
         </Button>
-      </div>
+      </div>}
     </div>
   );
 };

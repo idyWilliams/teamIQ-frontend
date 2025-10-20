@@ -38,7 +38,7 @@ const StepFour = ({ next }: StepFourProps) => {
             </p>
           </AccordionTrigger>
           <AccordionContent>
-             <ConnectionTool onSubmit={next} />
+             <ConnectionTool onSubmit={next} hideButton={false}/>
           </AccordionContent>
         </AccordionItem>
       </Accordion>

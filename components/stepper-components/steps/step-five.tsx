@@ -39,7 +39,7 @@ const StepFive = ({ next,}: StepFiveProps) => {
           </AccordionTrigger>
 
           <AccordionContent>
-            <UserPermission onSubmit={next} />
+            <UserPermission onSubmit={next} hideButton={false} />
           </AccordionContent>
         </AccordionItem>
       </Accordion>
