@@ -1,4 +1,4 @@
-"use client"
+'use client';
 import React from 'react';
 import CountrySelect from './country-select';
 import { Button } from '@/components/ui/button';
@@ -16,10 +16,10 @@ import {
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  PasswordInput,
-  PasswordInputStrengthChecker,
-} from '../ui/password-input';
+import { PasswordInput } from '../ui/password-input';
+import PasswordChecklist from 'react-password-checklist';
+
+// Validation schema using Yup
 
 const validationSchema = yup.object().shape({
   organization_name: yup
@@ -44,18 +44,17 @@ const validationSchema = yup.object().shape({
 
   country: yup.string().required('Country is required'),
 
-  password: yup
-    .string()
-    .min(8, 'Password must be at least 8 characters')
-    .max(30, 'Password must not exceed 30 characters')
-    .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
-    .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .matches(/[0-9]/, 'Password must contain at least one number')
-    .matches(
-      /[.@$!%*?&]/,
-      'Password must contain at least one special character'
-    )
-    .required('Password is required'),
+  password: yup.string().required('Password is required'),
+  // .min(8, 'Password must be at least 8 characters')
+  // .max(30, 'Password must not exceed 30 characters')
+  // .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+  // .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+  // .matches(/[0-9]/, 'Password must contain at least one number')
+  // .matches(
+  //   /[.@$!%*?&]/,
+  //   'Password must contain at least one special character'
+  // )
+
   repeatPassword: yup
     .string()
     .oneOf([yup.ref('password'), null], 'Passwords must match')
@@ -210,7 +209,19 @@ function OrganizationForm() {
                 className={styleInput}
                 {...field}
               >
-                <PasswordInputStrengthChecker />
+                <PasswordChecklist
+                  rules={['minLength', 'specialChar', 'number', 'capital']}
+                  minLength={8}
+                  maxLength={30}
+                  value={field.value}
+                  messages={{
+                    minLength: 'At least 8 characters',
+                    specialChar: 'One special character',
+                    number: 'One number',
+                    capital: 'One uppercase letter',
+                  }}
+                  className="mt-2 text-sm"
+                />
               </PasswordInput>
             )}
           />

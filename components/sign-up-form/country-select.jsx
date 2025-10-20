@@ -16,7 +16,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import countryList from '@/components/sign-up-form/country-list';
 
@@ -40,7 +40,7 @@ const CountrySelect = ({ control, name, label, errors }) => {
                   variant="outline"
                   role="combobox"
                   className={cn(
-                    'w-full justify-between border border-[#B3C4D6] bg-[#F7F7F7] px-3 py-2 text-sm',
+                    'h-auto w-full justify-between rounded-md border-0 border-b border-[#B3C4D6] bg-[#F7F7F7] px-4 py-2 text-sm shadow-none outline-0 md:py-3',
                     !field.value && 'text-muted-foreground'
                   )}
                 >
@@ -56,7 +56,7 @@ const CountrySelect = ({ control, name, label, errors }) => {
                   ) : (
                     'Select country'
                   )}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
 
@@ -102,6 +102,5 @@ const CountrySelect = ({ control, name, label, errors }) => {
     </div>
   );
 };
-
 
 export default CountrySelect;
