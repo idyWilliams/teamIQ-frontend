@@ -1,9 +1,9 @@
-import React from "react";
-import ActiveBlockers from "./active-blockers";
-import { activeBlockers } from "@/constants";
-import TeamMember from "./team-member";
-import OrganizationMemberCard from "./team-member";
-import TeamPage from "./team-page";
+import React from 'react';
+import ActiveBlockers from './active-blockers';
+import { activeBlockers } from '@/constants';
+import TeamMember from './team-member';
+import OrganizationMemberCard from './team-member';
+import TeamPage from './team-page';
 
 export default function Team() {
   return (
@@ -17,7 +17,5 @@ export default function Team() {
               </div>
               </div>
     </div>
-
-    
   );
 }
