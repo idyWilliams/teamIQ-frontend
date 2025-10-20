@@ -17,20 +17,7 @@ import {
 } from '../ui/password-input';
 import PasswordChecklist from 'react-password-checklist';
 
-const getPasswordStrength = value => {
-  if (!value) return null;
 
-  let score = 0;
-  if (value.length >= 8) score += 1;
-  if (/[A-Z]/.test(value)) score += 1;
-  if (/[a-z]/.test(value)) score += 1;
-  if (/[0-9]/.test(value)) score += 1;
-  if (/[^A-Za-z0-9]/.test(value)) score += 1;
-
-  if (score >= 4) return 'Strong';
-  if (score >= 2) return 'Moderate';
-  return 'Weak';
-};
 
 // Yup Validation Schema - This defines all our validation rules
 const validationSchema = yup.object().shape({
@@ -71,15 +58,7 @@ const validationSchema = yup.object().shape({
   country: yup.string().required('Country is required'),
 
   password: yup.string().required('Password is required'),
-  // .min(8, 'Password must be at least 8 characters')
-  // .max(30, 'Password must not exceed 30 characters')
-  // .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
-  // .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
-  // .matches(/[0-9]/, 'Password must contain at least one number')
-  // .matches(
-  //   /[.@$!%*?&]/,
-  //   'Password must contain at least one special character'
-  // ),
+  
   repeatPassword: yup
     .string()
     .required('Please repeat your password')
