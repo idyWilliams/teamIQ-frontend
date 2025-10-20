@@ -1,12 +1,67 @@
-"use client";
+'use client';
 
-import { redirect } from "next/navigation";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+import SettingIntergratedApp from '@/components/organization-dashboard-components/organizational-settings-component/intergratedApp';
 
+function Settings() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchparams = useSearchParams();
+  const activeTab = searchparams.get('tab') || 'my-details';
 
+  return (
+    <section className="">
+      <Tabs
+        value={activeTab}
+        onValueChange={(value: string) =>
+          router.push(`${pathname}?tab=${value}`)
+        }
+        className="w-full p-0"
+      >
+        <TabsList className="w-full grow justify-start rounded-none border-b bg-transparent p-0">
+          {tabList.map(tab => (
+            <TabsTrigger
+              key={tab.key}
+              value={tab.key}
+              className="relative w-fit
+              rounded-none border-none bg-transparent 
+              px-2 py-2 text-gray-600 after:absolute
+              after:bottom-0 after:left-0 after:h-[2px] 
+              after:w-0 after:bg-[#086ACE] after:transition-all 
+              after:duration-300 data-[state=active]:bg-transparent
+              data-[state=active]:text-[#086ACE] data-[state=active]:shadow-none
+              data-[state=active]:after:w-full"
+            >
+              {tab.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
 
-
-
-export default function SettingsPage() {
-  return (redirect("/organization/settings/profile"));
+        {tabList.map(tab => (
+          <TabsContent key={tab.key} value={tab.key} className="pt-10">
+            {tab.content}
+          </TabsContent>
+        ))}
+      </Tabs>
+    </section>
+  );
 }
+
+//  You need to wrapper any component that uses useSearchParams in a Suspense boundary with a fallback which can be a skeleton loader
+export default function SettingsPage() {
+  return (
+    <Suspense fallback={'Loading...'}>
+      <Settings />
+    </Suspense>
+  );
+}
+
+const tabList = [
+  {label: "Profile", key: "profile", path: "/organization/settings/profile", content: "hi"},
+  {label: "Team Members", key: "team-members", path: "/organization/settings/team-members", content: "hi"},
+  {label: "Integrated Apps", key: "integrated-apps", path: "/organization/settings/integrated-apps", content: <SettingIntergratedApp/>},
+  {label: "Plan", key: "plan", path: "/organization/settings/plan", content: "hi"},
+];
 

@@ -125,17 +125,17 @@ const MyDetails = () => {
     <div>
       {/* details cover picture */}
       <div className="relative">
-        <div className="bg-muted-foreground mt-10 h-[200px] w-full rounded-tl-[96px] opacity-70 max-sm:h-[150px]">
+        <div className="bg-muted-foreground mt-10 h-[200px] w-full rounded-tl-[96px]  max-sm:h-[150px]">
           <img
             src={images.cover}
-            alt="Cover"
+            
             className="h-[200px] w-full rounded-tl-[96px] object-cover max-sm:h-[150px]"
           />
         </div>
         <div className="border-primary-foreground bg-iq absolute top-[75%] left-[10%] size-[150px] rounded-full border-5 max-sm:size-[85px]">
           <img
             src={images.profile}
-            alt="Profile"
+           
             className="size-[142px] rounded-full object-cover max-sm:size-[80px]"
           />
         </div>
@@ -176,7 +176,8 @@ const MyDetails = () => {
               <p className="text-muted-foreground mb-3 text-sm">
                 Select a new image to upload.
               </p>
-              <input type="file" accept="image/*" onChange={handleFileChange} />
+              <input type="file" accept="image/*" className=' input text-primary-foreground w-[25%] max-sm:w-full bg-iq  rounded-[8px] border-1 py-3 px-3 '  onChange={handleFileChange} />
+              
               <div className="mt-4 flex justify-end">
                 <Button variant="outline" onClick={handleCancel}>
                   Cancel
@@ -206,7 +207,7 @@ const MyDetails = () => {
       {/* details profile pic  */}
 
       <div className="flex items-center justify-between px-6 pt-7">
-        <div className="ml-[26%] max-sm:mt-8 max-sm:ml-0">
+        <div className="ml-[30%] max-sm:mt-8 max-sm:ml-0">
           <p>Profile</p>
           <p>Update your details</p>
         </div>
@@ -214,13 +215,14 @@ const MyDetails = () => {
         <div>
           <button
             onClick={() => setIsMainDialogOpen(true)}
-            className="text-iq flex max-sm:text-sm"
+            className="text-iq items-center flex gap-2 text-sm"
           >
             Edit
             <Avatar>
               <AvatarImage
                 src={'/images/tabler_edit.svg'}
                 alt="edit"
+                 
               ></AvatarImage>
               <AvatarFallback>E</AvatarFallback>
             </Avatar>
@@ -264,14 +266,14 @@ const MyDetails = () => {
           ) : (
             <button
               onClick={() => setEditingInfo(info.key)}
-              className="flex items-center text-iq max-sm:text-sm gap-1"
+              className="flex items-center text-iq text-sm gap-2"
             >
               Edit
               <Avatar>
                 <AvatarImage
                   src="/images/tabler_edit.svg"
                   alt="edit"
-                  className="size-4"
+              
                 />
                 <AvatarFallback>E</AvatarFallback>
               </Avatar>
@@ -280,14 +282,14 @@ const MyDetails = () => {
         ) : (
           <button
             disabled
-            className="flex items-center text-iq opacity-30 cursor-not-allowed max-sm:text-sm gap-1"
+            className="flex items-center text-iq opacity-30 cursor-not-allowed text-sm gap-2"
           >
             Edit
             <Avatar>
               <AvatarImage
                 src="/images/tabler_edit.svg"
                 alt="edit"
-                className="size-4"
+       
               />
               <AvatarFallback>E</AvatarFallback>
             </Avatar>
