@@ -34,7 +34,7 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
             </p>
           </AccordionTrigger>
           <AccordionContent>
-            <ConnectionTool hideButton={true} />
+            <ConnectionTool onSubmit={()=> {}} hideButton={true} />
           </AccordionContent>
         </AccordionItem>
       </Accordion>
@@ -55,7 +55,7 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
           </AccordionTrigger>
 
           <AccordionContent>
-            <UserPermission hideButton={true}/>
+            <UserPermission onSubmit={()=>{}} hideButton={true}/>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
