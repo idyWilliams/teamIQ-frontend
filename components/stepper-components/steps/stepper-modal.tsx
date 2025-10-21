@@ -37,7 +37,7 @@ const StepperModal = ({ onClose }: StepperModalProps) => {
           <Button
             variant="ghost"
             onClick={onClose}
-            className="ring-offset-background focus:ring-ring absolute -top-1 -right-4 rounded-sm opacity-70 transition-opacity cursor-pointer"
+            className="ring-offset-background focus:ring-ring absolute -top-1 -right-4 cursor-pointer rounded-sm opacity-70 transition-opacity"
           >
             <X className="h-4 w-4" />
             <span className="sr-only">Close</span>

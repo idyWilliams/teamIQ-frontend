@@ -1,5 +1,6 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
 import { Check, Search } from 'lucide-react';
@@ -20,7 +21,22 @@ interface TeamMember {
   lead?: boolean;
 }
 
+interface FormData {
+  selectedMembers: string[];
+  projectLead: string;
+}
+
 const UserPermission = ({ onSubmit, hideButton }: UserPermissionProps) => {
+  const { handleSubmit, setValue, watch } = useForm<FormData>({
+    defaultValues: {
+      selectedMembers: [],
+      projectLead: '',
+    }
+  });
+
+  const selectedMembers = watch('selectedMembers');
+  const projectLead = watch('projectLead');
+
   const [teamList, setTeamList] = useState<TeamMember[]>(
     initialTeamList.map(member => ({
       ...member,
@@ -32,20 +48,31 @@ const UserPermission = ({ onSubmit, hideButton }: UserPermissionProps) => {
   const handleCardClick = (clickedIndex: number) => {
     setTeamList(prevList => {
       const hasLead = prevList.some(member => member.lead);
+      const clickedMember = prevList[clickedIndex];
 
       return prevList.map((member, index) => {
         if (index === clickedIndex) {
           // If no lead exists yet and this card is being clicked, make it lead
           if (!hasLead && !member.lead) {
+            setValue('projectLead', member.name);
+            // Remove from selected members if they were selected
+            setValue('selectedMembers', selectedMembers.filter(name => name !== member.name));
             return { ...member, lead: true, checked: false };
           }
           // If this card is already lead, toggle it off
           else if (member.lead) {
+            setValue('projectLead', '');
             return { ...member, lead: false, checked: false };
           }
           // Otherwise, toggle checked status
           else {
-            return { ...member, checked: !member.checked, lead: false };
+            const newChecked = !member.checked;
+            if (newChecked) {
+              setValue('selectedMembers', [...selectedMembers, member.name]);
+            } else {
+              setValue('selectedMembers', selectedMembers.filter(name => name !== member.name));
+            }
+            return { ...member, checked: newChecked, lead: false };
           }
         }
         // If we're setting a new lead, ensure all others are not lead
@@ -57,14 +84,25 @@ const UserPermission = ({ onSubmit, hideButton }: UserPermissionProps) => {
     });
   };
 
+  const onFormSubmit = (data: FormData) => {
+    console.log('Form data:', data);
+    console.log('Selected members:', data.selectedMembers);
+    console.log('Project lead:', data.projectLead);
+    
+    if (onSubmit) {
+      onSubmit();
+    }
+  };
+
   return (
-    <div>
+    <form onSubmit={handleSubmit(onFormSubmit)}>
       <div className="mt-2 max-w-[440px]">
         <p className="text-normal text-base">
           Set up the tool for this project to help synchronize your activities
           with your preferred tool.
         </p>
       </div>
+      
       <div className="md:w- relative mt-10 mb-4 w-full">
         <Input
           id="search"
@@ -76,6 +114,7 @@ const UserPermission = ({ onSubmit, hideButton }: UserPermissionProps) => {
         />
         <Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
       </div>
+      
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {teamList?.map((team, index) => {
           return (
@@ -120,15 +159,18 @@ const UserPermission = ({ onSubmit, hideButton }: UserPermissionProps) => {
         })}
       </div>
 
-      {!hideButton &&<div className="mt-8">
-        <Button
-          onClick={onSubmit}
-          className="w-full cursor-pointer bg-[#086ACE] p-6 text-base font-semibold"
-        >
-          Next
-        </Button>
-      </div>}
-    </div>
+
+      {!hideButton && (
+        <div className="mt-8">
+          <Button
+            type="submit"
+            className="w-full cursor-pointer bg-[#086ACE] p-6 text-base font-semibold"
+          >
+            Next
+          </Button>
+        </div>
+      )}
+    </form>
   );
 };
 
