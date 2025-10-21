@@ -27,49 +27,56 @@ const StepperModal = () => {
   ];
 
   return (
-    <div className="w-full p-4">
-      <div className="mb-8">
-        <div className="flex items-center justify-center">
-          {steps.map((step, index) => (
-            <React.Fragment key={step.number}>
-              <div className="flex flex-col items-center">
-                <div
-                  className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-all duration-200 ${
-                    currentStep === step.number
-                      ? 'bg-[#E4E7EC] text-[#086ACE] ring-2 ring-[#086ACE] ring-offset-2'
-                      : currentStep > step.number
-                        ? 'bg-[#086ACE] text-white'
-                        : 'bg-[#E4E7EC] text-[#00000033] ring-2 ring-[#00000033]'
-                  }`}
-                  onClick={() => goToStep(step.number)}
-                >
-                  {currentStep > step.number ? (
-                    <Check size={16} />
-                  ) : (
-                    step.number
+    <div className="w-full">
+      <div className="sticky top-0 z-50 bg-white">
+        <div className="relative mx-auto w-full max-w-6xl p-6">
+          <div className="mb-8">
+            <div className="flex items-center justify-center">
+              {steps.map((step, index) => (
+                <React.Fragment key={step.number}>
+                  <div className="flex flex-col items-center">
+                    <div
+                      className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-full transition-all duration-200 ${
+                        currentStep === step.number
+                          ? 'bg-[#E4E7EC] text-[#086ACE] ring-2 ring-[#086ACE] ring-offset-2'
+                          : currentStep > step.number
+                            ? 'bg-[#086ACE] text-white'
+                            : 'bg-[#E4E7EC] text-[#00000033] ring-2 ring-[#00000033]'
+                      }`}
+                      onClick={() => goToStep(step.number)}
+                    >
+                      {currentStep > step.number ? (
+                        <Check size={16} />
+                      ) : (
+                        step.number
+                      )}
+                    </div>
+                    <div className="mt-2 flex h-10 w-full items-center justify-center">
+                      <span
+                        className={`text-center text-xs leading-tight font-medium ${
+                          currentStep === step.number ||
+                          currentStep > step.number
+                            ? 'text-[#086ACE]'
+                            : 'text-[#434343]'
+                        }`}
+                      >
+                        {step.name}
+                      </span>
+                    </div>
+                  </div>
+                  {index < steps.length - 1 && (
+                    <div
+                      className={`mx-2 mb-8 h-1 w-16 ${
+                        currentStep > step.number
+                          ? 'bg-[#E4E7EC]'
+                          : 'bg-gray-200'
+                      }`}
+                    />
                   )}
-                </div>
-                <div className="mt-2 flex h-10 w-full items-center justify-center">
-                  <span
-                    className={` text-center text-xs leading-tight font-medium ${
-                      currentStep === step.number || currentStep > step.number
-                        ? 'text-[#086ACE]'
-                        : 'text-[#434343]'
-                    }`}
-                  >
-                    {step.name}
-                  </span>
-                </div>
-              </div>
-              {index < steps.length - 1 && (
-                <div
-                  className={`mx-2 mb-8 h-1 w-16 ${
-                    currentStep > step.number ? 'bg-[#E4E7EC]' : 'bg-gray-200'
-                  }`}
-                />
-              )}
-            </React.Fragment>
-          ))}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
       <div>
