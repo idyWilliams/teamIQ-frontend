@@ -11,65 +11,70 @@ interface WaveProgressProps {
   backgroundColor?: string;
   waveColor?: string;
 }
-
+// Props for the entire WaveProgressCard component I've made them optional (make it reusable for me) so they can take fallback data
 interface WaveProgressCardProps {
   progressData?: WaveProgressProps[];
   title?: string;
   showButton?: boolean;
 }
 
+/**Pass default data to make the component reusable
+ * Allows passing default progress data for reusability.
+ * Will be replaced once we integrate an API
+ */
 export function WaveProgressCard({ progressData, title, showButton = true }: WaveProgressCardProps) {
   const defaultData: WaveProgressProps[] = [
     {
       percentage: 50,
-      label: "2-4 member are Strong",
-      subtitle: "React",
-      waveColor: "purple",
+      label: '2-4 member are Strong',
+      subtitle: 'React',
+      waveColor: 'purple',
     },
     {
       percentage: 70,
-      label: "2-4 member are Strong",
-      subtitle: "Node.js",
-      waveColor: "yellow",
+      label: '2-4 member are Strong',
+      subtitle: 'Node.js',
+      waveColor: 'yellow',
     },
     {
       percentage: 50,
-      label: "2-4 member are Strong",
-      subtitle: "TypeScript",
-      waveColor: "pink",
+      label: '2-4 member are Strong',
+      subtitle: 'TypeScript',
+      waveColor: 'pink',
     },
     {
       percentage: 50,
-      label: "2-4 member are Strong",
-      subtitle: "TypeScript",
-      waveColor: "orange",
+      label: '2-4 member are Strong',
+      subtitle: 'TypeScript',
+      waveColor: 'orange',
     },
     {
       percentage: 50,
-      label: "2-4 member are Strong",
-      subtitle: "Golang",
-      waveColor: "blue",
+      label: '2-4 member are Strong',
+      subtitle: 'Golang',
+      waveColor: 'blue',
     },
     {
       percentage: 50,
-      label: "2-4 member are Strong",
-      subtitle: "Golang",
-      waveColor: "green",
+      label: '2-4 member are Strong',
+      subtitle: 'Golang',
+      waveColor: 'green',
     },
   ];
+  // We can either use provided data, otherwise fallback to default
+  const dataToRender = progressData?.length ? progressData : defaultData;
 
-   const dataToRender = progressData?.length ? progressData : defaultData;
-  
   return (
     <div className="m-6 border-gray-50">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-          <CardTitle>{title || "Team Skills Overview"}</CardTitle>
+          <CardTitle>{title || 'Team Skills Overview'}</CardTitle>
+          {/* Conditionally render “View More” button */}
           {showButton && (
-            <button className="flex items-center gap-1 text-[#086ACE] hover:text-blue-700 transition-colors group text-sm">
+            <button className="group flex items-center gap-1 text-sm text-[#086ACE] transition-colors hover:text-blue-700">
               <span className="font-medium">View More</span>
               <svg
-                className="w-3 h-3 transition-transform group-hover:translate-x-1"
+                className="h-3 w-3 transition-transform group-hover:translate-x-1"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -86,7 +91,7 @@ export function WaveProgressCard({ progressData, title, showButton = true }: Wav
         </CardHeader>
         <CardContent>
           <div
-            className="lg:grid-cols-4 xl:grid-cols-5 gap-1 grid justify-items-center items-start"
+            className="grid items-start justify-items-center gap-1 lg:grid-cols-4 xl:grid-cols-5"
             // style={{
             //   gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))",
             // }}

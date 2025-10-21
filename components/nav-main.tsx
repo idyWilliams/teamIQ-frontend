@@ -21,9 +21,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export function NavMain({
-  items,
-}: {
+type NavMainProp = {
   items: {
     title: string;
     url: string;
@@ -32,12 +30,15 @@ export function NavMain({
     items?: {
       title: string;
       url: string;
-    }[];
-  }[];
-}) {
+    }[]
+  }[]
+}
+
+export function NavMain({items}: NavMainProp) {
   const router = useRouter();
 
   return (
+    <>
     <SidebarGroup className="">
       <SidebarGroupLabel>Pages</SidebarGroupLabel>
       <SidebarMenu>
@@ -79,5 +80,6 @@ export function NavMain({
         ))}
       </SidebarMenu>
     </SidebarGroup>
+    </>
   );
 }
