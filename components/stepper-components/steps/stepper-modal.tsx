@@ -4,9 +4,13 @@ import StepFour from './step-four';
 import StepFive from './step-five';
 import StepSix from './step-six';
 import SuccessStep from './success-step';
-import { Check } from 'lucide-react';
+import { Check, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+interface StepperModalProps {
+  onClose?: () => void;
+}
 
-const StepperModal = () => {
+const StepperModal = ({ onClose }: StepperModalProps) => {
   const [currentStep, setCurrentStep] = useState(4);
 
   const next = () => setCurrentStep(prev => prev + 1);
@@ -30,6 +34,14 @@ const StepperModal = () => {
     <div className="w-full">
       <div className="sticky top-0 z-50 bg-white">
         <div className="relative mx-auto w-full max-w-6xl p-6">
+          <Button
+            variant="ghost"
+            onClick={onClose}
+            className="ring-offset-background focus:ring-ring absolute -top-1 -right-4 rounded-sm opacity-70 transition-opacity cursor-pointer"
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </Button>
           <div className="mb-8">
             <div className="flex items-center justify-center">
               {steps.map((step, index) => (

@@ -385,8 +385,8 @@ export default function ProjectsPage() {
 
       {/* Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="w-[900px] sm:!max-w-[900px] overflow-y-auto max-h-[90vh]">
-          <StepperModal />
+        <DialogContent className="w-[900px] sm:!max-w-[900px] overflow-y-auto max-h-[90vh] !pt-0 [&>button]:hidden">
+          <StepperModal onClose={() => setIsModalOpen(false)} />
         </DialogContent>
       </Dialog>
     </div>
