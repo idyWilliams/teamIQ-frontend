@@ -8,13 +8,11 @@ import { dashboardCards, activeBlockers, progressData } from "@/constants";
 const DashbordOverview = () => {
   return (
     <div className="p-4 space-y-6">
-      <div>
-        <div className="hidden sm:flex gap-3 max-lg:flex-wrap">
+        <div className="flex gap-3 max-lg:flex-wrap">
           {dashboardCards.map((card, i) => (
             <CardItem key={i} {...card} />
           ))}
         </div>
-      </div>
 
       <div className="flex gap-4">
         <div className="lg:col-span-2 space-y-4 grow">
