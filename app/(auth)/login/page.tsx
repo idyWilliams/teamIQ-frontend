@@ -1,50 +1,64 @@
-"use client";
+'use client';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import Link from 'next/link';
+import React from 'react';
+import { useForm, Controller} from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { toast } from 'sonner';
+import { PasswordInput } from '@/components/ui/password-input';
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import React, { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
+
 
 // Validation schema
 const schema = yup.object().shape({
   email: yup
     .string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  password: yup
-    .string()
-    .required("Password is required")
-    .min(6, "Password must be at least 6 characters"),
+    .trim()
+    .email('Please enter a valid email address')
+    .required('Email is required'),
+  password: yup.string().required('Password is required'),
 });
 
 export default function Login() {
   // Initializing react-hook-form with Yup
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(schema),
+    mode: 'onBlur',
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   });
 
   // Password visibility state
-  const [showPassword, setShowPassword] = useState(false);
+  
 
   // Handle form submit
   const onSubmit = (data: any) => {
-    console.log("Form values:", data);
+    console.log('Form values:', data);
+    toast.success('Login successful!');
+    reset();
+  };
+
+  const onError = (errors: any) => {
+    console.log('Validation Errors:', errors);
+    toast.error('Please fix the errors in the form.');
   };
 
   return (
-    <div className=" w-full mx-auto lg:max-w-lg xl:max-w-xl">
-      <h3 className="text-[#0B0B0B] font-medium text-4xl mb-10">Login</h3>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <div className="mx-auto w-full lg:max-w-lg xl:max-w-xl">
+      <h3 className="mb-10 text-4xl font-medium text-[#0B0B0B]">Login</h3>
+      <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6">
         <div>
           <Label htmlFor="email" className="mb-2 font-normal">
             Email
@@ -53,55 +67,45 @@ export default function Login() {
             type="email"
             id="email"
             placeholder="example@gmail.com"
-            {...register("email")}
-            className="placeholder:text-[#B3C4D6] bg-[#F7F7F7] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto"
+            {...register('email')}
+            className='!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md bg-[#F7F7F7] focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#086ACE] focus-visible:ring-0'
           />
           {errors.email && (
-            <p className="text-red-500 text-sm mt-1">
+            <p className="mt-1 text-sm text-red-500">
               {errors.email.message as string}
             </p>
           )}
         </div>
+
         <div>
-          <Label htmlFor="password" className="mb-2 font-normal">
+          <Label htmlFor="password" className="mb-4 font-normal">
             Password
           </Label>
-          <div className="relative">
-            <Input
-              type={showPassword ? "text" : "password"}
-              id="password"
-              placeholder="Enter Password"
-              {...register("password")}
-              className="placeholder:text-[#B3C4D6] bg-[#F7F7F7] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto pr-10"
-            />
-            <button
-              type="button"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#B3C4D6] focus:outline-none"
-              onClick={() => setShowPassword((prev) => !prev)}
-              tabIndex={-1}>
-              {showPassword ? (
-                <Eye
-                  size={20}
-                  className="sm:w-4 text-[#939393] sm:h-4 md:w-5 md:h-5"
-                />
-              ) : (
-                <EyeOff
-                  size={20}
-                  className="sm:w-4 text-[#939393] sm:h-4 md:w-5 md:h-5"
-                />
-              )}
-            </button>
-          </div>
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <PasswordInput
+                id="password"
+                placeholder="Enter a Password"
+                className='!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md bg-[#F7F7F7] focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#086ACE] focus-visible:ring-0'
+                {...field}
+              >
+              </PasswordInput>
+            )}
+          />
           {errors.password && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.password.message as string}
-            </p>
+            <span className="mt-1 block text-xs leading-snug text-red-500">
+              {errors.password.message}
+            </span>
           )}
         </div>
+
         <div className="mt-8">
           <Button
             type="submit"
-            className="bg-[#086ACE] hover:cursor-pointer hover:bg-[#086bcecc] text-white w-full py-3 h-auto rounded-md">
+            className="h-auto w-full rounded-md bg-[#086ACE] py-3 text-white hover:cursor-pointer hover:bg-[#086bcecc]"
+          >
             Login
           </Button>
           <div className="mt-6 flex items-center justify-between">
@@ -109,7 +113,7 @@ export default function Login() {
               <Checkbox className="size-6" />
               <span>Remember me</span>
             </Label>
-            <Link href="/forget-password" className="font-normal text-sm">
+            <Link href="/forget-password" className="text-sm font-normal">
               Forgot password?
             </Link>
           </div>
@@ -121,20 +125,22 @@ export default function Login() {
             <hr className="grow border-0 border-t" />
           </div>
           <div>
-            <div className="flex justify-center items-center gap-5 mt-6 mb-8">
+            <div className="mt-6 mb-8 flex items-center justify-center gap-5">
               <Button
-                variant={"ghost"}
-                className="border rounded-full size-12 p-0">
+                variant={'ghost'}
+                className="size-12 rounded-full border p-0"
+              >
                 <span className="icon-[devicon--google] size-5"></span>
               </Button>
               <Button
-                variant={"ghost"}
-                className="border rounded-full size-12 p-0">
+                variant={'ghost'}
+                className="size-12 rounded-full border p-0"
+              >
                 <span className="icon-[logos--microsoft-icon] size-5"></span>
               </Button>
             </div>
             <p className="text-center text-sm">
-              Don&apos;t have an account?{" "}
+              Don&apos;t have an account?{' '}
               <Link href="/signup" className="text-[#086ACE]">
                 Sign Up
               </Link>

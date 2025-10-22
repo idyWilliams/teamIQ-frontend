@@ -64,10 +64,10 @@ const Password = () => {
         onSubmit={handleSubmit(submit)}
       >
         {fields.map(f => (
-          <div key={f.id} className="flex w-full max-w-[576px] flex-col gap-2">
+          <div key={f.id} className="flex w-full max-w-[576px] max-sm:flex-col gap-2">
             <label
               htmlFor={f.id}
-              className="text-[16px] max-sm:text-sm sm:w-45"
+              className="text-[16px]  max-sm:text-sm sm:w-65"
             >
               {f.label}
             </label>
@@ -118,13 +118,13 @@ const Password = () => {
         <div className="flex gap-4 max-sm:flex-col-reverse max-sm:gap-3">
           <button
             onClick={cancelPassword}
-            className="text-iq border-iq w-full max-w-[370px] rounded-[8px] border-1 py-4"
+            className="text-iq border-iq w-full sm:max-w-[280px] rounded-[8px] border-1 py-4"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="text-primary-foreground bg-iq w-full max-w-[370px] rounded-[8px] border-1 py-4"
+            className="text-primary-foreground bg-iq w-full sm:max-w-[280px] rounded-[8px] border-1 py-4"
           >
             Update
           </button>

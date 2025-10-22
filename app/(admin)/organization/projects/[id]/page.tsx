@@ -1,95 +1,75 @@
-"use client";
+'use client';
+import React from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+import AssignedTeamMembers from '@/components/assigned-team-member';
+import ProjectOverview from '@/components/project-overview';
 
-import React from "react";
-import { useParams } from "next/navigation";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ProjectOverview from "@/components/project-overview";
-
-export default function ProjectDetails() {
-  const { id } = useParams();
+function ProjectDetails() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchparams = useSearchParams();
+  const activeTab = searchparams.get('tab') || 'overview';
 
   return (
-    <div className="h-full p-4">
-      {/* =================== TABS =================== */}
-      <Tabs defaultValue="overview" className="h-full flex flex-col">
-        <TabsList
-          className="
-            w-full  
-            bg-transparent gap-2 p-0
-            border-b border-gray-200 rounded-none grow
-            justify-start
-          "
-        >
-          <TabsTrigger
-            value="overview"
-            className="
-              relative text-gray-600 w-fit grow-0
-              data-[state=active]:text-[#086ACE]
-              data-[state=active]:shadow-none
-              after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0
-              after:bg-[#086ACE] after:transition-all after:duration-300
-              data-[state=active]:after:w-full
-              border-none rounded-none
-              bg-transparent px-2 py-2
-              data-[state=active]:bg-transparent
-            "
-          >
-            Project Overview
-          </TabsTrigger>
-
-          <TabsTrigger
-            value="project-status"
-            className="
-              relative text-gray-600
-              data-[state=active]:text-[#086ACE]
-              data-[state=active]:shadow-none
-              after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0
-              after:bg-[#086ACE] after:transition-all after:duration-300
-              data-[state=active]:after:w-full grow-0
-              border-none rounded-none
-              bg-transparent px-2 py-2 w-fit
-              data-[state=active]:bg-transparent
-            "
-          >
-            Task Allocations
-          </TabsTrigger>
-
-          <TabsTrigger
-            value="team"
-            className="
-              relative text-gray-600
-              data-[state=active]:text-[#086ACE]
-              data-[state=active]:shadow-none
-              after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0
-              after:bg-[#086ACE] after:transition-all after:duration-300
-              data-[state=active]:after:w-full
-              border-none rounded-none grow-0
-              bg-transparent px-2 py-2
-              data-[state=active]:bg-transparent
-            "
-          >
-            Assigned Team Members
-          </TabsTrigger>
+    <div>
+      <Tabs
+        value={activeTab}
+        onValueChange={(value: string) =>
+          router.push(`${pathname}?tab=${value}`)
+        }
+        className="w-full p-0"
+      >
+        <TabsList className="w-full grow justify-start rounded-none border-b bg-transparent p-0">
+          {projectsTabs.map(tab => (
+            <TabsTrigger
+              key={tab.value}
+              value={tab.value}
+              className="relative w-fit rounded-none border-none bg-transparent px-2 py-2 text-gray-600 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#086ACE] after:transition-all after:duration-300 data-[state=active]:bg-transparent data-[state=active]:text-[#086ACE] data-[state=active]:shadow-none data-[state=active]:after:w-full"
+            >
+              {tab.label}
+            </TabsTrigger>
+          ))}
         </TabsList>
 
-        <TabsContent value="overview" className="flex-1 mt-4 min-h-0">
-          <div className="h-full overflow-auto">
-            <ProjectOverview id={String(id)} edit={true} />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="project-status" className="flex-1 mt-4 min-h-0">
-          <div className="h-full overflow-auto">
-            {/* Add task allocations view here */}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="team" className="flex-1 mt-4 min-h-0">
-          <div className="h-full overflow-auto">
-            {/* Add team members view here */}
-          </div>
-        </TabsContent>
+        {projectsTabs.map(tab => (
+          <TabsContent key={tab.value} value={tab.value} className="pt-10 ml-4">
+            {tab.content}
+          </TabsContent>
+        ))}
       </Tabs>
     </div>
   );
 }
+
+function ProjectWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProjectDetails />
+    </Suspense>
+  );
+}
+
+export default ProjectWrapper;
+
+const projectsTabs = [
+  {
+    label: 'Project Overview',
+    href: '/member/projects?tab=overview',
+    value: 'overview',
+    content: <ProjectOverview />,
+  },
+  {
+    label: 'Tasks Allocation',
+    href: '/member/projects?tab=tasks',
+    value: 'tasks',
+    content: <h1>Task</h1>,
+  },
+  {
+    label: 'Assign Team Member',
+    href: '/member/projects?tab=assign-team-member',
+    value: 'assign-team-member',
+    content: <AssignedTeamMembers />,
+  },
+];

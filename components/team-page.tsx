@@ -39,15 +39,6 @@ export default function TeamPage() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      {/* Header */}
-      <header className="mb-6 border-b border-gray-200">
-        <div className="flex justify-between items-center py-3">
-          <div className="flex items-center gap-2">
-            <Image src="/images/isentry-logo.jpeg" alt="Logo" width={32} height={32} />
-            <h1 className="font-semibold text-lg text-gray-800">ISentry Technologies</h1>
-          </div>
-        </div>
-      </header>
 
       {/* Content */}
       <div className="flex gap-8">

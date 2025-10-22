@@ -1,13 +1,13 @@
 'use client';
 
+import InviteTeamMemberModal from '@/components/organizational-settings-component/member-group/InviteTeamMemberModal';
+import InviteMembers from '@/components/organizational-settings-component/member-group/InviteMembers';
+import InviteTable from '@/components/organizational-settings-component/member-group/InviteTable';
+import PendingInvite from '@/components/organizational-settings-component/member-group/PendingInvite';
+import PendingTable from '@/components/organizational-settings-component/member-group/PendingTable';
 import React, { useState } from 'react';
-import InviteMembers from '../../components/member-group/InviteMembers';
-import InviteTable from '../../components/member-group/InviteTable';
-import PendingInvite from '../../components/member-group/PendingInvite';
-import PendingTable from '../../components/member-group/PendingTable';
-import InviteTeamMemberModal from '../../components/InviteTeamMemberModal';
 
-const TeamMemberPage = () => {
+const TeamMemberTab = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const openModal = () => {
@@ -34,4 +34,4 @@ const TeamMemberPage = () => {
   );
 };
 
-export default TeamMemberPage;
+export default TeamMemberTab;
