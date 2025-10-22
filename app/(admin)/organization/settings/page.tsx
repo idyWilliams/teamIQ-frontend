@@ -3,7 +3,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import SettingIntergratedApp from '@/components/organization-dashboard-components/organizational-settings-component/intergratedApp';
+import SettingIntergratedApp from '@/components/organizational-settings-component/intergratedApp';
+import TeamMemberTab from '@/components/organizational-settings-component/TeamMember';
+import PlanSettings from '@/components/plan';
 
 function Settings() {
   const router = useRouter();
@@ -25,14 +27,7 @@ function Settings() {
             <TabsTrigger
               key={tab.key}
               value={tab.key}
-              className="relative w-fit
-              rounded-none border-none bg-transparent 
-              px-2 py-2 text-gray-600 after:absolute
-              after:bottom-0 after:left-0 after:h-[2px] 
-              after:w-0 after:bg-[#086ACE] after:transition-all 
-              after:duration-300 data-[state=active]:bg-transparent
-              data-[state=active]:text-[#086ACE] data-[state=active]:shadow-none
-              data-[state=active]:after:w-full"
+              className="relative w-fit rounded-none border-none bg-transparent px-2 py-2 text-gray-600 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#086ACE] after:transition-all after:duration-300 data-[state=active]:bg-transparent data-[state=active]:text-[#086ACE] data-[state=active]:shadow-none data-[state=active]:after:w-full"
             >
               {tab.label}
             </TabsTrigger>
@@ -59,9 +54,28 @@ export default function SettingsPage() {
 }
 
 const tabList = [
-  {label: "Profile", key: "profile", path: "/organization/settings/profile", content: "hi"},
-  {label: "Team Members", key: "team-members", path: "/organization/settings/team-members", content: "hi"},
-  {label: "Integrated Apps", key: "integrated-apps", path: "/organization/settings/integrated-apps", content: <SettingIntergratedApp/>},
-  {label: "Plan", key: "plan", path: "/organization/settings/plan", content: "hi"},
+  {
+    label: 'Profile',
+    key: 'profile',
+    path: '/organization/settings/profile',
+    content: 'hi',
+  },
+  {
+    label: 'Team Members',
+    key: 'team-members',
+    path: '/organization/settings/team-members',
+    content: <TeamMemberTab />,
+  },
+  {
+    label: 'Integrated Apps',
+    key: 'integrated-apps',
+    path: '/organization/settings/integrated-apps',
+    content: <SettingIntergratedApp />,
+  },
+  {
+    label: 'Plan',
+    key: 'plan',
+    path: '/organization/settings/plan',
+    content: <PlanSettings />,
+  },
 ];
-
