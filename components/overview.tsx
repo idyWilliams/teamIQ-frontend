@@ -10,7 +10,7 @@ const DashbordOverview = () => {
     <div className="p-4 space-y-6">
         <div className="flex gap-3 max-lg:flex-wrap">
           {dashboardCards.map((card, i) => (
-            <CardItem key={i} {...card} />
+            <CardItem key={i} {...card} noMargin={true}/>
           ))}
         </div>
 
