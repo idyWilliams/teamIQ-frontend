@@ -1,8 +1,8 @@
 // components/wave-progress.tsx
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface WaveProgressProps {
   percentage: number;
@@ -16,13 +16,19 @@ interface WaveProgressCardProps {
   progressData?: WaveProgressProps[];
   title?: string;
   showButton?: boolean;
+  noMargin?: boolean;
 }
 
 /**Pass default data to make the component reusable
  * Allows passing default progress data for reusability.
  * Will be replaced once we integrate an API
  */
-export function WaveProgressCard({ progressData, title, showButton = true }: WaveProgressCardProps) {
+export function WaveProgressCard({
+  progressData,
+  title,
+  showButton = true,
+  noMargin = false,
+}: WaveProgressCardProps) {
   const defaultData: WaveProgressProps[] = [
     {
       percentage: 50,
@@ -65,7 +71,7 @@ export function WaveProgressCard({ progressData, title, showButton = true }: Wav
   const dataToRender = progressData?.length ? progressData : defaultData;
 
   return (
-    <div className="m-6 border-gray-50">
+    <div className={`${noMargin ? '' : 'm-6'} border-gray-50`}>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <CardTitle>{title || 'Team Skills Overview'}</CardTitle>
@@ -117,8 +123,8 @@ export function WaveProgress({
   percentage,
   label,
   subtitle,
-  backgroundColor = "#FBFBFB",
-  waveColor = "red",
+  backgroundColor = '#FBFBFB',
+  waveColor = 'red',
 }: WaveProgressProps) {
   const [animatedPercentage, setAnimatedPercentage] = useState(0);
 
@@ -131,29 +137,29 @@ export function WaveProgress({
 
   const waveColors = {
     red: {
-      primary: "#ef4444",
-      secondary: "#f87171",
-      tertiary: "#fca5a5",
+      primary: '#ef4444',
+      secondary: '#f87171',
+      tertiary: '#fca5a5',
     },
     blue: {
-      primary: "#3b82f6",
-      secondary: "#60a5fa",
-      tertiary: "#93c5fd",
+      primary: '#3b82f6',
+      secondary: '#60a5fa',
+      tertiary: '#93c5fd',
     },
     green: {
-      primary: "#10b981",
-      secondary: "#34d399",
-      tertiary: "#6ee7b7",
+      primary: '#10b981',
+      secondary: '#34d399',
+      tertiary: '#6ee7b7',
     },
     yellow: {
-      primary: "#eab308",
-      secondary: "#facc15",
-      tertiary: "#fde047",
+      primary: '#eab308',
+      secondary: '#facc15',
+      tertiary: '#fde047',
     },
     purple: {
-      primary: "#8b5cf6",
-      secondary: "#a78bfa",
-      tertiary: "#c4b5fd",
+      primary: '#8b5cf6',
+      secondary: '#a78bfa',
+      tertiary: '#c4b5fd',
     },
   };
 

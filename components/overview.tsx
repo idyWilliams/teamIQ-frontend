@@ -16,7 +16,7 @@ const DashbordOverview = () => {
 
       <div className="flex gap-4">
         <div className="lg:col-span-2 space-y-4 grow">
-          <WaveProgressCard progressData={progressData} />
+          <WaveProgressCard progressData={progressData} noMargin={true}/>
           <div className="mt-6">
             <ChartLineDefault />
           </div>
