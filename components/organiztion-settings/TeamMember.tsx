@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import InviteMembers from '@/app/(admin)/organization/components/member-group/InviteMembers';
 import InviteTable from '@/app/(admin)/organization/components/member-group/InviteTable';
-import PendingInvite from '../../components/member-group/PendingInvite';
+import PendingInvite from '@/app/(admin)/organization/components/member-group/PendingInvite';
 import PendingTable from '@/app/(admin)/organization/components/member-group/PendingInvite';
 import InviteTeamMemberModal from '@/app/(admin)/organization/components/member-group/InviteTeamMemberModal';
 

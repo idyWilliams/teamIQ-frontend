@@ -1,93 +1,92 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { AudioWaveform, Command, GalleryVerticalEnd } from "lucide-react";
+import * as React from 'react';
+import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react';
 
-import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
-import NavSettings from "./NavSettings";
-import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
+import { NavMain } from '@/components/nav-main';
+import { NavProjects } from '@/components/nav-projects';
+import NavSettings from './NavSettings';
+import { NavUser } from '@/components/nav-user';
+import { TeamSwitcher } from '@/components/team-switcher';
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar";
+} from '@/components/ui/sidebar';
 
 // This is sample data.
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: 'shadcn',
+    email: 'm@example.com',
+    avatar: '/avatars/shadcn.jpg',
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: 'Acme Inc',
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      plan: 'Enterprise',
     },
     {
-      name: "Acme Corp.",
+      name: 'Acme Corp.',
       logo: AudioWaveform,
-      plan: "Startup",
+      plan: 'Startup',
     },
     {
-      name: "Evil Corp.",
+      name: 'Evil Corp.',
       logo: Command,
-      plan: "Free",
+      plan: 'Free',
     },
   ],
   navMain: [
     {
-      icon: "icon-[ph--identification-badge]",
-      title: "Dashboard",
-      url: "/organization",
+      icon: 'icon-[ph--identification-badge]',
+      title: 'Dashboard',
+      url: '/organization',
       items: [
-        { title: "Overview", url: "" },
-        { title: "Project Status", url: "" },
-        { title: "Team", url: "" },
+        { title: 'Overview', url: '' },
+        { title: 'Project Status', url: '' },
+        { title: 'Team', url: '' },
       ],
     },
   ],
   others: [
     {
-      icon: "icon-[ant-design--idcard-outlined]",
-      name: "Projects",
-      url: "/organization/projects",
+      icon: 'icon-[ant-design--idcard-outlined]',
+      name: 'Projects',
+      url: '/organization/projects',
     },
     {
-      icon: "icon-[hugeicons--user-group]",
-      name: "Team",
-      url: "/organization/team",
+      icon: 'icon-[hugeicons--user-group]',
+      name: 'Team',
+      url: '/organization/team',
     },
     {
-      icon: "icon-[formkit--solana]",
-      name: "Team Matrix",
-      url: "/organization/team-matrix",
+      icon: 'icon-[formkit--solana]',
+      name: 'Team Matrix',
+      url: '/organization/team-matrix',
     },
     {
-      icon: "icon-[proicons--grid]",
-      name: "Apps",
-      url: "/organization/app",
+      icon: 'icon-[proicons--grid]',
+      name: 'Apps',
+      url: '/organization/app',
     },
   ],
-   settings: [
+  settings: [
     {
-      icon: "icon-[ep--setting]",
-      title: "Settings",
-      url: "/organization/settings?tab=profile",
+      icon: 'icon-[ep--setting]',
+      title: 'Settings',
+      url: '/organization/settings?tab=profile',
       items: [
-        {title: "Profile", url: ""},
-        {title: "Team Members", url: ""},
-        {title: "Integrated Apps", url: ""},
-        {title: "plan", url: ""},
+        { title: 'Profile', key: 'profile', url: '' },
+        { title: 'Team Members', key: 'team-members', url: '' },
+        { title: 'Integrated Apps', key: 'integrated-apps', url: '' },
+        { title: 'plan', key: 'plan', url: '' },
       ],
     },
-   ], 
- 
+  ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -97,9 +96,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent className="gap-y-0">
-        <NavMain items={data.navMain}/>
+        <NavMain items={data.navMain} />
         <NavProjects projects={data.others} />
-        <NavSettings settings={data.settings}/>
+        <NavSettings settings={data.settings} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
@@ -108,4 +107,3 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     </Sidebar>
   );
 }
-

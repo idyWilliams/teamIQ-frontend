@@ -1,6 +1,6 @@
 import React from 'react';
-import OrganisationProfile from '../../components/profile-data/OrganisationProfile';
-import CompanyLogo from '../../components/profile-data/CompanyLogo';
+import OrganisationProfile from '@/app/(admin)/organization/components/profile-data/OrganisationProfile';
+import CompanyLogo from '@/app/(admin)/organization/components/profile-data/CompanyLogo';
 
 const ProfilePage = () => {
   return (
