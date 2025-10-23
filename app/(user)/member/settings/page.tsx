@@ -51,7 +51,7 @@ function Settings() {
   );
 }
 
-//  You need to wrapper any component that uses useSearchParams in a Suspense boundary with a fallback which can be a skeleton loader
+//  You need to wrapper any component that uses ms in a Suspense boundary with a fallback which can be a skeleton loader
 export default function SettingsPage() {
   return (
     <Suspense fallback={'Loading...'}>
