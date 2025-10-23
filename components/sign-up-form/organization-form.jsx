@@ -14,11 +14,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { PasswordInput } from '../ui/password-input';
-import PasswordChecklist from 'react-password-checklist';
-
+import { PasswordInputStrength } from './password-input';
 // Validation schema using Yup
 
 const validationSchema = yup.object().shape({
@@ -59,7 +58,7 @@ function OrganizationForm() {
     register,
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
     reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
@@ -74,6 +73,9 @@ function OrganizationForm() {
       repeatPassword: '',
     },
   });
+
+  const password = useWatch({ control, name: 'password' });
+  const repeatPassword = useWatch({ control, name: 'repeatPassword' });
 
   const onSubmit = data => {
     console.log('User Input:', data);
@@ -187,33 +189,16 @@ function OrganizationForm() {
         </div>
 
         <div>
-          <Label htmlFor="password" className="mb-4 font-normal">
-            Password
-          </Label>
           <Controller
+            id="password"
             name="password"
             control={control}
             render={({ field }) => (
-              <PasswordInput
-                id="password"
-                placeholder="Enter a Password"
-                className={styleInput}
-                {...field}
-              >
-                <PasswordChecklist
-                  rules={['minLength', 'specialChar', 'number', 'capital']}
-                  minLength={8}
-                  maxLength={30}
-                  value={field.value}
-                  messages={{
-                    minLength: 'At least 8 characters',
-                    specialChar: 'One special character',
-                    number: 'One number',
-                    capital: 'One uppercase letter',
-                  }}
-                  className="mt-2 text-sm"
-                />
-              </PasswordInput>
+              <PasswordInputStrength
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+              />
             )}
           />
           {errors.password && (
@@ -228,16 +213,26 @@ function OrganizationForm() {
             Repeat Password
           </Label>
           <Controller
+            id="repeatPassword"
             name="repeatPassword"
             control={control}
-            render={({ field }) => (
-              <PasswordInput
-                id="repeatPassword"
-                placeholder="Repeat Password"
-                className={styleInput}
-                {...field}
-              />
-            )}
+            render={({ field }) => {
+              const matchBg =
+                repeatPassword === ''
+                  ? 'bg-[#F7F7F7]' // default gray background
+                  : repeatPassword === password
+                    ? 'bg-[#D2FAF3]' // ✅ light green when passwords match
+                    : 'bg-[#FFE7E3]'; // ❌ light red when not matching
+
+              return (
+                <PasswordInput
+                  id="repeatPassword"
+                  placeholder="Repeat Password"
+                  className={`${styleInput} ${matchBg}`}
+                  {...field}
+                />
+              );
+            }}
           />
           {errors.repeatPassword && (
             <span className="mt-1 block text-xs leading-snug text-red-500">
@@ -250,7 +245,7 @@ function OrganizationForm() {
           <Button
             className="h-auto w-full rounded-md bg-[#086ACE] px-6 py-3 text-white md:px-4"
             type="submit"
-            disabled={isSubmitting}
+            disabled={!isDirty || isSubmitting}
           >
             {isSubmitting ? 'Signing Up...' : 'Sign Up'}
           </Button>

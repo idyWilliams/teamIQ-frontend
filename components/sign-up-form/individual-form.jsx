@@ -8,16 +8,11 @@ import Link from 'next/link';
 import { toast } from 'sonner';
 
 // React Hook Form imports
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import {
-  PasswordInput,
-  PasswordInputStrengthChecker,
-} from '../ui/password-input';
-import PasswordChecklist from 'react-password-checklist';
-
-
+import { PasswordInput } from '../ui/password-input';
+import { PasswordInputStrength } from './password-input';
 
 // Yup Validation Schema - This defines all our validation rules
 const validationSchema = yup.object().shape({
@@ -58,7 +53,7 @@ const validationSchema = yup.object().shape({
   country: yup.string().required('Country is required'),
 
   password: yup.string().required('Password is required'),
-  
+
   repeatPassword: yup
     .string()
     .required('Please repeat your password')
@@ -70,7 +65,7 @@ function IndividualForm() {
     register,
     handleSubmit,
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
     reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
@@ -87,6 +82,9 @@ function IndividualForm() {
       repeatPassword: '',
     },
   });
+
+  const password = useWatch({ control, name: 'password' });
+  const repeatPassword = useWatch({ control, name: 'repeatPassword' });
 
   // Form submission handler
   const onSubmit = data => {
@@ -206,33 +204,16 @@ function IndividualForm() {
         </div>
 
         <div>
-          <Label htmlFor="password" className="mb-4 font-normal">
-            Password
-          </Label>
           <Controller
+            id="password"
             name="password"
             control={control}
             render={({ field }) => (
-              <PasswordInput
-                id="password"
-                placeholder="Enter a Password"
-                className={styleInput}
-                {...field}
-              >
-                <PasswordChecklist
-                  rules={['minLength', 'specialChar', 'number', 'capital']}
-                  minLength={8}
-                  maxLength={30}
-                  value={field.value}
-                  messages={{
-                    minLength: 'At least 8 characters',
-                    specialChar: 'One special character',
-                    number: 'One number',
-                    capital: 'One uppercase letter',
-                  }}
-                  className="mt-2 text-sm"
-                />
-              </PasswordInput>
+              <PasswordInputStrength
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+              />
             )}
           />
           {errors.password && (
@@ -247,16 +228,26 @@ function IndividualForm() {
             Repeat Password
           </Label>
           <Controller
+            id="repeatPassword"
             name="repeatPassword"
             control={control}
-            render={({ field }) => (
-              <PasswordInput
-                id="repeatPassword"
-                placeholder="Repeat Password"
-                className={styleInput}
-                {...field}
-              />
-            )}
+            render={({ field }) => {
+              const matchBg =
+                repeatPassword === ''
+                  ? 'bg-[#F7F7F7]' // default gray background
+                  : repeatPassword === password
+                    ? 'bg-[#D2FAF3]' // ✅ light green when passwords match
+                    : 'bg-[#FFE7E3]'; // ❌ light red when not matching
+
+              return (
+                <PasswordInput
+                  id="repeatPassword"
+                  placeholder="Repeat Password"
+                  className={`${styleInput} ${matchBg}`}
+                  {...field}
+                />
+              );
+            }}
           />
           {errors.repeatPassword && (
             <span className="mt-1 block text-xs leading-snug text-red-500">
@@ -269,7 +260,7 @@ function IndividualForm() {
           <Button
             className="h-auto w-full rounded-md bg-[#086ACE] py-3 text-white"
             type="submit"
-            disabled={isSubmitting} // Disable button while submitting
+            disabled={!isDirty || isSubmitting} // Disable button while submitting
           >
             {isSubmitting ? 'Signing Up...' : 'Sign Up'}
           </Button>
