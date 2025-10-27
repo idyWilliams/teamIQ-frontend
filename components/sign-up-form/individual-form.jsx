@@ -13,6 +13,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { PasswordInput } from '../ui/password-input';
 import { PasswordInputStrength } from './password-input';
+import { calculateStrength } from '../../utils/passwordStrength';
 
 // Yup Validation Schema - This defines all our validation rules
 const validationSchema = yup.object().shape({
@@ -65,11 +66,11 @@ function IndividualForm() {
     register,
     handleSubmit,
     control,
-    formState: { errors, isSubmitting, isDirty },
+    formState: { errors, isSubmitting, isValid },
     reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
-    mode: 'onBlur', // Validate on blur
+    mode: 'onChange', // Trigger validation as the user types
     reValidateMode: 'onChange', // Re-validate on change
     defaultValues: {
       // Set default form values
@@ -85,6 +86,8 @@ function IndividualForm() {
 
   const password = useWatch({ control, name: 'password' });
   const repeatPassword = useWatch({ control, name: 'repeatPassword' });
+
+  const { status } = calculateStrength(password || '', 8);
 
   // Form submission handler
   const onSubmit = data => {
@@ -127,7 +130,7 @@ function IndividualForm() {
               aria-invalid={!!errors.first_name}
             />
             {errors.first_name && (
-              <span className="mt-1 block text-xs leading-snug text-red-500">
+              <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
                 {errors.first_name.message}
               </span>
             )}
@@ -147,7 +150,7 @@ function IndividualForm() {
               aria-invalid={!!errors.last_name}
             />
             {errors.last_name && (
-              <span className="mt-1 block text-xs leading-snug text-red-500">
+              <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
                 {errors.last_name.message}
               </span>
             )}
@@ -168,7 +171,7 @@ function IndividualForm() {
             aria-invalid={!!errors.username}
           />
           {errors.username && (
-            <span className="mt-1 block text-xs leading-snug text-red-500">
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
               {errors.username.message}
             </span>
           )}
@@ -188,7 +191,7 @@ function IndividualForm() {
             aria-invalid={!!errors.email}
           />
           {errors.email && (
-            <span className="mt-1 block text-xs leading-snug text-red-500">
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
               {errors.email.message}
             </span>
           )}
@@ -217,7 +220,7 @@ function IndividualForm() {
             )}
           />
           {errors.password && (
-            <span className="mt-1 block text-xs leading-snug text-red-500">
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
               {errors.password.message}
             </span>
           )}
@@ -236,8 +239,8 @@ function IndividualForm() {
                 repeatPassword === ''
                   ? 'bg-[#F7F7F7]' // default gray background
                   : repeatPassword === password
-                    ? 'bg-[#D2FAF3]' // ✅ light green when passwords match
-                    : 'bg-[#FFE7E3]'; // ❌ light red when not matching
+                    ? 'bg-[#D2FAF3]' //  light green when passwords match
+                    : 'bg-[#FFE7E3]'; //  light red when not matching
 
               return (
                 <PasswordInput
@@ -250,7 +253,7 @@ function IndividualForm() {
             }}
           />
           {errors.repeatPassword && (
-            <span className="mt-1 block text-xs leading-snug text-red-500">
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
               {errors.repeatPassword.message}
             </span>
           )}
@@ -258,9 +261,9 @@ function IndividualForm() {
 
         <div className="mt-10">
           <Button
-            className="h-auto w-full rounded-md bg-[#086ACE] py-3 text-white"
+            className="bg-iq-500 hover:bg-iq-500 h-auto w-full cursor-pointer rounded-md py-3 text-white hover:text-white"
             type="submit"
-            disabled={!isDirty || isSubmitting} // Disable button while submitting
+            disabled={!isValid || isSubmitting || status !== 'Strong'} // Disable button until all validation passes
           >
             {isSubmitting ? 'Signing Up...' : 'Sign Up'}
           </Button>
@@ -290,7 +293,7 @@ function IndividualForm() {
             </div>
             <p className="mb-5 text-center text-sm">
               Already have an account?{' '}
-              <Link href="/login" className="text-[#086ACE]">
+              <Link href="/login" className="text-iq-500">
                 Log In
               </Link>
             </p>
