@@ -160,7 +160,7 @@ export default function TeamSkillStrength() {
           </Select>
         </div>
         {/* Grid for all team Members */}
-        <div className="grid sm:grid-cols-1 lg:grid-cols-6 gap-2 p-6 text-xs">
+        <div className="grid sm:grid-cols-1 lg:grid-cols-4 gap-2 p-6 text-xs">
           {teamMemberSkill.map((teamMember) => (
             <Card key={teamMember.id} className="bg-gray-50 border-0">
               <CardContent>

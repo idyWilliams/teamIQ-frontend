@@ -10,7 +10,7 @@ export default function SkeletonPage() {
   return (
     <div className="px-6">
       <Skeleton className="h-5 sm:w-1/5 mt-5 mb-9 max-sm:w-3/4"></Skeleton>
-      {/* desktop skeleton display */}
+    {/* desktop skeleton */}
       <div className="hidden sm:flex gap-4 mb-12 max-lg:flex-wrap ">
         {"abcde".split("").map((i) => (
           <CardItemSkt key={i} />
@@ -50,7 +50,7 @@ export default function SkeletonPage() {
                               <RecentSkt />
                             </div>
                             <div className="lg:flex-1/3 flex-1">
-                             <DeadlineSkt></DeadlineSkt>
+                             <DeadlineSkt />
                             </div>
                           </div>
                         </div>

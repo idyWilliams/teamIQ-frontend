@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { data } from '../../data/data';
+import { data } from '../../../utils/data';
 import { Trash2 } from 'lucide-react';
 import {
   Table,

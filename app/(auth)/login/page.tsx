@@ -71,7 +71,7 @@ export default function Login() {
             className='!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md bg-[#F7F7F7] focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#086ACE] focus-visible:ring-0'
           />
           {errors.email && (
-            <p className="mt-1 text-sm text-red-500">
+            <p className="mt-1 text-sm text-iq-err-300">
               {errors.email.message as string}
             </p>
           )}
@@ -95,7 +95,7 @@ export default function Login() {
             )}
           />
           {errors.password && (
-            <span className="mt-1 block text-xs leading-snug text-red-500">
+            <span className="mt-1 block text-xs leading-snug text-iq-err-300">
               {errors.password.message}
             </span>
           )}
@@ -104,7 +104,7 @@ export default function Login() {
         <div className="mt-8">
           <Button
             type="submit"
-            className="h-auto w-full rounded-md bg-[#086ACE] py-3 text-white hover:cursor-pointer hover:bg-[#086bcecc]"
+            className="h-auto w-full rounded-md bg-iq-500 py-3 text-white hover:cursor-pointer hover:bg-iq-500"
           >
             Login
           </Button>
@@ -141,7 +141,7 @@ export default function Login() {
             </div>
             <p className="text-center text-sm">
               Don&apos;t have an account?{' '}
-              <Link href="/signup" className="text-[#086ACE]">
+              <Link href="/signup" className="text-iq-500">
                 Sign Up
               </Link>
             </p>
