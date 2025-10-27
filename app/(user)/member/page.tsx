@@ -62,7 +62,7 @@ export default function Dashboard() {
         Welcome back, James Alfred
       </h2>
       {/* desktop card display */}
-      <div className="hidden sm:flex gap-4 mb-12 max-lg:flex-wrap ">
+      <div className="hidden gap-4 sm:flex mb-12 max-lg:flex-wrap ">
         {cards.map((card, i) => (
           <CardItem key={i} {...card} />
         ))}
