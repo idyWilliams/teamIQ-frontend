@@ -1,97 +1,98 @@
-import countryList from "@/components/sign-up-form/country-list";
-import React, { Fragment, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { toast } from "sonner";
+'use client';
+import React from 'react';
+import CountrySelect from './country-select';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import Link from 'next/link';
+import { toast } from 'sonner';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import * as yup from "yup";
-import { useForm, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  PasswordInput,
-  PasswordInputStrengthChecker,
-} from "../ui/password-input";
+} from '@/components/ui/select';
+import * as yup from 'yup';
+import { useForm, Controller, useWatch } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { PasswordInput } from '../ui/password-input';
+import { PasswordInputStrength } from './password-input';
+import { calculateStrength } from '../../utils/passwordStrength';
+// Validation schema using Yup
 
 const validationSchema = yup.object().shape({
   organization_name: yup
     .string()
-    .required("Organization name is required")
-    .matches(
-      /^[A-Z][a-zA-Z]*$/,
-      "Organization name must start with a capital letter."
-    ),
+    .trim()
+    .required('Organization name is required')
+    .min(3, 'Organization name must be at least 3 characters')
+    .max(20, 'Organization name must not exceed 20 characters')
+    .matches(/^[a-zA-Z ]+$/, 'Only letters are allowed'),
+
   team_size: yup
     .number()
-    .min(1, "Team size must be at least 1")
-    .typeError("Team size must be a number")
-    .required("Team size is required"),
+    .min(1, 'Team size must be at least 1')
+    .typeError('Team size must be a number')
+    .required('Team size is required'),
+
   email: yup
     .string()
-    .email("Please enter a valid email address")
-    .required("Email is required"),
-  country: yup.string().required("Country is required"),
-  password: yup
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .max(32, "Password must not exceed 32 characters")
-    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .matches(/[0-9]/, "Password must contain at least one number")
-    .matches(
-      /[.@$!%*?&]/,
-      "Password must contain at least one special character"
-    )
-    .required("Password is required"),
+    .trim()
+    .email('Please enter a valid email address')
+    .required('Email is required'),
+
+  country: yup.string().required('Country is required'),
+
+  password: yup.string().required('Password is required'),
+
   repeatPassword: yup
     .string()
-    .oneOf([yup.ref("password"), null], "Passwords must match")
-    .required("Repeat password is required"),
+    .oneOf([yup.ref('password'), null], 'Passwords must match')
+    .required('Repeat password is required'),
 });
 
 function OrganizationForm() {
   // Reusable input & select trigger style (aligned with IndividualForm)
-  const placeHolder =
-    "!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md bg-[#F7F7F7] focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#086ACE] focus-visible:ring-0";
 
   const {
     register,
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid },
     reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
-    mode: "onBlur",
-    reValidateMode: "onChange",
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
     defaultValues: {
-      organization_name: "",
-      team_size: "",
-      email: "",
-      country: "",
-      password: "",
-      repeatPassword: "",
+      organization_name: '',
+      team_size: '',
+      email: '',
+      country: '',
+      password: '',
+      repeatPassword: '',
     },
   });
 
-  const onSubmit = (data) => {
-    console.log("User Input:", data);
+  const password = useWatch({ control, name: 'password' });
+  const repeatPassword = useWatch({ control, name: 'repeatPassword' });
 
-    toast.success("Form submitted successfully!");
+  const { status } = calculateStrength(password || '', 8);
+
+  const onSubmit = data => {
+    console.log('User Input:', data);
+    toast.success('Form submitted successfully!');
     reset();
   };
 
-  const onError = (errors) => {
-    console.log("Validation Errors:", errors);
-    toast.error("Please fix the errors in the form.");
+  const onError = errors => {
+    console.log('Validation Errors:', errors);
+    toast.error('Please fix the errors in the form.');
   };
+
+  const styleInput =
+    '!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md bg-[#F7F7F7] focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#086ACE] focus-visible:ring-0';
 
   return (
     <div>
@@ -100,11 +101,11 @@ function OrganizationForm() {
         onSubmit={handleSubmit(onSubmit, onError)}
         noValidate
       >
-        <div className="flex flex-col sm:flex-row gap-4 items-center">
-          <div className="sm:flex-2 w-full">
+        <div className="flex flex-col items-center gap-4 sm:flex-row">
+          <div className="w-full sm:flex-2">
             <Label
               htmlFor="organization_name"
-              className=" font-normal block mb-4"
+              className="mb-4 block font-normal"
             >
               Organization Name
             </Label>
@@ -112,20 +113,20 @@ function OrganizationForm() {
               type="text"
               id="organization_name"
               placeholder="Enter Organization Name"
-              {...register("organization_name")}
-              className={placeHolder}
+              {...register('organization_name')}
+              className={styleInput}
               autoComplete="organization"
               aria-invalid={!!errors.organization_name}
             />
             {errors.organization_name && (
-              <span className="text-red-500 text-xs mt-1 block leading-snug">
+              <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
                 {errors.organization_name.message}
               </span>
             )}
           </div>
 
-          <div className="sm:flex-1 w-full">
-            <Label htmlFor="team_size" className=" font-normal block mb-4">
+          <div className="w-full sm:flex-1">
+            <Label htmlFor="team_size" className="mb-4 block font-normal">
               Team Size
             </Label>
             <Controller
@@ -134,27 +135,29 @@ function OrganizationForm() {
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger
-                    className={`${placeHolder} w-full`}
+                    className={`${styleInput} w-full`}
                     aria-invalid={!!errors.team_size}
                   >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
                   <SelectContent className="max-h-60 overflow-auto">
-                    <SelectItem value="1">1</SelectItem>
-                    <SelectItem value="2">2</SelectItem>
-                    <SelectItem value="3">3</SelectItem>
-                    <SelectItem value="4">4</SelectItem>
-                    <SelectItem value="5">5</SelectItem>
-                    <SelectItem value="10">10</SelectItem>
-                    <SelectItem value="20">20</SelectItem>
-                    <SelectItem value="50">50</SelectItem>
-                    <SelectItem value="100">100</SelectItem>
+                    <SelectItem value="1">1-10</SelectItem>
+                    <SelectItem value="2">11-20</SelectItem>
+                    <SelectItem value="3">21-30</SelectItem>
+                    <SelectItem value="4">31-40</SelectItem>
+                    <SelectItem value="5">41-50</SelectItem>
+                    <SelectItem value="6">51-60</SelectItem>
+                    <SelectItem value="7">61-70</SelectItem>
+                    <SelectItem value="8">71-80</SelectItem>
+                    <SelectItem value="9">81-90</SelectItem>
+                    <SelectItem value="10">91-100</SelectItem>
+                    <SelectItem value="11">100+</SelectItem>
                   </SelectContent>
                 </Select>
               )}
             />
             {errors.team_size && (
-              <span className="text-red-500 text-xs mt-1 block leading-snug">
+              <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
                 {errors.team_size.message}
               </span>
             )}
@@ -169,64 +172,42 @@ function OrganizationForm() {
             type="email"
             id="email"
             placeholder="example@gmail.com"
-            {...register("email")}
-            className={placeHolder}
+            {...register('email')}
+            className={styleInput}
             autoComplete="email"
             aria-invalid={!!errors.email}
           />
           {errors.email && (
-            <span className="text-red-500 text-xs mt-1 block leading-snug">
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
               {errors.email.message}
             </span>
           )}
         </div>
 
         <div>
-          <Label className="mb-4 font-normal">Enter Country</Label>
-          <Controller
-            name="country"
+          <CountrySelect
             control={control}
-            render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger
-                  className={`${placeHolder} w-full`}
-                  aria-invalid={!!errors.country}
-                >
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent className="max-h-60 overflow-auto">
-                  {countryList.map((country) => (
-                    <SelectItem key={country} value={country}>
-                      {country}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
+            name="country"
+            label="Country"
+            errors={errors}
           />
-
-          {errors.country && (
-            <span className="text-red-500 text-xs mt-1 block leading-snug">
-              {errors.country.message}
-            </span>
-          )}
         </div>
 
         <div>
-          <Label htmlFor="password" className="mb-4 font-normal">
-            Password
-          </Label>
           <Controller
+            id="password"
             name="password"
             control={control}
             render={({ field }) => (
-              <PasswordInput id="password" className={placeHolder} {...field}>
-                <PasswordInputStrengthChecker />
-              </PasswordInput>
+              <PasswordInputStrength
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+              />
             )}
           />
           {errors.password && (
-            <span className="text-red-500 text-xs mt-1 block leading-snug">
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
               {errors.password.message}
             </span>
           )}
@@ -237,18 +218,29 @@ function OrganizationForm() {
             Repeat Password
           </Label>
           <Controller
+            id="repeatPassword"
             name="repeatPassword"
             control={control}
-            render={({ field }) => (
-              <PasswordInput
-                id="repeatPassword"
-                className={placeHolder}
-                {...field}
-              />
-            )}
+            render={({ field }) => {
+              const matchBg =
+                repeatPassword === ''
+                  ? 'bg-[#F7F7F7]' // default gray background
+                  : repeatPassword === password
+                    ? 'bg-[#D2FAF3]' // light green when passwords match
+                    : 'bg-[#FFE7E3]'; // light red when not matching
+
+              return (
+                <PasswordInput
+                  id="repeatPassword"
+                  placeholder="Repeat Password"
+                  className={`${styleInput} ${matchBg}`}
+                  {...field}
+                />
+              );
+            }}
           />
           {errors.repeatPassword && (
-            <span className="text-red-500 text-xs mt-1 block leading-snug">
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
               {errors.repeatPassword.message}
             </span>
           )}
@@ -256,11 +248,11 @@ function OrganizationForm() {
 
         <div className="mt-10">
           <Button
-            className="bg-[#0A427B] text-white w-full py-3 px-6 md:px-4  h-auto rounded-md"
+            className="bg-iq-500 hover:bg-iq-500 h-auto w-full cursor-pointer rounded-md px-6 py-3 text-white hover:text-white md:px-4"
             type="submit"
-            disabled={isSubmitting}
+            disabled={!isValid || isSubmitting || status !== 'Strong'}
           >
-            {isSubmitting ? "Signing Up..." : "Sign Up"}
+            {isSubmitting ? 'Signing Up...' : 'Sign Up'}
           </Button>
         </div>
 
@@ -272,23 +264,23 @@ function OrganizationForm() {
           </div>
 
           <div>
-            <div className="flex justify-center items-center gap-5 mt-8 mb-10">
+            <div className="mt-8 mb-10 flex items-center justify-center gap-5">
               <Button
-                variant={"ghost"}
-                className="border rounded-full size-12 p-0"
+                variant={'ghost'}
+                className="size-12 rounded-full border p-0"
               >
                 <span className="icon-[devicon--google] size-5"></span>
               </Button>
               <Button
-                variant={"ghost"}
-                className="border rounded-full size-12 p-0"
+                variant={'ghost'}
+                className="size-12 rounded-full border p-0"
               >
                 <span className="icon-[logos--microsoft-icon] size-5"></span>
               </Button>
             </div>
-            <p className="text-center text-sm mb-5">
-              Already have an account?{" "}
-              <Link href="/login" className="text-[#086ACE]">
+            <p className="mb-5 text-center text-sm">
+              Already have an account?{' '}
+              <Link href="/login" className="text-iq-500">
                 Log In
               </Link>
             </p>

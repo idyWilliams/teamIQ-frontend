@@ -1,98 +1,131 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { AudioWaveform, Command, GalleryVerticalEnd } from "lucide-react";
-
-import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
-import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
+import * as React from 'react';
+import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react';
+import { NavMain } from '@/components/nav-main';
+import { NavProjects } from '@/components/nav-projects';
+import NavSettings from './NavSettings';
+import { NavUser } from '@/components/nav-user';
+import { TeamSwitcher } from '@/components/team-switcher';
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar";
+} from '@/components/ui/sidebar';
 
-// This is sample data.
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: 'shadcn',
+    email: 'm@example.com',
+    avatar: '/avatars/shadcn.jpg',
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: 'Acme Inc',
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      plan: 'Enterprise',
     },
     {
-      name: "Acme Corp.",
+      name: 'Acme Corp.',
       logo: AudioWaveform,
-      plan: "Startup",
+      plan: 'Startup',
     },
     {
-      name: "Evil Corp.",
+      name: 'Evil Corp.',
       logo: Command,
-      plan: "Free",
+      plan: 'Free',
     },
   ],
-  navMain: [
-    {
-      icon: "icon-[ph--identification-badge]",
-      title: "Dashboard",
-      url: "/organization",
-      items: [
-        { title: "Overview", url: "" },
-        { title: "Project Status", url: "" },
-        { title: "Team", url: "" },
-      ],
-    },
-  ],
+  // navMain: [
+  //   {
+  //     icon: 'icon-[ph--identification-badge]',
+  //     title: 'Dashboard',
+  //     url: '/organization',
+  //   },
+  //   {
+  //     icon: 'icon-[ant-design--idcard-outlined]',
+  //     name: 'Projects',
+  //     url: '/organization/projects',
+  //   },
+  //   {
+  //     icon: 'icon-[hugeicons--user-group]',
+  //     name: 'Team',
+  //     url: '/organization/team',
+  //   },
+  //   {
+  //     icon: 'icon-[formkit--solana]',
+  //     name: 'Team Matrix',
+  //     url: '/organization/team-matrix',
+  //   },
+  //   { icon: 'icon-[proicons--grid]', name: 'Apps', url: '/organization/app' },
+  // ],
   others: [
     {
-      icon: "icon-[ant-design--idcard-outlined]",
-      name: "Projects",
-      url: "/organization/projects",
+      icon: 'icon-[ph--identification-badge]',
+      name: 'Dashboard',
+      url: '/organization',
     },
     {
-      icon: "icon-[hugeicons--user-group]",
-      name: "Team",
-      url: "/organization/team",
+      icon: 'icon-[ant-design--idcard-outlined]',
+      name: 'Projects',
+      url: '/organization/projects',
     },
     {
-      icon: "icon-[formkit--solana]",
-      name: "Team Matrix",
-      url: "/organization/team-matrix",
+      icon: 'icon-[hugeicons--user-group]',
+      name: 'Team',
+      url: '/organization/team',
     },
     {
-      icon: "icon-[proicons--grid]",
-      name: "Apps",
-      url: "/organization/app",
+      icon: 'icon-[formkit--solana]',
+      name: 'Team Matrix',
+      url: '/organization/team-matrix',
     },
+    { icon: 'icon-[proicons--grid]', name: 'Apps', url: '/organization/app' },
+  ],
+  settings: [
     {
-      icon: "icon-[ep--setting]",
-      name: "Settings",
-      url: "/organization/settings",
+      icon: 'icon-[ep--setting]',
+      title: 'Settings',
+      url: '/organization/settings',
+      items: [
+        { title: 'Profile', url: '/organization/settings?tab=profile' },
+        {
+          title: 'Team Members',
+          url: '/organization/settings?tab=team-members',
+        },
+        {
+          title: 'Integrated Apps',
+          url: '/organization/settings?tab=integrated-apps',
+        },
+        { title: 'Plan', url: '/organization/settings?tab=plan' },
+      ],
     },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
+    <Sidebar
+      collapsible="icon"
+      className="border-r border-gray-200 bg-white"
+      {...props}
+    >
+      <SidebarHeader className="border-b border-gray-100 py-3">
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
-      <SidebarContent className="gap-y-0">
-        <NavMain items={data.navMain} />
+
+      <SidebarContent className="mt-2 gap-y-0">
+        {/* <NavMain items={data.navMain} /> */}
         <NavProjects projects={data.others} />
+        <NavSettings settings={data.settings} />
       </SidebarContent>
-      <SidebarFooter>
+
+      <SidebarFooter className="border-t border-gray-100 py-3">
         <NavUser user={data.user} />
       </SidebarFooter>
+
       <SidebarRail />
     </Sidebar>
   );

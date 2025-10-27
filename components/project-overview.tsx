@@ -1,35 +1,36 @@
-import ProgresWithDate from "./progres-with-date";
-import IconList from "./ui/icon-list";
-import LinkedDocs from "./linked-docs";
-import AiSummary from "./ai-summary";
-import { useIsMobile } from "@/hooks/use-mobile";
-
+import ProgresWithDate from './progres-with-date';
+import IconList from './ui/icon-list';
+import LinkedDocs from './linked-docs';
+import AiSummary from './ai-summary';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Button } from './ui/button';
+import { usePathname } from 'next/navigation';
 const dummyStacks = [
-  { imgSrc: "/images/nodejs.png", stack: "NodeJS" },
-  { imgSrc: "/images/figma.png", stack: "Figma" },
-  { imgSrc: "/images/html.png", stack: "HTML" },
-  { imgSrc: "/images/css.png", stack: "CSS" },
+  { imgSrc: '/images/nodejs.png', stack: 'NodeJS' },
+  { imgSrc: '/images/figma.png', stack: 'Figma' },
+  { imgSrc: '/images/html.png', stack: 'HTML' },
+  { imgSrc: '/images/css.png', stack: 'CSS' },
 ];
 const dummyApps = [
-  { imgSrc: "/images/slack.png", stack: "Slack" },
-  { imgSrc: "/images/github.png", stack: "Github" },
-  { imgSrc: "/images/Jira.png", stack: "Jira" },
-  { imgSrc: "/images/gitlab.png", stack: "Gitlab" },
+  { imgSrc: '/images/slack.png', stack: 'Slack' },
+  { imgSrc: '/images/github.png', stack: 'Github' },
+  { imgSrc: '/images/Jira.png', stack: 'Jira' },
+  { imgSrc: '/images/gitlab.png', stack: 'Gitlab' },
 ];
 
 const dummyLinkedDocs = [
-  "Software Requirements Specification (SRS).pdf",
-  "Project_Plan.docx",
-  "Design_Mockups.sketch",
+  'Software Requirements Specification (SRS).pdf',
+  'Project_Plan.docx',
+  'Design_Mockups.sketch',
 ];
-
 const ProjectOverview = () => {
   const isMobile = useIsMobile();
+  const pathname = usePathname();
 
   return (
-    <div className="flex gap-[32px] h-screen p-[24px]">
+    <div className="flex h-screen gap-[32px] p-[24px]">
       {/* Left hand side containing Descriptions and documents*/}
-      <div className="w-[100%] md:w-[793px] lg:w-[70%] flex flex-col gap-[32px] overflow-scroll [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="flex w-[100%] flex-col gap-[32px] overflow-scroll [scrollbar-width:none] md:w-[793px] lg:w-[70%] [&::-webkit-scrollbar]:hidden">
         {isMobile && (
           <div>
             <AiSummary />
@@ -37,10 +38,18 @@ const ProjectOverview = () => {
         )}
 
         <div>
-          <h2 className="font-bold mb-[12px] text-[14px] lg:text-[16px]">
-            Description
-          </h2>
-          <p className="leading-relaxed text-[13px] lg:text-[14px]">
+          <div className="mb-2 flex items-center justify-between">
+            {' '}
+            <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
+              Description
+            </h2>
+            {pathname.includes('/organization') && (
+              <Button className="bg-[#086ACE] px-[24px] py-[16px] text-[14px] text-[#FFFFFA] hover:bg-[#086bcee0]">
+                Edit Project
+              </Button>
+            )}
+          </div>
+          <p className="text-[13px] leading-relaxed lg:text-[14px]">
             Lorem ipsum dolor sit amet consectetur. Sed est vel id gravida orci
             nascetur tincidunt amet. Vestibulum eu sagittis ac elementum nam
             lacus. Nisi viverra dolor a tortor tellus. Netus blandit vitae
@@ -61,7 +70,7 @@ const ProjectOverview = () => {
           </p>
         </div>
         <div>
-          <h2 className="font-bold mb-[12px] text-[14px] lg:text-[16px]">
+          <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
             Project Timeline
           </h2>
           <ProgresWithDate
@@ -70,19 +79,19 @@ const ProjectOverview = () => {
           />
         </div>
         <div>
-          <h2 className="font-bold mb-[12px] text-[14px] lg:text-[16px]">
+          <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
             Required Stacks
           </h2>
           <IconList data={dummyStacks} />
         </div>
         <div>
-          <h2 className="font-bold mb-[12px] text-[14px] lg:text-[16px]">
+          <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
             Integrated Apps
           </h2>
           <IconList data={dummyApps} />
         </div>
         <div>
-          <h2 className="font-bold mb-[12px] text-[14px] lg:text-[16px]">
+          <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
             Linked Documents
           </h2>
           <LinkedDocs data={dummyLinkedDocs} />
@@ -91,10 +100,10 @@ const ProjectOverview = () => {
 
       {/* Right hand side containing Ai summary */}
       {!isMobile && (
-        <div className="w-[100%] md:w-[382px] lg:w-[30%] p-[24px] flex flex-col gap-[13px] rounded-[8px] shadow-[-1px_2px_30px_0px_#0000000D]">
+        <div className="flex w-[100%] flex-col gap-[13px] rounded-[8px] p-[24px] shadow-[-1px_2px_30px_0px_#0000000D] md:w-[382px] lg:w-[30%]">
           <div className="flex items-center">
             <span className="icon-[fluent--sparkle-48-filled] size-5"></span>
-            <h2 className="font-bold text-[18px]">AI summary</h2>
+            <h2 className="text-[18px] font-bold">AI summary</h2>
           </div>
 
           <AiSummary />

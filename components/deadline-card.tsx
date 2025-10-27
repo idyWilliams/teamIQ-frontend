@@ -53,23 +53,23 @@ export default function Deadline() {
     <div className="h-full">
       <Card className="shadow-none h-full">
         <CardHeader>
-          <CardTitle>Upcoming Deadlines</CardTitle>
+          <CardTitle className="text-xl max-sm:text-[16px]">Upcoming Deadlines</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-5">
           {mockTasks.map((tasks, i) => (
             <div
               key={i}
-              className="flex justify-between gap-5 px-[25px] items-start rounded-xl py-3 border-l-2 border-blue-500 bg-[#F7F7F7] "
+              className=" max-sm:flex-col flex justify-between gap-5 px-[25px] items-start rounded-xl py-3 border-l-2 border-blue-500 bg-[#F7F7F7] "
             >
               <div>
-                <p className="font-semibold">{tasks.task}</p>
-                <p className="text-sm">{tasks.assigner}</p>
+                <p className="font-semibold text-[16px] max-sm:text-sm">{tasks.task}</p>
+                <p className="text-[12px]">{tasks.assigner}</p>
               </div>
               <div className="flex gap-1 items-center whitespace-nowrap">
                 <Avatar className="size-3">
                   <AvatarImage src="images/deadline.svg" alt="deadline" />
                 </Avatar>
-                <p className="text-sm text-blue-500">
+                <p className="text-[12px] text-blue-500">
                   {deadlineCalc(tasks.deadline)}
                 </p>
               </div>

@@ -128,7 +128,7 @@ export default function ResetPassword() {
         </div>
         <Button
           type="submit"
-          className="bg-[#086ACE] hover:cursor-pointer hover:bg-[#086bcec0] text-white mt-10 w-full py-3 h-auto rounded-md"
+          className="bg-iq-500 hover:cursor-pointer hover:bg-[#086bcec0] text-white mt-10 w-full py-3 h-auto rounded-md"
         >
           Reset
         </Button>

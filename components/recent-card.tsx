@@ -85,7 +85,7 @@ export default function RecentCard() {
     <div className="h-full">
       <Card className="shadow-none h-full">
         <CardHeader className="flex flex-row max-sm:flex-col items-start justify-between gap-6 ">
-          <CardTitle> Recent Activity</CardTitle>
+          <CardTitle className="text-[20px] max-sm:text-[16px]"> Recent Activity</CardTitle>
           <CardAction className="flex flex-row gap-6">
             <Select onValueChange={(value) => setSelectedDateRange(value)}>
               <SelectTrigger>
@@ -125,8 +125,8 @@ export default function RecentCard() {
                   <AvatarFallback>R</AvatarFallback>
                 </Avatar>
                 <div>
-                  <p>{activity.action}</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-[16px]  max-sm:text-sm">{activity.action}</p>
+                  <p className="text-sm text-muted-foreground">
                     {timeAgo(activity.date)}
                   </p>
                 </div>

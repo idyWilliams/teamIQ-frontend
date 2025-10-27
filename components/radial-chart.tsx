@@ -34,17 +34,17 @@ const chartConfig = {
 
 export default function ChartRadialShape() {
   return (
-    <Card className="flex flex-col shadow-none h-full ">
+    <Card className="flex flex-col shadow-none h-full justify-between ">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Completion Rate</CardTitle>
-        <CardDescription>
+        <CardTitle className="max-sm:text-[16px] text-[20px]">Completion Rate</CardTitle>
+        <CardDescription className="max-sm:text-[14px] text-[18px] mb-6">
           Ratio of completed to uncompleted task
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square size-[300px]"
+          className="mx-auto aspect-square size-[250px] "
         >
           <RadialBarChart
             data={chartData}
@@ -92,11 +92,11 @@ export default function ChartRadialShape() {
       <CardFooter className="flex-col items-start justify-self-start gap-2 text-sm">
         <div className="flex gap-2 items-center">
           <div className="size-3 bg-blue-500 rounded-xs"></div>
-          <p>Completed Task</p>
+          <p className="text-muted-foreground text-[16px] max-sm:text-sm">Completed Task</p>
         </div>
         <div className="flex gap-2 items-center">
           <div className="size-3 bg-blue-200 rounded-xs"></div>
-          <p>Pending Task</p>
+          <p className="text-muted-foreground text-[16px] max-sm:text-sm">Pending Task</p>
         </div>
       </CardFooter>
     </Card>

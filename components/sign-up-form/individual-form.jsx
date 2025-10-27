@@ -1,80 +1,64 @@
-import countryList from "@/components/sign-up-form/country-list";
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { toast } from "sonner";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+'use client';
+import React from 'react';
+import CountrySelect from './country-select';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import Link from 'next/link';
+import { toast } from 'sonner';
 
 // React Hook Form imports
-import { useForm, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import {
-  PasswordInput,
-  PasswordInputStrengthChecker,
-} from "../ui/password-input";
+import { useForm, Controller, useWatch } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { PasswordInput } from '../ui/password-input';
+import { PasswordInputStrength } from './password-input';
+import { calculateStrength } from '../../utils/passwordStrength';
 
 // Yup Validation Schema - This defines all our validation rules
 const validationSchema = yup.object().shape({
   first_name: yup
     .string()
-    .required("First name is required")
     .trim()
-    .matches(
-      /^[A-Z][a-zA-Z]*$/,
-      "First name must start with a capital letter."
-    ),
+    .required('First name is required')
+    .min(3, 'First name must be at least 3 characters')
+    .max(20, 'First name must not exceed 20 characters')
+    .matches(/^[a-zA-Z]+$/, 'Only letters are allowed'),
 
   last_name: yup
     .string()
-    .required("Last name is required")
     .trim()
-    .matches(/^[A-Z][a-zA-Z]*$/, "Last name must start with a capital letter."),
+    .required('Last name is required')
+    .min(3, 'Last name must be at least 3 characters')
+    .max(20, 'Last name must be at most 20 characters')
+    .matches(/^[a-zA-Z]+$/, 'Only letters are allowed'),
 
   username: yup
     .string()
-    .required("User name is required")
-    .min(3, "User name must be at least 3 characters")
-    .max(20, "User name must be at most 20 characters")
+    .trim()
+    .required('User name is required')
+    .min(3, 'User name must be at least 3 characters')
+    .max(20, 'User name must be at most 20 characters')
     .matches(
       /^[a-zA-Z0-9_]+$/,
-      "Only letters, numbers, and underscores are allowed"
+      'Only letters, numbers, and underscores are allowed'
     )
     .trim(),
 
   email: yup
     .string()
-    .required("Email is required")
-    .email("Please enter a valid email address")
-    .trim(),
+    .trim()
+    .required('Email is required')
+    .email('Please enter a valid email address'),
 
-  country: yup.string().required("Country is required"),
+  country: yup.string().required('Country is required'),
 
-  password: yup
-    .string()
-    .required("Password is required")
-    .min(8, "Password must be at least 8 characters")
-    .max(32, "Password must not exceed 32 characters")
-    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .matches(/[0-9]/, "Password must contain at least one number")
-    .matches(
-      /[.@$!%*?&]/,
-      "Password must contain at least one special character"
-    ),
+  password: yup.string().required('Password is required'),
 
   repeatPassword: yup
     .string()
-    .required("Please repeat your password")
-    .oneOf([yup.ref("password")], "Passwords do not match"),
+    .required('Please repeat your password')
+    .oneOf([yup.ref('password')], 'Passwords do not match'),
 });
 
 function IndividualForm() {
@@ -82,42 +66,47 @@ function IndividualForm() {
     register,
     handleSubmit,
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid },
     reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
-    mode: "onBlur", // Validate on blur
-    reValidateMode: "onChange", // Re-validate on change
+    mode: 'onChange', // Trigger validation as the user types
+    reValidateMode: 'onChange', // Re-validate on change
     defaultValues: {
       // Set default form values
-      first_name: "",
-      last_name: "",
-      username: "",
-      email: "",
-      country: "",
-      password: "",
-      repeatPassword: "",
+      first_name: '',
+      last_name: '',
+      username: '',
+      email: '',
+      country: '',
+      password: '',
+      repeatPassword: '',
     },
   });
 
+  const password = useWatch({ control, name: 'password' });
+  const repeatPassword = useWatch({ control, name: 'repeatPassword' });
+
+  const { status } = calculateStrength(password || '', 8);
+
   // Form submission handler
-  const onSubmit = (data) => {
+  const onSubmit = data => {
     // This function only runs if validation passes
-    console.log("User Input:", data);
-    toast.success("Form submitted successfully!");
+    console.log('User Input:', data);
+    toast.success('Form submitted successfully!');
 
     // Reset the form after successful submission
     reset();
   };
 
   // Handle form submission errors
-  const onError = (errors) => {
-    console.log("Validation errors:", errors);
-    toast.error("Please fix the errors in the form");
+  const onError = errors => {
+    console.log('Validation errors:', errors);
+    toast.error('Please fix the errors in the form');
   };
 
-  const placeHolder =
-    "!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md  focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#B3C4D6] focus-visible:ring-0 bg-[#F7F7F7]";
+  const styleInput =
+    '!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md  focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#B3C4D6] focus-visible:ring-0 bg-[#F7F7F7]';
 
   return (
     <div>
@@ -126,7 +115,7 @@ function IndividualForm() {
         onSubmit={handleSubmit(onSubmit, onError)}
         noValidate
       >
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row">
           <div className="flex-1">
             <Label htmlFor="first_name" className="mb-4 font-normal">
               First Name
@@ -135,13 +124,13 @@ function IndividualForm() {
               type="text"
               id="first_name"
               placeholder="First Name"
-              {...register("first_name")} // Register the field with React Hook Form
-              className={placeHolder}
+              {...register('first_name')} // Register the field with React Hook Form
+              className={styleInput}
               autoComplete="given-name"
               aria-invalid={!!errors.first_name}
             />
             {errors.first_name && (
-              <span className="text-red-500 text-xs mt-1 block leading-snug">
+              <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
                 {errors.first_name.message}
               </span>
             )}
@@ -155,13 +144,13 @@ function IndividualForm() {
               type="text"
               id="last_name"
               placeholder="Last Name"
-              {...register("last_name")} // Register the field with React Hook Form
-              className={placeHolder}
+              {...register('last_name')} // Register the field with React Hook Form
+              className={styleInput}
               autoComplete="family-name"
               aria-invalid={!!errors.last_name}
             />
             {errors.last_name && (
-              <span className="text-red-500 text-xs mt-1 block leading-snug">
+              <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
                 {errors.last_name.message}
               </span>
             )}
@@ -176,13 +165,13 @@ function IndividualForm() {
             type="text"
             id="username"
             placeholder="Characters not allowed"
-            {...register("username")} // Register the field with React Hook Form
-            className={placeHolder}
+            {...register('username')} // Register the field with React Hook Form
+            className={styleInput}
             autoComplete="username"
             aria-invalid={!!errors.username}
           />
           {errors.username && (
-            <span className="text-red-500 text-xs mt-1 block leading-snug">
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
               {errors.username.message}
             </span>
           )}
@@ -196,61 +185,42 @@ function IndividualForm() {
             type="email"
             id="email"
             placeholder="example@gmail.com"
-            {...register("email")} // Register the field with React Hook Form
-            className={placeHolder}
+            {...register('email')} // Register the field with React Hook Form
+            className={styleInput}
             autoComplete="email"
             aria-invalid={!!errors.email}
           />
           {errors.email && (
-            <span className="text-red-500 text-xs mt-1 block leading-snug">
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
               {errors.email.message}
             </span>
           )}
         </div>
 
         <div>
-          <Label className="mb-4 font-normal">Enter Country</Label>
-          {/* Controller is needed for custom components like Select */}
-          <Controller
-            name="country"
+          <CountrySelect
             control={control}
-            render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className={`${placeHolder} w-full`}>
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent className="max-h-60 overflow-auto">
-                  {countryList.map((country) => (
-                    <SelectItem key={country} value={country}>
-                      {country}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
+            name="country"
+            label="Country"
+            errors={errors}
           />
-          {errors.country && (
-            <span className="text-red-500 text-xs mt-1 block leading-snug">
-              {errors.country.message}
-            </span>
-          )}
         </div>
 
         <div>
-          <Label htmlFor="password" className="mb-4 font-normal">
-            Password
-          </Label>
           <Controller
+            id="password"
             name="password"
             control={control}
             render={({ field }) => (
-              <PasswordInput id="password" className={placeHolder} {...field}>
-                <PasswordInputStrengthChecker />
-              </PasswordInput>
+              <PasswordInputStrength
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+              />
             )}
           />
           {errors.password && (
-            <span className="text-red-500 text-xs mt-1 block leading-snug">
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
               {errors.password.message}
             </span>
           )}
@@ -261,18 +231,29 @@ function IndividualForm() {
             Repeat Password
           </Label>
           <Controller
+            id="repeatPassword"
             name="repeatPassword"
             control={control}
-            render={({ field }) => (
-              <PasswordInput
-                id="repeatPassword"
-                className={placeHolder}
-                {...field}
-              />
-            )}
+            render={({ field }) => {
+              const matchBg =
+                repeatPassword === ''
+                  ? 'bg-[#F7F7F7]' // default gray background
+                  : repeatPassword === password
+                    ? 'bg-[#D2FAF3]' //  light green when passwords match
+                    : 'bg-[#FFE7E3]'; //  light red when not matching
+
+              return (
+                <PasswordInput
+                  id="repeatPassword"
+                  placeholder="Repeat Password"
+                  className={`${styleInput} ${matchBg}`}
+                  {...field}
+                />
+              );
+            }}
           />
           {errors.repeatPassword && (
-            <span className="text-red-500 text-xs mt-1 block leading-snug">
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
               {errors.repeatPassword.message}
             </span>
           )}
@@ -280,11 +261,11 @@ function IndividualForm() {
 
         <div className="mt-10">
           <Button
-            className="bg-[#0A427B] text-white w-full py-3 h-auto rounded-md"
+            className="bg-iq-500 hover:bg-iq-500 h-auto w-full cursor-pointer rounded-md py-3 text-white hover:text-white"
             type="submit"
-            disabled={isSubmitting} // Disable button while submitting
+            disabled={!isValid || isSubmitting || status !== 'Strong'} // Disable button until all validation passes
           >
-            {isSubmitting ? "Signing Up..." : "SignUp"}
+            {isSubmitting ? 'Signing Up...' : 'Sign Up'}
           </Button>
         </div>
 
@@ -296,23 +277,23 @@ function IndividualForm() {
           </div>
 
           <div>
-            <div className="flex justify-center items-center gap-5 mt-8 mb-10">
+            <div className="mt-8 mb-10 flex items-center justify-center gap-5">
               <Button
-                variant={"ghost"}
-                className="border rounded-full size-12 p-0"
+                variant={'ghost'}
+                className="size-12 rounded-full border p-0"
               >
                 <span className="icon-[devicon--google] size-5"></span>
               </Button>
               <Button
-                variant={"ghost"}
-                className="border rounded-full size-12 p-0"
+                variant={'ghost'}
+                className="size-12 rounded-full border p-0"
               >
                 <span className="icon-[logos--microsoft-icon] size-5"></span>
               </Button>
             </div>
-            <p className="text-center text-sm mb-5">
-              Already have an account?{" "}
-              <Link href="/login" className="text-[#086ACE]">
+            <p className="mb-5 text-center text-sm">
+              Already have an account?{' '}
+              <Link href="/login" className="text-iq-500">
                 Log In
               </Link>
             </p>
