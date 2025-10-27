@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
@@ -33,14 +33,20 @@ type ImageProps = {
   className?: string;
 };
 
-const Image: React.FC<ImageProps> = ({ src, alt, width, height, className }) => (
+const Image: React.FC<ImageProps> = ({
+  src,
+  alt,
+  width,
+  height,
+  className,
+}) => (
   <div
     style={{
-      width: width ? `${width}px` : "100%",
-      height: height ? `${height}px` : "100%",
+      width: width ? `${width}px` : '100%',
+      height: height ? `${height}px` : '100%',
       backgroundImage: `url(${src})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
     }}
     className={className}
     title={alt}
@@ -58,20 +64,20 @@ type Project = {
   teamMembers: string[];
   startDate: string;
   endDate: string;
-  status: "In Progress" | "Complete" | "Pending";
+  status: 'In Progress' | 'Complete' | 'Pending';
   progress: number;
 };
 
 const projects: Project[] = [
   {
     id: 1,
-    name: "Project XYZ",
-    app: ["slack", "jira", "gitlab"],
-    teamLead: "Kate Morrison",
-    teamMembers: ["Mia", "Tom", "Leo", "Tina"],
-    startDate: "Feb 15, 2025",
-    endDate: "Apr 20, 2025",
-    status: "In Progress",
+    name: 'Project XYZ',
+    app: ['slack', 'jira', 'gitlab'],
+    teamLead: 'Kate Morrison',
+    teamMembers: ['Mia', 'Tom', 'Leo', 'Tina'],
+    startDate: 'Feb 15, 2025',
+    endDate: 'Apr 20, 2025',
+    status: 'In Progress',
     progress: 65,
   },
   {
@@ -168,12 +174,12 @@ const projects: Project[] = [
    🧭 ICON MAP
 ------------------------------------------------------------------------ */
 const iconMap: Record<string, string> = {
-  slack: "/images/slack.png",
-  jira: "/images/jira.png",
-  github: "/images/github.png",
-  gitlab: "/images/gitlab.png",
-  figma: "/images/figma.png",
-  firebase: "/images/clickup.png",
+  slack: '/images/slack.png',
+  jira: '/images/jira.png',
+  github: '/images/github.png',
+  gitlab: '/images/gitlab.png',
+  figma: '/images/figma.png',
+  firebase: '/images/clickup.png',
 };
 
 /* ----------------------------------------------------------------------
@@ -216,9 +222,9 @@ export default function ProjectsPage() {
         ),
       }),
 
-      columnHelper.accessor("teamLead", {
-        header: "Team Lead",
-        cell: (info) => (
+      columnHelper.accessor('teamLead', {
+        header: 'Team Lead',
+        cell: info => (
           <div className="flex items-center gap-3">
             <Image
               src="/images/profile.2.jpg"
@@ -227,14 +233,14 @@ export default function ProjectsPage() {
               height={28}
               className="rounded-full border border-gray-300 object-cover"
             />
-            <span className="text-gray-700 font-medium">{info.getValue()}</span>
+            <span className="font-medium text-gray-700">{info.getValue()}</span>
           </div>
         ),
       }),
 
-      columnHelper.accessor("teamMembers", {
-        header: "Team Members",
-        cell: (info) => {
+      columnHelper.accessor('teamMembers', {
+        header: 'Team Members',
+        cell: info => {
           const members = info.getValue();
           return (
             <div className="flex items-center">
@@ -251,7 +257,7 @@ export default function ProjectsPage() {
                 ))}
               </div>
               {members.length > 2 && (
-                <span className="ml-3 text-gray-600 text-xs font-semibold">
+                <span className="ml-3 text-xs font-semibold text-gray-600">
                   +{members.length - 2}
                 </span>
               )}
@@ -260,9 +266,9 @@ export default function ProjectsPage() {
         },
       }),
 
-      columnHelper.accessor("startDate", {
-        header: "Start Date",
-        cell: (info) => (
+      columnHelper.accessor('startDate', {
+        header: 'Start Date',
+        cell: info => (
           <div className="flex items-center gap-2 text-gray-600">
             <Calendar size={10} />
             {info.getValue()}
@@ -279,16 +285,16 @@ export default function ProjectsPage() {
         ),
       }),
 
-      columnHelper.accessor("status", {
-        header: "Status",
-        cell: (info) => {
+      columnHelper.accessor('status', {
+        header: 'Status',
+        cell: info => {
           const status = info.getValue();
           const dotColor =
-            status === "Complete"
-              ? "green"
-              : status === "In Progress"
-              ? "blue"
-              : "orange";
+            status === 'Complete'
+              ? 'green'
+              : status === 'In Progress'
+                ? 'blue'
+                : 'orange';
           return (
             <div className="flex items-center gap-2">
               <Circle size={8} fill={dotColor} />
@@ -336,9 +342,9 @@ export default function ProjectsPage() {
       <div className="overflow-x-auto">
         <table className="w-full text-sm border-collapse">
           <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="bg-gray-100 border-b">
-                {headerGroup.headers.map((header) => (
+            {table.getHeaderGroups().map(headerGroup => (
+              <tr key={headerGroup.id} className="border-b bg-gray-100">
+                {headerGroup.headers.map(header => (
                   <th
                     key={header.id}
                     className="p-2 text-left font-semibold text-gray-500 cursor-pointer hover:text-blue-600"
@@ -346,17 +352,17 @@ export default function ProjectsPage() {
                   >
                     {flexRender(header.column.columnDef.header, header.getContext())}
                     {header.column.getIsSorted()
-                      ? header.column.getIsSorted() === "asc"
-                        ? " 🔼"
-                        : " 🔽"
-                      : ""}
+                      ? header.column.getIsSorted() === 'asc'
+                        ? ' 🔼'
+                        : ' 🔽'
+                      : ''}
                   </th>
                 ))}
               </tr>
             ))}
           </thead>
           <tbody>
-            {table.getRowModel().rows.map((row) => (
+            {table.getRowModel().rows.map(row => (
               <tr
                 key={row.id}
                 onClick={() =>
