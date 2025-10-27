@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 import SettingIntergratedApp from '@/components/organizational-settings-component/intergratedApp';
 import TeamMemberTab from '@/components/organizational-settings-component/TeamMember';
 import PlanSettings from '@/components/plan';
+import OrganisationProfileTab from '@/components/organizational-settings-component/OrgProfileTab';
 
 function Settings() {
   const router = useRouter();
@@ -58,7 +59,7 @@ const tabList = [
     label: 'Profile',
     key: 'profile',
     path: '/organization/settings/profile',
-    content: 'hi',
+    content: <OrganisationProfileTab />,
   },
   {
     label: 'Team Members',
