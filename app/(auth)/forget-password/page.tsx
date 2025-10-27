@@ -54,12 +54,12 @@ export default function ForgetPassword() {
             className="!placeholder:text-[#B3C4D6] h-auto rounded-md border-0 border-b border-[#B3C4D6] bg-[#F7F7F7] px-4 py-2 shadow-none outline-0 placeholder:text-sm focus-visible:border-b-[#086ACE] focus-visible:bg-[#F0F6FC] focus-visible:ring-0 md:py-3 md:placeholder:text-base"
           />
           {errors.email && (
-            <p className="mt-1 text-sm text-red-500">
+            <p className="text-iq-err-300 mt-1 text-sm">
               {errors.email.message as string}
             </p>
           )}
         </div>
-        <Button className="mt-10 h-auto w-full rounded-md bg-[#086ACE] py-3 text-white">
+        <Button className="bg-iq-500 hover:bg-iq-500 mt-10 h-auto w-full rounded-md py-3 text-white">
           Continue
         </Button>
       </form>

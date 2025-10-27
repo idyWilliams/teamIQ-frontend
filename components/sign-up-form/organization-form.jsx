@@ -14,11 +14,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { PasswordInput } from '../ui/password-input';
-import PasswordChecklist from 'react-password-checklist';
-
+import { PasswordInputStrength } from './password-input';
+import { calculateStrength } from '../../utils/passwordStrength';
 // Validation schema using Yup
 
 const validationSchema = yup.object().shape({
@@ -28,7 +28,7 @@ const validationSchema = yup.object().shape({
     .required('Organization name is required')
     .min(3, 'Organization name must be at least 3 characters')
     .max(20, 'Organization name must not exceed 20 characters')
-    .matches(/^[a-zA-Z]+$/, 'Only letters are allowed'),
+    .matches(/^[a-zA-Z ]+$/, 'Only letters are allowed'),
 
   team_size: yup
     .number()
@@ -59,7 +59,7 @@ function OrganizationForm() {
     register,
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid },
     reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
@@ -74,6 +74,11 @@ function OrganizationForm() {
       repeatPassword: '',
     },
   });
+
+  const password = useWatch({ control, name: 'password' });
+  const repeatPassword = useWatch({ control, name: 'repeatPassword' });
+
+  const { status } = calculateStrength(password || '', 8);
 
   const onSubmit = data => {
     console.log('User Input:', data);
@@ -114,7 +119,7 @@ function OrganizationForm() {
               aria-invalid={!!errors.organization_name}
             />
             {errors.organization_name && (
-              <span className="mt-1 block text-xs leading-snug text-red-500">
+              <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
                 {errors.organization_name.message}
               </span>
             )}
@@ -136,21 +141,23 @@ function OrganizationForm() {
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
                   <SelectContent className="max-h-60 overflow-auto">
-                    <SelectItem value="1">1</SelectItem>
-                    <SelectItem value="2">2</SelectItem>
-                    <SelectItem value="3">3</SelectItem>
-                    <SelectItem value="4">4</SelectItem>
-                    <SelectItem value="5">5</SelectItem>
-                    <SelectItem value="10">10</SelectItem>
-                    <SelectItem value="20">20</SelectItem>
-                    <SelectItem value="50">50</SelectItem>
-                    <SelectItem value="100">100</SelectItem>
+                    <SelectItem value="1">1-10</SelectItem>
+                    <SelectItem value="2">11-20</SelectItem>
+                    <SelectItem value="3">21-30</SelectItem>
+                    <SelectItem value="4">31-40</SelectItem>
+                    <SelectItem value="5">41-50</SelectItem>
+                    <SelectItem value="6">51-60</SelectItem>
+                    <SelectItem value="7">61-70</SelectItem>
+                    <SelectItem value="8">71-80</SelectItem>
+                    <SelectItem value="9">81-90</SelectItem>
+                    <SelectItem value="10">91-100</SelectItem>
+                    <SelectItem value="11">100+</SelectItem>
                   </SelectContent>
                 </Select>
               )}
             />
             {errors.team_size && (
-              <span className="mt-1 block text-xs leading-snug text-red-500">
+              <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
                 {errors.team_size.message}
               </span>
             )}
@@ -171,7 +178,7 @@ function OrganizationForm() {
             aria-invalid={!!errors.email}
           />
           {errors.email && (
-            <span className="mt-1 block text-xs leading-snug text-red-500">
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
               {errors.email.message}
             </span>
           )}
@@ -187,37 +194,20 @@ function OrganizationForm() {
         </div>
 
         <div>
-          <Label htmlFor="password" className="mb-4 font-normal">
-            Password
-          </Label>
           <Controller
+            id="password"
             name="password"
             control={control}
             render={({ field }) => (
-              <PasswordInput
-                id="password"
-                placeholder="Enter a Password"
-                className={styleInput}
-                {...field}
-              >
-                <PasswordChecklist
-                  rules={['minLength', 'specialChar', 'number', 'capital']}
-                  minLength={8}
-                  maxLength={30}
-                  value={field.value}
-                  messages={{
-                    minLength: 'At least 8 characters',
-                    specialChar: 'One special character',
-                    number: 'One number',
-                    capital: 'One uppercase letter',
-                  }}
-                  className="mt-2 text-sm"
-                />
-              </PasswordInput>
+              <PasswordInputStrength
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+              />
             )}
           />
           {errors.password && (
-            <span className="mt-1 block text-xs leading-snug text-red-500">
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
               {errors.password.message}
             </span>
           )}
@@ -228,19 +218,29 @@ function OrganizationForm() {
             Repeat Password
           </Label>
           <Controller
+            id="repeatPassword"
             name="repeatPassword"
             control={control}
-            render={({ field }) => (
-              <PasswordInput
-                id="repeatPassword"
-                placeholder="Repeat Password"
-                className={styleInput}
-                {...field}
-              />
-            )}
+            render={({ field }) => {
+              const matchBg =
+                repeatPassword === ''
+                  ? 'bg-[#F7F7F7]' // default gray background
+                  : repeatPassword === password
+                    ? 'bg-[#D2FAF3]' // light green when passwords match
+                    : 'bg-[#FFE7E3]'; // light red when not matching
+
+              return (
+                <PasswordInput
+                  id="repeatPassword"
+                  placeholder="Repeat Password"
+                  className={`${styleInput} ${matchBg}`}
+                  {...field}
+                />
+              );
+            }}
           />
           {errors.repeatPassword && (
-            <span className="mt-1 block text-xs leading-snug text-red-500">
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
               {errors.repeatPassword.message}
             </span>
           )}
@@ -248,9 +248,9 @@ function OrganizationForm() {
 
         <div className="mt-10">
           <Button
-            className="h-auto w-full rounded-md bg-[#086ACE] px-6 py-3 text-white md:px-4"
+            className="bg-iq-500 hover:bg-iq-500 h-auto w-full cursor-pointer rounded-md px-6 py-3 text-white hover:text-white md:px-4"
             type="submit"
-            disabled={isSubmitting}
+            disabled={!isValid || isSubmitting || status !== 'Strong'}
           >
             {isSubmitting ? 'Signing Up...' : 'Sign Up'}
           </Button>
@@ -280,7 +280,7 @@ function OrganizationForm() {
             </div>
             <p className="mb-5 text-center text-sm">
               Already have an account?{' '}
-              <Link href="/login" className="text-[#086ACE]">
+              <Link href="/login" className="text-iq-500">
                 Log In
               </Link>
             </p>
