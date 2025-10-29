@@ -4,7 +4,7 @@ import api from '@/services/axios';
 import { toast } from 'sonner';
 
 export const useAddUser = () => {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (newUser: { name: string; email: string }) => {
       const res = await api.post('/users', newUser);
