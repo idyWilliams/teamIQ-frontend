@@ -7,24 +7,28 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from './ui/select';
+} from '../../ui/select';
 import Image from 'next/image';
-import { Label } from './ui/label';
-import { InputGroup, InputGroupAddon, InputGroupInput } from './ui/input-group';
+import { Label } from '../../ui/label';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from '../../ui/input-group';
 import { Check, SearchIcon } from 'lucide-react';
-import { DatePicker } from './date-picker';
+import { DatePicker } from '../../date-picker';
 import { format, isBefore } from 'date-fns';
-import { validateDate } from '@/app/helper/helperFns';
-import { Switch } from './ui/switch';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Textarea } from './ui/textarea';
+import { validateDate } from '@/helper/helperFns';
+import { Switch } from '../../ui/switch';
+import { Button } from '../../ui/button';
+import { Input } from '../../ui/input';
+import { Textarea } from '../../ui/textarea';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import StepHeader from './step-header';
-import { Badge } from './ui/badge';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Badge } from '../../ui/badge';
+import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { cn } from '@/lib/utils';
 
 import {
