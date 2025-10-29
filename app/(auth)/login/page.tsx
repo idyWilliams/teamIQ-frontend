@@ -24,8 +24,8 @@ const schema = yup.object().shape({
 });
 
 export default function Login() {
-  // const { mutateAsync, isPending } = useLogin();
-  const { mutateAsync } = useAddUser();
+  const { mutateAsync, isPending } = useLogin();
+  // const { mutateAsync } = useAddUser();
   // Initializing react-hook-form with Yup
   const {
     register,
@@ -45,20 +45,17 @@ export default function Login() {
   // Password visibility state
 
   // Handle form submit
-  const onSubmit = () => {
-    mutateAsync(
-      { name: 'Timilehin', email: 'abc@g.c' },
-      {
-        onSuccess: res => {
-          console.log('Form values:', res);
-          toast.success('Login successful!');
-          reset();
-        },
-        onError: error => {
-          console.log(error);
-        },
-      }
-    );
+  const onSubmit = (data: any) => {
+    mutateAsync(data, {
+      onSuccess: res => {
+        console.log('Form values:', data, res);
+        toast.success('Login successful!');
+        reset();
+      },
+      onError: error => {
+        console.log(error);
+      },
+    });
   };
 
   const onError = (errors: any) => {

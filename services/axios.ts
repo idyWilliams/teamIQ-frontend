@@ -4,7 +4,7 @@ import { auth } from './api';
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-  // withCredentials: true, // send cookies / auth credentials
+  withCredentials: true, 
 });
 
 export default axiosInstance;
