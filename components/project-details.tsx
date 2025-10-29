@@ -14,7 +14,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from './ui/input-group';
 import { Check, SearchIcon } from 'lucide-react';
 import { DatePicker } from './date-picker';
 import { format, isBefore } from 'date-fns';
-import { validateDate } from '@/app/helper/helperFns';
+import { validateDate } from '@/helper/helperFns';
 import { Switch } from './ui/switch';
 import { Button } from './ui/button';
 import { Input } from './ui/input';

@@ -62,6 +62,7 @@ const validationSchema = yup.object().shape({
 });
 
 function IndividualForm() {
+  
   const {
     register,
     handleSubmit,
