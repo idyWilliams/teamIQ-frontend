@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { toast } from 'sonner';
-
+// Api
+import { useLoginIndividual } from '@/services/hooks/useAuth';
 // React Hook Form imports
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -62,6 +63,7 @@ const validationSchema = yup.object().shape({
 });
 
 function IndividualForm() {
+  const { mutate } = useLoginIndividual();
   const {
     register,
     handleSubmit,
@@ -93,8 +95,7 @@ function IndividualForm() {
   const onSubmit = data => {
     // This function only runs if validation passes
     console.log('User Input:', data);
-    toast.success('Form submitted successfully!');
-
+    mutate(data);
     // Reset the form after successful submission
     reset();
   };
