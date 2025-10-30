@@ -2,6 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode, useState } from "react";
+import AuthProvider from "@/providers/AuthProvider"; // ✅ Auto token validation provider
 
 export default function Providers({ children }: { children: ReactNode }) {
   // ✅ Create a QueryClient for this session
@@ -9,7 +10,8 @@ export default function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      {/* ✅ AuthProvider runs token validation every 5 mins */}
+      <AuthProvider>{children}</AuthProvider>
     </QueryClientProvider>
   );
 }
