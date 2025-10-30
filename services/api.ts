@@ -1,11 +1,11 @@
 // services/api.ts
 const api = {
   auth: {
-    registerOrg: "/auth/register/organization",
-    loginIndividual: "/auth/login/individual",
-    loginOrg: "/auth/login/organization",
-    loginGoogle: "/auth/login/google",
-    callbackGoogle: "/auth/callback/google",
+    registerOrg: '/auth/register/organization',
+    loginIndividual: '/auth/register/user',
+    loginOrg: '/auth/login/organization',
+    loginGoogle: '/auth/login/google',
+    callbackGoogle: '/auth/callback/google',
   },
 
   users: {
@@ -14,32 +14,32 @@ const api = {
 
   organizations: {
     byId: (orgId: number) => `/organizations/organizations/${orgId}`,
-    register: "/organizations/organizations/register",
+    register: '/organizations/organizations/register',
   },
 
   projects: {
-    list: "/projects/",
-    create: "/projects/",
+    list: '/projects/',
+    create: '/projects/',
     byId: (id: number) => `/projects/${id}`,
   },
 
   tasks: {
-    list: "/tasks/",
-    create: "/tasks/",
+    list: '/tasks/',
+    create: '/tasks/',
   },
 
   dashboard: {
-    home: "/dashboard/home",
+    home: '/dashboard/home',
     mentor: (internId: string) => `/dashboard/mentor/${internId}`,
     org: (orgId: string) => `/dashboard/org/${orgId}`,
   },
 
   integrations: {
-    githubWebhook: "/integrations/github/webhook",
+    githubWebhook: '/integrations/github/webhook',
   },
 
   default: {
-    root: "/", // base root endpoint
+    root: '/', // base root endpoint
   },
 };
 
