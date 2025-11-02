@@ -1,6 +1,6 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {auth} from '@/services/api';
+import { auth } from '@/services/api';
 import { toast } from 'sonner';
 import apiInstance from '@/services/axios';
 export const useRegisterIndividual = () => {
@@ -15,6 +15,7 @@ export const useRegisterIndividual = () => {
       queryClient.invalidateQueries({ queryKey: ['auth'] });
     },
     onError: () => {
+      console.error('Error details:', error?.response?.data);
       toast.error('Registration failed.');
     },
   });
