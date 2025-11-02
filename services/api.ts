@@ -2,7 +2,7 @@
 const api = {
   auth: {
     registerOrg: '/auth/register/organization',
-    loginIndividual: '/auth/register/user',
+    loginIndividual: '/api/v1/auth/register/user',
     loginOrg: '/auth/login/organization',
     loginGoogle: '/auth/login/google',
     callbackGoogle: '/auth/callback/google',
