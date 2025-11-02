@@ -1,13 +1,13 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '@/services/axios';
+import {auth} from '@/services/api';
 import { toast } from 'sonner';
-
-export const useLoginIndividual = () => {
+import apiInstance from '@/services/axios';
+export const useRegisterIndividual = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: any) => {
-      const res = await api.post('/loginIndividual', data);
+      const res = await apiInstance.post(auth.registerIndividual, data);
       return res.data;
     },
     onSuccess: data => {

@@ -6,8 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { toast } from 'sonner';
-// Api
-import { useLoginIndividual } from '@/services/hooks/useAuth';
+//  Register Api integration
+import { useRegisterIndividual } from '@/services/hooks/useAuth';
 // React Hook Form imports
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -63,7 +63,7 @@ const validationSchema = yup.object().shape({
 });
 
 function IndividualForm() {
-  const { mutate } = useLoginIndividual();
+  const { mutate } = useRegisterIndividual();
   const {
     register,
     handleSubmit,
