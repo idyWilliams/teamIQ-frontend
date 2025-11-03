@@ -88,7 +88,7 @@ const VersionControlSetup = ({
   return (
     <div className="w-full">
       <StepHeader
-        projectTitle="Version Control Setup"
+        // projectTitle="Version Control Setup"
         subTitle="Set up the tool for this project to help synchronize your activities with your preferred tool."
       />
 
@@ -296,7 +296,7 @@ const VersionControlSetup = ({
         </div>
 
         {/* Submit Button */}
-        {activeMethod && (
+        {!hideButton && activeMethod && (
           <Button
             variant="outline"
             className="h-[60px] w-full bg-[#086ACE] text-[16px] text-gray-50 enabled:hover:bg-[#8EA8C2] enabled:hover:text-gray-50 disabled:cursor-not-allowed disabled:bg-[#8EA8C2]"

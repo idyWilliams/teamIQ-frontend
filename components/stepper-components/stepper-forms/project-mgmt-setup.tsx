@@ -86,10 +86,10 @@ const ProjectMgmtSetup = ({ onSubmit, hideButton }: ProjectMgmtSetupProps) => {
 
   return (
     <div className="w-full">
-      {/* <StepHeader
-        projectTitle="Project Management Tool Setup"
+      <StepHeader
+        // projectTitle="Project Management Tool Setup"
         subTitle="Set up the project management tool for this project to help synchronize your activities with your preferred tool."
-      /> */}
+      />
       {/*Row 1 Radio Group  */}
       <form onSubmit={onSubmit}>
         <Controller
@@ -292,7 +292,7 @@ const ProjectMgmtSetup = ({ onSubmit, hideButton }: ProjectMgmtSetupProps) => {
           </div>
         )}
 
-        {activeMethod && (
+        {!hideButton && activeMethod && (
           <button
             className="h-[60px] w-full cursor-pointer rounded-[8px] bg-[#086ACE] text-[16px] text-gray-50 hover:bg-[#8EA8C2] hover:text-gray-50 disabled:cursor-not-allowed disabled:bg-[#8EA8C2]"
             disabled={activeMethod === 'OAuth' && !connected}

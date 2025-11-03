@@ -211,7 +211,7 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
   }, [stacks, setValue]);
 
   return (
-    <div className="w-[900px]">
+    <div className="w-full">
       {/* <StepHeader projectTitle="Project Details" /> */}
       <form
         // onSubmit={handleSubmit(data => endMonthValue && onSubmit(data))}
@@ -515,12 +515,14 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
           />
         </div>
 
-        <Button
-          variant={'outline'}
-          className="h-[60px] cursor-pointer bg-[#086ACE] text-[16px] text-gray-50 hover:bg-[#8EA8C2] hover:text-gray-50"
-        >
-          Next
-        </Button>
+        {!hideButton && (
+          <Button
+            variant={'outline'}
+            className="h-[60px] cursor-pointer bg-[#086ACE] text-[16px] text-gray-50 hover:bg-[#8EA8C2] hover:text-gray-50"
+          >
+            Next
+          </Button>
+        )}
       </form>
     </div>
   );
