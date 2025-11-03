@@ -20,10 +20,10 @@ const StepTwo = ({ next }: StepTwoProps) => {
       <Accordion
         type="single"
         collapsible
-        defaultValue="user-permission"
+        defaultValue="project-management-tool"
         className="w-full"
       >
-        <AccordionItem value="user-permission">
+        <AccordionItem value="project-management-tool">
           <AccordionTrigger className="group flex cursor-pointer items-center gap-2 hover:no-underline [&_.lucide-chevron-down]:hidden [&>svg]:!rotate-0">
             <RightArrow
               size="20"

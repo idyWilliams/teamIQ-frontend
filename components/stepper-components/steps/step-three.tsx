@@ -20,10 +20,10 @@ const StepThree = ({ next }: StepThreeProps) => {
       <Accordion
         type="single"
         collapsible
-        defaultValue="user-permission"
+        defaultValue="version-control-setup"
         className="w-full"
       >
-        <AccordionItem value="user-permission">
+        <AccordionItem value="version-control-setup">
           <AccordionTrigger className="group flex cursor-pointer items-center gap-2 hover:no-underline [&_.lucide-chevron-down]:hidden [&>svg]:!rotate-0">
             <RightArrow
               size="20"
@@ -34,7 +34,7 @@ const StepThree = ({ next }: StepThreeProps) => {
               className="hidden group-data-[state=open]:block"
             />
             <p className="flex-1 text-xl font-semibold">
-              User & Permission Sync
+              Version Control Setup
             </p>
           </AccordionTrigger>
 
