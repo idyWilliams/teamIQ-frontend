@@ -6,12 +6,15 @@ import StepSix from './step-six';
 import SuccessStep from './success-step';
 import { Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import StepOne from './step-one';
+import StepTwo from './step-two';
+import StepThree from './step-three';
 interface StepperModalProps {
   onClose?: () => void;
 }
 
 const StepperModal = ({ onClose }: StepperModalProps) => {
-  const [currentStep, setCurrentStep] = useState(4);
+  const [currentStep, setCurrentStep] = useState(1);
 
   const next = () => setCurrentStep(prev => prev + 1);
   const prev = () => setCurrentStep(prev => prev - 1);
@@ -92,6 +95,9 @@ const StepperModal = ({ onClose }: StepperModalProps) => {
         </div>
       </div>
       <div>
+        {currentStep === 1 && <StepOne next={next} />}
+        {currentStep === 2 && <StepTwo next={next} />}
+        {currentStep === 3 && <StepThree next={next} />}
         {currentStep === 4 && <StepFour next={next} />}
         {currentStep === 5 && <StepFive next={next} />}
         {currentStep === 6 && <StepSix onSubmit={next} />}
