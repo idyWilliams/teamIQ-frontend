@@ -12,6 +12,10 @@ import { toast } from 'sonner';
 import { PasswordInput } from '@/components/ui/password-input';
 import { useLogin } from '@/services/hooks/useAuth';
 import { useAddUser } from '@/services/hooks/useUserMutations';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { auth } from '@/services/api';
+import axiosInstance from '@/services/axios';
 
 // Validation schema
 const schema = yup.object().shape({
@@ -39,6 +43,13 @@ export default function Login() {
     defaultValues: {
       email: '',
       password: '',
+    },
+  });
+
+  const { data, isSuccess } = useMutation({
+    mutationFn: async (payload: { email: string; password: string }) => {
+      const res = await axiosInstance.get(auth.registerOrg);
+      return res.data
     },
   });
 
