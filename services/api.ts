@@ -15,7 +15,7 @@ const api = {
 
   organizations: {
     byId: (orgId: number) => `/organizations/organizations/${orgId}`,
-    register: '/organizations/organizations/register',
+    signup: '/organizations/signup',
   },
 
   userInvitation: {
