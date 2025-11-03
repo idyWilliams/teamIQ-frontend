@@ -1,7 +1,7 @@
 'use client';
 
 import { Controller, useForm } from 'react-hook-form';
-import StepHeader from './step-header';
+import StepHeader from '../steps/step-header';
 import {
   Select,
   SelectContent,
@@ -10,12 +10,12 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from './ui/select';
-import { Label } from './ui/label';
-import { RadioGroup, RadioGroupItem } from './ui/radio-group';
-import { Button } from './ui/button';
+} from '../../ui/select';
+import { Label } from '../../ui/label';
+import { RadioGroup, RadioGroupItem } from '../../ui/radio-group';
+import { Button } from '../../ui/button';
 import Link from 'next/link';
-import { Input } from './ui/input';
+import { Input } from '../../ui/input';
 import { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -29,7 +29,15 @@ interface FormValues {
   permissions: string;
 }
 
-const VersionControlSetup = () => {
+interface VersionControlSetupProps {
+  onSubmit?: () => void;
+  hideButton?: boolean;
+}
+
+const VersionControlSetup = ({
+  onSubmit,
+  hideButton,
+}: VersionControlSetupProps) => {
   const [activeMethod, setActiveMethod] = useState('');
   const [projectType, setProjectType] = useState('new');
   const [connected, setConnected] = useState(false);
@@ -66,9 +74,9 @@ const VersionControlSetup = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: FormValues) => {
-    console.log('Submitted:', data);
-  };
+  // const onSubmit = (data: FormValues) => {
+  //   console.log('Submitted:', data);
+  // };
 
   // Reset dependent fields when projectType or activeMethod changes
   useEffect(() => {
@@ -80,11 +88,11 @@ const VersionControlSetup = () => {
   return (
     <div className="w-full">
       <StepHeader
-        projectTitle="Version Control Setup"
+        // projectTitle="Version Control Setup"
         subTitle="Set up the tool for this project to help synchronize your activities with your preferred tool."
       />
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={onSubmit}>
         {/* Row 1 - Project Type */}
         <Controller
           name="projectType"
@@ -288,7 +296,7 @@ const VersionControlSetup = () => {
         </div>
 
         {/* Submit Button */}
-        {activeMethod && (
+        {!hideButton && activeMethod && (
           <Button
             variant="outline"
             className="h-[60px] w-full bg-[#086ACE] text-[16px] text-gray-50 enabled:hover:bg-[#8EA8C2] enabled:hover:text-gray-50 disabled:cursor-not-allowed disabled:bg-[#8EA8C2]"

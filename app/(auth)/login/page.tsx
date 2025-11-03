@@ -11,9 +11,9 @@ import * as yup from 'yup';
 import { toast } from 'sonner';
 import { PasswordInput } from '@/components/ui/password-input';
 import { useLogin } from '@/services/hooks/useAuth';
-import router from 'next/navigation';
 import { useRouter } from 'nextjs-toploader/app'
- 
+import { useAuthStore } from '@/store/useAuthStore';
+
 
 // Validation schema
 const schema = yup.object().shape({
@@ -27,7 +27,8 @@ const schema = yup.object().shape({
 
 export default function Login() {
   const { mutateAsync, mutate } = useLogin();
- 
+  const authenticate = useAuthStore(state => state.authorize);
+
   const router = useRouter();
   // Initializing react-hook-form with Yup
   const {
@@ -55,10 +56,16 @@ export default function Login() {
         const role = res?.data?.organization?.role;
         console.log('User role:', role);
         if (role === 'organization') {
+          authenticate({
+            user: res?.data?.organization || res?.data?.user,
+            token: res?.data?.access_token,
+            refreshToken: '',
+          });
           router.push('/organization');
         } else if (role === 'intern') {
           router.push('/member');
         }
+         
         reset();
       },
       onError: err => {

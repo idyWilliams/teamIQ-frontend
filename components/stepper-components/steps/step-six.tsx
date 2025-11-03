@@ -10,6 +10,9 @@ import {
 import DownArrow from '@/components/icons/DownArrow';
 import ConnectionTool from '../stepper-forms/connection-tool';
 import UserPermission from '../stepper-forms/user-permission';
+import NewProjectDetails from '../stepper-forms/project-details';
+import ProjectMgmtSetup from '../stepper-forms/project-mgmt-setup';
+import VersionControlSetup from '../stepper-forms/version-control-setup';
 
 interface StepSixProps {
   onSubmit: () => void;
@@ -18,6 +21,64 @@ interface StepSixProps {
 const StepSix = ({ onSubmit }: StepSixProps) => {
   return (
     <div className="w-full">
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="project-details">
+          <AccordionTrigger className="group flex cursor-pointer items-center gap-2 hover:no-underline [&_.lucide-chevron-down]:hidden [&>svg]:!rotate-0">
+            <RightArrow
+              size="20"
+              className="block group-data-[state=open]:hidden"
+            />
+            <DownArrow
+              size="20"
+              className="hidden group-data-[state=open]:block"
+            />
+            <p className="flex-1 text-xl font-semibold">Project Details</p>
+          </AccordionTrigger>
+          <AccordionContent>
+            <NewProjectDetails onSubmit={() => {}} hideButton={true} />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="prject-management-tool">
+          <AccordionTrigger className="group flex cursor-pointer items-center gap-2 hover:no-underline [&_.lucide-chevron-down]:hidden [&>svg]:!rotate-0">
+            <RightArrow
+              size="20"
+              className="block group-data-[state=open]:hidden"
+            />
+            <DownArrow
+              size="20"
+              className="hidden group-data-[state=open]:block"
+            />
+            <p className="flex-1 text-xl font-semibold">
+              Project Management Tool Setup
+            </p>
+          </AccordionTrigger>
+          <AccordionContent>
+            <ProjectMgmtSetup onSubmit={() => {}} hideButton={true} />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="version-control-setup">
+          <AccordionTrigger className="group flex cursor-pointer items-center gap-2 hover:no-underline [&_.lucide-chevron-down]:hidden [&>svg]:!rotate-0">
+            <RightArrow
+              size="20"
+              className="block group-data-[state=open]:hidden"
+            />
+            <DownArrow
+              size="20"
+              className="hidden group-data-[state=open]:block"
+            />
+            <p className="flex-1 text-xl font-semibold">
+              Version Control Setup
+            </p>
+          </AccordionTrigger>
+          <AccordionContent>
+            <VersionControlSetup onSubmit={() => {}} hideButton={true} />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="communication-tool">
           <AccordionTrigger className="group flex cursor-pointer items-center gap-2 hover:no-underline [&_.lucide-chevron-down]:hidden [&>svg]:!rotate-0">
@@ -34,7 +95,7 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
             </p>
           </AccordionTrigger>
           <AccordionContent>
-            <ConnectionTool onSubmit={()=> {}} hideButton={true} />
+            <ConnectionTool onSubmit={() => {}} hideButton={true} />
           </AccordionContent>
         </AccordionItem>
       </Accordion>
@@ -55,7 +116,7 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
           </AccordionTrigger>
 
           <AccordionContent>
-            <UserPermission onSubmit={()=>{}} hideButton={true}/>
+            <UserPermission onSubmit={() => {}} hideButton={true} />
           </AccordionContent>
         </AccordionItem>
       </Accordion>

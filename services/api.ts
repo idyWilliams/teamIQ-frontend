@@ -4,6 +4,9 @@ const api = {
     registerOrg: '/auth/register/organization',
     loginIndividual: '/auth/login/individual',
     login: '/auth/login',
+    registerIndividual: (invitation_code: string) =>
+      `/auth/register/user?invitation_code=${invitation_code}`,
+    loginOrg: '/auth/login/organization',
     loginGoogle: '/auth/login/google',
     callbackGoogle: '/auth/callback/google',
   },
@@ -14,7 +17,11 @@ const api = {
 
   organizations: {
     byId: (orgId: number) => `/organizations/organizations/${orgId}`,
-    register: '/organizations/organizations/register',
+    signup: '/organizations/signup',
+  },
+
+  userInvitation: {
+    register: '/api/v1/invitations/',
   },
 
   projects: {
@@ -47,6 +54,7 @@ export const {
   auth,
   users,
   organizations,
+  userInvitation,
   projects,
   tasks,
   dashboard,
