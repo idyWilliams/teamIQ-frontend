@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { Suspense, useEffect } from 'react';
 import CountrySelect from './country-select';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,7 @@ import * as yup from 'yup';
 import { PasswordInput } from '../ui/password-input';
 import { PasswordInputStrength } from './password-input';
 import { calculateStrength } from '../../utils/passwordStrength';
+import { useSearchParams } from 'next/navigation';
 
 // Yup Validation Schema - This defines all our validation rules
 const validationSchema = yup.object().shape({
@@ -56,14 +57,17 @@ const validationSchema = yup.object().shape({
 
   password: yup.string().required('Password is required'),
 
-  repeatPassword: yup
+  repeatpassword: yup
     .string()
     .required('Please repeat your password')
     .oneOf([yup.ref('password')], 'Passwords do not match'),
 });
 
-function IndividualForm() {
+function FormField() {
   const { mutate } = useRegisterIndividual();
+  const searchParams = useSearchParams();
+  const email = searchParams.get('email');
+  const invitation_code = searchParams.get('invitation_code');
   const {
     register,
     handleSubmit,
@@ -82,20 +86,28 @@ function IndividualForm() {
       email: '',
       country: '',
       password: '',
-      repeatPassword: '',
+      repeatpassword: '',
     },
   });
+  useEffect(() => {
+    console.log(email, invitation_code);
+    reset({ email: email.trim().replaceAll('/', '') });
+  }, []);
 
   const password = useWatch({ control, name: 'password' });
-  const repeatPassword = useWatch({ control, name: 'repeatPassword' });
+  const repeatpassword = useWatch({ control, name: 'repeatpassword' });
 
   const { status } = calculateStrength(password || '', 8);
 
   // Form submission handler
   const onSubmit = data => {
+    if (!invitation_code) {
+      toast.warn('Invitaion code is invalid');
+      return;
+    }
     // This function only runs if validation passes
     console.log('User Input:', data);
-    mutate(data);
+    mutate({ data, invitation_code });
     // Reset the form after successful submission
     reset();
   };
@@ -190,6 +202,7 @@ function IndividualForm() {
             className={styleInput}
             autoComplete="email"
             aria-invalid={!!errors.email}
+            disabled
           />
           {errors.email && (
             <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
@@ -228,24 +241,24 @@ function IndividualForm() {
         </div>
 
         <div>
-          <Label htmlFor="repeatPassword" className="mb-4 font-normal">
+          <Label htmlFor="repeatpassword" className="mb-4 font-normal">
             Repeat Password
           </Label>
           <Controller
-            id="repeatPassword"
-            name="repeatPassword"
+            id="repeatpassword"
+            name="repeatpassword"
             control={control}
             render={({ field }) => {
               const matchBg =
-                repeatPassword === ''
+                repeatpassword === ''
                   ? 'bg-[#F7F7F7]' // default gray background
-                  : repeatPassword === password
+                  : repeatpassword === password
                     ? 'bg-[#D2FAF3]' //  light green when passwords match
                     : 'bg-[#FFE7E3]'; //  light red when not matching
 
               return (
                 <PasswordInput
-                  id="repeatPassword"
+                  id="repeatpassword"
                   placeholder="Repeat Password"
                   className={`${styleInput} ${matchBg}`}
                   {...field}
@@ -253,9 +266,9 @@ function IndividualForm() {
               );
             }}
           />
-          {errors.repeatPassword && (
+          {errors.repeatpassword && (
             <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
-              {errors.repeatPassword.message}
+              {errors.repeatpassword.message}
             </span>
           )}
         </div>
@@ -304,5 +317,11 @@ function IndividualForm() {
     </div>
   );
 }
-
+function IndividualForm() {
+  return (
+    <Suspense fallback={<>loading...</>}>
+      <FormField />
+    </Suspense>
+  );
+}
 export default IndividualForm;

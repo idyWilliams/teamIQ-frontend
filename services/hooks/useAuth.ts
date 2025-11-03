@@ -6,8 +6,17 @@ import apiInstance from '@/services/axios';
 export const useRegisterIndividual = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: any) => {
-      const res = await apiInstance.post(auth.registerIndividual, data);
+    mutationFn: async ({
+      data,
+      invitation_code,
+    }: {
+      data: any;
+      invitation_code: string;
+    }) => {
+      const res = await apiInstance.post(
+        auth.registerIndividual(invitation_code),
+        data
+      );
       return res.data;
     },
     onSuccess: data => {
@@ -15,7 +24,6 @@ export const useRegisterIndividual = () => {
       queryClient.invalidateQueries({ queryKey: ['auth'] });
     },
     onError: () => {
-      console.error('Error details:', error?.response?.data);
       toast.error('Registration failed.');
     },
   });
