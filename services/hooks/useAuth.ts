@@ -4,6 +4,7 @@ import { auth, organizations } from '@/services/api';
 import { toast } from 'sonner';
 import axiosInstance from '@/services/axios';
 
+//Register Individual
 export const useRegisterIndividual = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -38,6 +39,7 @@ interface SignupOrgData {
   country: string;
 }
 
+//Register Organization
 export const useSignupOrg = () => {
   const queryClient = useQueryClient();
   return useMutation({
