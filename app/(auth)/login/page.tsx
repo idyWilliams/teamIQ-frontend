@@ -5,13 +5,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import React from 'react';
-import { useForm, Controller} from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { toast } from 'sonner';
 import { PasswordInput } from '@/components/ui/password-input';
-
-
+import { useLogin } from '@/services/hooks/useAuth';
+import router from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app'
+ 
 
 // Validation schema
 const schema = yup.object().shape({
@@ -24,6 +26,9 @@ const schema = yup.object().shape({
 });
 
 export default function Login() {
+  const { mutateAsync, mutate } = useLogin();
+ 
+  const router = useRouter();
   // Initializing react-hook-form with Yup
   const {
     register,
@@ -40,25 +45,33 @@ export default function Login() {
     },
   });
 
-  // Password visibility state
-  
-
   // Handle form submit
   const onSubmit = (data: any) => {
-    console.log('Form values:', data);
-    toast.success('Login successful!');
-    reset();
-  };
+    mutate(data, {
+      onSuccess: res => {
+        console.log('Form values:', data, res);
+        toast.success('Login successful!');
 
-  const onError = (errors: any) => {
-    console.log('Validation Errors:', errors);
-    toast.error('Please fix the errors in the form.');
+        const role = res?.data?.organization?.role;
+        console.log('User role:', role);
+        if (role === 'organization') {
+          router.push('/organization');
+        } else if (role === 'intern') {
+          router.push('/member');
+        }
+        reset();
+      },
+      onError: err => {
+        console.error('Login error:', err);
+        toast.error('Login failed. Please check your credentials.');
+      },
+    });
   };
 
   return (
     <div className="mx-auto w-full lg:max-w-lg xl:max-w-xl">
       <h3 className="mb-10 text-4xl font-medium text-[#0B0B0B]">Login</h3>
-      <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div>
           <Label htmlFor="email" className="mb-2 font-normal">
             Email
@@ -68,10 +81,10 @@ export default function Login() {
             id="email"
             placeholder="example@gmail.com"
             {...register('email')}
-            className='!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md bg-[#F7F7F7] focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#086ACE] focus-visible:ring-0'
+            className="!placeholder:text-[#B3C4D6] h-auto rounded-md border-0 border-b border-[#B3C4D6] bg-[#F7F7F7] px-4 py-2 shadow-none outline-0 placeholder:text-sm focus-visible:border-b-[#086ACE] focus-visible:bg-[#F0F6FC] focus-visible:ring-0 md:py-3 md:placeholder:text-base"
           />
           {errors.email && (
-            <p className="mt-1 text-sm text-iq-err-300">
+            <p className="text-iq-err-300 mt-1 text-sm">
               {errors.email.message as string}
             </p>
           )}
@@ -88,14 +101,13 @@ export default function Login() {
               <PasswordInput
                 id="password"
                 placeholder="Enter a Password"
-                className='!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md bg-[#F7F7F7] focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#086ACE] focus-visible:ring-0'
+                className="!placeholder:text-[#B3C4D6] h-auto rounded-md border-0 border-b border-[#B3C4D6] bg-[#F7F7F7] px-4 py-2 shadow-none outline-0 placeholder:text-sm focus-visible:border-b-[#086ACE] focus-visible:bg-[#F0F6FC] focus-visible:ring-0 md:py-3 md:placeholder:text-base"
                 {...field}
-              >
-              </PasswordInput>
+              ></PasswordInput>
             )}
           />
           {errors.password && (
-            <span className="mt-1 block text-xs leading-snug text-iq-err-300">
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
               {errors.password.message}
             </span>
           )}
@@ -104,7 +116,7 @@ export default function Login() {
         <div className="mt-8">
           <Button
             type="submit"
-            className="h-auto w-full rounded-md bg-iq-500 py-3 text-white hover:cursor-pointer hover:bg-iq-500"
+            className="bg-iq-500 hover:bg-iq-500 h-auto w-full rounded-md py-3 text-white hover:cursor-pointer"
           >
             Login
           </Button>
