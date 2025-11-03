@@ -1,7 +1,7 @@
 'use client';
 
 import { Controller, useForm } from 'react-hook-form';
-import StepHeader from './step-header';
+import StepHeader from '../steps/step-header';
 import {
   Select,
   SelectContent,
@@ -29,7 +29,15 @@ interface FormValues {
   permissions: string;
 }
 
-const VersionControlSetup = () => {
+interface VersionControlSetupProps {
+  onSubmit?: () => void;
+  hideButton?: boolean;
+}
+
+const VersionControlSetup = ({
+  onSubmit,
+  hideButton,
+}: VersionControlSetupProps) => {
   const [activeMethod, setActiveMethod] = useState('');
   const [projectType, setProjectType] = useState('new');
   const [connected, setConnected] = useState(false);
@@ -66,9 +74,9 @@ const VersionControlSetup = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: FormValues) => {
-    console.log('Submitted:', data);
-  };
+  // const onSubmit = (data: FormValues) => {
+  //   console.log('Submitted:', data);
+  // };
 
   // Reset dependent fields when projectType or activeMethod changes
   useEffect(() => {
@@ -84,7 +92,7 @@ const VersionControlSetup = () => {
         subTitle="Set up the tool for this project to help synchronize your activities with your preferred tool."
       />
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={onSubmit}>
         {/* Row 1 - Project Type */}
         <Controller
           name="projectType"
