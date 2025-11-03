@@ -13,6 +13,7 @@ import { PasswordInput } from '@/components/ui/password-input';
 import { useLogin } from '@/services/hooks/useAuth';
 import { useRouter } from 'nextjs-toploader/app'
 import { useAuthStore } from '@/store/useAuthStore';
+import { Loader } from 'lucide-react';
 
 
 // Validation schema
@@ -26,7 +27,7 @@ const schema = yup.object().shape({
 });
 
 export default function Login() {
-  const { mutateAsync, mutate } = useLogin();
+  const { isPending, mutate } = useLogin();
   const authenticate = useAuthStore(state => state.authorize);
 
   const router = useRouter();
@@ -124,8 +125,9 @@ export default function Login() {
           <Button
             type="submit"
             className="bg-iq-500 hover:bg-iq-500 h-auto w-full rounded-md py-3 text-white hover:cursor-pointer"
+            disabled={isPending}
           >
-            Login
+            {isPending ? <> <Loader className="animate-spin" /> Loading... </> : 'Login'}
           </Button>
           <div className="mt-6 flex items-center justify-between">
             <Label htmlFor="" className="font-normal">
