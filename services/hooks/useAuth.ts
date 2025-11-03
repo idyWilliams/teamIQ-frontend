@@ -1,6 +1,30 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '@/services/axios';
+import { auth } from '@/services/api';
 import { toast } from 'sonner';
-import axios from 'axios';
-
+import apiInstance from '@/services/axios';
+export const useRegisterIndividual = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      data,
+      invitation_code,
+    }: {
+      data: any;
+      invitation_code: string;
+    }) => {
+      const res = await apiInstance.post(
+        auth.registerIndividual(invitation_code),
+        data
+      );
+      return res.data;
+    },
+    onSuccess: data => {
+      toast.success('User registered successfully!');
+      queryClient.invalidateQueries({ queryKey: ['auth'] });
+    },
+    onError: () => {
+      toast.error('Registration failed.');
+    },
+  });
+};

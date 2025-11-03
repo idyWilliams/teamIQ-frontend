@@ -2,8 +2,8 @@
 const api = {
   auth: {
     registerOrg: '/auth/register/organization',
-    orgInvite: '/api/v1/invitations/',
-    loginIndividual: '/auth/login/individual',
+    registerIndividual: (invitation_code: string) =>
+      `/auth/register/user?invitation_code=${invitation_code}`,
     loginOrg: '/auth/login/organization',
     loginGoogle: '/auth/login/google',
     callbackGoogle: '/auth/callback/google',
