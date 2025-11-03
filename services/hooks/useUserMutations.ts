@@ -1,21 +1,21 @@
-"use client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "@/services/axios";
-import { toast } from "sonner";
+'use client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import api from '@/services/axios';
+import { toast } from 'sonner';
 
 export const useAddUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (newUser: { name: string; email: string }) => {
-      const res = await api.post("/users", newUser);
+      const res = await api.post('/users', newUser);
       return res.data;
     },
     onSuccess: () => {
-      toast.success("User added successfully!");
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success('User added successfully!');
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
     onError: () => {
-      toast.error("Failed to add user.");
+      toast.error('Failed to invite user.');
     },
   });
 };
@@ -28,11 +28,11 @@ export const useUpdateUser = () => {
       return res.data;
     },
     onSuccess: () => {
-      toast.success("User updated successfully!");
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success('User updated successfully!');
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
     onError: () => {
-      toast.error("Failed to update user.");
+      toast.error('Failed to update user.');
     },
   });
 };
@@ -44,11 +44,11 @@ export const useDeleteUser = () => {
       await api.delete(`/users/${id}`);
     },
     onSuccess: () => {
-      toast.success("User deleted successfully!");
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success('User deleted successfully!');
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
     onError: () => {
-      toast.error("Failed to delete user.");
+      toast.error('Failed to delete user.');
     },
   });
 };
