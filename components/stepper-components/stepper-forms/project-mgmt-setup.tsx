@@ -1,5 +1,5 @@
 import { Controller, useForm } from 'react-hook-form';
-import StepHeader from './step-header';
+import StepHeader from '../steps/step-header';
 import {
   Select,
   SelectContent,
@@ -18,7 +18,12 @@ import { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-const ProjectMgmtSetup = () => {
+interface ProjectMgmtSetupProps {
+  onSubmit: () => void;
+  hideButton: boolean;
+}
+
+const ProjectMgmtSetup = ({ onSubmit, hideButton }: ProjectMgmtSetupProps) => {
   const [activeMethod, setActiveMethod] = useState('');
   const [projectType, setProjectType] = useState('new');
   const [connected, setConnected] = useState(false);
@@ -69,9 +74,9 @@ const ProjectMgmtSetup = () => {
     resolver: yupResolver(schema),
   });
 
-  function onSubmit(data: FormValues) {
-    console.log(data);
-  }
+  // function onSubmit(data: FormValues) {
+  //   console.log(data);
+  // }
 
   useEffect(() => {
     setValue('projectType', projectType);
@@ -81,12 +86,12 @@ const ProjectMgmtSetup = () => {
 
   return (
     <div className="w-full">
-      <StepHeader
+      {/* <StepHeader
         projectTitle="Project Management Tool Setup"
         subTitle="Set up the project management tool for this project to help synchronize your activities with your preferred tool."
-      />
+      /> */}
       {/*Row 1 Radio Group  */}
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={onSubmit}>
         <Controller
           name="projectType"
           control={control}
