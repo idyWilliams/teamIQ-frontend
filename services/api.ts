@@ -2,11 +2,15 @@
 const api = {
   auth: {
     registerOrg: '/auth/register/organization',
+    loginIndividual: '/auth/login/individual',
+    login: '/auth/login',
     registerIndividual: (invitation_code: string) =>
       `/auth/register/user?invitation_code=${invitation_code}`,
     loginOrg: '/auth/login/organization',
     loginGoogle: '/auth/login/google',
     callbackGoogle: '/auth/callback/google',
+    passwordReset:"/auth/password-reset",
+    confirmPasswordReset:"/auth/password-reset/confirm"
   },
 
   users: {

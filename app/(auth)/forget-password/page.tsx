@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { toast } from 'sonner';
+import { usePassword } from '@/services/hooks/useAuth';
 
 // Validation schema
 const schema = yup.object().shape({
@@ -24,16 +25,14 @@ export default function ForgetPassword() {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
+
   } = useForm({
     resolver: yupResolver(schema),
   });
-
+  const passwordMutation = usePassword();
   // Handle form submit
   const onSubmit = (data: any) => {
-    console.log('Form values:', data);
-    toast.success('Password reset email sent');
-    reset();
+    passwordMutation.mutate({ email: data.email });
   };
 
   return (
@@ -59,8 +58,12 @@ export default function ForgetPassword() {
             </p>
           )}
         </div>
-        <Button className="bg-iq-500 hover:bg-iq-500 mt-10 h-auto w-full rounded-md py-3 text-white">
-          Continue
+        <Button
+          type="submit"
+          disabled={passwordMutation.isPending}
+          className="bg-iq-500 hover:bg-iq-500 mt-10 h-auto w-full rounded-md py-3 text-white"
+        >
+          {passwordMutation.isPending ? 'Sending...' : 'Continue'}
         </Button>
       </form>
     </div>

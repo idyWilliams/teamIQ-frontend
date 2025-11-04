@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { useInviteUser } from '@/services/hooks/useInviteUser';
 import {
   Select,
   SelectContent,
@@ -12,14 +12,20 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
+import { on } from 'events';
 
 type CloseModalProp = {
   open: boolean;
   onClose: () => void;
 };
 
-
 const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
+  const { mutateAsync } = useInviteUser();
+  const [formData, setFormData] = useState({
+    email: '',
+    stack: '',
+    role: '',
+  });
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -30,6 +36,22 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
       document.body.style.overflow = 'auto';
     };
   }, [open]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleInviteSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await mutateAsync(formData);
+      onClose();
+    } catch (error) {
+      console.error('Failed to send', error);
+    }
+  };
 
   if (!open) return null;
   return (
@@ -68,12 +90,17 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
                 id="email"
                 name="email"
                 placeholder="Enter email address"
+                onChange={handleChange}
                 className="shadow-none focus-visible:ring-0 focus-visible:outline-none"
               />
             </div>
 
             <div className="w-1/2">
-              <Select>
+              <Select
+                onValueChange={value =>
+                  setFormData({ ...formData, role: value })
+                }
+              >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
@@ -93,7 +120,8 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
           </div>
           <div className="mt-6 flex w-full flex-col gap-2">
             <Button
-              type="submit"
+              type="button"
+              onClick={handleInviteSubmit}
               className="w-full cursor-pointer bg-[#086ACE] text-white hover:bg-[#0655a4]"
             >
               Send Invite

@@ -26,7 +26,7 @@ import { Textarea } from '../../ui/textarea';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import StepHeader from './step-header';
+import StepHeader from '../steps/step-header';
 import { Badge } from '../../ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { cn } from '@/lib/utils';
@@ -61,7 +61,12 @@ const allowedDocTypes = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 ];
 
-const NewProjectDetails = () => {
+interface ProjectDetailsProps {
+  onSubmit?: (data: any) => void;
+  hideButton?: boolean;
+}
+
+const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
   const imgUploadRef = useRef<HTMLInputElement | null>(null);
   const docRef = useRef<HTMLInputElement | null>(null);
   const [preview, setPreview] = useState<string | null>('');
@@ -116,10 +121,10 @@ const NewProjectDetails = () => {
   }
 
   // Submit Function
-  function onSubmit(data: FormValues) {
-    const formData = { ...data, projectLead, docs };
-    console.log({ formData });
-  }
+  // function onSubmit(data: FormValues) {
+  //   const formData = { ...data, projectLead, docs };
+  //   console.log({ formData });
+  // }
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -206,10 +211,11 @@ const NewProjectDetails = () => {
   }, [stacks, setValue]);
 
   return (
-    <div className="w-[900px]">
-      <StepHeader projectTitle="Project Details" />
+    <div className="w-full">
+      {/* <StepHeader projectTitle="Project Details" /> */}
       <form
-        onSubmit={handleSubmit(data => endMonthValue && onSubmit(data))}
+        // onSubmit={handleSubmit(data => endMonthValue && onSubmit(data))}
+        onSubmit={onSubmit}
         className="mt-[28px] flex max-h-[100%] flex-col gap-[24px] overflow-y-auto px-2 text-neutral-800"
       >
         <div>
@@ -509,12 +515,14 @@ const NewProjectDetails = () => {
           />
         </div>
 
-        <Button
-          variant={'outline'}
-          className="h-[60px] cursor-pointer bg-[#086ACE] text-[16px] text-gray-50 hover:bg-[#8EA8C2] hover:text-gray-50"
-        >
-          Next
-        </Button>
+        {!hideButton && (
+          <Button
+            variant={'outline'}
+            className="h-[60px] cursor-pointer bg-[#086ACE] text-[16px] text-gray-50 hover:bg-[#8EA8C2] hover:text-gray-50"
+          >
+            Next
+          </Button>
+        )}
       </form>
     </div>
   );

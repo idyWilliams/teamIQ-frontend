@@ -1,5 +1,5 @@
 import { Controller, useForm } from 'react-hook-form';
-import StepHeader from './step-header';
+import StepHeader from '../steps/step-header';
 import {
   Select,
   SelectContent,
@@ -18,7 +18,12 @@ import { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-const ProjectMgmtSetup = () => {
+interface ProjectMgmtSetupProps {
+  onSubmit: () => void;
+  hideButton: boolean;
+}
+
+const ProjectMgmtSetup = ({ onSubmit, hideButton }: ProjectMgmtSetupProps) => {
   const [activeMethod, setActiveMethod] = useState('');
   const [projectType, setProjectType] = useState('new');
   const [connected, setConnected] = useState(false);
@@ -69,9 +74,9 @@ const ProjectMgmtSetup = () => {
     resolver: yupResolver(schema),
   });
 
-  function onSubmit(data: FormValues) {
-    console.log(data);
-  }
+  // function onSubmit(data: FormValues) {
+  //   console.log(data);
+  // }
 
   useEffect(() => {
     setValue('projectType', projectType);
@@ -82,11 +87,11 @@ const ProjectMgmtSetup = () => {
   return (
     <div className="w-full">
       <StepHeader
-        projectTitle="Project Management Tool Setup"
+        // projectTitle="Project Management Tool Setup"
         subTitle="Set up the project management tool for this project to help synchronize your activities with your preferred tool."
       />
       {/*Row 1 Radio Group  */}
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={onSubmit}>
         <Controller
           name="projectType"
           control={control}
@@ -287,7 +292,7 @@ const ProjectMgmtSetup = () => {
           </div>
         )}
 
-        {activeMethod && (
+        {!hideButton && activeMethod && (
           <button
             className="h-[60px] w-full cursor-pointer rounded-[8px] bg-[#086ACE] text-[16px] text-gray-50 hover:bg-[#8EA8C2] hover:text-gray-50 disabled:cursor-not-allowed disabled:bg-[#8EA8C2]"
             disabled={activeMethod === 'OAuth' && !connected}
