@@ -1,6 +1,8 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import React, { useState } from 'react';
+import { useSignupOrg } from "@/services/hooks/useAuth";
 // import { toast } from "sonner";
 
 export default function Home() {
@@ -28,7 +30,7 @@ export default function Home() {
             Login
           </Link>
           <Link
-            href="/organization"
+            href="/auth/signup"
             className="py-3 px-8 bg-white text-blue-800 rounded-2xl inline-block"
           >
             Organization
