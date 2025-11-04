@@ -40,6 +40,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { useCreateProjectStep1 } from '@/services/hooks/useProject';
+import { toast } from 'sonner';
 
 // dummy data for stack selection
 const frameworks = [
@@ -201,15 +202,24 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
 
     console.log('FINAL API PAYLOAD:', apiData);
 
-    try {
-      const result = await createProjectMutation.mutateAsync(apiData);
+    createProjectMutation.mutate(apiData, {
+      onSuccess: data => {
+        console.log('🎉 Project creation successful:', data);
+        toast.success('Project created successfully!');
 
-      if (onSubmit) {
-        onSubmit(result);
-      }
-    } catch (error) {
-      console.error('🔴 Form submission failed:', error);
-    }
+        if (onSubmit) {
+          onSubmit(data);
+        }
+      },
+      onError: (error: any) => {
+        console.error('💥 Project creation failed:', error);
+        const errorMessage =
+          error.response?.data?.detail ||
+          error.response?.data?.message ||
+          'Failed to create project';
+        toast.error(errorMessage);
+      },
+    });
   };
 
   // checking and keeping valid start date in sync with RHF variable
