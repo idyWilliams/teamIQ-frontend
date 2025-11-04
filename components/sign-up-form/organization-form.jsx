@@ -19,6 +19,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { PasswordInput } from '../ui/password-input';
 import { PasswordInputStrength } from './password-input';
 import { calculateStrength } from '../../utils/passwordStrength';
+import { useSignupOrg } from '@/services/hooks/useAuth';
 // Validation schema using Yup
 
 const validationSchema = yup.object().shape({
@@ -30,12 +31,13 @@ const validationSchema = yup.object().shape({
     .max(20, 'Organization name must not exceed 20 characters')
     .matches(/^[a-zA-Z ]+$/, 'Only letters are allowed'),
 
-  team_size: yup
-    .number()
-    .min(1, 'Team size must be at least 1')
-    .typeError('Team size must be a number')
-    .required('Team size is required'),
-
+ team_size: yup
+    .string()
+    .required('Team size is required')
+    .oneOf(
+      ['1-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
+      'Invalid team size'
+    ),
   email: yup
     .string()
     .trim()
@@ -80,11 +82,23 @@ function OrganizationForm() {
 
   const { status } = calculateStrength(password || '', 8);
 
-  const onSubmit = data => {
-    console.log('User Input:', data);
-    toast.success('Form submitted successfully!');
-    reset();
-  };
+ const { mutate: signupOrg, isPending } = useSignupOrg();
+
+const onSubmit = (data) => {
+  signupOrg(
+    {
+      ...data,
+      team_size: String(data.team_size), // ✅ Convert number to string
+    },
+    {
+      onSuccess: () => {
+        toast.success("Organization created successfully!");
+        reset();
+      },
+    }
+  );
+};
+
 
   const onError = errors => {
     console.log('Validation Errors:', errors);
@@ -141,17 +155,17 @@ function OrganizationForm() {
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
                   <SelectContent className="max-h-60 overflow-auto">
-                    <SelectItem value="1">1-10</SelectItem>
-                    <SelectItem value="2">11-20</SelectItem>
-                    <SelectItem value="3">21-30</SelectItem>
-                    <SelectItem value="4">31-40</SelectItem>
-                    <SelectItem value="5">41-50</SelectItem>
-                    <SelectItem value="6">51-60</SelectItem>
-                    <SelectItem value="7">61-70</SelectItem>
-                    <SelectItem value="8">71-80</SelectItem>
-                    <SelectItem value="9">81-90</SelectItem>
-                    <SelectItem value="10">91-100</SelectItem>
-                    <SelectItem value="11">100+</SelectItem>
+                    <SelectItem value="1-10">1-10</SelectItem>
+                    <SelectItem value="11-20">11-20</SelectItem>
+                    <SelectItem value="21-30">21-30</SelectItem>
+                    <SelectItem value="31-40">31-40</SelectItem>
+                    <SelectItem value="41-50">41-50</SelectItem>
+                    <SelectItem value="51-60">51-60</SelectItem>
+                    <SelectItem value="61-70">61-70</SelectItem>
+                    <SelectItem value="71-80">71-80</SelectItem>
+                    <SelectItem value="81-90">81-90</SelectItem>
+                    <SelectItem value="91-100">91-100</SelectItem>
+                    <SelectItem value="100+">100+</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -252,7 +266,7 @@ function OrganizationForm() {
             type="submit"
             disabled={!isValid || isSubmitting || status !== 'Strong'}
           >
-            {isSubmitting ? 'Signing Up...' : 'Sign Up'}
+            {isPending ? 'Signing Up...' : 'Sign Up'}
           </Button>
         </div>
 
