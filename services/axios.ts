@@ -3,10 +3,7 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-  withCredentials: true, // send cookies / auth credentials
+  withCredentials: true, 
 });
 
 export default axiosInstance;
