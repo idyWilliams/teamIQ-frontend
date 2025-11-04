@@ -1,4 +1,6 @@
 'use client';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/useAuthStore';  
 import React from 'react';
 import CountrySelect from './country-select';
 import { Button } from '@/components/ui/button';
@@ -82,22 +84,40 @@ function OrganizationForm() {
 
   const { status } = calculateStrength(password || '', 8);
 
+  const router = useRouter();
+const authStore = useAuthStore((state) => state.authorize);
+
  const { mutate: signupOrg, isPending } = useSignupOrg();
 
 const onSubmit = (data) => {
   signupOrg(
     {
       ...data,
-      team_size: String(data.team_size), // ✅ Convert number to string
+      team_size: String(data.team_size),
     },
     {
-      onSuccess: () => {
+      onSuccess: (response) => {
+        //Step 1: Extract user and tokens from backend response
+        const { user, token, refreshToken } = response.data;
+
+        //Step 2: Save them in Zustand (authorize)
+        authorize({ user, token, refreshToken });
+
+        // Step 3: Redirect to /organization
+        router.push("/organization");
+
+        //Optional: Success message + form reset
         toast.success("Organization created successfully!");
         reset();
+      },
+      onError: (error) => {
+        toast.error(error.response?.data?.message || "Signup failed. Try again.");
       },
     }
   );
 };
+
+
 
 
   const onError = errors => {

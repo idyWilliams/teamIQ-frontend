@@ -3,6 +3,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { auth, organizations } from '@/services/api';
 import { toast } from 'sonner';
 import axiosInstance from '@/services/axios';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useRouter } from 'next/navigation';
 
 //Register Individual
 export const useRegisterIndividual = () => {
@@ -42,6 +44,10 @@ interface SignupOrgData {
 //Register Organization
 export const useSignupOrg = () => {
   const queryClient = useQueryClient();
+   const router = useRouter();
+  const { authorize } = useAuthStore.getState(); // Get Zustand authorize method
+
+
   return useMutation({
     //the API call to register organization
     mutationFn: async (data: SignupOrgData) => {
@@ -49,11 +55,19 @@ export const useSignupOrg = () => {
       return response.data;
     },
     //if request is successful
-    onSuccess: () => {
-      toast.success('Organization created successfully!');
-      queryClient.invalidateQueries({ queryKey: ['organizations'] });
-    },
+   onSuccess: (responseData) => {
+      toast.success('Organization created successfully! Redirecting...');
 
+      // Step 1: Extract tokens and user info (adjust keys if needed)
+      const { user, token, refreshToken } = responseData.data || responseData;
+
+      // Step 2: Save them in Zustand
+      authorize({ user, token, refreshToken });
+
+      // Step 3: Invalidate queries and redirect
+      queryClient.invalidateQueries({ queryKey: ['organizations'] });
+      router.push('/organization');
+    },
     //if request fails
     onError: (error: any) => {
       console.error(
