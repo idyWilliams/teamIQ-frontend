@@ -39,6 +39,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
+import { useCreateProjectStep1 } from '@/services/hooks/useProject';
 
 // dummy data for stack selection
 const frameworks = [
@@ -177,7 +178,39 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
     resetField,
     trigger,
     handleSubmit,
+    getValues,
   } = useForm<FormValues>({ resolver: yupResolver(schema) });
+  const createProjectMutation = useCreateProjectStep1();
+
+  const handleFormSubmit = async (formData: FormValues) => {
+    console.log(' FORM DATA RECEIVED:', formData);
+    console.log(' Additional docs:', docs);
+    console.log(' Preview image:', preview);
+
+    const apiData = {
+      name: formData.projectName,
+      description: formData.description,
+      project_lead_id: 59,
+      stacks: formData.stack || [],
+      start_date: formData.startDate?.toISOString() || new Date().toISOString(),
+      end_date: formData.endDate?.toISOString() || new Date().toISOString(),
+      linked_documents: docs.map(doc => doc.name),
+      project_image: preview || 'test-image',
+      is_visible: formData.visibility,
+    };
+
+    console.log('FINAL API PAYLOAD:', apiData);
+
+    try {
+      const result = await createProjectMutation.mutateAsync(apiData);
+
+      if (onSubmit) {
+        onSubmit(result);
+      }
+    } catch (error) {
+      console.error('🔴 Form submission failed:', error);
+    }
+  };
 
   // checking and keeping valid start date in sync with RHF variable
   useEffect(() => {
@@ -215,7 +248,7 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
       {/* <StepHeader projectTitle="Project Details" /> */}
       <form
         // onSubmit={handleSubmit(data => endMonthValue && onSubmit(data))}
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit(handleFormSubmit)}
         className="mt-[28px] flex max-h-[100%] flex-col gap-[24px] overflow-y-auto px-2 text-neutral-800"
       >
         <div>
@@ -514,6 +547,18 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
             )}
           />
         </div>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => {
+            const values = getValues();
+            console.log('🔍 CURRENT FORM VALUES:', values);
+            console.log('🔍 CURRENT DOCS:', docs);
+            console.log('🔍 CURRENT STACKS:', stacks);
+          }}
+        >
+          Debug Form State
+        </Button>
 
         {!hideButton && (
           <Button
