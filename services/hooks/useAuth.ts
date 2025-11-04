@@ -4,16 +4,24 @@ import axiosInstance from '@/services/axios';
 import { auth, organizations } from '@/services/api';
 import { toast } from 'sonner';
 
-
-export const useLogin = () => { 
-    return useMutation({
-        mutationFn: async (payload: { email: string; password: string }) => {
-            console.log('Payload being sent:', payload);
-            const { data } = await axiosInstance.post(auth.login, payload);
-            return data;
-        }
-    })
+interface SignupOrgData {
+  name: string;
+  email: string;
+  password: string;
+  team_size: string;
+  country: string;
 }
+
+// Login Individual & Organization
+export const useLogin = () => {
+  return useMutation({
+    mutationFn: async (payload: { email: string; password: string }) => {
+      console.log('Payload being sent:', payload);
+      const { data } = await axiosInstance.post(auth.login, payload);
+      return data;
+    },
+  });
+};
 
 //Register Individual
 export const useRegisterIndividual = () => {
@@ -32,7 +40,7 @@ export const useRegisterIndividual = () => {
       );
       return res.data;
     },
-    onSuccess: data => {
+    onSuccess: (data: any) => {
       toast.success('User registered successfully!');
       queryClient.invalidateQueries({ queryKey: ['auth'] });
     },
@@ -41,14 +49,6 @@ export const useRegisterIndividual = () => {
     },
   });
 };
-
-interface SignupOrgData {
-  name: string;
-  email: string;
-  password: string;
-  team_size: string;
-  country: string;
-}
 
 //Register Organization
 export const useSignupOrg = () => {
@@ -74,6 +74,47 @@ export const useSignupOrg = () => {
       toast.error(
         error.response?.data?.message || 'Signup failed. Please try again.'
       );
+    },
+  });
+};
+
+// 1 REQUEST PASSWORD RESET — sends reset link/code to email
+export const usePassword = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: { email: string }) => {
+      const res = await axiosInstance.post(auth.passwordReset, payload);
+      return res.data;
+    },
+    onSuccess: data => {
+      toast.success(data?.message || 'Reset instructions sent to your email!');
+      queryClient.invalidateQueries({ queryKey: ['auth'] });
+    },
+    onError: (error: any) => {
+      const message =
+        error?.response?.data?.message ||
+        'Failed to send password reset email.';
+      toast.error(message);
+    },
+  });
+};
+
+// 2 CONFIRM PASSWORD RESET — submits new password + token/code
+export const usePasswordResetConfirm = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: { token: string; password: string }) => {
+      const res = await axiosInstance.post(auth.confirmPasswordReset, payload);
+      return res.data;
+    },
+    onSuccess: data => {
+      toast.success(data?.message || 'Password reset successful!');
+      queryClient.invalidateQueries({ queryKey: ['auth'] });
+    },
+    onError: (error: any) => {
+      const message =
+        error?.response?.data?.message || 'Failed to confirm password reset.';
+      toast.error(message);
     },
   });
 };
