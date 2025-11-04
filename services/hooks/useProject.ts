@@ -19,13 +19,13 @@ interface ProjectStep1Data {
 export const useCreateProjectStep1 = () => {
   return useMutation({
     mutationFn: async (projectData: ProjectStep1Data) => {
-      console.log('🚀 SENDING PROJECT DATA:', projectData);
-      console.log('🔐 Checking token...');
+      console.log('SENDING PROJECT DATA:', projectData);
+      console.log('Checking token...');
 
       const token = localStorage.getItem('accessToken');
-      console.log('🔐 Token exists:', !!token);
+      console.log('Token exists:', !!token);
       if (token) {
-        console.log('🔐 Token preview:', token.substring(0, 50) + '...');
+        console.log('Token preview:', token.substring(0, 50) + '...');
       }
 
       try {
@@ -34,10 +34,10 @@ export const useCreateProjectStep1 = () => {
           projectData
         );
 
-        console.log('✅ SUCCESS RESPONSE:', response);
+        console.log('SUCCESS RESPONSE:', response);
         return response.data;
       } catch (error: any) {
-        console.error('❌ API ERROR DETAILS:');
+        console.error(' API ERROR DETAILS:');
         console.error('URL:', error.config?.url);
         console.error('Method:', error.config?.method);
         console.error('Data sent:', error.config?.data);
@@ -50,12 +50,12 @@ export const useCreateProjectStep1 = () => {
       }
     },
     onSuccess: data => {
-      console.log('🎉 Project creation successful:', data);
+      console.log('Project creation successful:', data);
       toast.success('Project created successfully!');
       return data;
     },
     onError: (error: any) => {
-      console.error('💥 Mutation onError:', error);
+      console.error('Mutation onError:', error);
       const errorMessage =
         error.response?.data?.detail ||
         error.response?.data?.message ||
