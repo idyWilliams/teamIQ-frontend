@@ -12,8 +12,14 @@ import * as yup from 'yup';
 import { toast } from 'sonner';
 
 const schema = yup.object().shape({
-  password: yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
-  confirmPassword: yup.string().oneOf([yup.ref('password')], 'Passwords must match').required('Please confirm your password'),
+  new_password: yup
+    .string()
+    .required('Password is required')
+    .min(6, 'Password must be at least 6 characters'),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref('new_password')], 'Passwords must match')
+    .required('Please confirm your password'),
 });
 
 export default function ResetPasswordForm() {
@@ -39,7 +45,7 @@ export default function ResetPasswordForm() {
     }
 
     resetMutation.mutate(
-      { token, password: data.password },
+      { token, new_password: data.new_password },
       {
         onSuccess: () => {
           toast.success('Password reset successful! Redirecting...');
@@ -51,7 +57,9 @@ export default function ResetPasswordForm() {
 
   return (
     <div className="mx-4 w-full max-w-lg">
-      <h1 className="mb-10 text-center text-2xl font-semibold text-[#0A427B]">Reset Password</h1>
+      <h1 className="mb-10 text-center text-2xl font-semibold text-[#0A427B]">
+        Reset Password
+      </h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-6">
           {/* Password */}
@@ -64,7 +72,7 @@ export default function ResetPasswordForm() {
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 placeholder="Enter Password"
-                {...register('password')}
+                {...register('new_password')}
                 className="h-auto border-0 border-b border-[#B3C4D6] bg-[#F7F7F7] px-4 py-3 pr-10 shadow-none outline-0 placeholder:text-[#B3C4D6]"
               />
               <button
@@ -75,12 +83,19 @@ export default function ResetPasswordForm() {
                 {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
               </button>
             </div>
-            {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>}
+            {errors.new_password && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.new_password.message}
+              </p>
+            )}
           </div>
 
           {/* Confirm Password */}
           <div>
-            <Label htmlFor="confirmPassword" className="mb-3 text-[15px] font-normal">
+            <Label
+              htmlFor="confirmPassword"
+              className="mb-3 text-[15px] font-normal"
+            >
               Re-enter Password
             </Label>
             <div className="relative">
@@ -100,7 +115,9 @@ export default function ResetPasswordForm() {
               </button>
             </div>
             {errors.confirmPassword && (
-              <p className="mt-1 text-sm text-red-500">{errors.confirmPassword.message}</p>
+              <p className="mt-1 text-sm text-red-500">
+                {errors.confirmPassword.message}
+              </p>
             )}
           </div>
         </div>

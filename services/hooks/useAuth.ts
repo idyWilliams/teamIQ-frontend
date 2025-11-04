@@ -117,7 +117,7 @@ export const usePassword = () => {
 export const usePasswordResetConfirm = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (payload: { token: string; password: string }) => {
+    mutationFn: async (payload: { token: string; new_password: string }) => {
       const res = await axiosInstance.post(auth.confirmPasswordReset, payload);
       return res.data;
     },
