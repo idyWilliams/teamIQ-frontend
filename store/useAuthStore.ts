@@ -3,8 +3,8 @@ import { persist } from "zustand/middleware";
 import axios from "@/services/axios";
 import { toast } from "sonner";
 
-const VALIDATE_TOKEN_URL = "/auth/validate-token";
-const REFRESH_TOKEN_URL = "/auth/refresh-token";
+//const VALIDATE_TOKEN_URL = "/auth/validate-token";
+//const REFRESH_TOKEN_URL = "/auth/refresh-token";
 
 interface User {
   id: string;
