@@ -64,7 +64,7 @@ const validationSchema = yup.object().shape({
 });
 
 function FormField() {
-  const { mutate } = useRegisterIndividual();
+  const { mutate, loading } = useRegisterIndividual();
   const searchParams = useSearchParams();
   const email = searchParams.get('email');
   const invitation_code = searchParams.get('invitation_code');
@@ -89,10 +89,10 @@ function FormField() {
       repeatpassword: '',
     },
   });
-useEffect(() => {
-  console.log(email, invitation_code);
-  reset({ email: email?.trim()?.replaceAll('/', '') || '' });
-}, [email, invitation_code, reset]);
+  useEffect(() => {
+    console.log(email, invitation_code);
+    reset({ email: email?.trim()?.replaceAll('/', '') || '' });
+  }, [email, invitation_code, reset]);
 
   const password = useWatch({ control, name: 'password' });
   const repeatpassword = useWatch({ control, name: 'repeatpassword' });
@@ -102,16 +102,21 @@ useEffect(() => {
   // Form submission handler
   const onSubmit = data => {
     if (!invitation_code) {
-      toast.warn('Invitaion code is invalid');
+      toast.warning('Invitation code is invalid');
       return;
     }
-    // This function only runs if validation passes
-    console.log('User Input:', data);
-    mutate({ data, invitation_code });
-    // Reset the form after successful submission
-    reset();
-  };
 
+    console.log('User Input:', data);
+
+    mutate(
+      { data, invitation_code },
+      {
+        onSuccess: () => {
+          reset(); // reset when request is successful
+        },
+      }
+    );
+  };
   // Handle form submission errors
   const onError = errors => {
     console.log('Validation errors:', errors);
@@ -277,9 +282,9 @@ useEffect(() => {
           <Button
             className="bg-iq-500 hover:bg-iq-500 h-auto w-full cursor-pointer rounded-md py-3 text-white hover:text-white"
             type="submit"
-            disabled={!isValid || isSubmitting || status !== 'Strong'} // Disable button until all validation passes
+            disabled={loading} // Disable button until all validation passes
           >
-            {isSubmitting ? 'Signing Up...' : 'Sign Up'}
+            {loading ? 'Signing Up...' : 'Sign Up'}
           </Button>
         </div>
 

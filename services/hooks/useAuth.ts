@@ -24,11 +24,15 @@ export const useLogin = () => {
 };
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 //Register Individual
 export const useRegisterIndividual = () => {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const queryClient = useQueryClient();
-  return useMutation({
+
+  const mutation = useMutation({
     mutationFn: async ({
       data,
       invitation_code,
@@ -36,20 +40,26 @@ export const useRegisterIndividual = () => {
       data: any;
       invitation_code: string;
     }) => {
+      setLoading(true);
       const res = await axiosInstance.post(
-        auth.registerIndividual(invitation_code),
+        `${auth.loginIndividual}?invitation_code=${invitation_code}`,
         data
       );
       return res.data;
     },
-    onSuccess: (data: any) => {
+    onSuccess: () => {
       toast.success('User registered successfully!');
+      setLoading(false);
       queryClient.invalidateQueries({ queryKey: ['auth'] });
+      router.push('/login'); // redirect to login page
     },
     onError: () => {
       toast.error('Registration failed.');
+      setLoading(false);
     },
   });
+
+  return { ...mutation, loading };
 };
 
 //Register Organization
