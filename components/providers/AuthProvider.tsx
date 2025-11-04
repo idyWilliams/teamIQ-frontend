@@ -5,32 +5,25 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 /**
  * AuthProvider
- * - Automatically validates access token on app load
- * - Refreshes token if expired
- * - Runs token validation periodically (5 sec for testing, 5 min for production)
+ * - Periodically validates JWT (5s dev / 5m prod)
+ * - Auto-logs out if token is expired/invalid
  */
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const validateToken = useAuthStore((state) => state.validateToken);
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   useEffect(() => {
-    // Run only when logged in
-    if (!isAuthenticated) return;
-
-    // ✅ Immediate validation on app load
-    validateToken();
-
-    // ⏱ Interval validation
+    // ⏱ Interval validation ONLY (no first immediate call)
     const interval = setInterval(() => {
       validateToken();
-    }, 5000); // 5 seconds for quick testing
+    }, 5000); // 5 seconds for testing
 
+    // ✅ Production interval
     // const interval = setInterval(() => {
     //   validateToken();
-    // }, 5 * 60 * 1000); // 5 minutes for production
+    // }, 5 * 60 * 1000); // 5 minutes
 
     return () => clearInterval(interval);
-  }, [validateToken, isAuthenticated]);
+  }, [validateToken]);
 
   return <>{children}</>;
 }
