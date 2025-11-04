@@ -89,10 +89,10 @@ function FormField() {
       repeatpassword: '',
     },
   });
-  useEffect(() => {
-    console.log(email, invitation_code);
-    reset({ email: email.trim().replaceAll('/', '') });
-  }, []);
+useEffect(() => {
+  console.log(email, invitation_code);
+  reset({ email: email?.trim()?.replaceAll('/', '') || '' });
+}, [email, invitation_code, reset]);
 
   const password = useWatch({ control, name: 'password' });
   const repeatpassword = useWatch({ control, name: 'repeatpassword' });
