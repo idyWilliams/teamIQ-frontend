@@ -14,6 +14,7 @@ import { useLogin } from '@/services/hooks/useAuth';
 import { useRouter } from 'nextjs-toploader/app';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Loader } from 'lucide-react';
+import { AxiosError } from 'axios';
 
 // Validation schema
 const schema = yup.object().shape({
@@ -47,7 +48,8 @@ export default function Login() {
   });
 
   // Handle form submit
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: any, e: any) => {
+    e.preventDefault();
     mutate(data, {
       onSuccess: res => {
         console.log('Form values:', data, res);
@@ -67,9 +69,12 @@ export default function Login() {
 
         reset();
       },
-      onError: err => {
-        console.error('Login error:', err);
-        toast.error('Login failed. Please check your credentials.');
+      onError: (error: AxiosError) => {
+        console.error('Login error:', error.response?.data);
+        toast.error(
+          (error?.response?.data as any)?.detail ||
+            'Login failed. Please check your credentials.'
+        );
       },
     });
   };

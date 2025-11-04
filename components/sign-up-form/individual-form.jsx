@@ -91,8 +91,8 @@ function FormField() {
   });
   useEffect(() => {
     console.log(email, invitation_code);
-    reset({ email: email.trim().replaceAll('/', '') });
-  }, []);
+    reset({ email: email?.trim()?.replaceAll('/', '') });
+  }, [email, reset]);
 
   const password = useWatch({ control, name: 'password' });
   const repeatpassword = useWatch({ control, name: 'repeatpassword' });

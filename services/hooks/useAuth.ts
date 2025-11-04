@@ -14,7 +14,7 @@ interface SignupOrgData {
 
 // Login Individual & Organization
 export const useLogin = () => {
-  return useMutation({
+  return useMutation<any, AxiosError, { email: string; password: string }>({
     mutationFn: async (payload: { email: string; password: string }) => {
       console.log('Payload being sent:', payload);
       const { data } = await axiosInstance.post(auth.login, payload);
@@ -24,6 +24,7 @@ export const useLogin = () => {
 };
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'next/navigation';
+import { AxiosError } from 'axios';
 
 //Register Individual
 export const useRegisterIndividual = () => {

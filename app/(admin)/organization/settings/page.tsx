@@ -12,7 +12,7 @@ function Settings() {
   const router = useRouter();
   const pathname = usePathname();
   const searchparams = useSearchParams();
-  const activeTab = searchparams.get('tab') || 'my-details';
+  const activeTab = searchparams.get('tab') || 'profile';
 
   return (
     <section className="">

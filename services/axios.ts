@@ -8,23 +8,33 @@ const axiosInstance = axios.create({
 
 export default axiosInstance;
 
-const TOKEN_KEY = 'accessToken';
+const TOKEN_KEY = 'auth-storage';
 
 // helper function to get the token from the local storage
 export const tokenStorage = {
   get: (): string | null => {
     if (typeof window === 'undefined') return null;
-    return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
+    console.log(
+      JSON.parse(localStorage.getItem(TOKEN_KEY) as string)?.state?.token ||
+        JSON.parse(sessionStorage.getItem(TOKEN_KEY) as string)?.state?.token
+    );
+
+    return (
+      JSON.parse(localStorage.getItem(TOKEN_KEY) as string)?.state?.token ||
+      JSON.parse(sessionStorage.getItem(TOKEN_KEY) as string)?.state?.token
+    );
   },
   set: (token: string, persist: boolean = true) => {
     if (typeof window === 'undefined') return;
     if (persist) {
       return (
-        localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY)
+        JSON.parse(localStorage.getItem(TOKEN_KEY) as string) ||
+        JSON.parse(sessionStorage.getItem(TOKEN_KEY) as string)
       );
     } else {
       return (
-        sessionStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY)
+        JSON.parse(sessionStorage.getItem(TOKEN_KEY) as string) ||
+        JSON.parse(sessionStorage.getItem(TOKEN_KEY) as string)
       );
     }
   },

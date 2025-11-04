@@ -11,8 +11,10 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
+import { Loader, X } from 'lucide-react';
 import { on } from 'events';
+import { toast } from 'sonner';
+import { AxiosError } from 'axios';
 
 type CloseModalProp = {
   open: boolean;
@@ -20,7 +22,7 @@ type CloseModalProp = {
 };
 
 const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
-  const { mutateAsync } = useInviteUser();
+  const { mutateAsync, isPending } = useInviteUser();
   const [formData, setFormData] = useState({
     email: '',
     stack: '',
@@ -44,12 +46,15 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
   };
 
   const handleInviteSubmit = async (e: React.FormEvent) => {
+    if (!formData.email && !formData.role) return;
+
     e.preventDefault();
     try {
       await mutateAsync(formData);
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to send', error);
+      toast.warning(error?.response?.data?.detail || 'Failed to send');
     }
   };
 
@@ -122,9 +127,16 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
             <Button
               type="button"
               onClick={handleInviteSubmit}
+              disabled={isPending}
               className="w-full cursor-pointer bg-[#086ACE] text-white hover:bg-[#0655a4]"
             >
-              Send Invite
+              {isPending ? (
+                <>
+                  <Loader className="animate-spin" /> Sending...
+                </>
+              ) : (
+                ' Send Invite'
+              )}
             </Button>
           </div>
         </form>
