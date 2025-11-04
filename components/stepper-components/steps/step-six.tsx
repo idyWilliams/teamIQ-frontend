@@ -19,6 +19,9 @@ interface StepSixProps {
 }
 
 const StepSix = ({ onSubmit }: StepSixProps) => {
+  const handleNext = () => {
+    onSubmit();
+  };
   return (
     <div className="w-full">
       <Accordion type="single" collapsible className="w-full">
@@ -123,7 +126,8 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
       <div className="mt-8 flex gap-4">
         <Button
           className="mt-4 w-full cursor-pointer bg-[#086ACE] p-6 text-base font-semibold"
-          type="submit"
+          // type="submit"
+          onClick={handleNext}
         >
           Next
         </Button>
