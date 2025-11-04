@@ -107,7 +107,7 @@ function FormField() {
     }
     // This function only runs if validation passes
     console.log('User Input:', data);
-    mutate({ data, invitation_code });
+    mutate({ data, invitation_code }, { onSuccess: () => {}});
     // Reset the form after successful submission
     reset();
   };
