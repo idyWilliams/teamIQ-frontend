@@ -21,6 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import StepperModal from "@/components/stepper-components/steps/stepper-modal";
 
 /* ----------------------------------------------------------------------
    🧩 IMAGE WRAPPER COMPONENT
@@ -414,32 +415,9 @@ export default function ProjectsPage() {
       </div>
 
       {/* Add Project Modal */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Add New Project</DialogTitle>
-            <DialogDescription>
-              Fill in the project details below.
-            </DialogDescription>
-          </DialogHeader>
-          <form className="space-y-4 mt-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Project Name
-              </label>
-              <input
-                type="text"
-                className="w-full border rounded-lg p-2 text-sm"
-                placeholder="Enter project name"
-              />
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" type="button" onClick={() => setIsModalOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit">Create Project</Button>
-            </div>
-          </form>
+     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="w-[900px] sm:!max-w-[900px] overflow-y-auto max-h-[90vh] !pt-0 [&>button]:hidden">
+          <StepperModal onClose={() => setIsModalOpen(false)} />
         </DialogContent>
       </Dialog>
     </div>

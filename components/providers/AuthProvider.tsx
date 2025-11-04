@@ -1,36 +1,45 @@
-"use client";
+'use client';
 
-import { useEffect, ReactNode } from "react";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useEffect, ReactNode } from 'react';
+import { useAuthStore } from '@/store/useAuthStore';
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
+import { tokenStorage } from '@/services/axios';
 
 /**
  * AuthProvider
- * - Automatically validates access token on app load
- * - Refreshes token if expired
- * - Runs token validation periodically (5 sec for testing, 5 min for production)
+ * - Periodically validates JWT (5s dev / 5m prod)
+ * - Auto-logs out if token is expired/invalid
  */
 export default function AuthProvider({ children }: { children: ReactNode }) {
-  const validateToken = useAuthStore((state) => state.validateToken);
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const validateToken = useAuthStore(state => state.validateToken);
+  const isAuthenticate = useAuthStore(state => state.isAuthenticated);
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
-    // Run only when logged in
-    if (!isAuthenticated) return;
+    const token = tokenStorage.get();
+    console.log(isAuthenticate, token, 'FROM Providers');
 
-    // ✅ Immediate validation on app load
-    validateToken();
+    if ((pathname === '/member' || pathname === '/organization') && !token) {
+      router.push('/login');
+      return;
+    }
 
-    // ⏱ Interval validation
-    const interval = setInterval(() => {
-      validateToken();
-    }, 5000); // 5 seconds for quick testing
+    let interval: NodeJS.Timeout;
+    if (isAuthenticate) {
+      interval = setInterval(() => {
+        validateToken();
+      }, 5000); // 5 seconds for testing
 
-    // const interval = setInterval(() => {
-    //   validateToken();
-    // }, 5 * 60 * 1000); // 5 minutes for production
+      // ✅ Production interval
+      // const interval = setInterval(() => {
+      //   validateToken();
+      // },5 * 60 * 1000 ); // 5 minutes
+    }
 
     return () => clearInterval(interval);
-  }, [validateToken, isAuthenticated]);
+  }, [isAuthenticate, pathname, router, validateToken]);
 
   return <>{children}</>;
 }

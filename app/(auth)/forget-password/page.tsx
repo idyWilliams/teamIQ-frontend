@@ -3,11 +3,13 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { toast } from 'sonner';
+import { usePassword } from '@/services/hooks/useAuth';
+import Link from 'next/link';
 
 // Validation schema
 const schema = yup.object().shape({
@@ -19,21 +21,26 @@ const schema = yup.object().shape({
 });
 
 export default function ForgetPassword() {
+  const [resetLink, setResetLink] = useState('');
   // Initializing react-hook-form with Yup
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm({
     resolver: yupResolver(schema),
   });
-
+  const passwordMutation = usePassword();
   // Handle form submit
   const onSubmit = (data: any) => {
-    console.log('Form values:', data);
-    toast.success('Password reset email sent');
-    reset();
+    passwordMutation.mutate(
+      { email: data.email },
+      {
+        onSuccess: res => {
+          setResetLink(res?.data?.reset_link);
+        },
+      }
+    );
   };
 
   return (
@@ -59,9 +66,20 @@ export default function ForgetPassword() {
             </p>
           )}
         </div>
-        <Button className="bg-iq-500 hover:bg-iq-500 mt-10 h-auto w-full rounded-md py-3 text-white">
-          Continue
+        <Button
+          type="submit"
+          disabled={passwordMutation.isPending}
+          className="bg-iq-500 hover:bg-iq-500 mt-10 h-auto w-full rounded-md py-3 text-white"
+        >
+          {passwordMutation.isPending ? 'Sending...' : 'Continue'}
         </Button>
+
+        {resetLink && (
+          <div>
+            <p>NOTE: copy this link to a new tab</p>
+            <Link href={resetLink}>{resetLink}</Link>
+          </div>
+        )}
       </form>
     </div>
   );
