@@ -2,7 +2,9 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  baseURL:
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    'https://teamiq-backend.onrender.com/api/v1',
   withCredentials: true,
 });
 
