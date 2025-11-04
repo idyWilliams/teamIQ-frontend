@@ -70,10 +70,10 @@ export const useSignupOrg = () => {
       toast.success('Organization created successfully! Redirecting...');
 
       // Step 1: Extract tokens and user info (adjust keys if needed)
-      const { user, token } = responseData.data || responseData;
+      const { organization, access_token } = responseData.data || responseData;
 
       // Step 2: Save them in Zustand
-      authorize({ user, token });
+      authorize({ user: organization as any, token: access_token });
 
       // Step 3: Invalidate queries and redirect
       queryClient.invalidateQueries({ queryKey: ['organizations'] });
