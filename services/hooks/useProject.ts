@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import axiosInstance from '@/services/axios';
 import { toast } from 'sonner';
 
-interface ProjectStep1Data {
+export interface ProjectStep1Data {
   name: string;
   description: string;
   project_lead_id: number;
@@ -22,6 +22,14 @@ export interface ProjectStep2Data {
   pm_project_id?: string;
   pm_api_key?: string;
   pm_access_token?: string;
+}
+
+export interface ProjectStep3Data {
+  vc_tool: string;
+  vc_integration_method: 'oauth2' | 'api_key';
+  vc_repository_url?: string;
+  vc_api_key?: string;
+  vc_access_token?: string;
 }
 
 export const useCreateProjectStep1 = () => {
@@ -88,6 +96,26 @@ export const useUpdateProjectStep2 = (projectId: number) => {
       );
 
       console.log('STEP 2 SUCCESS RESPONSE:', response);
+      return response.data;
+    },
+  });
+};
+
+export const useUpdateProjectStep3 = (projectId: number) => {
+  return useMutation({
+    mutationFn: async (step3Data: ProjectStep3Data) => {
+      console.log('SENDING STEP 3 DATA:', step3Data);
+      console.log('Project ID:', projectId);
+
+      const token = localStorage.getItem('accessToken');
+      console.log('Token exists:', !!token);
+
+      const response = await axiosInstance.patch(
+        `/projects/${projectId}/step3-version-control`,
+        step3Data
+      );
+
+      console.log('STEP 3 SUCCESS RESPONSE:', response);
       return response.data;
     },
   });
