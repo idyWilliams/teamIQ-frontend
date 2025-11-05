@@ -12,9 +12,10 @@ import ProjectMgmtSetup from '../stepper-forms/project-mgmt-setup';
 
 interface StepTwoProps {
   next: () => void;
+  projectId?: number;
 }
 
-const StepTwo = ({ next }: StepTwoProps) => {
+const StepTwo = ({ next, projectId }: StepTwoProps) => {
   return (
     <div className="w-full">
       <Accordion
@@ -39,7 +40,11 @@ const StepTwo = ({ next }: StepTwoProps) => {
           </AccordionTrigger>
 
           <AccordionContent>
-            <ProjectMgmtSetup onSubmit={next} hideButton={false} />
+            <ProjectMgmtSetup
+              onSubmit={next}
+              hideButton={false}
+              projectId={projectId}
+            />
           </AccordionContent>
         </AccordionItem>
       </Accordion>
