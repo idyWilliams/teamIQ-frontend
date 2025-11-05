@@ -19,6 +19,11 @@ import { Input } from '../../ui/input';
 import { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import {
+  ProjectStep3Data,
+  useUpdateProjectStep3,
+} from '@/services/hooks/useProject';
+import { toast } from 'sonner';
 
 interface FormValues {
   projectType: string;
@@ -32,15 +37,19 @@ interface FormValues {
 interface VersionControlSetupProps {
   onSubmit?: () => void;
   hideButton?: boolean;
+  projectId?: number;
 }
 
 const VersionControlSetup = ({
   onSubmit,
   hideButton,
+  projectId,
 }: VersionControlSetupProps) => {
   const [activeMethod, setActiveMethod] = useState('');
   const [projectType, setProjectType] = useState('new');
   const [connected, setConnected] = useState(false);
+
+  const updateProjectStep3 = useUpdateProjectStep3(projectId || 0);
 
   // Validation Schema
   const schema: yup.ObjectSchema<FormValues> = yup.object({
@@ -74,9 +83,50 @@ const VersionControlSetup = ({
     resolver: yupResolver(schema),
   });
 
-  // const onSubmit = (data: FormValues) => {
-  //   console.log('Submitted:', data);
-  // };
+  const handleFormSubmit = async (data: FormValues) => {
+    console.log('📝 STEP 3 FORM DATA:', data);
+
+    // Transform form data to match API schema
+    const getIntegrationMethod = (method: string): 'oauth2' | 'api_key' => {
+      if (method === 'OAuth') return 'oauth2';
+      if (method === 'Api') return 'api_key';
+      return 'oauth2';
+    };
+
+    const apiData: ProjectStep3Data = {
+      vc_tool: data.app,
+      vc_integration_method: getIntegrationMethod(data.integrationMethod),
+      vc_repository_url: data.assignMapping || undefined,
+      vc_api_key: data.integrationMethod === 'Api' ? data.token : undefined,
+      vc_access_token:
+        data.integrationMethod === 'OAuth' ? data.token : undefined,
+    };
+
+    console.log('STEP 3 API PAYLOAD:', apiData);
+
+    if (!projectId) {
+      console.log('No projectId available, skipping API call');
+      toast.success('Version control setup saved locally');
+      if (onSubmit) onSubmit();
+      return;
+    }
+
+    updateProjectStep3.mutate(apiData, {
+      onSuccess: responseData => {
+        console.log('Step 3 completed successfully:', responseData);
+        toast.success('Version control configured!');
+        if (onSubmit) onSubmit();
+      },
+      onError: (error: any) => {
+        console.error('Step 3 failed:', error);
+        const errorMessage =
+          error.response?.data?.detail ||
+          error.response?.data?.message ||
+          'Failed to configure version control';
+        toast.error(errorMessage);
+      },
+    });
+  };
 
   // Reset dependent fields when projectType or activeMethod changes
   useEffect(() => {
@@ -300,7 +350,10 @@ const VersionControlSetup = ({
           <Button
             variant="outline"
             className="h-[60px] w-full bg-[#086ACE] text-[16px] text-gray-50 enabled:hover:bg-[#8EA8C2] enabled:hover:text-gray-50 disabled:cursor-not-allowed disabled:bg-[#8EA8C2]"
-            disabled={activeMethod === 'OAuth' && !connected}
+            disabled={
+              (activeMethod === 'OAuth' && !connected) ||
+              updateProjectStep3.isPending
+            }
             type="submit"
           >
             Next
