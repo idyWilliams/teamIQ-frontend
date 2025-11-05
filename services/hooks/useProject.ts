@@ -82,7 +82,7 @@ export const useUpdateProjectStep2 = (projectId: number) => {
       const token = localStorage.getItem('accessToken');
       console.log('Token exists:', !!token);
 
-      const response = await axiosInstance.put(
+      const response = await axiosInstance.patch(
         `/projects/${projectId}/step2-pm-tool`,
         step2Data
       );
