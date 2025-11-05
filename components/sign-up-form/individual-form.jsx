@@ -72,7 +72,7 @@ function FormField() {
     register,
     handleSubmit,
     control,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors },
     reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
