@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/useAuthStore';  
+import { useAuthStore } from '@/store/useAuthStore';
 import React from 'react';
 import CountrySelect from './country-select';
 import { Button } from '@/components/ui/button';
@@ -33,7 +33,7 @@ const validationSchema = yup.object().shape({
     .max(20, 'Organization name must not exceed 20 characters')
     .matches(/^[a-zA-Z ]+$/, 'Only letters are allowed'),
 
- team_size: yup
+  team_size: yup
     .string()
     .required('Team size is required')
     .oneOf(
@@ -85,37 +85,38 @@ function OrganizationForm() {
   const { status } = calculateStrength(password || '', 8);
 
   const router = useRouter();
-const authStore = useAuthStore((state) => state.authorize);
+  const authStore = useAuthStore(state => state.authorize);
 
- const { mutate: signupOrg, isPending } = useSignupOrg();
+  const { mutate: signupOrg, isPending } = useSignupOrg();
 
-const onSubmit = (data) => {
-  signupOrg(
-    {
-      ...data,
-      team_size: String(data.team_size),
-    },
-    {
-      onSuccess: () => {
-        // Step 1: Success message
-        toast.success("Organization created successfully! Redirecting to login...");
-
-        // Step 2: Reset form
-        reset();
-
-        // Step 3: Redirect to login page
-        setTimeout(() => {
-          router.push("/login");
-        }, 1500);
+  const onSubmit = data => {
+    signupOrg(
+      {
+        ...data,
+        team_size: String(data.team_size),
       },
+      {
+        onSuccess: () => {
+          // Step 1: Success message
+          toast.success(
+            'Organization created successfully! Redirecting to login...'
+          );
 
-      onError: (error) => {
-        toast.error(error.response?.data?.message || "Signup failed. Try again.");
-      },
-    }
-  );
-};
+          // Step 2: Reset form
+          reset();
 
+          // Step 3: Redirect to login page
+          router.push('/login');
+        },
+
+        onError: error => {
+          toast.error(
+            error.response?.data?.message || 'Signup failed. Try again.'
+          );
+        },
+      }
+    );
+  };
 
   const onError = errors => {
     console.log('Validation Errors:', errors);
