@@ -64,7 +64,7 @@ const validationSchema = yup.object().shape({
 });
 
 function FormField() {
-  const { mutate } = useRegisterIndividual();
+  const { mutate, loading } = useRegisterIndividual();
   const searchParams = useSearchParams();
   const email = searchParams.get('email');
   const invitation_code = searchParams.get('invitation_code');
@@ -72,7 +72,7 @@ function FormField() {
     register,
     handleSubmit,
     control,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors },
     reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
@@ -91,7 +91,7 @@ function FormField() {
   });
   useEffect(() => {
     console.log(email, invitation_code);
-    reset({ email: email?.trim()?.replaceAll('/', '') });
+    reset({ email: email?.trim()?.replaceAll('/', '') || '' });
   }, [email, reset]);
 
   const password = useWatch({ control, name: 'password' });
@@ -102,16 +102,21 @@ function FormField() {
   // Form submission handler
   const onSubmit = data => {
     if (!invitation_code) {
-      toast.warn('Invitaion code is invalid');
+      toast.warning('Invitation code is invalid');
       return;
     }
-    // This function only runs if validation passes
-    console.log('User Input:', data);
-    mutate({ data, invitation_code }, { onSuccess: () => {}});
-    // Reset the form after successful submission
-    reset();
-  };
 
+    console.log('User Input:', data);
+
+    mutate(
+      { data, invitation_code },
+      {
+        onSuccess: () => {
+          reset(); // reset when request is successful
+        },
+      }
+    );
+  };
   // Handle form submission errors
   const onError = errors => {
     console.log('Validation errors:', errors);
@@ -277,9 +282,9 @@ function FormField() {
           <Button
             className="bg-iq-500 hover:bg-iq-500 h-auto w-full cursor-pointer rounded-md py-3 text-white hover:text-white"
             type="submit"
-            disabled={!isValid || isSubmitting || status !== 'Strong'} // Disable button until all validation passes
+            disabled={loading} // Disable button until all validation passes
           >
-            {isSubmitting ? 'Signing Up...' : 'Sign Up'}
+            {loading ? 'Signing Up...' : 'Sign Up'}
           </Button>
         </div>
 
