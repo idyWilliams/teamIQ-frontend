@@ -96,28 +96,25 @@ const onSubmit = (data) => {
       team_size: String(data.team_size),
     },
     {
-      onSuccess: (response) => {
-        //Step 1: Extract user and tokens from backend response
-        const { user, token, refreshToken } = response.data;
+      onSuccess: () => {
+        // Step 1: Success message
+        toast.success("Organization created successfully! Redirecting to login...");
 
-        //Step 2: Save them in Zustand (authorize)
-        authorize({ user, token, refreshToken });
-
-        // Step 3: Redirect to /organization
-        router.push("/organization");
-
-        //Optional: Success message + form reset
-        toast.success("Organization created successfully!");
+        // Step 2: Reset form
         reset();
+
+        // Step 3: Redirect to login page
+        setTimeout(() => {
+          router.push("/login");
+        }, 1500);
       },
+
       onError: (error) => {
         toast.error(error.response?.data?.message || "Signup failed. Try again.");
       },
     }
   );
 };
-
-
 
 
   const onError = errors => {

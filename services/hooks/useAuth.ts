@@ -14,7 +14,7 @@ interface SignupOrgData {
 
 // Login Individual & Organization
 export const useLogin = () => {
-  return useMutation({
+  return useMutation<any, AxiosError, { email: string; password: string }>({
     mutationFn: async (payload: { email: string; password: string }) => {
       console.log('Payload being sent:', payload);
       const { data } = await axiosInstance.post(auth.login, payload);
@@ -24,6 +24,7 @@ export const useLogin = () => {
 };
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'next/navigation';
+import { AxiosError } from 'axios';
 import { useState } from 'react';
 
 //Register Individual
@@ -79,10 +80,10 @@ export const useSignupOrg = () => {
       toast.success('Organization created successfully! Redirecting...');
 
       // Step 1: Extract tokens and user info (adjust keys if needed)
-      const { user, token } = responseData.data || responseData;
+      const { organization, access_token } = responseData.data || responseData;
 
       // Step 2: Save them in Zustand
-      authorize({ user, token });
+      authorize({ user: organization as any, token: access_token });
 
       // Step 3: Invalidate queries and redirect
       queryClient.invalidateQueries({ queryKey: ['organizations'] });
@@ -126,7 +127,7 @@ export const usePassword = () => {
 export const usePasswordResetConfirm = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (payload: { token: string; password: string }) => {
+    mutationFn: async (payload: { token: string; new_password: string }) => {
       const res = await axiosInstance.post(auth.confirmPasswordReset, payload);
       return res.data;
     },

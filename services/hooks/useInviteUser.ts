@@ -14,16 +14,13 @@ export const useInviteUser = () => {
     }) => {
       const res = await axiosInstance.post(userInvitation.register, {
         ...payload,
-        role: 'intern', 
+        role: 'intern',
       });
       return res.data;
     },
     onSuccess: () => {
       toast.success('Invited sent sucessfully!');
       queryClient.invalidateQueries({ queryKey: ['invitation'] });
-    },
-    onError: error => {
-      toast.error(error?.message || 'Failed to sent invite');
     },
   });
 };

@@ -1,7 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect, ReactNode } from "react";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useEffect, ReactNode } from 'react';
+import { useAuthStore } from '@/store/useAuthStore';
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
+import { tokenStorage } from '@/services/axios';
 
 /**
  * AuthProvider
@@ -9,21 +12,34 @@ import { useAuthStore } from "@/store/useAuthStore";
  * - Auto-logs out if token is expired/invalid
  */
 export default function AuthProvider({ children }: { children: ReactNode }) {
-  const validateToken = useAuthStore((state) => state.validateToken);
+  const validateToken = useAuthStore(state => state.validateToken);
+  const isAuthenticate = useAuthStore(state => state.isAuthenticated);
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
-    // ⏱ Interval validation ONLY (no first immediate call)
-    const interval = setInterval(() => {
-      validateToken();
-    }, 5000); // 5 seconds for testing
+    const token = tokenStorage.get();
+    console.log(isAuthenticate, token, 'FROM Providers');
 
-    // ✅ Production interval
-    // const interval = setInterval(() => {
-    //   validateToken();
-    // }, 5 * 60 * 1000); // 5 minutes
+    if ((pathname === '/member' || pathname === '/organization') && !token) {
+      router.push('/login');
+      return;
+    }
+
+    let interval: NodeJS.Timeout;
+    if (isAuthenticate) {
+      interval = setInterval(() => {
+        validateToken();
+      }, 5000); // 5 seconds for testing
+
+      // ✅ Production interval
+      // const interval = setInterval(() => {
+      //   validateToken();
+      // },5 * 60 * 1000 ); // 5 minutes
+    }
 
     return () => clearInterval(interval);
-  }, [validateToken]);
+  }, [isAuthenticate, pathname, router, validateToken]);
 
   return <>{children}</>;
 }
