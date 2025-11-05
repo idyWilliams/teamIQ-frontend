@@ -1,4 +1,6 @@
 'use client';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/useAuthStore';  
 import React from 'react';
 import CountrySelect from './country-select';
 import { Button } from '@/components/ui/button';
@@ -82,22 +84,40 @@ function OrganizationForm() {
 
   const { status } = calculateStrength(password || '', 8);
 
+  const router = useRouter();
+const authStore = useAuthStore((state) => state.authorize);
+
  const { mutate: signupOrg, isPending } = useSignupOrg();
 
 const onSubmit = (data) => {
   signupOrg(
     {
       ...data,
-      team_size: String(data.team_size), // ✅ Convert number to string
+      team_size: String(data.team_size),
     },
     {
-      onSuccess: () => {
+      onSuccess: (response) => {
+        //Step 1: Extract user and tokens from backend response
+        const { user, token, refreshToken } = response.data;
+
+        //Step 2: Save them in Zustand (authorize)
+        authorize({ user, token, refreshToken });
+
+        // Step 3: Redirect to /organization
+        router.push("/organization");
+
+        //Optional: Success message + form reset
         toast.success("Organization created successfully!");
         reset();
+      },
+      onError: (error) => {
+        toast.error(error.response?.data?.message || "Signup failed. Try again.");
       },
     }
   );
 };
+
+
 
 
   const onError = errors => {
@@ -156,16 +176,11 @@ const onSubmit = (data) => {
                   </SelectTrigger>
                   <SelectContent className="max-h-60 overflow-auto">
                     <SelectItem value="1-10">1-10</SelectItem>
-                    <SelectItem value="11-20">11-20</SelectItem>
-                    <SelectItem value="21-30">21-30</SelectItem>
-                    <SelectItem value="31-40">31-40</SelectItem>
-                    <SelectItem value="41-50">41-50</SelectItem>
-                    <SelectItem value="51-60">51-60</SelectItem>
-                    <SelectItem value="61-70">61-70</SelectItem>
-                    <SelectItem value="71-80">71-80</SelectItem>
-                    <SelectItem value="81-90">81-90</SelectItem>
-                    <SelectItem value="91-100">91-100</SelectItem>
-                    <SelectItem value="100+">100+</SelectItem>
+                    <SelectItem value="11-50">11-50</SelectItem>
+                    <SelectItem value="51-200">51-200</SelectItem>
+                    <SelectItem value="201-500">201-500</SelectItem>
+                    <SelectItem value="501-1000">501-1000</SelectItem>
+                    <SelectItem value="1000+">1000+</SelectItem>
                   </SelectContent>
                 </Select>
               )}

@@ -9,6 +9,8 @@ const api = {
     loginOrg: '/auth/login/organization',
     loginGoogle: '/auth/login/google',
     callbackGoogle: '/auth/callback/google',
+    passwordReset: '/auth/password-reset',
+    confirmPasswordReset: '/auth/password-reset/confirm',
   },
 
   users: {
@@ -21,7 +23,7 @@ const api = {
   },
 
   userInvitation: {
-    register: '/api/v1/invitations/',
+    register: '/invitations/',
   },
 
   projects: {

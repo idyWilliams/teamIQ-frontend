@@ -11,10 +11,10 @@ import * as yup from 'yup';
 import { toast } from 'sonner';
 import { PasswordInput } from '@/components/ui/password-input';
 import { useLogin } from '@/services/hooks/useAuth';
-import { useRouter } from 'nextjs-toploader/app'
+import { useRouter } from 'nextjs-toploader/app';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Loader } from 'lucide-react';
-
+import { AxiosError } from 'axios';
 
 // Validation schema
 const schema = yup.object().shape({
@@ -48,7 +48,8 @@ export default function Login() {
   });
 
   // Handle form submit
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: any, e: any) => {
+    e.preventDefault();
     mutate(data, {
       onSuccess: res => {
         console.log('Form values:', data, res);
@@ -60,18 +61,20 @@ export default function Login() {
           authenticate({
             user: res?.data?.organization || res?.data?.user,
             token: res?.data?.access_token,
-            refreshToken: '',
           });
           router.push('/organization');
         } else if (role === 'intern') {
           router.push('/member');
         }
-         
+
         reset();
       },
-      onError: err => {
-        console.error('Login error:', err);
-        toast.error('Login failed. Please check your credentials.');
+      onError: (error: AxiosError) => {
+        console.error('Login error:', error.response?.data);
+        toast.error(
+          (error?.response?.data as any)?.detail ||
+            'Login failed. Please check your credentials.'
+        );
       },
     });
   };
@@ -127,7 +130,14 @@ export default function Login() {
             className="bg-iq-500 hover:bg-iq-500 h-auto w-full rounded-md py-3 text-white hover:cursor-pointer"
             disabled={isPending}
           >
-            {isPending ? <> <Loader className="animate-spin" /> Loading... </> : 'Login'}
+            {isPending ? (
+              <>
+                {' '}
+                <Loader className="animate-spin" /> Loading...{' '}
+              </>
+            ) : (
+              'Login'
+            )}
           </Button>
           <div className="mt-6 flex items-center justify-between">
             <Label htmlFor="" className="font-normal">
