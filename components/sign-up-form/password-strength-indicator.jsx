@@ -32,6 +32,10 @@ export default function PasswordStrengthIndicator({
           isValid={criteria.capital}
           label={`At least 1 uppercase`}
         />
+        <ChecklistItem
+          isValid={criteria.lowercase}
+          label={'At least 1 lowercase '}
+        />
         <ChecklistItem isValid={criteria.number} label={`At least 1 number`} />
         <ChecklistItem
           isValid={criteria.specialChar}
