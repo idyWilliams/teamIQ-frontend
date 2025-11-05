@@ -17,16 +17,28 @@ import { Input } from '../../ui/input';
 import { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import {
+  ProjectStep2Data,
+  useUpdateProjectStep2,
+} from '@/services/hooks/useProject';
+import { toast } from 'sonner';
 
 interface ProjectMgmtSetupProps {
   onSubmit: () => void;
   hideButton: boolean;
+  projectId?: number;
 }
 
-const ProjectMgmtSetup = ({ onSubmit, hideButton }: ProjectMgmtSetupProps) => {
+const ProjectMgmtSetup = ({
+  onSubmit,
+  hideButton,
+  projectId,
+}: ProjectMgmtSetupProps) => {
   const [activeMethod, setActiveMethod] = useState('');
   const [projectType, setProjectType] = useState('new');
   const [connected, setConnected] = useState(false);
+
+  const updateProjectStep2 = useUpdateProjectStep2(projectId || 0);
 
   interface FormValues {
     projectType: string;
@@ -74,9 +86,49 @@ const ProjectMgmtSetup = ({ onSubmit, hideButton }: ProjectMgmtSetupProps) => {
     resolver: yupResolver(schema),
   });
 
-  // function onSubmit(data: FormValues) {
-  //   console.log(data);
-  // }
+  const handleFormSubmit = async (data: FormValues) => {
+    console.log('STEP 2 FORM DATA:', data);
+
+    const getIntegrationMethod = (method: string): 'oauth2' | 'api_key' => {
+      if (method === 'OAuth') return 'oauth2';
+      if (method === 'Api') return 'api_key';
+      return 'oauth2';
+    };
+
+    const apiData: ProjectStep2Data = {
+      pm_tool: data.app,
+      pm_integration_method: getIntegrationMethod(data.integrationMethod),
+      pm_project_id: data.existingLink || undefined,
+      pm_api_key: data.integrationMethod === 'Api' ? data.token : undefined,
+      pm_access_token:
+        data.integrationMethod === 'OAuth' ? data.token : undefined,
+    };
+
+    console.log('STEP 2 API PAYLOAD:', apiData);
+
+    if (!projectId) {
+      console.log('No projectId available, skipping API call');
+      toast.success('Project management setup saved locally');
+      onSubmit();
+      return;
+    }
+
+    updateProjectStep2.mutate(apiData, {
+      onSuccess: responseData => {
+        console.log('Step 2 completed successfully:', responseData);
+        toast.success('Project management tool configured!');
+        onSubmit();
+      },
+      onError: (error: any) => {
+        console.error('Step 2 failed:', error);
+        const errorMessage =
+          error.response?.data?.detail ||
+          error.response?.data?.message ||
+          'Failed to configure project management tool';
+        toast.error(errorMessage);
+      },
+    });
+  };
 
   useEffect(() => {
     setValue('projectType', projectType);
@@ -91,7 +143,7 @@ const ProjectMgmtSetup = ({ onSubmit, hideButton }: ProjectMgmtSetupProps) => {
         subTitle="Set up the project management tool for this project to help synchronize your activities with your preferred tool."
       />
       {/*Row 1 Radio Group  */}
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
         <Controller
           name="projectType"
           control={control}
@@ -294,10 +346,14 @@ const ProjectMgmtSetup = ({ onSubmit, hideButton }: ProjectMgmtSetupProps) => {
 
         {!hideButton && activeMethod && (
           <button
+            type="submit"
             className="h-[60px] w-full cursor-pointer rounded-[8px] bg-[#086ACE] text-[16px] text-gray-50 hover:bg-[#8EA8C2] hover:text-gray-50 disabled:cursor-not-allowed disabled:bg-[#8EA8C2]"
-            disabled={activeMethod === 'OAuth' && !connected}
+            disabled={
+              (activeMethod === 'OAuth' && !connected) ||
+              updateProjectStep2.isPending
+            }
           >
-            Next
+            {updateProjectStep2.isPending ? 'Saving...' : 'Next'}
           </button>
         )}
       </form>
