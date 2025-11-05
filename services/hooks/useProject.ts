@@ -16,6 +16,14 @@ interface ProjectStep1Data {
   is_visible: boolean;
 }
 
+export interface ProjectStep2Data {
+  pm_tool: string;
+  pm_integration_method: 'oauth2' | 'api_key';
+  pm_project_id?: string;
+  pm_api_key?: string;
+  pm_access_token?: string;
+}
+
 export const useCreateProjectStep1 = () => {
   return useMutation({
     mutationFn: async (projectData: ProjectStep1Data) => {
@@ -61,6 +69,26 @@ export const useCreateProjectStep1 = () => {
         error.response?.data?.message ||
         'Failed to create project';
       toast.error(errorMessage);
+    },
+  });
+};
+
+export const useUpdateProjectStep2 = (projectId: number) => {
+  return useMutation({
+    mutationFn: async (step2Data: ProjectStep2Data) => {
+      console.log('SENDING STEP 2 DATA:', step2Data);
+      console.log('Project ID:', projectId);
+
+      const token = localStorage.getItem('accessToken');
+      console.log('Token exists:', !!token);
+
+      const response = await axiosInstance.put(
+        `/projects/${projectId}/step2-pm-tool`,
+        step2Data
+      );
+
+      console.log('STEP 2 SUCCESS RESPONSE:', response);
+      return response.data;
     },
   });
 };
