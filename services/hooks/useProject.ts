@@ -57,6 +57,38 @@ export interface ProjectStep5Data {
   members: ProjectMember[];
 }
 
+export interface FinalProjectData {
+  name: string;
+  description: string;
+  project_lead_id: number;
+  stacks: string[];
+  start_date: string;
+  end_date: string;
+  linked_documents: string[];
+  project_image: string;
+  is_visible: boolean;
+  pm_tool: string;
+  pm_integration_method: 'oauth2' | 'api_key';
+  pm_project_id?: string;
+  pm_api_key?: string;
+  vc_tool: string;
+  vc_integration_method: 'oauth2' | 'api_key';
+  vc_repository_url?: string;
+  vc_api_key?: string;
+  comm_tool: string;
+  comm_integration_method: 'oauth2' | 'api_key' | 'webhook';
+  comm_channel_id?: string;
+  comm_api_key?: string;
+  comm_webhook_url?: string;
+  comm_notifications: {
+    pmt_updates: boolean;
+    code_events: boolean;
+    sentiment_monitoring: boolean;
+    custom_commands: boolean;
+  };
+  member_ids: number[];
+}
+
 export const useCreateProjectStep1 = () => {
   return useMutation({
     mutationFn: async (projectData: ProjectStep1Data) => {
@@ -194,6 +226,55 @@ export const useUpdateProjectStep5 = (projectId: number) => {
         error.response?.data?.detail ||
         error.response?.data?.message ||
         'Failed to add team members';
+      toast.error(errorMessage);
+    },
+  });
+};
+
+export const useCreateCompleteProject = () => {
+  return useMutation({
+    mutationFn: async (projectData: FinalProjectData) => {
+      console.log('🎯 SENDING COMPLETE PROJECT DATA:', projectData);
+      console.log('🔍 Checking token...');
+
+      const token = localStorage.getItem('accessToken');
+      console.log('🔐 Token exists:', !!token);
+      if (token) {
+        console.log('🔐 Token preview:', token.substring(0, 50) + '...');
+      }
+
+      try {
+        const response = await axiosInstance.post(
+          '/projects/create',
+          projectData
+        );
+
+        console.log('✅ COMPLETE PROJECT SUCCESS RESPONSE:', response);
+        return response.data;
+      } catch (error: any) {
+        console.error('❌ COMPLETE PROJECT API ERROR DETAILS:');
+        console.error('📝 URL:', error.config?.url);
+        console.error('📝 Method:', error.config?.method);
+        console.error('📝 Data sent:', error.config?.data);
+        console.error('📝 Headers:', error.config?.headers);
+        console.error('📝 Status:', error.response?.status);
+        console.error('📝 Response data:', error.response?.data);
+        console.error('📝 Full error:', error);
+
+        throw error;
+      }
+    },
+    onSuccess: data => {
+      console.log('🎉 Complete project creation successful:', data);
+      toast.success('Project created successfully!');
+      return data;
+    },
+    onError: (error: any) => {
+      console.error('💥 Complete project creation failed:', error);
+      const errorMessage =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        'Failed to create project';
       toast.error(errorMessage);
     },
   });
