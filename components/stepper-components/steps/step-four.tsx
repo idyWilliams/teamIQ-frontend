@@ -11,10 +11,10 @@ import ConnectionTool from '../stepper-forms/connection-tool';
 
 interface StepFourProps {
   next: () => void;
+  projectId?: number;
 }
 
-const StepFour = ({ next }: StepFourProps) => {
-
+const StepFour = ({ next, projectId }: StepFourProps) => {
   return (
     <div className="w-full">
       <Accordion
@@ -38,7 +38,11 @@ const StepFour = ({ next }: StepFourProps) => {
             </p>
           </AccordionTrigger>
           <AccordionContent>
-             <ConnectionTool onSubmit={next} hideButton={false}/>
+            <ConnectionTool
+              onSubmit={next}
+              hideButton={false}
+              projectId={projectId} // ✅ Pass projectId
+            />
           </AccordionContent>
         </AccordionItem>
       </Accordion>
