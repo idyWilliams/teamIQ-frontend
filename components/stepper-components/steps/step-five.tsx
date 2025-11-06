@@ -12,9 +12,10 @@ import RightArrow from '@/components/icons/RightArrow';
 
 interface StepFiveProps {
   next: () => void;
+  projectId?: number;
 }
 
-const StepFive = ({ next,}: StepFiveProps) => {
+const StepFive = ({ next, projectId }: StepFiveProps) => {
   return (
     <div className="w-full">
       <Accordion
@@ -39,7 +40,11 @@ const StepFive = ({ next,}: StepFiveProps) => {
           </AccordionTrigger>
 
           <AccordionContent>
-            <UserPermission onSubmit={next} hideButton={false} />
+            <UserPermission
+              onSubmit={next}
+              hideButton={false}
+              projectId={projectId}
+            />
           </AccordionContent>
         </AccordionItem>
       </Accordion>
