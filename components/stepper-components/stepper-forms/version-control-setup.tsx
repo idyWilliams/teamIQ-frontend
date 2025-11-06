@@ -85,6 +85,7 @@ const VersionControlSetup = ({
 
   const handleFormSubmit = async (data: FormValues) => {
     console.log('📝 STEP 3 FORM DATA:', data);
+    console.log('🆕 Project ID for Step 3:', projectId); // Add this debug log
 
     // Transform form data to match API schema
     const getIntegrationMethod = (method: string): 'oauth2' | 'api_key' => {
@@ -102,7 +103,7 @@ const VersionControlSetup = ({
         data.integrationMethod === 'OAuth' ? data.token : undefined,
     };
 
-    console.log('STEP 3 API PAYLOAD:', apiData);
+    console.log('📤 STEP 3 API PAYLOAD:', apiData);
 
     if (!projectId) {
       console.log('No projectId available, skipping API call');
@@ -113,12 +114,12 @@ const VersionControlSetup = ({
 
     updateProjectStep3.mutate(apiData, {
       onSuccess: responseData => {
-        console.log('Step 3 completed successfully:', responseData);
+        console.log('✅ Step 3 completed successfully:', responseData);
         toast.success('Version control configured!');
         if (onSubmit) onSubmit();
       },
       onError: (error: any) => {
-        console.error('Step 3 failed:', error);
+        console.error('❌ Step 3 failed:', error);
         const errorMessage =
           error.response?.data?.detail ||
           error.response?.data?.message ||
@@ -142,7 +143,7 @@ const VersionControlSetup = ({
         subTitle="Set up the tool for this project to help synchronize your activities with your preferred tool."
       />
 
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
         {/* Row 1 - Project Type */}
         <Controller
           name="projectType"
@@ -356,7 +357,7 @@ const VersionControlSetup = ({
             }
             type="submit"
           >
-            Next
+            {updateProjectStep3.isPending ? 'Saving...' : 'Next'}
           </Button>
         )}
       </form>
