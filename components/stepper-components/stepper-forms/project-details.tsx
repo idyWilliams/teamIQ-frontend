@@ -41,6 +41,7 @@ import {
 } from '@/components/ui/command';
 import { useCreateProjectStep1 } from '@/services/hooks/useProject';
 import { toast } from 'sonner';
+import { useProjectStore } from '@/store/useProjectstore';
 
 // dummy data for stack selection
 const frameworks = [
@@ -91,6 +92,8 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
   // other not required form variables
   const [projectLead, setProjectLead] = useState('');
   const [projectLeadId, setProjectLeadId] = useState<number>(1);
+
+  const setStep1Data = useProjectStore(state => state.setStep1Data);
 
   // Fn for Handling File Upload
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
@@ -205,6 +208,8 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
     };
 
     console.log('📤 FINAL API PAYLOAD:', apiData);
+
+    setStep1Data(apiData);
 
     createProjectMutation.mutate(apiData, {
       onSuccess: responseData => {

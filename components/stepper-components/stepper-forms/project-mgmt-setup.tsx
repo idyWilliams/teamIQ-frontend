@@ -22,6 +22,7 @@ import {
   useUpdateProjectStep2,
 } from '@/services/hooks/useProject';
 import { toast } from 'sonner';
+import { useProjectStore } from '@/store/useProjectstore';
 
 interface ProjectMgmtSetupProps {
   onSubmit: () => void;
@@ -39,6 +40,7 @@ const ProjectMgmtSetup = ({
   const [connected, setConnected] = useState(false);
 
   const updateProjectStep2 = useUpdateProjectStep2(projectId || 0);
+  const setStep2Data = useProjectStore(state => state.setStep2Data);
 
   interface FormValues {
     projectType: string;
@@ -107,6 +109,7 @@ const ProjectMgmtSetup = ({
     };
 
     console.log('STEP 2 API PAYLOAD:', apiData);
+    setStep2Data(apiData);
 
     if (!projectId) {
       // ✅ This will work with undefined too

@@ -19,6 +19,7 @@ import {
   type ProjectStep4Data,
 } from '@/services/hooks/useProject';
 import { toast } from 'sonner';
+import { useProjectStore } from '@/store/useProjectstore';
 
 // ✅ SIMPLE INTERFACE - No Yup schema to avoid type conflicts
 interface ConnectionToolFormData {
@@ -50,6 +51,7 @@ const ConnectionTool = ({
   defaultValues,
 }: ConnectionToolProps) => {
   const updateProjectStep4 = useUpdateProjectStep4(projectId || 0);
+  const setStep4Data = useProjectStore(state => state.setStep4Data);
 
   const { handleSubmit, setValue, watch } = useForm<ConnectionToolFormData>({
     defaultValues: {
@@ -133,6 +135,8 @@ const ConnectionTool = ({
     };
 
     console.log('📤 STEP 4 API PAYLOAD:', apiData);
+
+    setStep4Data(apiData);
 
     if (!projectId) {
       console.log('No projectId available, skipping API call');

@@ -24,6 +24,7 @@ import {
   useUpdateProjectStep3,
 } from '@/services/hooks/useProject';
 import { toast } from 'sonner';
+import { useProjectStore } from '@/store/useProjectstore';
 
 interface FormValues {
   projectType: string;
@@ -50,6 +51,8 @@ const VersionControlSetup = ({
   const [connected, setConnected] = useState(false);
 
   const updateProjectStep3 = useUpdateProjectStep3(projectId || 0);
+
+  const setStep3Data = useProjectStore(state => state.setStep3Data);
 
   // Validation Schema
   const schema: yup.ObjectSchema<FormValues> = yup.object({
@@ -104,6 +107,7 @@ const VersionControlSetup = ({
     };
 
     console.log('📤 STEP 3 API PAYLOAD:', apiData);
+    setStep3Data(apiData);
 
     if (!projectId) {
       console.log('No projectId available, skipping API call');
