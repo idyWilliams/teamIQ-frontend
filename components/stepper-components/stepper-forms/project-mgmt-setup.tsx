@@ -86,8 +86,10 @@ const ProjectMgmtSetup = ({
     resolver: yupResolver(schema),
   });
 
+  // In your ProjectMgmtSetup component
   const handleFormSubmit = async (data: FormValues) => {
     console.log('STEP 2 FORM DATA:', data);
+    console.log('🆕 Project ID for Step 2:', projectId); // This will now show the actual ID
 
     const getIntegrationMethod = (method: string): 'oauth2' | 'api_key' => {
       if (method === 'OAuth') return 'oauth2';
@@ -107,12 +109,14 @@ const ProjectMgmtSetup = ({
     console.log('STEP 2 API PAYLOAD:', apiData);
 
     if (!projectId) {
+      // ✅ This will work with undefined too
       console.log('No projectId available, skipping API call');
       toast.success('Project management setup saved locally');
       onSubmit();
       return;
     }
 
+    // ✅ Now this will execute when projectId exists!
     updateProjectStep2.mutate(apiData, {
       onSuccess: responseData => {
         console.log('Step 2 completed successfully:', responseData);
