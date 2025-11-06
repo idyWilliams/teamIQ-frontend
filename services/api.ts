@@ -19,7 +19,7 @@ const api = {
   },
 
   userInvitation: {
-    register: '/api/v1/invitations/',
+    register: '/invitations/',
   },
 
   projects: {

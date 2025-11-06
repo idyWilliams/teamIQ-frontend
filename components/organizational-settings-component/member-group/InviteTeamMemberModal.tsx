@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import { useInviteUser } from '@/services/hooks/useInviteUser';
 import {
   Select,
@@ -12,20 +15,36 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
-import { on } from 'events';
+import { toast } from 'sonner';
 
 type CloseModalProp = {
   open: boolean;
   onClose: () => void;
 };
 
+const inviteSchema = yup.object({
+  email: yup.string().email('Enter valid email').required('Email is required'),
+  role: yup.string().default('intern'),
+});
+
+type inviteFormDataType = yup.InferType<typeof inviteSchema>;
+
 const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
   const { mutateAsync } = useInviteUser();
-  const [formData, setFormData] = useState({
-    email: '',
-    stack: '',
-    role: '',
+  const {
+    register,
+    setValue,
+    reset,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<inviteFormDataType>({
+    resolver: yupResolver(inviteSchema),
+    defaultValues: {
+      email: '',
+      role: '',
+    },
   });
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -37,19 +56,15 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
     };
   }, [open]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleInviteSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleInviteSubmit = async (data: inviteFormDataType) => {
     try {
-      await mutateAsync(formData);
+      await mutateAsync(data);
+      toast.success('Invite sent successfully');
+      reset();
       onClose();
     } catch (error) {
-      console.error('Failed to send', error);
+      console.error(error, 'failed to send');
+      toast.error('Error occur while sendind');
     }
   };
 
@@ -82,25 +97,25 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
           </p>
         </div>
 
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit(handleInviteSubmit)} className="space-y-4">
           <div className="flex items-center gap-2">
             <div className="w-1/2">
               <Input
                 type="email"
                 id="email"
-                name="email"
+                {...register('email')}
                 placeholder="Enter email address"
-                onChange={handleChange}
                 className="shadow-none focus-visible:ring-0 focus-visible:outline-none"
               />
+              {errors.email?.message && (
+                <p className="flex items-center justify-center">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div className="w-1/2">
-              <Select
-                onValueChange={value =>
-                  setFormData({ ...formData, role: value })
-                }
-              >
+              <Select onValueChange={value => setValue('role', value)}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
@@ -120,11 +135,10 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
           </div>
           <div className="mt-6 flex w-full flex-col gap-2">
             <Button
-              type="button"
-              onClick={handleInviteSubmit}
+              type="submit"
               className="w-full cursor-pointer bg-[#086ACE] text-white hover:bg-[#0655a4]"
             >
-              Send Invite
+              {isSubmitting ? 'Sending...' : 'Send Invite'}
             </Button>
           </div>
         </form>

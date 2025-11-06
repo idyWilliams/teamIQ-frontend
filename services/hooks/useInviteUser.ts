@@ -7,16 +7,13 @@ export const useInviteUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (payload: {
-      email: string;
-      stack: string;
-      role: string;
-    }) => {
+    mutationFn: async (payload: { email: string; role: string }) => {
+      console.log('User invitation', userInvitation.register);
       const res = await axiosInstance.post(userInvitation.register, {
         ...payload,
-        role: 'intern', 
+        role: 'intern',
       });
-      return res.data;
+      return console.log(res.data);
     },
     onSuccess: () => {
       toast.success('Invited sent sucessfully!');
