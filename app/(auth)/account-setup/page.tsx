@@ -1,38 +1,38 @@
-"use client";
+'use client';
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Image from "next/image";
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import Image from 'next/image';
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import axiosInstance from "@/services/axios";
-import { users } from "@/services/api";
+} from '@/components/ui/select';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import axiosInstance from '@/services/axios';
+import { users } from '@/services/api';
 
 // ✅ Yup validation schema
 const schema = yup.object({
-  track: yup.string().required("Track is required"),
+  track: yup.string().required('Track is required'),
   stack: yup
     .string()
-    .required("Stack is required")
-    .min(2, "Stack must be at least 2 characters"),
+    .required('Stack is required')
+    .min(2, 'Stack must be at least 2 characters'),
   profile: yup
     .mixed()
-    .required("Profile image is required")
-    .test("fileType", "Only image files are allowed", (value) => {
+    .required('Profile image is required')
+    .test('fileType', 'Only image files are allowed', (value: any) => {
       return (
         value &&
-        value.length > 0 &&
-        ["image/jpeg", "image/png", "image/jpg"].includes(value[0].type)
+        value?.length > 0 &&
+        ['image/jpeg', 'image/png', 'image/jpg'].includes(value[0].type)
       );
     }),
 });
@@ -52,16 +52,16 @@ export default function AccountSetup() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: FormData | any) => {
     try {
       setLoading(true);
 
       // 1️⃣ Upload image to /image endpoint
       const formData = new FormData();
-      formData.append("file", data.profile[0]);
+      formData.append('file', data.profile[0]);
 
-      const uploadResponse = await axiosInstance.post("/image", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const uploadResponse = await axiosInstance.post('/image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
 
       const imageUrl = uploadResponse?.data?.url; // depends on backend response shape
@@ -76,28 +76,28 @@ export default function AccountSetup() {
         image: imageUrl,
       });
 
-      alert("✅ Profile updated successfully!");
+      alert('✅ Profile updated successfully!');
     } catch (error: any) {
-      console.error("Profile update failed:", error);
-      alert("❌ Failed to update profile. Try again.");
+      console.error('Profile update failed:', error);
+      alert('❌ Failed to update profile. Try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section className="max-w-lg w-full mx-4">
+    <section className="mx-4 w-full max-w-lg">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="text-center mb-12">
-          <h1 className="text-black text-2xl font-semibold">Account setup</h1>
-          <p className="mt-2 font-normal text-[14px] md:text-[18px]">
+        <div className="mb-12 text-center">
+          <h1 className="text-2xl font-semibold text-black">Account setup</h1>
+          <p className="mt-2 text-[14px] font-normal md:text-[18px]">
             Welcome James, personalize your account.
           </p>
 
-          <div className="flex items-center justify-center mt-5">
+          <div className="mt-5 flex items-center justify-center">
             <div className="relative">
               <Image
-                src={preview || "/images/avatar.jpg"}
+                src={preview || '/images/avatar.jpg'}
                 alt="avatar"
                 width={100}
                 height={100}
@@ -112,15 +112,15 @@ export default function AccountSetup() {
             <Input
               type="file"
               accept="image/*"
-              {...register("profile")}
-              onChange={(e) => {
+              {...register('profile')}
+              onChange={e => {
                 const file = e.target.files?.[0];
                 if (file) setPreview(URL.createObjectURL(file));
               }}
-              className="bg-[#F7F7F7] border-0 border-b border-[#B3C4D6] py-3 px-4"
+              className="border-0 border-b border-[#B3C4D6] bg-[#F7F7F7] px-4 py-3"
             />
             {errors.profile && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="mt-1 text-sm text-red-500">
                 {errors.profile.message}
               </p>
             )}
@@ -130,10 +130,10 @@ export default function AccountSetup() {
         <div className="space-y-6">
           {/* Track selection */}
           <div>
-            <Label htmlFor="track" className="mb-2 font-normal text-[17px]">
+            <Label htmlFor="track" className="mb-2 text-[17px] font-normal">
               Select Track
             </Label>
-            <Select onValueChange={(val) => setValue("track", val)}>
+            <Select onValueChange={val => setValue('track', val)}>
               <SelectTrigger className="w-full border-0 border-b border-[#B3C4D6] bg-[#F7F7F7]">
                 <SelectValue placeholder="Frontend Developer" />
               </SelectTrigger>
@@ -148,7 +148,7 @@ export default function AccountSetup() {
               </SelectContent>
             </Select>
             {errors.track && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="mt-1 text-sm text-red-500">
                 {errors.track.message}
               </p>
             )}
@@ -156,10 +156,10 @@ export default function AccountSetup() {
 
           {/* Stack input */}
           <div>
-            <Label htmlFor="stack" className="mb-2 font-normal text-[17px]">
+            <Label htmlFor="stack" className="mb-2 text-[17px] font-normal">
               Enter stack
               <span className="inline text-xs md:text-sm">
-                {" "}
+                {' '}
                 (Separate them with commas)
               </span>
             </Label>
@@ -167,11 +167,11 @@ export default function AccountSetup() {
               type="text"
               id="stack"
               placeholder="E.g: JavaScript, React, Python"
-              {...register("stack")}
-              className="bg-[#F7F7F7] border-0 border-b border-[#B3C4D6] py-3 px-4"
+              {...register('stack')}
+              className="border-0 border-b border-[#B3C4D6] bg-[#F7F7F7] px-4 py-3"
             />
             {errors.stack && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="mt-1 text-sm text-red-500">
                 {errors.stack.message}
               </p>
             )}
@@ -181,9 +181,9 @@ export default function AccountSetup() {
         <Button
           type="submit"
           disabled={loading}
-          className="bg-[#086ACE] hover:bg-[#086bcec0] text-white mt-6 w-full py-3 h-auto rounded-md"
+          className="mt-6 h-auto w-full rounded-md bg-[#086ACE] py-3 text-white hover:bg-[#086bcec0]"
         >
-          {loading ? "Submitting..." : "Submit"}
+          {loading ? 'Submitting...' : 'Submit'}
         </Button>
       </form>
     </section>
