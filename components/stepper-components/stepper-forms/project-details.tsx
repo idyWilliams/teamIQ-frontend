@@ -15,7 +15,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from '../../ui/input-group';
-import { Check, SearchIcon } from 'lucide-react';
+import { Check, Loader, SearchIcon } from 'lucide-react';
 import { DatePicker } from '../../date-picker';
 import { format, isBefore } from 'date-fns';
 import { validateDate } from '@/helper/helperFns';
@@ -64,7 +64,11 @@ const allowedDocTypes = [
 ];
 
 interface ProjectDetailsProps {
-  onSubmit?: (data: any) => void;
+  onSubmit?: (data: {
+    projectId: number;
+    projectData: any;
+    step1Data: any;
+  }) => void; // ✅ Update this
   hideButton?: boolean;
 }
 
@@ -86,6 +90,7 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
 
   // other not required form variables
   const [projectLead, setProjectLead] = useState('');
+  const [projectLeadId, setProjectLeadId] = useState<number>(1);
 
   // Fn for Handling File Upload
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
@@ -183,10 +188,9 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
   } = useForm<FormValues>({ resolver: yupResolver(schema) });
   const createProjectMutation = useCreateProjectStep1();
 
+  // In your NewProjectDetails component - update the onSuccess handler
   const handleFormSubmit = async (formData: FormValues) => {
-    console.log(' FORM DATA RECEIVED:', formData);
-    console.log(' Additional docs:', docs);
-    console.log(' Preview image:', preview);
+    console.log('📝 FORM DATA RECEIVED:', formData);
 
     const apiData = {
       name: formData.projectName,
@@ -200,15 +204,27 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
       is_visible: formData.visibility,
     };
 
-    console.log('FINAL API PAYLOAD:', apiData);
+    console.log('📤 FINAL API PAYLOAD:', apiData);
 
     createProjectMutation.mutate(apiData, {
-      onSuccess: data => {
-        console.log('🎉 Project creation successful:', data);
+      onSuccess: responseData => {
+        console.log('🎉 Project creation successful:', responseData);
+
+        // ✅ EXTRACT PROJECT ID FROM RESPONSE
+        const projectId = responseData.data.project_id;
+        const projectData = responseData.data.project;
+
+        console.log('🆕 Created Project ID:', projectId);
+
         toast.success('Project created successfully!');
 
+        // ✅ PASS PROJECT ID TO PARENT
         if (onSubmit) {
-          onSubmit(data);
+          onSubmit({
+            projectId: projectId,
+            projectData: projectData,
+            step1Data: apiData,
+          });
         }
       },
       onError: (error: any) => {
@@ -327,7 +343,18 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
             </Label>
 
             <Select
-              onValueChange={value => setProjectLead(value)}
+              onValueChange={value => {
+                setProjectLead(value);
+                const leadIdMap = {
+                  Sifan: 1,
+                  George: 2,
+                  Omomowo: 3,
+                  Faith: 4,
+                };
+                setProjectLeadId(
+                  leadIdMap[value as keyof typeof leadIdMap] || 59
+                );
+              }}
               value={projectLead}
             >
               <SelectTrigger className="h-[40px] w-[100%] border-0 border-b-[1.5px] border-[#B3C4D6] bg-neutral-50">
@@ -557,7 +584,7 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
             )}
           />
         </div>
-        <Button
+        {/* <Button
           type="button"
           variant="outline"
           onClick={() => {
@@ -568,14 +595,22 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
           }}
         >
           Debug Form State
-        </Button>
+        </Button> */}
 
         {!hideButton && (
           <Button
+            type="submit" // Make sure it's type="submit"
             variant={'outline'}
-            className="h-[60px] cursor-pointer bg-[#086ACE] text-[16px] text-gray-50 hover:bg-[#8EA8C2] hover:text-gray-50"
+            disabled={createProjectMutation.isPending} // Disable during loading
+            className="h-[60px] cursor-pointer bg-[#086ACE] text-[16px] text-gray-50 hover:bg-[#8EA8C2] hover:text-gray-50 disabled:cursor-not-allowed disabled:bg-gray-400"
           >
-            Next
+            {createProjectMutation.isPending ? (
+              <div className="flex items-center gap-2">
+                <Loader className="animate-spin" />
+              </div>
+            ) : (
+              'Next'
+            )}
           </Button>
         )}
       </form>
