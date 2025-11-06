@@ -32,6 +32,31 @@ export interface ProjectStep3Data {
   vc_access_token?: string;
 }
 
+export interface CommNotifications {
+  pmt_updates: boolean;
+  code_events: boolean;
+  sentiment_monitoring: boolean;
+  custom_commands: boolean;
+}
+
+export interface ProjectStep4Data {
+  comm_tool: string;
+  comm_integration_method: 'oauth2' | 'api_key' | 'webhook';
+  comm_channel_id?: string;
+  comm_api_key?: string;
+  comm_webhook_url?: string;
+  comm_notifications: CommNotifications;
+}
+
+export interface ProjectMember {
+  user_id: number;
+  role: string;
+}
+
+export interface ProjectStep5Data {
+  members: ProjectMember[];
+}
+
 export const useCreateProjectStep1 = () => {
   return useMutation({
     mutationFn: async (projectData: ProjectStep1Data) => {
@@ -117,6 +142,59 @@ export const useUpdateProjectStep3 = (projectId: number) => {
 
       console.log('STEP 3 SUCCESS RESPONSE:', response);
       return response.data;
+    },
+  });
+};
+
+export const useUpdateProjectStep4 = (projectId: number) => {
+  return useMutation({
+    mutationFn: async (step4Data: ProjectStep4Data) => {
+      console.log('🚀 SENDING STEP 4 DATA:', step4Data);
+      console.log('📋 Project ID:', projectId);
+
+      const token = localStorage.getItem('accessToken');
+      console.log('🔐 Token exists:', !!token);
+
+      const response = await axiosInstance.patch(
+        `/projects/${projectId}/step4-communication-tool`,
+        step4Data
+      );
+
+      console.log('✅ STEP 4 SUCCESS RESPONSE:', response);
+      return response.data;
+    },
+  });
+};
+
+export const useUpdateProjectStep5 = (projectId: number) => {
+  return useMutation({
+    mutationFn: async (step5Data: ProjectStep5Data) => {
+      console.log('🚀 SENDING STEP 5 DATA:', step5Data);
+      console.log('📋 Project ID:', projectId);
+
+      const token = localStorage.getItem('accessToken');
+      console.log('🔐 Token exists:', !!token);
+
+      const response = await axiosInstance.patch(
+        `/projects/${projectId}/step5-add-members`,
+        step5Data
+      );
+
+      console.log('✅ STEP 5 SUCCESS RESPONSE:', response);
+      return response.data;
+    },
+    onSuccess: data => {
+      console.log('Step 5 completed successfully:', data);
+      toast.success('Team members added successfully!');
+      return data;
+    },
+    onError: (error: any) => {
+      console.error('❌ Step 5 failed:', error);
+      const errorMessage =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        'Failed to add team members';
+      toast.error(errorMessage);
     },
   });
 };
