@@ -1,3 +1,4 @@
+// In your StepperModal component
 'use client';
 import React, { useState } from 'react';
 import StepFour from './step-four';
@@ -16,18 +17,28 @@ interface StepperModalProps {
 
 const StepperModal = ({ onClose }: StepperModalProps) => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [currentProjectId, setCurrentProjectId] = useState<number | undefined>(
+    undefined
+  ); // ✅ Add this state
 
-  const next = () => setCurrentStep(prev => prev + 1);
+  // ✅ Update next function to handle project data
+  const next = (projectData?: { projectId: number; projectData: any }) => {
+    if (projectData && projectData.projectId) {
+      setCurrentProjectId(projectData.projectId); // ✅ Store project ID
+      console.log(
+        '🆔 Stored Project ID for next steps:',
+        projectData.projectId
+      );
+    }
+    setCurrentStep(prev => prev + 1);
+  };
+
   const prev = () => setCurrentStep(prev => prev - 1);
   const goToStep = (step: number) => setCurrentStep(step);
 
-  const handleSubmit = () => {
-    console.log('Project created!');
-  };
-
   const steps = [
     { number: 1, name: 'Project Details' },
-    { number: 2, name: 'Project Management Tool  Setup' },
+    { number: 2, name: 'Project Management Tool Setup' },
     { number: 3, name: 'Version Control Setup' },
     { number: 4, name: 'Communication Tool Setup' },
     { number: 5, name: 'User & Permission Sync' },
@@ -100,11 +111,29 @@ const StepperModal = ({ onClose }: StepperModalProps) => {
         </div>
       )}
       <div>
+        {/* ✅ Pass next function to StepOne */}
         {currentStep === 1 && <StepOne next={next} />}
-        {currentStep === 2 && <StepTwo next={next} />}
-        {currentStep === 3 && <StepThree next={next} />}
-        {currentStep === 4 && <StepFour next={next} />}
-        {currentStep === 5 && <StepFive next={next} />}
+
+        {/* ✅ Pass projectId to StepTwo */}
+        {currentStep === 2 && (
+          <StepTwo
+            next={next}
+            projectId={currentProjectId} // ✅ This is the key!
+          />
+        )}
+
+        {currentStep === 3 && (
+          <StepThree
+            next={next}
+            projectId={currentProjectId} // ✅ And for StepThree
+          />
+        )}
+        {currentStep === 4 && (
+          <StepFour next={next} projectId={currentProjectId} />
+        )}
+        {currentStep === 5 && (
+          <StepFive next={next} projectId={currentProjectId} />
+        )}
         {currentStep === 6 && <StepSix onSubmit={next} />}
         {currentStep === 7 && <SuccessStep />}
       </div>
