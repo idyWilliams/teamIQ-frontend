@@ -27,7 +27,6 @@ export const useLogin = () => {
   });
 };
 
-
 //Register Individual
 export const useRegisterIndividual = () => {
   const [loading, setLoading] = useState(false);
@@ -44,7 +43,7 @@ export const useRegisterIndividual = () => {
     }) => {
       setLoading(true);
       const res = await axiosInstance.post(
-        `${auth.loginIndividual}?invitation_code=${invitation_code}`,
+        auth.registerIndividual(invitation_code),
         data
       );
       return res.data;
@@ -96,9 +95,9 @@ export const useSignupOrg = () => {
         'Signup Error:',
         error.response?.data?.detail || error.response?.data
       );
-      toast.error(
-        error.response?.data?.message || 'Signup failed. Please try again.'
-      );
+      // toast.error(
+      //   error.response?.data?.message || 'Signup failed. Please try again.'
+      // );
     },
   });
 };
@@ -144,34 +143,35 @@ export const usePasswordResetConfirm = () => {
   });
 };
 
-
 // Onboarding Complete Hook
 export const useOnboardingComplete = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
   return useMutation({
-    mutationFn: async (payload: { 
-  organization_image: string,
-  description: string,
-  sector: string,
-  social_media_handles: {
-    additionalProp1: string,
-    additionalProp2: string,
-    additionalProp3: string
-  },
-  domain_link: string,
-  favorite_tools:string,
-  website: string,
-  phone_number: string
-} ) => {
-      const res = await axiosInstance.patch(organizations.onboardingComplete, payload);
+    mutationFn: async (payload: {
+      organization_image: string;
+      description: string;
+      sector: string;
+      social_media_handles: {
+        additionalProp1: string;
+        additionalProp2: string;
+        additionalProp3: string;
+      };
+      domain_link: string;
+      favorite_tools: string;
+      website: string;
+      phone_number: string;
+    }) => {
+      const res = await axiosInstance.patch(
+        organizations.onboardingComplete,
+        payload
+      );
       return res.data;
     },
     onSuccess: data => {
       toast.success(data?.message || 'Onboarding completed successfully!');
       queryClient.invalidateQueries({ queryKey: ['organizations'] });
-    
     },
     onError: (error: any) => {
       const message =

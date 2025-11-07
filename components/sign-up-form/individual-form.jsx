@@ -91,7 +91,9 @@ function FormField() {
   });
   useEffect(() => {
     console.log(email, invitation_code);
-    reset({ email: email?.trim()?.replaceAll('/', '') || '' });
+    reset({
+      email: encodeURI(email?.trim()?.replaceAll('/', '') || ''),
+    });
   }, [email, reset]);
 
   const password = useWatch({ control, name: 'password' });

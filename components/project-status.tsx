@@ -33,7 +33,7 @@ const Datas = [
 const ProjectStatus = () => {
   return (
     <>
-      {/* <div className="flex justify-between gap-4 space-y-6 p-4">
+      <div className="flex justify-between gap-4 space-y-6 p-4">
         {' '}
         <div className="w-[65%] grow">
           <div className="mb-3 flex justify-between">
@@ -70,8 +70,7 @@ const ProjectStatus = () => {
           </div>
         </div>
         <ActiveBlockers blockers={activeBlockers} />
-      </div> */}
-       <div><OrganizationalDetails /></div>
+      </div>
     </>
   );
 };

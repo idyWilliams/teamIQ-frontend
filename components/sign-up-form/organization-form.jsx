@@ -111,7 +111,7 @@ function OrganizationForm() {
 
         onError: error => {
           toast.error(
-            error.response?.data?.message || 'Signup failed. Try again.'
+            error.response?.data?.detail || 'Signup failed. Try again.'
           );
         },
       }

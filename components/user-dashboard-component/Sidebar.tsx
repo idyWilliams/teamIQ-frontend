@@ -2,7 +2,9 @@ import React, { useState, useCallback, useMemo, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { sidebarLinks, SidebarLinkType } from './data/sideLink';
-import { ChevronDown, ChevronUp, User } from 'lucide-react';
+import { ChevronDown, ChevronUp, LogOut, User } from 'lucide-react';
+import { Button } from '../ui/button';
+import { useAuthStore } from '@/store/useAuthStore';
 
 type SidebarProps = {
   closeSidebar?: () => void;
@@ -148,29 +150,40 @@ const SidebarNavigation = React.memo(
     isPathActive,
     isChildActive,
     onLinkClick,
-  }: SidebarNavigationProps) => (
-    <>
-      <p className="px-4 py-3 text-sm text-[#a2a3a4]">Pages</p>
-      <nav
-        className="flex flex-1 flex-col gap-1 overflow-y-auto px-2"
-        role="navigation"
-        aria-label="Sidebar navigation"
-      >
-        {links.map(link => (
-          <SidebarLinkItem
-            key={link.label}
-            link={link}
-            pathname={pathname}
-            isParentActiveOpen={isParentActiveOpen}
-            onParentToggle={onParentToggle}
-            isPathActive={isPathActive}
-            isChildActive={isChildActive}
-            onLinkClick={onLinkClick}
-          />
-        ))}
-      </nav>
-    </>
-  )
+  }: SidebarNavigationProps) => {
+    const { logout } = useAuthStore();
+
+    return (
+      <>
+        <p className="px-4 py-3 text-sm text-[#a2a3a4]">Pages</p>
+        <nav
+          className="flex flex-1 flex-col gap-1 overflow-y-auto px-2"
+          role="navigation"
+          aria-label="Sidebar navigation"
+        >
+          {links.map(link => (
+            <SidebarLinkItem
+              key={link.label}
+              link={link}
+              pathname={pathname}
+              isParentActiveOpen={isParentActiveOpen}
+              onParentToggle={onParentToggle}
+              isPathActive={isPathActive}
+              isChildActive={isChildActive}
+              onLinkClick={onLinkClick}
+            />
+          ))}
+          <Button
+            onClick={() => logout()}
+            className="text-iq-500 flex cursor-pointer items-center justify-start rounded-md border-0 bg-transparent p-0 pl-16 text-sm shadow-none transition-colors hover:bg-transparent focus:outline-none"
+          >
+            <LogOut />
+            Log out
+          </Button>
+        </nav>
+      </>
+    );
+  }
 );
 
 SidebarNavigation.displayName = 'SidebarNavigation';
