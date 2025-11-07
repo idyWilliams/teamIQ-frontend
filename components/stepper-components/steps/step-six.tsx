@@ -50,7 +50,7 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
     });
   };
 
-  // Transform stored data for each form component
+  // In your StepSix component - update the getStep1DefaultValues function
   const getStep1DefaultValues = () => {
     if (!projectData.step1) return undefined;
     return {
@@ -60,7 +60,8 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
       startDate: new Date(projectData.step1.start_date),
       endDate: new Date(projectData.step1.end_date),
       visibility: projectData.step1.is_visible,
-      // Note: Files (image and documents) would need separate handling
+      projectLead: 'Intern',
+      projectLeadId: 1,
     };
   };
 
