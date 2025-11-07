@@ -148,7 +148,6 @@ export const usePasswordResetConfirm = () => {
 // Onboarding Complete Hook
 export const useOnboardingComplete = () => {
   const queryClient = useQueryClient();
-  const router = useRouter();
 
   return useMutation({
     mutationFn: async (payload: { 
@@ -165,6 +164,10 @@ export const useOnboardingComplete = () => {
   website: string,
   phone_number: string
 } ) => {
+
+  
+    
+
       const res = await axiosInstance.patch(organizations.onboardingComplete, payload);
       return res.data;
     },

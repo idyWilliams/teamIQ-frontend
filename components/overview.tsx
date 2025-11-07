@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import {
   Dialog,
   DialogContent,
+  DialogTitle
 } from "@/components/ui/dialog";
 import OrganizationalDetails from './organization-dashboard-components/organizationalOnboarding';
 
@@ -19,7 +20,7 @@ const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div className="space-y-6 p-4">
       <div>
-        <div className="mb-[48px] bg-iq-war-100 border-iq-war-300 rounded-[10px] border px-[56px] py-[26px] flex items-center justify-between">
+        <div className="mb-[48px]  bg-iq-war-100 border-iq-war-300 rounded-[10px] border px-[56px] py-[26px] flex items-center justify-between">
           <div className='flex items-center gap-[10px] '>
             <Avatar>
             <AvatarImage src="/images/danger.svg" alt="danger-icon" />
@@ -54,6 +55,7 @@ const [isModalOpen, setIsModalOpen] = useState(false);
       </div> 
       {/* Fill form */}
          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogTitle></DialogTitle>
             <DialogContent className="w-[900px] sm:!max-w-[900px] overflow-y-auto max-h-[90vh] !pt-0 [&>button]:hidden">
               <OrganizationalDetails onClose={() => setIsModalOpen(false)} />
             </DialogContent>
