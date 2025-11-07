@@ -50,7 +50,6 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
     });
   };
 
-  // In your StepSix component - update the getStep1DefaultValues function
   const getStep1DefaultValues = () => {
     if (!projectData.step1) return undefined;
     return {
@@ -65,7 +64,6 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
     };
   };
 
-  // In your StepSix component
   const getStep2DefaultValues = () => {
     if (!projectData.step2) return undefined;
     return {
@@ -85,7 +83,7 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
         projectData.step3.vc_integration_method === 'oauth2' ? 'OAuth' : 'Api',
       assignMapping: projectData.step3.vc_repository_url,
       token: projectData.step3.vc_api_key || projectData.step3.vc_access_token,
-      permissions: 'read', // Default value
+      permissions: 'read',
     };
   };
 
@@ -104,8 +102,8 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
       webhookUrl: projectData.step4.comm_webhook_url,
       postPmtUpdates:
         projectData.step4.comm_notifications?.pmt_updates || false,
-      postTaskUpdates: false, // Default
-      postDeadlineReminders: false, // Default
+      postTaskUpdates: false,
+      postDeadlineReminders: false,
       codeEvents: projectData.step4.comm_notifications?.code_events || false,
       sentimentMonitoring:
         projectData.step4.comm_notifications?.sentiment_monitoring || false,
@@ -114,11 +112,9 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
     };
   };
 
-  // In your StepSix component
   const getStep5DefaultValues = () => {
     if (!projectData.step5) return undefined;
 
-    // Transform members data for the UserPermission component
     const selectedMembers: number[] = [];
     let projectLead: number | null = null;
 
@@ -146,12 +142,7 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
         </p>
       </div>
 
-      <Accordion
-        type="single"
-        collapsible
-        className="w-full"
-        defaultValue="project-details"
-      >
+      <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="project-details">
           <AccordionTrigger className="group flex cursor-pointer items-center gap-2 hover:no-underline [&_.lucide-chevron-down]:hidden [&>svg]:!rotate-0">
             <RightArrow
