@@ -21,6 +21,7 @@ const api = {
   organizations: {
     byId: (orgId: number) => `/organizations/organizations/${orgId}`,
     signup: '/organizations/signup',
+    onboardingComplete: '/organizations/onboarding-complete',
   },
 
   userInvitation: {

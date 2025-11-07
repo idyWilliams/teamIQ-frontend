@@ -3,6 +3,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axiosInstance from '@/services/axios';
 import { auth, organizations } from '@/services/api';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useRouter } from 'next/navigation';
+import { AxiosError } from 'axios';
+import { useState } from 'react';
 
 interface SignupOrgData {
   name: string;
@@ -22,14 +26,15 @@ export const useLogin = () => {
     },
   });
 };
-import { useAuthStore } from '@/store/useAuthStore';
-import { useRouter } from 'next/navigation';
-import { AxiosError } from 'axios';
+
 
 //Register Individual
 export const useRegisterIndividual = () => {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const queryClient = useQueryClient();
-  return useMutation({
+
+  const mutation = useMutation({
     mutationFn: async ({
       data,
       invitation_code,
@@ -37,20 +42,26 @@ export const useRegisterIndividual = () => {
       data: any;
       invitation_code: string;
     }) => {
+      setLoading(true);
       const res = await axiosInstance.post(
-        auth.registerIndividual(invitation_code),
+        `${auth.loginIndividual}?invitation_code=${invitation_code}`,
         data
       );
       return res.data;
     },
-    onSuccess: (data: any) => {
+    onSuccess: () => {
       toast.success('User registered successfully!');
+      setLoading(false);
       queryClient.invalidateQueries({ queryKey: ['auth'] });
+      router.push('/login'); // redirect to login page
     },
     onError: () => {
       toast.error('Registration failed.');
+      setLoading(false);
     },
   });
+
+  return { ...mutation, loading };
 };
 
 //Register Organization
@@ -128,6 +139,43 @@ export const usePasswordResetConfirm = () => {
     onError: (error: any) => {
       const message =
         error?.response?.data?.message || 'Failed to confirm password reset.';
+      toast.error(message);
+    },
+  });
+};
+
+
+// Onboarding Complete Hook
+export const useOnboardingComplete = () => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: async (payload: { 
+  organization_image: string,
+  description: string,
+  sector: string,
+  social_media_handles: {
+    additionalProp1: string,
+    additionalProp2: string,
+    additionalProp3: string
+  },
+  domain_link: string,
+  favorite_tools:string,
+  website: string,
+  phone_number: string
+} ) => {
+      const res = await axiosInstance.patch(organizations.onboardingComplete, payload);
+      return res.data;
+    },
+    onSuccess: data => {
+      toast.success(data?.message || 'Onboarding completed successfully!');
+      queryClient.invalidateQueries({ queryKey: ['organizations'] });
+    
+    },
+    onError: (error: any) => {
+      const message =
+        error?.response?.data?.message || 'Failed to complete onboarding.';
       toast.error(message);
     },
   });

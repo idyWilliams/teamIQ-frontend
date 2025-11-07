@@ -1,87 +1,210 @@
-"use client";
+'use client';
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Image from "next/image";
-import React from "react";
-
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import Image from 'next/image';
+import React, { useState, useRef, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/select';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import axiosInstance from '@/services/axios';
+import { users } from '@/services/api';
+import { Camera } from 'lucide-react';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useRouter } from 'nextjs-toploader/app';
 
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-
-// Yup schema
+// ✅ Yup validation schema
 const schema = yup.object({
-  track: yup.string().required("Track is required"),
+  track: yup.string().required('Track is required'),
   stack: yup
-    .string()
-    .required("Stack is required")
-    .min(2, "Stack must be at least 2 characters"),
+    .mixed()
+    .required('Stack is required')
+    .test('minLength', 'Stack must be at least 2 characters', (value: any) => {
+      if (!value) return false;
+      return String(value).length >= 2;
+    })
+    .test('stackArray', 'Stacks must be separated by comma', (value: any) => {
+      if (!value) return false;
+      const stacks = String(value)
+        .split(',')
+        .map((t: any) => t.trim())
+        .filter((t: any) => t.length > 0);
+      return stacks.length > 0;
+    })
+    .transform((value: any) => {
+      if (!value) return [];
+      return String(value)
+        .split(',')
+        .map((t: any) => t.trim())
+        .filter((t: any) => t.length > 0);
+    }),
+  profile: yup
+    .mixed()
+    .required('Profile image is required')
+    .test('fileType', 'Only image files are allowed', (value: any) => {
+      console.log(value, 'FOR VAD', typeof value);
+
+      return (
+        value &&
+        typeof value === 'object' &&
+        ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'].includes(
+          value.type
+        )
+      );
+    }),
 });
 
 type FormData = yup.InferType<typeof schema>;
 
 export default function AccountSetup() {
-  // Hook form setup with Yup
+  const { user, updateUser } = useAuthStore();
+  const [preview, setPreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
+    reset,
   } = useForm<FormData>({
     resolver: yupResolver(schema),
   });
 
-  // Submition handler
-  const onSubmit = (data: FormData) => {
-    console.log(data);
+  const handleFileUpload = (e: any) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (file) setPreview(URL.createObjectURL(file));
+    setValue('profile', file);
+    console.log(e.target.files, 'PHO');
   };
 
+  const onSubmit = async (data: FormData | any) => {
+    // return console.log(errors, data);
+
+    try {
+      setLoading(true);
+
+      // 1️⃣ Upload image to /image endpoint
+      const formData = new FormData();
+      formData.append('file', data.profile);
+      formData.append('image_type', 'profile');
+      formData.append('update_db', 'true');
+
+      const uploadResponse = await axiosInstance.post('/image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      console.log('uploadResponse:', uploadResponse);
+
+      const imageUrl = uploadResponse?.data?.data?.url; // depends on backend response shape
+
+      // 2️⃣ Get user_id (replace with actual logic or state)
+      const userId = user?.id; // You’ll likely get this from auth context or local storage
+      if (!imageUrl) return;
+      const final = {
+        track: data.track,
+        stacks: data.stack,
+        profile_image: imageUrl,
+      };
+      console.log(final);
+
+      // 3️⃣ Update profile with track, stack, and image
+      const res = await axiosInstance.put(users.byId(userId), {
+        track: data.track,
+        stacks: data.stack,
+        profile_image: imageUrl || user?.profile_img,
+      });
+
+      alert('✅ Profile updated successfully!');
+      console.log(res);
+
+      updateUser(res?.data?.data);
+      router.push('/member');
+    } catch (error: any) {
+      console.error('Profile update failed:', error);
+      alert('❌ Failed to update profile. Try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    console.log(user);
+    if (user) {
+      setPreview(user?.profile_image);
+      reset({ track: user?.track });
+    }
+  }, [reset, user]);
+
   return (
-    <section className="max-w-lg w-full mx-4">
+    <section className="mx-4 w-full max-w-lg">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="text-center mb-12">
-          <h1 className=" text-black text-2xl font-semibold">Account setup</h1>
-          <p className="mt-2 font-normal text-[14px] md:text-[18px]">
-            Welcome James, Personalize your account.
+        <div className="mb-12 text-center">
+          <h1 className="text-2xl font-semibold text-black">Account setup</h1>
+          <p className="mt-2 text-[14px] font-normal md:text-[18px]">
+            Welcome James, personalize your account.
           </p>
 
-          <div className="">
-            <div className="flex items-center justify-center mt-5">
-              <div className="relative">
-                <Image
-                  src="/images/avatar.jpg"
-                  alt="avatar"
-                  width={100}
-                  height={100}
-                  priority
-                  className="rounded-full object-center object-cover size-[90]"
-                />
-                {/* Online status indicator */}
-                <span
-                  className="absolute bottom-4 -right-1 md:-right-2 w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full border-2 border-white bg-[#D9D9D9]"
-                  title="Online"></span>
-              </div>
+          <div className="mt-5 flex items-center justify-center">
+            <div className="relative">
+              <Image
+                src={(preview as string) || '/images/avatar.png'}
+                alt="avatar"
+                width={100}
+                height={100}
+                priority
+                className="size-[100px] rounded-full bg-neutral-100 object-cover"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                id="profile"
+                className="bg-iq-500 absolute -right-2 bottom-0 size-8 rounded-full border-2 border-white text-white"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Camera size={24} />
+              </Button>
             </div>
+          </div>
+
+          {/* Profile upload input */}
+          <div className="mt-4">
+            <Input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
+            {errors.profile && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.profile.message}
+              </p>
+            )}
           </div>
         </div>
 
         <div className="space-y-6">
           {/* Track selection */}
           <div>
-            <Label htmlFor="track" className="mb-2 font-normal text-[17px]">
+            <Label htmlFor="track" className="mb-2 text-[17px] font-normal">
               Select Track
             </Label>
-            <Select onValueChange={(val) => setValue("track", val)}>
-              <SelectTrigger className="w-full data-[placeholder]:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto bg-[#F7F7F7]">
+            <Select onValueChange={val => setValue('track', val)}>
+              <SelectTrigger className="w-full border-0 border-b border-[#B3C4D6] bg-[#F7F7F7]">
                 <SelectValue placeholder="Frontend Developer" />
               </SelectTrigger>
               <SelectContent>
@@ -95,7 +218,7 @@ export default function AccountSetup() {
               </SelectContent>
             </Select>
             {errors.track && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="mt-1 text-sm text-red-500">
                 {errors.track.message}
               </p>
             )}
@@ -103,31 +226,34 @@ export default function AccountSetup() {
 
           {/* Stack input */}
           <div>
-            <Label htmlFor="stack" className="mb-2 font-normal text-[17px]">
+            <Label htmlFor="stack" className="mb-2 text-[17px] font-normal">
               Enter stack
-              <span className="inline text-xs md:text-sm ">
-                (Separate them with commas to select multiple)
+              <span className="inline text-xs md:text-sm">
+                {' '}
+                (Separate them with commas)
               </span>
             </Label>
             <Input
               type="text"
               id="stack"
               placeholder="E.g: JavaScript, React, Python"
-              {...register("stack")}
-              className="placeholder:text-[#B3C4D6] border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-3 px-4 h-auto bg-[#F7F7F7]"
+              {...register('stack')}
+              className="border-0 border-b border-[#B3C4D6] bg-[#F7F7F7] px-4 py-3"
             />
             {errors.stack && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="mt-1 text-sm text-red-500">
                 {errors.stack.message}
               </p>
             )}
           </div>
         </div>
-{/* Submition buttton */}
+
         <Button
           type="submit"
-          className="bg-[#086ACE] hover:bg-[#086bcec0] hover:cursor-pointer text-white mt-6 md:mt-8 w-full py-3 h-auto rounded-md">
-          Submit
+          disabled={loading}
+          className="mt-6 h-auto w-full rounded-md bg-[#086ACE] py-3 text-white hover:bg-[#086bcec0]"
+        >
+          {loading ? 'Submitting...' : 'Submit'}
         </Button>
       </form>
     </section>

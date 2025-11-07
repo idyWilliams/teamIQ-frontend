@@ -1,8 +1,11 @@
 // services/axios.ts
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  baseURL:
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    'https://teamiq-backend.onrender.com/api/v1',
   withCredentials: true,
 });
 
@@ -45,13 +48,35 @@ export const tokenStorage = {
   },
 };
 
+// check if token is expired
+const isTokenExpired = (token: string): boolean => {
+  try {
+    const decoded = jwtDecode(token);
+    if (!decoded.exp) return false;
+    const currentTime = Math.floor(Date.now() / 1000);
+    return decoded.exp < currentTime;
+  } catch {
+    return true; // if we cant decodeconsider it expire
+  }
+};
+
 // request interceptor to add authorization header
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = tokenStorage.get();
 
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // Check if token exists and is not expired
+    if (token) {
+      if (isTokenExpired(token)) {
+        // whn token expire cancel request and redirect to login
+        tokenStorage.remove();
+        window.location.href = '/login';
+        return Promise.reject(new Error('Token has expired'));
+      }
+
+      if (config.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
 
     return config;
@@ -67,7 +92,7 @@ axiosInstance.interceptors.response.use(
       _retry?: boolean;
     };
 
-    // handle 401 unauthorised wgen token expired or invalid
+    // handle 401 unauthorised when token expired or invalid
     if (err.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 

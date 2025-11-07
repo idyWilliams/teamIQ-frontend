@@ -1,15 +1,39 @@
-import React from "react";
-import CardItem from "./cardItem";
-import ChartLineDefault from "./chart-line";
-import ActiveBlockers from "./active-blockers";
-import { WaveProgressCard } from "./wave-progress";
-import { dashboardCards, activeBlockers, progressData } from "@/constants";
+import React from 'react';
+import CardItem from './cardItem';
+import ChartLineDefault from './chart-line';
+import ActiveBlockers from './active-blockers';
+import { useState } from 'react';
+import { WaveProgressCard } from './wave-progress';
+import { dashboardCards, activeBlockers, progressData } from '@/constants';
+import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
+import {
+  Dialog,
+  DialogContent,
+} from "@/components/ui/dialog";
+import OrganizationalDetails from './organization-dashboard-components/organizationalOnboarding';
+
 
 const DashbordOverview = () => {
+const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
-    <div className="p-4 space-y-6">
+    <div className="space-y-6 p-4">
       <div>
-        <div className="hidden sm:flex gap-3 max-lg:flex-wrap">
+        <div className="mb-[48px] bg-iq-war-100 border-iq-war-300 rounded-[10px] border px-[56px] py-[26px] flex items-center justify-between">
+          <div className='flex items-center gap-[10px] '>
+            <Avatar>
+            <AvatarImage src="/images/danger.svg" alt="danger-icon" />
+            <AvatarFallback>D</AvatarFallback>
+          </Avatar>
+          <p className="text-[16px] text-neutral-950 ">
+            Complete your organization details to unlock full access.
+          </p></div>
+          
+          <button onClick={() => setIsModalOpen(true)}  className="bg-iq-600 cursor-pointer hover:bg-iq-800 duration-500 rounded-[8px] p-[10px] text-neutral-50">
+            Complete Now
+          </button>
+        </div>
+        <div className="hidden gap-3 max-lg:flex-wrap sm:flex">
           {dashboardCards.map((card, i) => (
             <CardItem key={i} {...card} />
           ))}
@@ -17,19 +41,27 @@ const DashbordOverview = () => {
       </div>
 
       <div className="flex gap-4">
-        <div className="lg:col-span-2 space-y-4 grow">
+        <div className="grow space-y-4 lg:col-span-2">
           <WaveProgressCard progressData={progressData} />
           <div className="mt-6">
             <ChartLineDefault />
           </div>
         </div>
 
-        <div className="lg:col-span-1 space-y-4">
+        <div className="space-y-4 lg:col-span-1">
           <ActiveBlockers blockers={activeBlockers} />
         </div>
-      </div>
+      </div> 
+      {/* Fill form */}
+         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <DialogContent className="w-[900px] sm:!max-w-[900px] overflow-y-auto max-h-[90vh] !pt-0 [&>button]:hidden">
+              <OrganizationalDetails onClose={() => setIsModalOpen(false)} />
+            </DialogContent>
+          </Dialog>
+
     </div>
+
   );
-};
+};     
 
 export default DashbordOverview;

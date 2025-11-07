@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import { useInviteUser } from '@/services/hooks/useInviteUser';
 import {
   Select,
@@ -12,7 +15,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader, X } from 'lucide-react';
-import { on } from 'events';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
 import Link from 'next/link';
@@ -22,12 +24,30 @@ type CloseModalProp = {
   onClose: () => void;
 };
 
+const inviteSchema = yup.object({
+  email: yup.string().email('Enter valid email').required('Email is required'),
+  track: yup.string().required('Enter invitee track'),
+  role: yup.string().default('intern'),
+});
+
+type inviteFormDataType = yup.InferType<typeof inviteSchema>;
+
 const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
   const { mutateAsync, isPending } = useInviteUser();
-  const [formData, setFormData] = useState({
-    email: '',
-    stack: '',
-    role: '',
+  const {
+    register,
+    setValue,
+    reset,
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<inviteFormDataType>({
+    resolver: yupResolver(inviteSchema),
+    defaultValues: {
+      email: '',
+      track: '',
+      role: 'intern',
+    },
   });
   const [inviteLink, setInviteLink] = useState('');
 
@@ -42,27 +62,16 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
     };
   }, [open]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleInviteSubmit = async (e: React.FormEvent) => {
-    if (!formData.email && !formData.role) return;
-
-    e.preventDefault();
+  const handleInviteSubmit = async (data: inviteFormDataType) => {
     try {
-      await mutateAsync(formData, {
-        onSuccess: res => {
-          console.log(res);
-          setInviteLink(res?.data?.invite_link);
-        },
-      });
-      // onClose();
-    } catch (error: any) {
-      console.error('Failed to send', error);
-      toast.warning(error?.response?.data?.detail || 'Failed to send');
+      const res = await mutateAsync(data);
+      console.log(res);
+      toast.success('Invite sent successfully');
+      reset();
+      onClose();
+    } catch (error) {
+      console.error(error, 'failed to send');
+      toast.error('Error occur while sendind');
     }
   };
 
@@ -95,56 +104,56 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
           </p>
         </div>
 
-        <form className="space-y-4">
-          <div className="flex items-center gap-2">
+        <form onSubmit={handleSubmit(handleInviteSubmit)} className="space-y-4">
+          <div className="flex items-start gap-2">
             <div className="w-1/2">
               <Input
                 type="email"
                 id="email"
-                name="email"
+                {...register('email')}
                 placeholder="Enter email address"
-                onChange={handleChange}
                 className="shadow-none focus-visible:ring-0 focus-visible:outline-none"
               />
+              {errors.email?.message && (
+                <p className="text-sm text-red-500">{errors.email.message}</p>
+              )}
             </div>
 
             <div className="w-1/2">
-              <Select
-                onValueChange={value =>
-                  setFormData({ ...formData, role: value })
-                }
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Roles</SelectLabel>
-                    <SelectItem value="product-design">
-                      Product Design
-                    </SelectItem>
-                    <SelectItem value="frontend">Frontend</SelectItem>
-                    <SelectItem value="backend">Backend</SelectItem>
-                    <SelectItem value="fullstack">Fullstack</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              <Controller
+                name="track"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <Select value={value} onValueChange={onChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Tracks</SelectLabel>
+                        <SelectItem value="product-design">
+                          Product Design
+                        </SelectItem>
+                        <SelectItem value="frontend">Frontend</SelectItem>
+                        <SelectItem value="backend">Backend</SelectItem>
+                        <SelectItem value="fullstack">Fullstack</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.track?.message && (
+                <p className="text-sm text-red-500">{errors.track.message}</p>
+              )}
             </div>
           </div>
           <div className="mt-6 flex w-full flex-col gap-2">
             <Button
-              type="button"
-              onClick={handleInviteSubmit}
-              disabled={isPending}
+              type="submit"
+              disabled={isSubmitting}
               className="w-full cursor-pointer bg-[#086ACE] text-white hover:bg-[#0655a4]"
             >
-              {isPending ? (
-                <>
-                  <Loader className="animate-spin" /> Sending...
-                </>
-              ) : (
-                ' Send Invite'
-              )}
+              {isSubmitting ? 'Sending...' : 'Send Invite'}
             </Button>
           </div>
           <div>

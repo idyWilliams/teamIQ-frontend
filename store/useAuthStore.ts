@@ -16,7 +16,7 @@ interface AuthState {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
-
+  hasOnboarding: boolean;
   authorize: (data: { user: User; token: string }) => void;
   logout: (showToast?: boolean) => void;
   updateUser: (data: Partial<User>) => void;
@@ -29,6 +29,7 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       isAuthenticated: false,
+      hasOnboarding: false,
 
       authorize: ({ user, token }) => {
         set({
@@ -53,7 +54,7 @@ export const useAuthStore = create<AuthState>()(
       validateToken: async () => {
         const token = get().token;
 
-        console.log(token, 'TOKEN IN STORE');
+        // console.log(token, 'TOKEN IN STORE');
 
         if (!token) return get().logout();
 
