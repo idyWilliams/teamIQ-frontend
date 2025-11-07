@@ -20,6 +20,7 @@ import {
 } from '@/services/hooks/useProject';
 import { toast } from 'sonner';
 import { useProjectStore } from '@/store/useProjectstore';
+import { Loader } from 'lucide-react';
 
 // ✅ SIMPLE INTERFACE - No Yup schema to avoid type conflicts
 interface ConnectionToolFormData {
@@ -467,7 +468,13 @@ const ConnectionTool = ({
             type="submit"
             disabled={updateProjectStep4.isPending}
           >
-            {updateProjectStep4.isPending ? 'Saving...' : 'Next'}
+            {updateProjectStep4.isPending ? (
+              <div className="flex items-center gap-2">
+                <Loader className="animate-spin" />
+              </div>
+            ) : (
+              'Next'
+            )}
           </Button>
         )}
       </form>

@@ -42,6 +42,10 @@ import {
 import { useCreateProjectStep1 } from '@/services/hooks/useProject';
 import { toast } from 'sonner';
 import { useProjectStore } from '@/store/useProjectstore';
+import {
+  useOrganizationUsers,
+  type User as ApiUser,
+} from '@/services/hooks/useUsers'; // Add this import
 
 // dummy data for stack selection
 const frameworks = [
@@ -69,7 +73,7 @@ interface ProjectDetailsProps {
     projectId: number;
     projectData: any;
     step1Data: any;
-  }) => void; // ✅ Update this
+  }) => void;
   hideButton?: boolean;
   defaultValues?: {
     projectName: string;
@@ -105,14 +109,19 @@ const NewProjectDetails = ({
 
   // Project lead states
   const [projectLead, setProjectLead] = useState('');
-  const [projectLeadId, setProjectLeadId] = useState<number>(1);
+  const [projectLeadId, setProjectLeadId] = useState<number | null>(null);
   const [isReviewMode, setIsReviewMode] = useState(false);
+
+  const {
+    data: users,
+    isLoading: usersLoading,
+    error: usersError,
+  } = useOrganizationUsers();
 
   const setStep1Data = useProjectStore(state => state.setStep1Data);
 
   // Fn for Handling File Upload
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
-    // Don't allow file changes in review mode
     if (isReviewMode) return;
 
     const file = e.target.files?.[0];
@@ -128,7 +137,6 @@ const NewProjectDetails = ({
 
   // Fn for Handling Docs Upload
   function handleDocUpload(e: ChangeEvent<HTMLInputElement>) {
-    // Don't allow doc changes in review mode
     if (isReviewMode) return;
 
     const files = e.target.files;
@@ -147,7 +155,6 @@ const NewProjectDetails = ({
 
   // Delete doc fn
   function deleteDoc(idx: number) {
-    // Don't allow doc deletion in review mode
     if (isReviewMode) return;
 
     const updatedDocs = docs.filter((_, index) => index !== idx);
@@ -196,7 +203,6 @@ const NewProjectDetails = ({
     visibility: yup.boolean().required('this is field is required'),
   });
 
-  // setting up React Hook Form
   const {
     register,
     control,
@@ -231,15 +237,36 @@ const NewProjectDetails = ({
 
   // Set project lead from default values
   useEffect(() => {
-    if (defaultValues?.projectLead) {
-      setProjectLead(defaultValues.projectLead);
+    if (defaultValues?.projectLeadId && users) {
+      const user = users.find(u => u.id === defaultValues.projectLeadId);
+      if (user) {
+        const userName = `${user.first_name} ${user.last_name}`.trim();
+        setProjectLead(userName);
+        setProjectLeadId(user.id);
+      }
     }
-    if (defaultValues?.projectLeadId) {
-      setProjectLeadId(defaultValues.projectLeadId);
-    }
-  }, [defaultValues]);
+  }, [defaultValues, users]);
 
-  // In your NewProjectDetails component - update the onSuccess handler
+  const handleProjectLeadChange = (userId: string) => {
+    if (isReviewMode) return;
+
+    const user = users?.find(u => u.id.toString() === userId);
+    if (user) {
+      const userName = `${user.first_name} ${user.last_name}`.trim();
+      setProjectLead(userName);
+      setProjectLeadId(user.id);
+    }
+  };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(part => part[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   const handleFormSubmit = async (formData: FormValues) => {
     console.log('📝 FORM DATA RECEIVED:', formData);
 
@@ -247,7 +274,7 @@ const NewProjectDetails = ({
     if (isReviewMode) {
       if (onSubmit) {
         onSubmit({
-          projectId: 0, // Use appropriate value for review mode
+          projectId: 0,
           projectData: {},
           step1Data: formData,
         });
@@ -255,10 +282,21 @@ const NewProjectDetails = ({
       return;
     }
 
+    if (!projectLeadId) {
+      toast.error('Please select a project lead');
+      return;
+    }
+
+    const selectedUser = users?.find(u => u.id === projectLeadId);
+    const projectLeadName = selectedUser
+      ? `${selectedUser.first_name} ${selectedUser.last_name}`.trim()
+      : 'Project Lead';
+
     const apiData = {
       name: formData.projectName,
       description: formData.description,
       project_lead_id: projectLeadId,
+      project_lead_name: projectLeadName,
       stacks: formData.stack || [],
       start_date: formData.startDate?.toISOString() || new Date().toISOString(),
       end_date: formData.endDate?.toISOString() || new Date().toISOString(),
@@ -275,7 +313,6 @@ const NewProjectDetails = ({
       onSuccess: responseData => {
         console.log('Project creation successful:', responseData);
 
-        // ✅ EXTRACT PROJECT ID FROM RESPONSE
         const projectId = responseData.data.project_id;
         const projectData = responseData.data.project;
 
@@ -283,7 +320,6 @@ const NewProjectDetails = ({
 
         toast.success('Project created successfully!');
 
-        //  PASS PROJECT ID TO PARENT
         if (onSubmit) {
           onSubmit({
             projectId: projectId,
@@ -333,7 +369,6 @@ const NewProjectDetails = ({
     if (defaultValues) {
       console.log('🔄 Setting default values:', defaultValues);
 
-      // Set form values
       setValue('projectName', defaultValues.projectName);
       setValue('description', defaultValues.description);
       setValue('stack', defaultValues.stack);
@@ -341,7 +376,6 @@ const NewProjectDetails = ({
       setValue('endDate', defaultValues.endDate);
       setValue('visibility', defaultValues.visibility);
 
-      // Set component state
       setStacks(defaultValues.stack);
       setStartMonthValue(defaultValues.startDate);
       setEndMonthValue(defaultValues.endDate);
@@ -355,7 +389,6 @@ const NewProjectDetails = ({
 
   return (
     <div className="w-full">
-      {/* <StepHeader projectTitle="Project Details" /> */}
       <form
         onSubmit={handleSubmit(handleFormSubmit)}
         className="mt-[28px] flex max-h-[100%] flex-col gap-[24px] overflow-y-auto px-2 text-neutral-800"
@@ -429,36 +462,53 @@ const NewProjectDetails = ({
               Assign Project Lead
             </Label>
 
-            <Select
-              onValueChange={value => {
-                if (isReviewMode) return;
-                setProjectLead(value);
-                const leadIdMap = {
-                  Sifan: 1,
-                  George: 2,
-                  Omomowo: 3,
-                  Faith: 4,
-                };
-                setProjectLeadId(
-                  leadIdMap[value as keyof typeof leadIdMap] || 59
-                );
-              }}
-              value={projectLead}
-              disabled={isReviewMode}
-            >
-              <SelectTrigger className="h-[40px] w-[100%] border-0 border-b-[1.5px] border-[#B3C4D6] bg-neutral-50">
-                <SelectValue placeholder="Select lead" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Team members</SelectLabel>
-                  <SelectItem value="Sifan">Sifan</SelectItem>
-                  <SelectItem value="George">George</SelectItem>
-                  <SelectItem value="Omomowo">Omomowo</SelectItem>
-                  <SelectItem value="Faith">Faith</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            {usersLoading ? (
+              <div className="flex items-center gap-2">
+                <Loader className="h-4 w-4 animate-spin" />
+                <span className="text-sm text-gray-500">Loading users...</span>
+              </div>
+            ) : usersError ? (
+              <div className="text-sm text-red-500">Failed to load users</div>
+            ) : (
+              <Select
+                onValueChange={handleProjectLeadChange}
+                value={projectLeadId?.toString() || ''}
+                disabled={isReviewMode}
+              >
+                <SelectTrigger className="h-[40px] w-[100%] border-0 border-b-[1.5px] border-[#B3C4D6] bg-neutral-50">
+                  <SelectValue placeholder="Select project lead">
+                    {projectLead ? (
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-xs">
+                          {getInitials(projectLead)}
+                        </div>
+                        <span>{projectLead}</span>
+                      </div>
+                    ) : (
+                      'Select project lead'
+                    )}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Team Members</SelectLabel>
+                    {users?.map(user => {
+                      const userName =
+                        `${user.first_name} ${user.last_name}`.trim();
+                      return (
+                        <SelectItem key={user.id} value={user.id.toString()}>
+                          <div className="flex items-center gap-2">
+                            <div className="flex flex-col">
+                              <span className="text-sm">{userName}</span>
+                            </div>
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            )}
           </div>
 
           <div className="grid w-full max-w-[48%] gap-[10px]">
@@ -704,7 +754,7 @@ const NewProjectDetails = ({
           <Button
             type="submit"
             variant={'outline'}
-            disabled={createProjectMutation.isPending}
+            disabled={createProjectMutation.isPending || !projectLeadId}
             className="h-[60px] cursor-pointer bg-[#086ACE] text-[16px] text-gray-50 hover:bg-[#8EA8C2] hover:text-gray-50 disabled:cursor-not-allowed disabled:bg-gray-400"
           >
             {createProjectMutation.isPending ? (

@@ -5,6 +5,7 @@ interface Step1Data {
   name: string;
   description: string;
   project_lead_id: number;
+  project_lead_name: string;
   stacks: string[];
   start_date: string;
   end_date: string;
