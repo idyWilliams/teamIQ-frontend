@@ -12,9 +12,10 @@ import VersionControlSetup from '../stepper-forms/version-control-setup';
 
 interface StepThreeProps {
   next: () => void;
+  projectId?: number;
 }
 
-const StepThree = ({ next }: StepThreeProps) => {
+const StepThree = ({ next, projectId }: StepThreeProps) => {
   return (
     <div className="w-full">
       <Accordion
@@ -39,7 +40,11 @@ const StepThree = ({ next }: StepThreeProps) => {
           </AccordionTrigger>
 
           <AccordionContent>
-            <VersionControlSetup onSubmit={next} hideButton={false} />
+            <VersionControlSetup
+              onSubmit={next}
+              hideButton={false}
+              projectId={projectId}
+            />
           </AccordionContent>
         </AccordionItem>
       </Accordion>

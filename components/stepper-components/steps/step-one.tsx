@@ -1,3 +1,4 @@
+// In your StepOne component
 'use client';
 import React, { useState } from 'react';
 import {
@@ -11,7 +12,7 @@ import RightArrow from '@/components/icons/RightArrow';
 import NewProjectDetails from '../stepper-forms/project-details';
 
 interface StepOneProps {
-  next: () => void;
+  next: (projectData: { projectId: number; projectData: any }) => void; // ✅ Update this
 }
 
 const StepOne = ({ next }: StepOneProps) => {
@@ -37,7 +38,11 @@ const StepOne = ({ next }: StepOneProps) => {
           </AccordionTrigger>
 
           <AccordionContent>
-            <NewProjectDetails onSubmit={next} hideButton={false} />
+            {/* ✅ Pass the updated handler */}
+            <NewProjectDetails
+              onSubmit={result => next(result)}
+              hideButton={false}
+            />
           </AccordionContent>
         </AccordionItem>
       </Accordion>

@@ -11,17 +11,17 @@ const api = {
     callbackGoogle: '/auth/callback/google',
     passwordReset: '/auth/password-reset',
     confirmPasswordReset: '/auth/password-reset/confirm',
-    
   },
 
   users: {
-    byId: (userId: number) => `/users/${userId}`,
+    byId: (userId: number) => `/users/users/${userId}`,
+    organizationUsers: '/users/organization/users',
   },
 
   organizations: {
     byId: (orgId: number) => `/organizations/organizations/${orgId}`,
     signup: '/organizations/signup',
-    onboardingComplete: '/organizations/onboarding-complete'
+    onboardingComplete: '/organizations/onboarding-complete',
   },
 
   userInvitation: {
