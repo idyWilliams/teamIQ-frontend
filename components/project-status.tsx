@@ -1,6 +1,7 @@
 import { Dot } from 'lucide-react';
 import ActiveBlockers from './active-blockers';
 import { activeBlockers } from '@/constants';
+import OrganizationalDetails from './organization-dashboard-components/organizationalOnboarding';
 
 const Datas = [
   {
@@ -32,7 +33,7 @@ const Datas = [
 const ProjectStatus = () => {
   return (
     <>
-      <div className="flex justify-between gap-4 space-y-6 p-4">
+      {/* <div className="flex justify-between gap-4 space-y-6 p-4">
         {' '}
         <div className="w-[65%] grow">
           <div className="mb-3 flex justify-between">
@@ -69,7 +70,8 @@ const ProjectStatus = () => {
           </div>
         </div>
         <ActiveBlockers blockers={activeBlockers} />
-      </div>
+      </div> */}
+       <div><OrganizationalDetails /></div>
     </>
   );
 };

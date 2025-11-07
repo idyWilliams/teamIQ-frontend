@@ -11,6 +11,7 @@ const api = {
     callbackGoogle: '/auth/callback/google',
     passwordReset: '/auth/password-reset',
     confirmPasswordReset: '/auth/password-reset/confirm',
+    
   },
 
   users: {
@@ -20,6 +21,7 @@ const api = {
   organizations: {
     byId: (orgId: number) => `/organizations/organizations/${orgId}`,
     signup: '/organizations/signup',
+    onboardingComplete: '/organizations/onboarding-complete'
   },
 
   userInvitation: {

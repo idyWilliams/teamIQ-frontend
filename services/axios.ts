@@ -92,7 +92,7 @@ axiosInstance.interceptors.response.use(
       _retry?: boolean;
     };
 
-    // handle 401 unauthorised wgen token expired or invalid
+    // handle 401 unauthorised when token expired or invalid
     if (err.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
