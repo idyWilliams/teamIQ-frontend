@@ -55,6 +55,7 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
 
   const getStep1DefaultValues = () => {
     if (!projectData.step1) return undefined;
+
     return {
       projectName: projectData.step1.name,
       description: projectData.step1.description,
@@ -62,11 +63,10 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
       startDate: new Date(projectData.step1.start_date),
       endDate: new Date(projectData.step1.end_date),
       visibility: projectData.step1.is_visible,
-      projectLead: 'Intern',
-      projectLeadId: 1,
+      projectLead: projectData.step1.project_lead_name || 'Project Lead',
+      projectLeadId: projectData.step1.project_lead_id || 1,
     };
   };
-
   const getStep2DefaultValues = () => {
     if (!projectData.step2) return undefined;
     return {
