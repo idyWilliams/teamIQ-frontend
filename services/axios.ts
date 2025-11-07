@@ -1,6 +1,6 @@
 // services/axios.ts
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 
 const axiosInstance = axios.create({
   baseURL:
@@ -56,7 +56,7 @@ const isTokenExpired = (token: string): boolean => {
     const currentTime = Math.floor(Date.now() / 1000);
     return decoded.exp < currentTime;
   } catch {
-    return true; // if we cant decodeconsider it expire
+    return true; // if we cant decode consider it expire
   }
 };
 
