@@ -147,6 +147,8 @@ export default function ProjectsPage() {
     return apiProjects.map(transformProject);
   }, [apiProjects]);
 
+  console.log('projects......', projects);
+
   const columns = useMemo(
     () => [
       columnHelper.accessor('name', {
@@ -333,12 +335,14 @@ export default function ProjectsPage() {
         <h1 className="text-xl font-semibold text-gray-800 sm:text-2xl">
           Projects {projects.length > 0 && `(${projects.length})`}
         </h1>
-        <Button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2"
-        >
-          <Plus size={18} /> New Project
-        </Button>
+        {projects.length > 0 && (
+          <Button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2"
+          >
+            <Plus size={18} /> New Project
+          </Button>
+        )}
       </div>
 
       {projects.length === 0 ? (
