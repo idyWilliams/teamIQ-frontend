@@ -34,23 +34,23 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
 
   const handleCreateProject = () => {
     const finalData = getFinalProjectData();
-    console.log('📤 Final data to be submitted:', finalData);
-
-    createCompleteProject.mutate(finalData, {
-      onSuccess: () => {
-        clearStore();
-        toast.success('Project created successfully!');
-        queryClient.invalidateQueries({ queryKey: ['projects'] });
-        onSubmit();
-      },
-      onError: (error: any) => {
-        const errorMessage =
-          error.response?.data?.detail ||
-          error.response?.data?.message ||
-          'Failed to create project';
-        toast.error(errorMessage);
-      },
-    });
+    console.log('Final data to be submitted:', finalData);
+    onSubmit();
+    // createCompleteProject.mutate(finalData, {
+    //   onSuccess: () => {
+    //     clearStore();
+    //     toast.success('Project created successfully!');
+    //     queryClient.invalidateQueries({ queryKey: ['projects'] });
+    //     onSubmit();
+    //   },
+    //   onError: (error: any) => {
+    //     const errorMessage =
+    //       error.response?.data?.detail ||
+    //       error.response?.data?.message ||
+    //       'Failed to create project';
+    //     toast.error(errorMessage);
+    //   },
+    // });
   };
 
   const getStep1DefaultValues = () => {
@@ -284,14 +284,6 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
       </Accordion>
 
       <div className="mt-8 flex gap-4">
-        <Button
-          variant="outline"
-          className="flex-1"
-          onClick={() => window.history.back()}
-          disabled={createCompleteProject.isPending}
-        >
-          Back
-        </Button>
         <Button
           className="flex-1 cursor-pointer bg-[#086ACE] p-6 text-base font-semibold hover:bg-[#086ACE]/90 disabled:cursor-not-allowed disabled:bg-gray-400"
           onClick={handleCreateProject}
