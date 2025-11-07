@@ -23,6 +23,7 @@ import {
 } from '@/services/hooks/useProject';
 import { toast } from 'sonner';
 import { useProjectStore } from '@/store/useProjectstore';
+import { Loader } from 'lucide-react';
 
 interface ProjectMgmtSetupProps {
   onSubmit: () => void;
@@ -464,7 +465,13 @@ const ProjectMgmtSetup = ({
             (activeMethod === 'OAuth' && !connected)
           }
         >
-          {updateProjectStep2.isPending ? 'Saving...' : 'Next'}
+          {updateProjectStep2.isPending ? (
+            <div className="flex items-center gap-2">
+              <Loader className="animate-spin" />
+            </div>
+          ) : (
+            'Next'
+          )}
         </button>
       )}
     </div>

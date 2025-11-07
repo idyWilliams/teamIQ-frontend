@@ -25,6 +25,7 @@ import {
 } from '@/services/hooks/useProject';
 import { toast } from 'sonner';
 import { useProjectStore } from '@/store/useProjectstore';
+import { Loader } from 'lucide-react';
 
 interface FormValues {
   projectType: string;
@@ -425,7 +426,13 @@ const VersionControlSetup = ({
             }
             type="submit"
           >
-            {updateProjectStep3.isPending ? 'Saving...' : 'Next'}
+            {updateProjectStep3.isPending ? (
+              <div className="flex items-center gap-2">
+                <Loader className="animate-spin" />
+              </div>
+            ) : (
+              'Next'
+            )}
           </Button>
         )}
       </form>

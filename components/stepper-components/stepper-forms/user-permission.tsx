@@ -364,8 +364,7 @@ const UserPermission = ({
           >
             {updateProjectStep5.isPending ? (
               <div className="flex items-center gap-2">
-                <Loader className="h-4 w-4 animate-spin" />
-                Adding Members...
+                <Loader className="animate-spin" />
               </div>
             ) : (
               'Next'
