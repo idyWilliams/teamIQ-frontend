@@ -71,9 +71,21 @@ interface ProjectDetailsProps {
     step1Data: any;
   }) => void; // ✅ Update this
   hideButton?: boolean;
+  defaultValues?: {
+    projectName: string;
+    description: string;
+    stack: string[];
+    startDate: Date;
+    endDate: Date;
+    visibility: boolean;
+  };
 }
 
-const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
+const NewProjectDetails = ({
+  onSubmit,
+  hideButton,
+  defaultValues,
+}: ProjectDetailsProps) => {
   const imgUploadRef = useRef<HTMLInputElement | null>(null);
   const docRef = useRef<HTMLInputElement | null>(null);
   const [preview, setPreview] = useState<string | null>('');
@@ -188,7 +200,19 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
     trigger,
     handleSubmit,
     getValues,
-  } = useForm<FormValues>({ resolver: yupResolver(schema) });
+  } = useForm<FormValues>({
+    resolver: yupResolver(schema),
+    defaultValues: defaultValues
+      ? {
+          projectName: defaultValues.projectName,
+          description: defaultValues.description,
+          stack: defaultValues.stack,
+          startDate: defaultValues.startDate,
+          endDate: defaultValues.endDate,
+          visibility: defaultValues.visibility,
+        }
+      : undefined,
+  });
   const createProjectMutation = useCreateProjectStep1();
 
   // In your NewProjectDetails component - update the onSuccess handler
@@ -198,7 +222,7 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
     const apiData = {
       name: formData.projectName,
       description: formData.description,
-      project_lead_id: 59,
+      project_lead_id: 1,
       stacks: formData.stack || [],
       start_date: formData.startDate?.toISOString() || new Date().toISOString(),
       end_date: formData.endDate?.toISOString() || new Date().toISOString(),
@@ -270,7 +294,26 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
   }, [startMonthValue, endMonthValue, setValue, resetField, trigger]);
 
   useEffect(() => {
-    console.log(stacks);
+    if (defaultValues) {
+      console.log('🔄 Setting default values:', defaultValues);
+
+      // Set form values
+      setValue('projectName', defaultValues.projectName);
+      setValue('description', defaultValues.description);
+      setValue('stack', defaultValues.stack);
+      setValue('startDate', defaultValues.startDate);
+      setValue('endDate', defaultValues.endDate);
+      setValue('visibility', defaultValues.visibility);
+
+      // Set component state
+      setStacks(defaultValues.stack);
+      setStartMonthValue(defaultValues.startDate);
+      setEndMonthValue(defaultValues.endDate);
+    }
+  }, [defaultValues, setValue]);
+
+  useEffect(() => {
+    console.log('Current stacks:', stacks);
     setValue('stack', stacks, { shouldValidate: true });
   }, [stacks, setValue]);
 
@@ -326,6 +369,11 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
                 fill={true}
                 className="object-cover"
               />
+            ) : defaultValues ? (
+              <div className="text-center">
+                <span className="icon-[et--check-circle] size-7 text-green-500"></span>
+                <p className="text-[14px] text-green-600">Image uploaded</p>
+              </div>
             ) : (
               <>
                 <span className="icon-[et--upload] size-7"></span>
@@ -333,11 +381,6 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
               </>
             )}
           </div>
-          {errors?.image && (
-            <span className="text-iq-err-300 pl-2 text-[13px]">
-              {errors?.image?.message}
-            </span>
-          )}
         </div>
 
         {/*Form Row 1 */}
@@ -515,11 +558,8 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
           </Label>
           <InputGroup className="justify-between overflow-hidden border-0 border-b-[1.5px] border-[#B3C4D6] bg-neutral-50 !ring-0 focus:border-[#B3C4D6]">
             <div className="flex h-full w-full max-w-[90%] items-center gap-2 overflow-x-auto px-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {docs.length < 1 ? (
-                <span className="text-[14px] text-neutral-500">
-                  Upload required documents
-                </span>
-              ) : (
+              {/* Show uploaded documents if any exist */}
+              {docs.length > 0 ? (
                 docs.map((doc, idx) => (
                   <Badge
                     key={idx}
@@ -540,6 +580,16 @@ const NewProjectDetails = ({ onSubmit, hideButton }: ProjectDetailsProps) => {
                     ></span>
                   </Badge>
                 ))
+              ) : /* Show "uploaded" message when in review mode with defaultValues */
+              defaultValues ? (
+                <span className="text-[14px] text-green-600">
+                  Documents uploaded
+                </span>
+              ) : (
+                /* Show upload prompt for new forms */
+                <span className="text-[14px] text-neutral-500">
+                  Upload required documents
+                </span>
               )}
             </div>
             <InputGroupAddon align="inline-end">
