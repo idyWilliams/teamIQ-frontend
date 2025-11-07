@@ -150,6 +150,7 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
           <div className="mt-6 flex w-full flex-col gap-2">
             <Button
               type="submit"
+              disabled={isSubmitting}
               className="w-full cursor-pointer bg-[#086ACE] text-white hover:bg-[#0655a4]"
             >
               {isSubmitting ? 'Sending...' : 'Send Invite'}
