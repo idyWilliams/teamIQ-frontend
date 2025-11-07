@@ -198,7 +198,7 @@ export default function ProjectsPage() {
               height={28}
               className="rounded-full border border-gray-300 object-cover"
             />
-            <span className="font-medium text-gray-700">{info.getValue()}</span>
+            {/* <span className="font-medium text-gray-700">{info.getValue()}</span> */}
           </div>
         ),
       }),
