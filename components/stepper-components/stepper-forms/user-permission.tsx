@@ -275,40 +275,9 @@ const UserPermission = ({
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <div className="mt-2 max-w-[440px]">
         <p className="text-normal text-base">
-          {isReviewMode
-            ? 'Review the team members and their roles for this project.'
-            : 'Add team members to your project and assign roles. The project lead will have administrative permissions.'}
+          Add team members to your project and assign roles
         </p>
       </div>
-
-      {/* Summary in review mode */}
-      {isReviewMode && (
-        <div className="mt-6 rounded-lg bg-blue-50 p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-semibold text-blue-900">Team Summary</h3>
-              <p className="text-sm text-blue-700">
-                {projectLeadInfo && (
-                  <span>Project Lead: {projectLeadInfo.name}</span>
-                )}
-                {selectedMembersCount > 0 && (
-                  <span>
-                    {' '}
-                    • {selectedMembersCount} team member
-                    {selectedMembersCount !== 1 ? 's' : ''}
-                  </span>
-                )}
-              </p>
-            </div>
-            <div className="text-green-600">
-              <span className="flex items-center gap-1 text-sm">
-                <Check className="h-4 w-4" />
-                Configured
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Search - Only show in form mode */}
       {!isReviewMode && (
