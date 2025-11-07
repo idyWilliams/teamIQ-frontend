@@ -78,6 +78,8 @@ interface ProjectDetailsProps {
     startDate: Date;
     endDate: Date;
     visibility: boolean;
+    projectLead?: string;
+    projectLeadId?: number;
   };
 }
 
@@ -101,14 +103,18 @@ const NewProjectDetails = ({
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
-  // other not required form variables
+  // Project lead states
   const [projectLead, setProjectLead] = useState('');
   const [projectLeadId, setProjectLeadId] = useState<number>(1);
+  const [isReviewMode, setIsReviewMode] = useState(false);
 
   const setStep1Data = useProjectStore(state => state.setStep1Data);
 
   // Fn for Handling File Upload
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+    // Don't allow file changes in review mode
+    if (isReviewMode) return;
+
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -122,6 +128,9 @@ const NewProjectDetails = ({
 
   // Fn for Handling Docs Upload
   function handleDocUpload(e: ChangeEvent<HTMLInputElement>) {
+    // Don't allow doc changes in review mode
+    if (isReviewMode) return;
+
     const files = e.target.files;
     if (!files || files.length < 1) return;
     setDocsErr(false);
@@ -138,15 +147,12 @@ const NewProjectDetails = ({
 
   // Delete doc fn
   function deleteDoc(idx: number) {
+    // Don't allow doc deletion in review mode
+    if (isReviewMode) return;
+
     const updatedDocs = docs.filter((_, index) => index !== idx);
     setDocs(updatedDocs);
   }
-
-  // Submit Function
-  // function onSubmit(data: FormValues) {
-  //   const formData = { ...data, projectLead, docs };
-  //   console.log({ formData });
-  // }
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -201,7 +207,7 @@ const NewProjectDetails = ({
     handleSubmit,
     getValues,
   } = useForm<FormValues>({
-    resolver: yupResolver(schema),
+    resolver: isReviewMode ? undefined : yupResolver(schema),
     defaultValues: defaultValues
       ? {
           projectName: defaultValues.projectName,
@@ -215,14 +221,44 @@ const NewProjectDetails = ({
   });
   const createProjectMutation = useCreateProjectStep1();
 
+  // Check if we're in review mode
+  useEffect(() => {
+    if (defaultValues) {
+      setIsReviewMode(true);
+      console.log('🔄 Setting default values:', defaultValues);
+    }
+  }, [defaultValues]);
+
+  // Set project lead from default values
+  useEffect(() => {
+    if (defaultValues?.projectLead) {
+      setProjectLead(defaultValues.projectLead);
+    }
+    if (defaultValues?.projectLeadId) {
+      setProjectLeadId(defaultValues.projectLeadId);
+    }
+  }, [defaultValues]);
+
   // In your NewProjectDetails component - update the onSuccess handler
   const handleFormSubmit = async (formData: FormValues) => {
     console.log('📝 FORM DATA RECEIVED:', formData);
 
+    // Skip API call in review mode
+    if (isReviewMode) {
+      if (onSubmit) {
+        onSubmit({
+          projectId: 0, // Use appropriate value for review mode
+          projectData: {},
+          step1Data: formData,
+        });
+      }
+      return;
+    }
+
     const apiData = {
       name: formData.projectName,
       description: formData.description,
-      project_lead_id: 1,
+      project_lead_id: projectLeadId,
       stacks: formData.stack || [],
       start_date: formData.startDate?.toISOString() || new Date().toISOString(),
       end_date: formData.endDate?.toISOString() || new Date().toISOString(),
@@ -321,7 +357,6 @@ const NewProjectDetails = ({
     <div className="w-full">
       {/* <StepHeader projectTitle="Project Details" /> */}
       <form
-        // onSubmit={handleSubmit(data => endMonthValue && onSubmit(data))}
         onSubmit={handleSubmit(handleFormSubmit)}
         className="mt-[28px] flex max-h-[100%] flex-col gap-[24px] overflow-y-auto px-2 text-neutral-800"
       >
@@ -331,6 +366,7 @@ const NewProjectDetails = ({
             className="border-none p-2 !text-[26px] font-bold shadow-none !ring-0 placeholder:text-[26px]"
             placeholder="Project Name"
             {...register('projectName')}
+            disabled={isReviewMode}
           />
           {errors?.projectName && (
             <span className="text-iq-err-300 pl-2 text-[13px]">
@@ -343,6 +379,7 @@ const NewProjectDetails = ({
             className="resize-none border-none bg-neutral-50 text-[14px] shadow-none !ring-0 placeholder:text-neutral-500"
             placeholder="Description..."
             {...register('description')}
+            disabled={isReviewMode}
           />
           {errors?.description && (
             <span className="text-iq-err-300 pl-2 text-[13px]">
@@ -359,8 +396,10 @@ const NewProjectDetails = ({
             onChange={e => handleFileChange(e)}
           />
           <div
-            className="relative flex h-[137px] cursor-pointer flex-col items-center justify-center overflow-hidden rounded-[8px] bg-neutral-50"
-            onClick={() => imgUploadRef?.current?.click?.()}
+            className={`relative flex h-[137px] flex-col items-center justify-center overflow-hidden rounded-[8px] bg-neutral-50 ${
+              isReviewMode ? '' : 'cursor-pointer'
+            }`}
+            onClick={() => !isReviewMode && imgUploadRef?.current?.click?.()}
           >
             {preview ? (
               <Image
@@ -392,6 +431,7 @@ const NewProjectDetails = ({
 
             <Select
               onValueChange={value => {
+                if (isReviewMode) return;
                 setProjectLead(value);
                 const leadIdMap = {
                   Sifan: 1,
@@ -404,6 +444,7 @@ const NewProjectDetails = ({
                 );
               }}
               value={projectLead}
+              disabled={isReviewMode}
             >
               <SelectTrigger className="h-[40px] w-[100%] border-0 border-b-[1.5px] border-[#B3C4D6] bg-neutral-50">
                 <SelectValue placeholder="Select lead" />
@@ -432,51 +473,56 @@ const NewProjectDetails = ({
                       ? 'Search required stack'
                       : stacks.join(', ')}
                   </div>
-                  <InputGroupAddon align="inline-end">
-                    <SearchIcon />
-                  </InputGroupAddon>
+                  {!isReviewMode && (
+                    <InputGroupAddon align="inline-end">
+                      <SearchIcon />
+                    </InputGroupAddon>
+                  )}
                 </InputGroup>
               </PopoverTrigger>
-              <PopoverContent className="w-[200px] p-0">
-                <Command>
-                  <CommandInput placeholder="Search framework..." />
-                  <CommandList>
-                    <CommandEmpty>No results found.</CommandEmpty>
-                    <CommandGroup>
-                      {frameworks.map(framework => (
-                        <CommandItem
-                          key={framework.value}
-                          value={framework.value}
-                          onSelect={currentStack => {
-                            const alreadExists = stacks.includes(currentStack);
-                            if (!alreadExists) {
-                              const newValues = [...stacks, currentStack];
-                              setStacks(newValues);
+              {!isReviewMode && (
+                <PopoverContent className="w-[200px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Search framework..." />
+                    <CommandList>
+                      <CommandEmpty>No results found.</CommandEmpty>
+                      <CommandGroup>
+                        {frameworks.map(framework => (
+                          <CommandItem
+                            key={framework.value}
+                            value={framework.value}
+                            onSelect={currentStack => {
+                              const alreadExists =
+                                stacks.includes(currentStack);
+                              if (!alreadExists) {
+                                const newValues = [...stacks, currentStack];
+                                setStacks(newValues);
+                                setOpen(false);
+                                return;
+                              }
+                              const filteredValues = stacks.filter(
+                                stack => stack !== currentStack
+                              );
+                              setStacks(filteredValues);
                               setOpen(false);
-                              return;
-                            }
-                            const filteredValues = stacks.filter(
-                              stack => stack !== currentStack
-                            );
-                            setStacks(filteredValues);
-                            setOpen(false);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              'mr-2 h-4 w-4',
-                              stacks.includes(framework.value)
-                                ? 'opacity-100'
-                                : 'opacity-0'
-                            )}
-                          />
-                          {framework.label}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                'mr-2 h-4 w-4',
+                                stacks.includes(framework.value)
+                                  ? 'opacity-100'
+                                  : 'opacity-0'
+                              )}
+                            />
+                            {framework.label}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              )}
             </Popover>
             {errors?.stack && (
               <span className="text-iq-err-300 pl-2 text-[13px]">
@@ -506,13 +552,15 @@ const NewProjectDetails = ({
                   format(startMonthValue, 'dd MMM, yyyy')
                 }
               />
-              <InputGroupAddon align="inline-end">
-                <DatePicker
-                  setValue={setStartMonthValue}
-                  open={showStartDatePicker}
-                  setOpen={setShowStartDatePicker}
-                />
-              </InputGroupAddon>
+              {!isReviewMode && (
+                <InputGroupAddon align="inline-end">
+                  <DatePicker
+                    setValue={setStartMonthValue}
+                    open={showStartDatePicker}
+                    setOpen={setShowStartDatePicker}
+                  />
+                </InputGroupAddon>
+              )}
             </InputGroup>
             {errors?.startDate && (
               <span className="text-iq-err-300 pl-2 text-[13px]">
@@ -535,13 +583,15 @@ const NewProjectDetails = ({
                   endMonthValue ? format(endMonthValue, 'dd MMM, yyyy') : ''
                 }
               />
-              <InputGroupAddon align="inline-end">
-                <DatePicker
-                  setValue={setEndMonthValue}
-                  open={showEndDatePicker}
-                  setOpen={setShowEndDatePicker}
-                />
-              </InputGroupAddon>
+              {!isReviewMode && (
+                <InputGroupAddon align="inline-end">
+                  <DatePicker
+                    setValue={setEndMonthValue}
+                    open={showEndDatePicker}
+                    setOpen={setShowEndDatePicker}
+                  />
+                </InputGroupAddon>
+              )}
             </InputGroup>
             {errors?.endDate && (
               <span className="text-iq-err-300 pl-2 text-[13px]">
@@ -574,10 +624,12 @@ const NewProjectDetails = ({
                           doc?.name?.length
                         )
                       : doc?.name}
-                    <span
-                      className="icon-[carbon--close-filled] absolute top-[-6px] right-[-6px] flex h-3 w-3 cursor-pointer items-center justify-center rounded-full bg-red-500 text-white"
-                      onClick={() => deleteDoc(idx)}
-                    ></span>
+                    {!isReviewMode && (
+                      <span
+                        className="icon-[carbon--close-filled] absolute top-[-6px] right-[-6px] flex h-3 w-3 cursor-pointer items-center justify-center rounded-full bg-red-500 text-white"
+                        onClick={() => deleteDoc(idx)}
+                      ></span>
+                    )}
                   </Badge>
                 ))
               ) : /* Show "uploaded" message when in review mode with defaultValues */
@@ -592,14 +644,16 @@ const NewProjectDetails = ({
                 </span>
               )}
             </div>
-            <InputGroupAddon align="inline-end">
-              <span
-                className="text-iq-500 cursor-pointer"
-                onClick={() => docRef?.current?.click?.()}
-              >
-                Upload
-              </span>
-            </InputGroupAddon>
+            {!isReviewMode && (
+              <InputGroupAddon align="inline-end">
+                <span
+                  className="text-iq-500 cursor-pointer"
+                  onClick={() => docRef?.current?.click?.()}
+                >
+                  Upload
+                </span>
+              </InputGroupAddon>
+            )}
           </InputGroup>
 
           <input
@@ -633,30 +687,24 @@ const NewProjectDetails = ({
               <Switch
                 id="project_visible"
                 checked={field.value}
-                onCheckedChange={checked => field.onChange(checked)}
-                className="cursor-pointer data-[state=checked]:bg-[#1581FE]"
+                onCheckedChange={checked =>
+                  !isReviewMode && field.onChange(checked)
+                }
+                className={`cursor-pointer data-[state=checked]:bg-[#1581FE] ${
+                  isReviewMode ? 'cursor-default opacity-50' : ''
+                }`}
+                disabled={isReviewMode}
               />
             )}
           />
         </div>
-        {/* <Button
-          type="button"
-          variant="outline"
-          onClick={() => {
-            const values = getValues();
-            console.log('🔍 CURRENT FORM VALUES:', values);
-            console.log('🔍 CURRENT DOCS:', docs);
-            console.log('🔍 CURRENT STACKS:', stacks);
-          }}
-        >
-          Debug Form State
-        </Button> */}
 
-        {!hideButton && (
+        {/* Submit Button - Only show when not in review mode */}
+        {!hideButton && !isReviewMode && (
           <Button
-            type="submit" // Make sure it's type="submit"
+            type="submit"
             variant={'outline'}
-            disabled={createProjectMutation.isPending} // Disable during loading
+            disabled={createProjectMutation.isPending}
             className="h-[60px] cursor-pointer bg-[#086ACE] text-[16px] text-gray-50 hover:bg-[#8EA8C2] hover:text-gray-50 disabled:cursor-not-allowed disabled:bg-gray-400"
           >
             {createProjectMutation.isPending ? (
