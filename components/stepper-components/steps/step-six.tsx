@@ -19,6 +19,7 @@ import { useProjectStore } from '@/store/useProjectstore';
 import { useCreateCompleteProject } from '@/services/hooks/useProject';
 import { Loader } from 'lucide-react';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface StepSixProps {
   onSubmit: () => void;
@@ -27,6 +28,7 @@ interface StepSixProps {
 const StepSix = ({ onSubmit }: StepSixProps) => {
   const { getProjectData, getFinalProjectData, clearStore } = useProjectStore();
   const projectData = getProjectData();
+  const queryClient = useQueryClient();
 
   const createCompleteProject = useCreateCompleteProject();
 
@@ -38,6 +40,7 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
       onSuccess: () => {
         clearStore();
         toast.success('Project created successfully!');
+        queryClient.invalidateQueries({ queryKey: ['projects'] });
         onSubmit();
       },
       onError: (error: any) => {
