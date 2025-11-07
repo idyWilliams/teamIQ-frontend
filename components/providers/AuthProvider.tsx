@@ -21,7 +21,11 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     const token = tokenStorage.get();
     // console.log(isAuthenticate, token, 'FROM Providers');
 
-    if ((pathname === '/member' || pathname === '/organization') && !token) {
+    if (
+      (pathname.startsWith('/member') ||
+        pathname.startsWith('/organization')) &&
+      !token
+    ) {
       router.push('/login');
       return;
     }
