@@ -10,12 +10,15 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import DownArrow from '@/components/icons/DownArrow';
+import ConnectionTool from '../stepper-forms/connection-tool';
+import UserPermission from '../stepper-forms/user-permission';
+import NewProjectDetails from '../stepper-forms/project-details';
+import ProjectMgmtSetup from '../stepper-forms/project-mgmt-setup';
+import VersionControlSetup from '../stepper-forms/version-control-setup';
 import { useProjectStore } from '@/store/useProjectstore';
 import { useCreateCompleteProject } from '@/services/hooks/useProject';
+import { Loader } from 'lucide-react';
 import { toast } from 'sonner';
-import { Loader, CheckCircle, AlertCircle } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface StepSixProps {
   onSubmit: () => void;
@@ -34,26 +37,102 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
     createCompleteProject.mutate(finalData, {
       onSuccess: () => {
         clearStore();
+        toast.success('Project created successfully!');
         onSubmit();
+      },
+      onError: (error: any) => {
+        const errorMessage =
+          error.response?.data?.detail ||
+          error.response?.data?.message ||
+          'Failed to create project';
+        toast.error(errorMessage);
       },
     });
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
+  // Transform stored data for each form component
+  const getStep1DefaultValues = () => {
+    if (!projectData.step1) return undefined;
+    return {
+      projectName: projectData.step1.name,
+      description: projectData.step1.description,
+      stack: projectData.step1.stacks,
+      startDate: new Date(projectData.step1.start_date),
+      endDate: new Date(projectData.step1.end_date),
+      visibility: projectData.step1.is_visible,
+      // Note: Files (image and documents) would need separate handling
+    };
   };
 
-  const getIntegrationMethodDisplay = (method: string) => {
-    const methodMap: { [key: string]: string } = {
-      oauth2: 'OAuth 2.0',
-      api_key: 'API Key',
-      webhook: 'Webhook',
+  // In your StepSix component
+  const getStep2DefaultValues = () => {
+    if (!projectData.step2) return undefined;
+    return {
+      app: projectData.step2.pm_tool,
+      integrationMethod:
+        projectData.step2.pm_integration_method === 'oauth2' ? 'OAuth' : 'Api',
+      existingLink: projectData.step2.pm_project_id,
+      token: projectData.step2.pm_api_key || projectData.step2.pm_access_token,
     };
-    return methodMap[method] || method;
+  };
+
+  const getStep3DefaultValues = () => {
+    if (!projectData.step3) return undefined;
+    return {
+      app: projectData.step3.vc_tool,
+      integrationMethod:
+        projectData.step3.vc_integration_method === 'oauth2' ? 'OAuth' : 'Api',
+      assignMapping: projectData.step3.vc_repository_url,
+      token: projectData.step3.vc_api_key || projectData.step3.vc_access_token,
+      permissions: 'read', // Default value
+    };
+  };
+
+  const getStep4DefaultValues = () => {
+    if (!projectData.step4) return undefined;
+    return {
+      app: projectData.step4.comm_tool,
+      integrationMethod:
+        projectData.step4.comm_integration_method === 'oauth2'
+          ? 'oauth'
+          : projectData.step4.comm_integration_method === 'api_key'
+            ? 'api-key'
+            : 'webhook',
+      channelId: projectData.step4.comm_channel_id,
+      accessToken: projectData.step4.comm_api_key,
+      webhookUrl: projectData.step4.comm_webhook_url,
+      postPmtUpdates:
+        projectData.step4.comm_notifications?.pmt_updates || false,
+      postTaskUpdates: false, // Default
+      postDeadlineReminders: false, // Default
+      codeEvents: projectData.step4.comm_notifications?.code_events || false,
+      sentimentMonitoring:
+        projectData.step4.comm_notifications?.sentiment_monitoring || false,
+      customCommands:
+        projectData.step4.comm_notifications?.custom_commands || false,
+    };
+  };
+
+  // In your StepSix component
+  const getStep5DefaultValues = () => {
+    if (!projectData.step5) return undefined;
+
+    // Transform members data for the UserPermission component
+    const selectedMembers: number[] = [];
+    let projectLead: number | null = null;
+
+    projectData.step5.members.forEach(member => {
+      if (member.role === 'lead') {
+        projectLead = member.user_id;
+      } else {
+        selectedMembers.push(member.user_id);
+      }
+    });
+
+    return {
+      selectedMembers,
+      projectLead,
+    };
   };
 
   return (
@@ -61,223 +140,154 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900">Project Summary</h2>
         <p className="mt-2 text-gray-600">
-          Review your project configuration before creating the project.
+          Review all the information you have provided. You can expand each
+          section to see the details.
         </p>
       </div>
 
-      {/* Summary Cards */}
-      <div className="mb-8 grid gap-6">
-        {/* Project Details Card */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Project Details
-            </CardTitle>
-            {projectData.step1 ? (
-              <CheckCircle className="h-4 w-4 text-green-500" />
-            ) : (
-              <AlertCircle className="h-4 w-4 text-yellow-500" />
+      <Accordion
+        type="single"
+        collapsible
+        className="w-full"
+        defaultValue="project-details"
+      >
+        <AccordionItem value="project-details">
+          <AccordionTrigger className="group flex cursor-pointer items-center gap-2 hover:no-underline [&_.lucide-chevron-down]:hidden [&>svg]:!rotate-0">
+            <RightArrow
+              size="20"
+              className="block group-data-[state=open]:hidden"
+            />
+            <DownArrow
+              size="20"
+              className="hidden group-data-[state=open]:block"
+            />
+            <p className="flex-1 text-xl font-semibold">Project Details</p>
+            {projectData.step1 && (
+              <span className="text-sm text-green-600">✓ Completed</span>
             )}
-          </CardHeader>
-          <CardContent>
-            {projectData.step1 ? (
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Name:</strong> {projectData.step1.name}
-                </div>
-                <div>
-                  <strong>Description:</strong> {projectData.step1.description}
-                </div>
-                <div>
-                  <strong>Stacks:</strong>{' '}
-                  {projectData.step1.stacks.map(stack => (
-                    <Badge key={stack} variant="secondary" className="mr-1">
-                      {stack}
-                    </Badge>
-                  ))}
-                </div>
-                <div>
-                  <strong>Timeline:</strong>{' '}
-                  {formatDate(projectData.step1.start_date)} to{' '}
-                  {formatDate(projectData.step1.end_date)}
-                </div>
-                <div>
-                  <strong>Visibility:</strong>{' '}
-                  {projectData.step1.is_visible ? 'Public' : 'Private'}
-                </div>
-              </div>
-            ) : (
-              <p className="text-gray-500">No project details provided</p>
-            )}
-          </CardContent>
-        </Card>
+          </AccordionTrigger>
+          <AccordionContent>
+            <NewProjectDetails
+              onSubmit={() => {}}
+              hideButton={true}
+              defaultValues={getStep1DefaultValues()}
+            />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
-        {/* Project Management Tool Card */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Project Management
-            </CardTitle>
-            {projectData.step2 ? (
-              <CheckCircle className="h-4 w-4 text-green-500" />
-            ) : (
-              <AlertCircle className="h-4 w-4 text-yellow-500" />
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="project-management-tool">
+          <AccordionTrigger className="group flex cursor-pointer items-center gap-2 hover:no-underline [&_.lucide-chevron-down]:hidden [&>svg]:!rotate-0">
+            <RightArrow
+              size="20"
+              className="block group-data-[state=open]:hidden"
+            />
+            <DownArrow
+              size="20"
+              className="hidden group-data-[state=open]:block"
+            />
+            <p className="flex-1 text-xl font-semibold">
+              Project Management Tool Setup
+            </p>
+            {projectData.step2 && (
+              <span className="text-sm text-green-600">✓ Completed</span>
             )}
-          </CardHeader>
-          <CardContent>
-            {projectData.step2 ? (
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Tool:</strong> {projectData.step2.pm_tool}
-                </div>
-                <div>
-                  <strong>Method:</strong>{' '}
-                  {getIntegrationMethodDisplay(
-                    projectData.step2.pm_integration_method
-                  )}
-                </div>
-                {projectData.step2.pm_project_id && (
-                  <div>
-                    <strong>Project ID:</strong>{' '}
-                    {projectData.step2.pm_project_id}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <p className="text-gray-500">
-                No project management tool configured
-              </p>
-            )}
-          </CardContent>
-        </Card>
+          </AccordionTrigger>
+          <AccordionContent>
+            <ProjectMgmtSetup
+              onSubmit={() => {}}
+              hideButton={true}
+              defaultValues={getStep2DefaultValues()}
+            />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
-        {/* Version Control Card */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Version Control
-            </CardTitle>
-            {projectData.step3 ? (
-              <CheckCircle className="h-4 w-4 text-green-500" />
-            ) : (
-              <AlertCircle className="h-4 w-4 text-yellow-500" />
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="version-control-setup">
+          <AccordionTrigger className="group flex cursor-pointer items-center gap-2 hover:no-underline [&_.lucide-chevron-down]:hidden [&>svg]:!rotate-0">
+            <RightArrow
+              size="20"
+              className="block group-data-[state=open]:hidden"
+            />
+            <DownArrow
+              size="20"
+              className="hidden group-data-[state=open]:block"
+            />
+            <p className="flex-1 text-xl font-semibold">
+              Version Control Setup
+            </p>
+            {projectData.step3 && (
+              <span className="text-sm text-green-600">✓ Completed</span>
             )}
-          </CardHeader>
-          <CardContent>
-            {projectData.step3 ? (
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Tool:</strong> {projectData.step3.vc_tool}
-                </div>
-                <div>
-                  <strong>Method:</strong>{' '}
-                  {getIntegrationMethodDisplay(
-                    projectData.step3.vc_integration_method
-                  )}
-                </div>
-                {projectData.step3.vc_repository_url && (
-                  <div>
-                    <strong>Repository:</strong>{' '}
-                    {projectData.step3.vc_repository_url}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <p className="text-gray-500">No version control configured</p>
-            )}
-          </CardContent>
-        </Card>
+          </AccordionTrigger>
+          <AccordionContent>
+            <VersionControlSetup
+              onSubmit={() => {}}
+              hideButton={true}
+              defaultValues={getStep3DefaultValues()}
+            />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
-        {/* Communication Tool Card */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Communication</CardTitle>
-            {projectData.step4 ? (
-              <CheckCircle className="h-4 w-4 text-green-500" />
-            ) : (
-              <AlertCircle className="h-4 w-4 text-yellow-500" />
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="communication-tool">
+          <AccordionTrigger className="group flex cursor-pointer items-center gap-2 hover:no-underline [&_.lucide-chevron-down]:hidden [&>svg]:!rotate-0">
+            <RightArrow
+              size="20"
+              className="block group-data-[state=open]:hidden"
+            />
+            <DownArrow
+              size="20"
+              className="hidden group-data-[state=open]:block"
+            />
+            <p className="flex-1 text-xl font-semibold">
+              Communication Tool Setup
+            </p>
+            {projectData.step4 && (
+              <span className="text-sm text-green-600">✓ Completed</span>
             )}
-          </CardHeader>
-          <CardContent>
-            {projectData.step4 ? (
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Tool:</strong> {projectData.step4.comm_tool}
-                </div>
-                <div>
-                  <strong>Method:</strong>{' '}
-                  {getIntegrationMethodDisplay(
-                    projectData.step4.comm_integration_method
-                  )}
-                </div>
-                {projectData.step4.comm_channel_id && (
-                  <div>
-                    <strong>Channel ID:</strong>{' '}
-                    {projectData.step4.comm_channel_id}
-                  </div>
-                )}
-                <div>
-                  <strong>Notifications:</strong>
-                </div>
-                <div className="pl-4">
-                  {projectData.step4.comm_notifications.pmt_updates && (
-                    <div>• PMT Updates</div>
-                  )}
-                  {projectData.step4.comm_notifications.code_events && (
-                    <div>• Code Events</div>
-                  )}
-                  {projectData.step4.comm_notifications
-                    .sentiment_monitoring && <div>• Sentiment Monitoring</div>}
-                  {projectData.step4.comm_notifications.custom_commands && (
-                    <div>• Custom Commands</div>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <p className="text-gray-500">No communication tool configured</p>
-            )}
-          </CardContent>
-        </Card>
+          </AccordionTrigger>
+          <AccordionContent>
+            <ConnectionTool
+              onSubmit={() => {}}
+              hideButton={true}
+              defaultValues={getStep4DefaultValues()}
+            />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
-        {/* Team Members Card */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Team Members</CardTitle>
-            {projectData.step5 ? (
-              <CheckCircle className="h-4 w-4 text-green-500" />
-            ) : (
-              <AlertCircle className="h-4 w-4 text-yellow-500" />
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="user-permission">
+          <AccordionTrigger className="group flex cursor-pointer items-center gap-2 hover:no-underline [&_.lucide-chevron-down]:hidden [&>svg]:!rotate-0">
+            <RightArrow
+              size="20"
+              className="block group-data-[state=open]:hidden"
+            />
+            <DownArrow
+              size="20"
+              className="hidden group-data-[state=open]:block"
+            />
+            <p className="flex-1 text-xl font-semibold">
+              User & Permission Sync
+            </p>
+            {projectData.step5 && (
+              <span className="text-sm text-green-600">✓ Completed</span>
             )}
-          </CardHeader>
-          <CardContent>
-            {projectData.step5 && projectData.step5.members.length > 0 ? (
-              <div className="space-y-2 text-sm">
-                <div>
-                  <strong>Total Members:</strong>{' '}
-                  {projectData.step5.members.length}
-                </div>
-                <div>
-                  <strong>Project Lead:</strong>{' '}
-                  {projectData.step5.members.find(m => m.role === 'lead')
-                    ? 'Assigned'
-                    : 'Not assigned'}
-                </div>
-                <div>
-                  <strong>Regular Members:</strong>{' '}
-                  {
-                    projectData.step5.members.filter(m => m.role === 'member')
-                      .length
-                  }
-                </div>
-              </div>
-            ) : (
-              <p className="text-gray-500">No team members added</p>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+          </AccordionTrigger>
+          <AccordionContent>
+            <UserPermission
+              onSubmit={() => {}}
+              hideButton={true}
+              defaultValues={getStep5DefaultValues()}
+            />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
-      {/* Action Buttons */}
       <div className="mt-8 flex gap-4">
         <Button
           variant="outline"
@@ -301,18 +311,6 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
             'Create Project'
           )}
         </Button>
-      </div>
-
-      {/* Debug Info (remove in production) */}
-      <div className="mt-8 rounded-lg bg-gray-100 p-4">
-        <details>
-          <summary className="cursor-pointer font-medium">
-            Debug Information
-          </summary>
-          <pre className="mt-2 overflow-auto text-xs">
-            {JSON.stringify(getFinalProjectData(), null, 2)}
-          </pre>
-        </details>
       </div>
     </div>
   );

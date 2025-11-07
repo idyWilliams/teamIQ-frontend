@@ -19,6 +19,10 @@ interface UserPermissionProps {
   onSubmit?: () => void;
   hideButton?: boolean;
   projectId?: number;
+  defaultValues?: {
+    selectedMembers: number[];
+    projectLead: number | null;
+  };
 }
 
 interface TeamMember {
@@ -40,9 +44,9 @@ const UserPermission = ({
   onSubmit,
   hideButton,
   projectId,
+  defaultValues,
 }: UserPermissionProps) => {
   const updateProjectStep5 = useUpdateProjectStep5(projectId || 0);
-
   const setStep5Data = useProjectStore(state => state.setStep5Data);
 
   const { data: users, isLoading, error } = useOrganizationUsers();
@@ -51,6 +55,7 @@ const UserPermission = ({
     defaultValues: {
       selectedMembers: [],
       projectLead: null,
+      ...defaultValues,
     },
   });
 
@@ -59,25 +64,56 @@ const UserPermission = ({
 
   const [teamList, setTeamList] = useState<TeamMember[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isReviewMode, setIsReviewMode] = useState(false);
 
-  // Transform API users to team members format
+  // Check if we're in review mode
+  useEffect(() => {
+    if (defaultValues) {
+      setIsReviewMode(true);
+      console.log('🔄 Setting User Permission default values:', defaultValues);
+    }
+  }, [defaultValues]);
+
+  // Transform API users to team members format and apply default values
   useEffect(() => {
     if (users) {
-      const transformedUsers: TeamMember[] = users.map(user => ({
-        id: user.id,
-        name: `${user.first_name} ${user.last_name}`.trim(),
-        email: user.email,
-        job: user.role || 'Team Member',
-        avatar: user.profile_image || undefined,
-        checked: false,
-        lead: false,
-      }));
+      const transformedUsers: TeamMember[] = users.map(user => {
+        // Check if this user is the project lead in default values
+        const isLead = defaultValues?.projectLead === user.id;
+
+        // Check if this user is a selected member (but not lead) in default values
+        const isSelected =
+          defaultValues?.selectedMembers?.includes(user.id) && !isLead;
+
+        return {
+          id: user.id,
+          name: `${user.first_name} ${user.last_name}`.trim(),
+          email: user.email,
+          job: user.role || 'Team Member',
+          avatar: user.profile_image || undefined,
+          checked: isSelected,
+          lead: isLead,
+        };
+      });
+
       setTeamList(transformedUsers);
-      console.log('🔄 Transformed team list:', transformedUsers);
+      console.log(
+        '🔄 Transformed team list with default values:',
+        transformedUsers
+      );
+
+      // Set form values from defaultValues
+      if (defaultValues) {
+        setValue('selectedMembers', defaultValues.selectedMembers || []);
+        setValue('projectLead', defaultValues.projectLead || null);
+      }
     }
-  }, [users]);
+  }, [users, defaultValues, setValue]);
 
   const handleCardClick = (userId: number) => {
+    // Don't allow changes in review mode
+    if (isReviewMode) return;
+
     setTeamList(prevList => {
       const hasLead = prevList.some(member => member.lead);
       const clickedMember = prevList.find(member => member.id === userId);
@@ -161,6 +197,12 @@ const UserPermission = ({
       return;
     }
 
+    // Skip validation and API call in review mode
+    if (isReviewMode) {
+      if (onSubmit) onSubmit();
+      return;
+    }
+
     // Check if at least one member is selected
     if (apiData.members.length === 0) {
       toast.error('Please select at least one team member');
@@ -201,6 +243,14 @@ const UserPermission = ({
       .slice(0, 2);
   };
 
+  // Count selected members (excluding lead)
+  const selectedMembersCount = teamList.filter(
+    member => member.checked && !member.lead
+  ).length;
+
+  // Get project lead info
+  const projectLeadInfo = teamList.find(member => member.lead);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-8">
@@ -225,22 +275,55 @@ const UserPermission = ({
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <div className="mt-2 max-w-[440px]">
         <p className="text-normal text-base">
-          Add team members to your project and assign roles. The project lead
-          will have administrative permissions.
+          {isReviewMode
+            ? 'Review the team members and their roles for this project.'
+            : 'Add team members to your project and assign roles. The project lead will have administrative permissions.'}
         </p>
       </div>
 
-      <div className="md:w- relative mt-10 mb-4 w-full">
-        <Input
-          id="search"
-          type="text"
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          placeholder="Search for a team member"
-          className="h-8 max-w-[250px] pl-7"
-        />
-        <Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
-      </div>
+      {/* Summary in review mode */}
+      {isReviewMode && (
+        <div className="mt-6 rounded-lg bg-blue-50 p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold text-blue-900">Team Summary</h3>
+              <p className="text-sm text-blue-700">
+                {projectLeadInfo && (
+                  <span>Project Lead: {projectLeadInfo.name}</span>
+                )}
+                {selectedMembersCount > 0 && (
+                  <span>
+                    {' '}
+                    • {selectedMembersCount} team member
+                    {selectedMembersCount !== 1 ? 's' : ''}
+                  </span>
+                )}
+              </p>
+            </div>
+            <div className="text-green-600">
+              <span className="flex items-center gap-1 text-sm">
+                <Check className="h-4 w-4" />
+                Configured
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Search - Only show in form mode */}
+      {!isReviewMode && (
+        <div className="md:w- relative mt-10 mb-4 w-full">
+          <Input
+            id="search"
+            type="text"
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            placeholder="Search for a team member"
+            className="h-8 max-w-[250px] pl-7"
+          />
+          <Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
+        </div>
+      )}
 
       {filteredTeamList.length === 0 ? (
         <div className="py-8 text-center text-gray-500">
@@ -254,7 +337,9 @@ const UserPermission = ({
             return (
               <Card
                 key={team.id}
-                className={`cursor-pointer border-0 shadow-none`}
+                className={`cursor-pointer border-0 shadow-none ${
+                  isReviewMode ? 'cursor-default' : 'hover:bg-gray-50'
+                }`}
                 onClick={() => handleCardClick(team.id)}
               >
                 <div className="flex items-center justify-between">
@@ -300,7 +385,8 @@ const UserPermission = ({
         </div>
       )}
 
-      {!hideButton && (
+      {/* Submit Button - Only show when not in review mode */}
+      {!hideButton && !isReviewMode && (
         <div className="mt-8">
           <Button
             type="submit"

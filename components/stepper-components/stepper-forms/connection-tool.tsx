@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { RadioGroup, RadioGroupItem } from '../../ui/radio-group';
 import { Label } from '../../ui/label';
@@ -53,25 +53,40 @@ const ConnectionTool = ({
   const updateProjectStep4 = useUpdateProjectStep4(projectId || 0);
   const setStep4Data = useProjectStore(state => state.setStep4Data);
 
-  const { handleSubmit, setValue, watch } = useForm<ConnectionToolFormData>({
-    defaultValues: {
-      channelType: 'new-channel',
-      app: 'slack',
-      integrationMethod: 'api-key',
-      accessToken: '',
-      webhookUrl: '',
-      channelId: '',
-      postPmtUpdates: true,
-      postTaskUpdates: false,
-      postDeadlineReminders: false,
-      codeEvents: true,
-      sentimentMonitoring: false,
-      customCommands: false,
-      ...defaultValues,
-    },
-  });
+  const { handleSubmit, setValue, watch, register } =
+    useForm<ConnectionToolFormData>({
+      defaultValues: {
+        channelType: 'new-channel',
+        app: 'slack',
+        integrationMethod: 'api-key',
+        accessToken: '',
+        webhookUrl: '',
+        channelId: '',
+        postPmtUpdates: true,
+        postTaskUpdates: false,
+        postDeadlineReminders: false,
+        codeEvents: true,
+        sentimentMonitoring: false,
+        customCommands: false,
+        ...defaultValues,
+      },
+    });
 
   const watchedValues = watch();
+
+  // Set default values when they are provided (for review mode)
+  useEffect(() => {
+    if (defaultValues) {
+      console.log('🔄 Setting Connection Tool default values:', defaultValues);
+
+      // Set all form values from defaultValues
+      Object.entries(defaultValues).forEach(([key, value]) => {
+        if (value !== undefined) {
+          setValue(key as keyof ConnectionToolFormData, value as any);
+        }
+      });
+    }
+  }, [defaultValues, setValue]);
 
   // ✅ MANUAL VALIDATION
   const validateForm = (data: ConnectionToolFormData): boolean => {
@@ -102,8 +117,8 @@ const ConnectionTool = ({
     console.log('📝 STEP 4 FORM DATA:', data);
     console.log('🆕 Project ID for Step 4:', projectId);
 
-    // ✅ MANUAL VALIDATION CHECK
-    if (!validateForm(data)) {
+    // Skip validation in review mode
+    if (!defaultValues && !validateForm(data)) {
       return;
     }
 
@@ -145,6 +160,12 @@ const ConnectionTool = ({
       return;
     }
 
+    // Skip API call in review mode
+    if (defaultValues) {
+      onSubmit();
+      return;
+    }
+
     updateProjectStep4.mutate(apiData, {
       onSuccess: responseData => {
         console.log('✅ Step 4 completed successfully:', responseData);
@@ -161,6 +182,9 @@ const ConnectionTool = ({
       },
     });
   };
+
+  // Check if we're in review mode
+  const isReviewMode = !!defaultValues;
 
   return (
     <div className="mt-2">
@@ -180,6 +204,7 @@ const ConnectionTool = ({
               setValue('channelType', value)
             }
             className="space-y-3"
+            disabled={isReviewMode}
           >
             <div className="flex items-center gap-3">
               <RadioGroupItem
@@ -213,6 +238,7 @@ const ConnectionTool = ({
               value={watchedValues.channelId}
               onChange={e => setValue('channelId', e.target.value)}
               className="w-full"
+              disabled={isReviewMode}
             />
           </div>
         )}
@@ -223,6 +249,7 @@ const ConnectionTool = ({
             <Select
               value={watchedValues.app}
               onValueChange={(value: string) => setValue('app', value)}
+              disabled={isReviewMode}
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select app" />
@@ -244,6 +271,7 @@ const ConnectionTool = ({
               onValueChange={(value: string) =>
                 setValue('integrationMethod', value)
               }
+              disabled={isReviewMode}
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select method" />
@@ -258,7 +286,7 @@ const ConnectionTool = ({
         </div>
 
         {/* API Key Instructions */}
-        {watchedValues.integrationMethod === 'api-key' && (
+        {!isReviewMode && watchedValues.integrationMethod === 'api-key' && (
           <div className="text-normal mt-6 space-y-2 text-sm text-[#434343]">
             <p>
               1. Go to the{' '}
@@ -278,7 +306,7 @@ const ConnectionTool = ({
         )}
 
         {/* Webhook Instructions */}
-        {watchedValues.integrationMethod === 'webhook' && (
+        {!isReviewMode && watchedValues.integrationMethod === 'webhook' && (
           <div className="text-normal mt-6 space-y-2 text-sm text-[#434343]">
             <p>1. Go to your {watchedValues.app} workspace settings</p>
             <p>2. Navigate to Incoming Webhooks and create a new webhook</p>
@@ -295,6 +323,7 @@ const ConnectionTool = ({
               value={watchedValues.accessToken}
               onChange={e => setValue('accessToken', e.target.value)}
               className="w-full"
+              disabled={isReviewMode}
             />
           </div>
         )}
@@ -308,7 +337,18 @@ const ConnectionTool = ({
               value={watchedValues.webhookUrl}
               onChange={e => setValue('webhookUrl', e.target.value)}
               className="w-full"
+              disabled={isReviewMode}
             />
+          </div>
+        )}
+
+        {/* Success message in review mode */}
+        {isReviewMode && (
+          <div className="mt-6">
+            <span className="text-iq-suc-300 flex items-center gap-1 text-[14px]">
+              <span className="icon-[material-symbols-light--check-circle-outline-rounded] size-4"></span>
+              Successfully connected
+            </span>
           </div>
         )}
 
@@ -327,6 +367,7 @@ const ConnectionTool = ({
                 setValue('postPmtUpdates', checked)
               }
               className="data-[state=checked]:bg-[#086ACE]"
+              disabled={isReviewMode}
             />
           </div>
 
@@ -343,6 +384,7 @@ const ConnectionTool = ({
                 setValue('postTaskUpdates', checked)
               }
               className="data-[state=checked]:bg-[#086ACE]"
+              disabled={isReviewMode}
             />
           </div>
 
@@ -361,6 +403,7 @@ const ConnectionTool = ({
                 setValue('postDeadlineReminders', checked)
               }
               className="data-[state=checked]:bg-[#086ACE]"
+              disabled={isReviewMode}
             />
           </div>
 
@@ -377,6 +420,7 @@ const ConnectionTool = ({
                 setValue('codeEvents', checked)
               }
               className="data-[state=checked]:bg-[#086ACE]"
+              disabled={isReviewMode}
             />
           </div>
 
@@ -395,6 +439,7 @@ const ConnectionTool = ({
                 setValue('sentimentMonitoring', checked)
               }
               className="data-[state=checked]:bg-[#086ACE]"
+              disabled={isReviewMode}
             />
           </div>
 
@@ -411,11 +456,13 @@ const ConnectionTool = ({
                 setValue('customCommands', checked)
               }
               className="data-[state=checked]:bg-[#086ACE]"
+              disabled={isReviewMode}
             />
           </div>
         </div>
 
-        {!hideButton && (
+        {/* Submit Button - Only show when not in review mode */}
+        {!hideButton && !isReviewMode && (
           <Button
             className="mt-8 w-full cursor-pointer bg-[#086ACE] p-6 text-base font-semibold hover:bg-[#086ACE]/90 disabled:cursor-not-allowed disabled:bg-gray-400"
             type="submit"
