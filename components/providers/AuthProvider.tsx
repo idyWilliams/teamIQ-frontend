@@ -19,7 +19,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const token = tokenStorage.get();
-    console.log(isAuthenticate, token, 'FROM Providers');
+    // console.log(isAuthenticate, token, 'FROM Providers');
 
     if ((pathname === '/member' || pathname === '/organization') && !token) {
       router.push('/login');
@@ -28,9 +28,12 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     let interval: NodeJS.Timeout;
     if (isAuthenticate) {
-      interval = setInterval(() => {
-        validateToken();
-      }, 5000); // 5 seconds for testing
+      interval = setInterval(
+        () => {
+          validateToken();
+        },
+        5 * 60 * 1000
+      ); // 5 seconds for testing
 
       // ✅ Production interval
       // const interval = setInterval(() => {

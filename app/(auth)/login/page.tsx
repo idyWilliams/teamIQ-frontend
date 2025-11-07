@@ -29,6 +29,7 @@ const schema = yup.object().shape({
 export default function Login() {
   const { isPending, mutate } = useLogin();
   const authenticate = useAuthStore(state => state.authorize);
+  const user = useAuthStore(s => s.user);
 
   const router = useRouter();
   // Initializing react-hook-form with Yup
@@ -55,16 +56,20 @@ export default function Login() {
         console.log('Form values:', data, res);
         toast.success('Login successful!');
 
-        const role = res?.data?.organization?.role;
+        const role = res?.data?.organization?.role || res?.data?.user?.role;
+        console.log(res, role);
+
+        authenticate({
+          user: res?.data?.organization || res?.data?.user,
+          token: res?.data?.access_token,
+        });
+
         console.log('User role:', role);
         if (role === 'organization') {
-          authenticate({
-            user: res?.data?.organization || res?.data?.user,
-            token: res?.data?.access_token,
-          });
           router.push('/organization');
-        } else if (role === 'intern') {
-          router.push('/member');
+        } else {
+          if (!res?.data?.user?.profile_image) router.push('/account-setup');
+          else router.push('/member');
         }
 
         reset();

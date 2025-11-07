@@ -3,7 +3,7 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -17,22 +17,47 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import axiosInstance from '@/services/axios';
 import { users } from '@/services/api';
+import { Camera } from 'lucide-react';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useRouter } from 'nextjs-toploader/app';
 
 // ✅ Yup validation schema
 const schema = yup.object({
   track: yup.string().required('Track is required'),
   stack: yup
-    .string()
+    .mixed()
     .required('Stack is required')
-    .min(2, 'Stack must be at least 2 characters'),
+    .test('minLength', 'Stack must be at least 2 characters', (value: any) => {
+      if (!value) return false;
+      return String(value).length >= 2;
+    })
+    .test('stackArray', 'Stacks must be separated by comma', (value: any) => {
+      if (!value) return false;
+      const stacks = String(value)
+        .split(',')
+        .map((t: any) => t.trim())
+        .filter((t: any) => t.length > 0);
+      return stacks.length > 0;
+    })
+    .transform((value: any) => {
+      if (!value) return [];
+      return String(value)
+        .split(',')
+        .map((t: any) => t.trim())
+        .filter((t: any) => t.length > 0);
+    }),
   profile: yup
     .mixed()
     .required('Profile image is required')
     .test('fileType', 'Only image files are allowed', (value: any) => {
+      console.log(value, 'FOR VAD', typeof value);
+
       return (
         value &&
-        value?.length > 0 &&
-        ['image/jpeg', 'image/png', 'image/jpg'].includes(value[0].type)
+        typeof value === 'object' &&
+        ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'].includes(
+          value.type
+        )
       );
     }),
 });
@@ -40,43 +65,74 @@ const schema = yup.object({
 type FormData = yup.InferType<typeof schema>;
 
 export default function AccountSetup() {
+  const { user, updateUser } = useAuthStore();
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
+    reset,
   } = useForm<FormData>({
     resolver: yupResolver(schema),
   });
 
+  const handleFileUpload = (e: any) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (file) setPreview(URL.createObjectURL(file));
+    setValue('profile', file);
+    console.log(e.target.files, 'PHO');
+  };
+
   const onSubmit = async (data: FormData | any) => {
+    // return console.log(errors, data);
+
     try {
       setLoading(true);
 
       // 1️⃣ Upload image to /image endpoint
       const formData = new FormData();
-      formData.append('file', data.profile[0]);
+      formData.append('file', data.profile);
+      formData.append('image_type', 'profile');
+      formData.append('update_db', 'true');
 
       const uploadResponse = await axiosInstance.post('/image', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      const imageUrl = uploadResponse?.data?.url; // depends on backend response shape
+      console.log('uploadResponse:', uploadResponse);
+
+      const imageUrl = uploadResponse?.data?.data?.url; // depends on backend response shape
 
       // 2️⃣ Get user_id (replace with actual logic or state)
-      const userId = 1; // You’ll likely get this from auth context or local storage
+      const userId = user?.id; // You’ll likely get this from auth context or local storage
+      if (!imageUrl) return;
+      const final = {
+        track: data.track,
+        stacks: data.stack,
+        profile_image: imageUrl,
+      };
+      console.log(final);
 
       // 3️⃣ Update profile with track, stack, and image
-      await axiosInstance.put(users.byId(userId), {
+      const res = await axiosInstance.put(users.byId(userId), {
         track: data.track,
-        stack: data.stack,
-        image: imageUrl,
+        stacks: data.stack,
+        profile_image: imageUrl || user?.profile_img,
       });
 
       alert('✅ Profile updated successfully!');
+      console.log(res);
+
+      updateUser(res?.data?.data);
+      router.push('/member');
     } catch (error: any) {
       console.error('Profile update failed:', error);
       alert('❌ Failed to update profile. Try again.');
@@ -84,6 +140,14 @@ export default function AccountSetup() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    console.log(user);
+    if (user) {
+      setPreview(user?.profile_image);
+      reset({ track: user?.track });
+    }
+  }, [reset, user]);
 
   return (
     <section className="mx-4 w-full max-w-lg">
@@ -97,27 +161,33 @@ export default function AccountSetup() {
           <div className="mt-5 flex items-center justify-center">
             <div className="relative">
               <Image
-                src={preview || '/images/avatar.jpg'}
+                src={(preview as string) || '/images/avatar.png'}
                 alt="avatar"
                 width={100}
                 height={100}
-                className="rounded-full object-cover"
+                priority
+                className="size-[100px] rounded-full bg-neutral-100 object-cover"
               />
+              <Button
+                type="button"
+                variant="ghost"
+                id="profile"
+                className="bg-iq-500 absolute -right-2 bottom-0 size-8 rounded-full border-2 border-white text-white"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Camera size={24} />
+              </Button>
             </div>
           </div>
 
           {/* Profile upload input */}
           <div className="mt-4">
-            <Label htmlFor="profile">Upload Profile Image</Label>
             <Input
+              ref={fileInputRef}
               type="file"
               accept="image/*"
-              {...register('profile')}
-              onChange={e => {
-                const file = e.target.files?.[0];
-                if (file) setPreview(URL.createObjectURL(file));
-              }}
-              className="border-0 border-b border-[#B3C4D6] bg-[#F7F7F7] px-4 py-3"
+              onChange={handleFileUpload}
+              className="hidden"
             />
             {errors.profile && (
               <p className="mt-1 text-sm text-red-500">

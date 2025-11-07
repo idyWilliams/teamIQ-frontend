@@ -12,6 +12,11 @@ interface SignupOrgData {
   country: string;
 }
 
+import { useAuthStore } from '@/store/useAuthStore';
+import { useRouter } from 'next/navigation';
+import { AxiosError } from 'axios';
+import { useState } from 'react';
+
 // Login Individual & Organization
 export const useLogin = () => {
   return useMutation<any, AxiosError, { email: string; password: string }>({
@@ -22,10 +27,6 @@ export const useLogin = () => {
     },
   });
 };
-import { useAuthStore } from '@/store/useAuthStore';
-import { useRouter } from 'next/navigation';
-import { AxiosError } from 'axios';
-import { useState } from 'react';
 
 //Register Individual
 export const useRegisterIndividual = () => {

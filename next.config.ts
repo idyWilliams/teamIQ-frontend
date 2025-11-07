@@ -1,11 +1,14 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
     remotePatterns: [
       {
-        hostname: "i.pravatar.cc",
+        hostname: 'i.pravatar.cc',
+      },
+      {
+        hostname: 'gzrtdlybziaqrjagcddj.supabase.co',
       },
     ],
   },
