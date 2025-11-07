@@ -254,13 +254,7 @@ const UserPermission = ({
             return (
               <Card
                 key={team.id}
-                className={`cursor-pointer border-0 shadow-none ${
-                  team.lead
-                    ? 'ring-2 ring-[#086ACE]'
-                    : team.checked
-                      ? 'ring-1 ring-[#086ACE]'
-                      : ''
-                }`}
+                className={`cursor-pointer border-0 shadow-none`}
                 onClick={() => handleCardClick(team.id)}
               >
                 <div className="flex items-center justify-between">
