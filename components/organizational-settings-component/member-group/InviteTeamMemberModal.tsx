@@ -14,9 +14,8 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { toast } from 'sonner';
-import { AxiosError } from 'axios';
 import Link from 'next/link';
 
 type CloseModalProp = {
@@ -33,10 +32,9 @@ const inviteSchema = yup.object({
 type inviteFormDataType = yup.InferType<typeof inviteSchema>;
 
 const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
-  const { mutateAsync, isPending } = useInviteUser();
+  const { mutateAsync } = useInviteUser();
   const {
     register,
-    setValue,
     reset,
     control,
     handleSubmit,

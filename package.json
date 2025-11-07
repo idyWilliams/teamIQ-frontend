@@ -65,6 +65,7 @@
     "@iconify/json": "^2.2.375",
     "@iconify/tailwind4": "^1.0.6",
     "@tailwindcss/postcss": "^4",
+    "@types/jwt-decode": "^2.2.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
