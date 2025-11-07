@@ -1,4 +1,3 @@
-// stores/useProjectStore.ts
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -165,20 +164,19 @@ export const useProjectStore = create<ProjectStore>()(
       getFinalProjectData: () => {
         const state = get();
 
-        // Extract member IDs from step 5 for the member_ids field
+        // Extract member IDs
         const memberIds =
           state.step5Data?.members
             .filter(member => member.role !== 'lead')
             .map(member => member.user_id) || [];
 
-        // Find project lead from step 5
+        // project lead from step 5
         const projectLead = state.step5Data?.members.find(
           member => member.role === 'lead'
         );
         const projectLeadId = projectLead ? projectLead.user_id : 0;
 
         return {
-          // Step 1 data
           name: state.step1Data?.name || '',
           description: state.step1Data?.description || '',
           project_lead_id: projectLeadId,
@@ -189,21 +187,18 @@ export const useProjectStore = create<ProjectStore>()(
           project_image: state.step1Data?.project_image || '',
           is_visible: state.step1Data?.is_visible || true,
 
-          // Step 2 data
           pm_tool: state.step2Data?.pm_tool || '',
           pm_integration_method:
             state.step2Data?.pm_integration_method || 'oauth2',
           pm_project_id: state.step2Data?.pm_project_id || '',
           pm_api_key: state.step2Data?.pm_api_key || '',
 
-          // Step 3 data
           vc_tool: state.step3Data?.vc_tool || '',
           vc_integration_method:
             state.step3Data?.vc_integration_method || 'oauth2',
           vc_repository_url: state.step3Data?.vc_repository_url || '',
           vc_api_key: state.step3Data?.vc_api_key || '',
 
-          // Step 4 data
           comm_tool: state.step4Data?.comm_tool || '',
           comm_integration_method:
             state.step4Data?.comm_integration_method || 'oauth2',
@@ -217,12 +212,10 @@ export const useProjectStore = create<ProjectStore>()(
             custom_commands: false,
           },
 
-          // Step 5 data (as member_ids)
           member_ids: memberIds,
         };
       },
 
-      // Clear everything
       clearStore: () =>
         set({
           currentProjectId: null,
@@ -236,7 +229,6 @@ export const useProjectStore = create<ProjectStore>()(
           lastSaved: null,
         }),
 
-      // Reset to a specific step (useful for going back)
       resetToStep: step => {
         const resetState: Partial<ProjectStore> = { currentStep: step };
 

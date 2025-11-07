@@ -93,14 +93,6 @@ export const useCreateProjectStep1 = () => {
   return useMutation({
     mutationFn: async (projectData: ProjectStep1Data) => {
       console.log('SENDING PROJECT DATA:', projectData);
-      console.log('Checking token...');
-
-      const token = localStorage.getItem('accessToken');
-      console.log('Token exists:', !!token);
-      if (token) {
-        console.log('Token preview:', token.substring(0, 50) + '...');
-      }
-
       try {
         const response = await axiosInstance.post(
           '/projects/create/step1-details',
@@ -110,13 +102,6 @@ export const useCreateProjectStep1 = () => {
         console.log('SUCCESS RESPONSE:', response);
         return response.data;
       } catch (error: any) {
-        console.error(' API ERROR DETAILS:');
-        console.error('URL:', error.config?.url);
-        console.error('Method:', error.config?.method);
-        console.error('Data sent:', error.config?.data);
-        console.error('Headers:', error.config?.headers);
-        console.error('Status:', error.response?.status);
-        console.error('Response data:', error.response?.data);
         console.error('Full error:', error);
 
         throw error;
@@ -144,9 +129,6 @@ export const useUpdateProjectStep2 = (projectId: number) => {
       console.log('SENDING STEP 2 DATA:', step2Data);
       console.log('Project ID:', projectId);
 
-      const token = localStorage.getItem('accessToken');
-      console.log('Token exists:', !!token);
-
       const response = await axiosInstance.patch(
         `/projects/${projectId}/step2-pm-tool`,
         step2Data
@@ -164,9 +146,6 @@ export const useUpdateProjectStep3 = (projectId: number) => {
       console.log('SENDING STEP 3 DATA:', step3Data);
       console.log('Project ID:', projectId);
 
-      const token = localStorage.getItem('accessToken');
-      console.log('Token exists:', !!token);
-
       const response = await axiosInstance.patch(
         `/projects/${projectId}/step3-version-control`,
         step3Data
@@ -181,18 +160,15 @@ export const useUpdateProjectStep3 = (projectId: number) => {
 export const useUpdateProjectStep4 = (projectId: number) => {
   return useMutation({
     mutationFn: async (step4Data: ProjectStep4Data) => {
-      console.log('🚀 SENDING STEP 4 DATA:', step4Data);
-      console.log('📋 Project ID:', projectId);
-
-      const token = localStorage.getItem('accessToken');
-      console.log('🔐 Token exists:', !!token);
+      console.log('SENDING STEP 4 DATA:', step4Data);
+      console.log('Project ID:', projectId);
 
       const response = await axiosInstance.patch(
         `/projects/${projectId}/step4-communication-tool`,
         step4Data
       );
 
-      console.log('✅ STEP 4 SUCCESS RESPONSE:', response);
+      console.log('STEP 4 SUCCESS RESPONSE:', response);
       return response.data;
     },
   });
@@ -201,18 +177,15 @@ export const useUpdateProjectStep4 = (projectId: number) => {
 export const useUpdateProjectStep5 = (projectId: number) => {
   return useMutation({
     mutationFn: async (step5Data: ProjectStep5Data) => {
-      console.log('🚀 SENDING STEP 5 DATA:', step5Data);
-      console.log('📋 Project ID:', projectId);
-
-      const token = localStorage.getItem('accessToken');
-      console.log('🔐 Token exists:', !!token);
+      console.log('SENDING STEP 5 DATA:', step5Data);
+      console.log('Project ID:', projectId);
 
       const response = await axiosInstance.patch(
         `/projects/${projectId}/step5-add-members`,
         step5Data
       );
 
-      console.log('✅ STEP 5 SUCCESS RESPONSE:', response);
+      console.log('STEP 5 SUCCESS RESPONSE:', response);
       return response.data;
     },
     onSuccess: data => {
@@ -221,7 +194,7 @@ export const useUpdateProjectStep5 = (projectId: number) => {
       return data;
     },
     onError: (error: any) => {
-      console.error('❌ Step 5 failed:', error);
+      console.error('Step 5 failed:', error);
       const errorMessage =
         error.response?.data?.detail ||
         error.response?.data?.message ||
@@ -234,14 +207,8 @@ export const useUpdateProjectStep5 = (projectId: number) => {
 export const useCreateCompleteProject = () => {
   return useMutation({
     mutationFn: async (projectData: FinalProjectData) => {
-      console.log('🎯 SENDING COMPLETE PROJECT DATA:', projectData);
-      console.log('🔍 Checking token...');
-
-      const token = localStorage.getItem('accessToken');
-      console.log('🔐 Token exists:', !!token);
-      if (token) {
-        console.log('🔐 Token preview:', token.substring(0, 50) + '...');
-      }
+      console.log('SENDING COMPLETE PROJECT DATA:', projectData);
+      console.log('Checking token...');
 
       try {
         const response = await axiosInstance.post(
@@ -249,28 +216,21 @@ export const useCreateCompleteProject = () => {
           projectData
         );
 
-        console.log('✅ COMPLETE PROJECT SUCCESS RESPONSE:', response);
+        console.log('COMPLETE PROJECT SUCCESS RESPONSE:', response);
         return response.data;
       } catch (error: any) {
-        console.error('❌ COMPLETE PROJECT API ERROR DETAILS:');
-        console.error('📝 URL:', error.config?.url);
-        console.error('📝 Method:', error.config?.method);
-        console.error('📝 Data sent:', error.config?.data);
-        console.error('📝 Headers:', error.config?.headers);
-        console.error('📝 Status:', error.response?.status);
-        console.error('📝 Response data:', error.response?.data);
-        console.error('📝 Full error:', error);
+        console.error('Full error:', error);
 
         throw error;
       }
     },
     onSuccess: data => {
-      console.log('🎉 Complete project creation successful:', data);
+      console.log('Complete project creation successful:', data);
       toast.success('Project created successfully!');
       return data;
     },
     onError: (error: any) => {
-      console.error('💥 Complete project creation failed:', error);
+      console.error('Complete project creation failed:', error);
       const errorMessage =
         error.response?.data?.detail ||
         error.response?.data?.message ||
