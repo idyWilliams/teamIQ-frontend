@@ -29,13 +29,7 @@ const Password = () => {
       .required("Password is required"),
   });
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<PasswordForm>({
-    resolver: yupResolver(schema),
+  const {register,handleSubmit,reset, formState: { errors },} = useForm<PasswordForm>({resolver: yupResolver(schema),
   });
 
   const fields: { id: FormKeys; label: string }[] = [

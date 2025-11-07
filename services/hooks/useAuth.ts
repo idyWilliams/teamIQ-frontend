@@ -3,6 +3,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axiosInstance from '@/services/axios';
 import { auth, organizations } from '@/services/api';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useRouter } from 'next/navigation';
+import { AxiosError } from 'axios';
+import { useState } from 'react';
 
 interface SignupOrgData {
   name: string;
@@ -22,10 +26,7 @@ export const useLogin = () => {
     },
   });
 };
-import { useAuthStore } from '@/store/useAuthStore';
-import { useRouter } from 'next/navigation';
-import { AxiosError } from 'axios';
-import { useState } from 'react';
+
 
 //Register Individual
 export const useRegisterIndividual = () => {
@@ -138,6 +139,43 @@ export const usePasswordResetConfirm = () => {
     onError: (error: any) => {
       const message =
         error?.response?.data?.message || 'Failed to confirm password reset.';
+      toast.error(message);
+    },
+  });
+};
+
+
+// Onboarding Complete Hook
+export const useOnboardingComplete = () => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: async (payload: { 
+  organization_image: string,
+  description: string,
+  sector: string,
+  social_media_handles: {
+    additionalProp1: string,
+    additionalProp2: string,
+    additionalProp3: string
+  },
+  domain_link: string,
+  favorite_tools:string,
+  website: string,
+  phone_number: string
+} ) => {
+      const res = await axiosInstance.patch(organizations.onboardingComplete, payload);
+      return res.data;
+    },
+    onSuccess: data => {
+      toast.success(data?.message || 'Onboarding completed successfully!');
+      queryClient.invalidateQueries({ queryKey: ['organizations'] });
+    
+    },
+    onError: (error: any) => {
+      const message =
+        error?.response?.data?.message || 'Failed to complete onboarding.';
       toast.error(message);
     },
   });
