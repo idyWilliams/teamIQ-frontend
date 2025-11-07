@@ -137,8 +137,8 @@ const VersionControlSetup = ({
   }, [defaultValues, setValue]);
 
   const handleFormSubmit = async (data: FormValues) => {
-    console.log('📝 STEP 3 FORM DATA:', data);
-    console.log('🆕 Project ID for Step 3:', projectId);
+    console.log('STEP 3 FORM DATA:', data);
+    console.log('Project ID for Step 3:', projectId);
 
     // Transform form data to match API schema
     const getIntegrationMethod = (method: string): 'oauth2' | 'api_key' => {
@@ -168,12 +168,12 @@ const VersionControlSetup = ({
 
     updateProjectStep3.mutate(apiData, {
       onSuccess: responseData => {
-        console.log('✅ Step 3 completed successfully:', responseData);
+        console.log('Step 3 completed successfully:', responseData);
         toast.success('Version control configured!');
         if (onSubmit) onSubmit();
       },
       onError: (error: any) => {
-        console.error('❌ Step 3 failed:', error);
+        console.error('Step 3 failed:', error);
         const errorMessage =
           error.response?.data?.detail ||
           error.response?.data?.message ||

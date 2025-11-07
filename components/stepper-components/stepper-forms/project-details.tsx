@@ -267,23 +267,23 @@ const NewProjectDetails = ({
       is_visible: formData.visibility,
     };
 
-    console.log('📤 FINAL API PAYLOAD:', apiData);
+    console.log('FINAL API PAYLOAD:', apiData);
 
     setStep1Data(apiData);
 
     createProjectMutation.mutate(apiData, {
       onSuccess: responseData => {
-        console.log('🎉 Project creation successful:', responseData);
+        console.log('Project creation successful:', responseData);
 
         // ✅ EXTRACT PROJECT ID FROM RESPONSE
         const projectId = responseData.data.project_id;
         const projectData = responseData.data.project;
 
-        console.log('🆕 Created Project ID:', projectId);
+        console.log('Created Project ID:', projectId);
 
         toast.success('Project created successfully!');
 
-        // ✅ PASS PROJECT ID TO PARENT
+        //  PASS PROJECT ID TO PARENT
         if (onSubmit) {
           onSubmit({
             projectId: projectId,
@@ -293,7 +293,7 @@ const NewProjectDetails = ({
         }
       },
       onError: (error: any) => {
-        console.error('💥 Project creation failed:', error);
+        console.error('Project creation failed:', error);
         const errorMessage =
           error.response?.data?.detail ||
           error.response?.data?.message ||

@@ -161,8 +161,8 @@ const UserPermission = ({
   };
 
   const handleFormSubmit = async (data: FormData) => {
-    console.log('📝 STEP 5 FORM DATA:', data);
-    console.log('🆕 Project ID for Step 5:', projectId);
+    console.log('STEP 5 FORM DATA:', data);
+    console.log('Project ID for Step 5:', projectId);
 
     // Prepare API payload
     const apiData = {
@@ -186,7 +186,7 @@ const UserPermission = ({
       ],
     };
 
-    console.log('📤 STEP 5 API PAYLOAD:', apiData);
+    console.log('STEP 5 API PAYLOAD:', apiData);
 
     setStep5Data(apiData);
 
@@ -211,12 +211,12 @@ const UserPermission = ({
 
     updateProjectStep5.mutate(apiData, {
       onSuccess: responseData => {
-        console.log('✅ Step 5 completed successfully:', responseData);
+        console.log('Step 5 completed successfully:', responseData);
         toast.success('Team members added successfully!');
         if (onSubmit) onSubmit();
       },
       onError: (error: any) => {
-        console.error('❌ Step 5 failed:', error);
+        console.error('Step 5 failed:', error);
         const errorMessage =
           error.response?.data?.detail ||
           error.response?.data?.message ||

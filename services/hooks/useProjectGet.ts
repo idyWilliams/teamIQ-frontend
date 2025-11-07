@@ -42,7 +42,7 @@ export const useProjects = () => {
         (a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
-      console.log('📋 Projects fetched (newest first):', sortedProjects);
+      console.log(' Projects fetched (newest first):', sortedProjects);
       return sortedProjects;
     },
     staleTime: 2 * 60 * 1000,

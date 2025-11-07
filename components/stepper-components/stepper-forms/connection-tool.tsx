@@ -114,8 +114,7 @@ const ConnectionTool = ({
   };
 
   const handleFormSubmit = async (data: ConnectionToolFormData) => {
-    console.log('📝 STEP 4 FORM DATA:', data);
-    console.log('🆕 Project ID for Step 4:', projectId);
+    console.log('STEP 4 FORM DATA:', data);
 
     // Skip validation in review mode
     if (!defaultValues && !validateForm(data)) {
@@ -149,7 +148,7 @@ const ConnectionTool = ({
       },
     };
 
-    console.log('📤 STEP 4 API PAYLOAD:', apiData);
+    console.log('STEP 4 API PAYLOAD:', apiData);
 
     setStep4Data(apiData);
 
@@ -168,12 +167,12 @@ const ConnectionTool = ({
 
     updateProjectStep4.mutate(apiData, {
       onSuccess: responseData => {
-        console.log('✅ Step 4 completed successfully:', responseData);
+        console.log('Step 4 completed successfully:', responseData);
         toast.success('Communication tool configured!');
         onSubmit();
       },
       onError: (error: any) => {
-        console.error('❌ Step 4 failed:', error);
+        console.error('Step 4 failed:', error);
         const errorMessage =
           error.response?.data?.detail ||
           error.response?.data?.message ||
