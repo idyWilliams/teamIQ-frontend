@@ -34,10 +34,16 @@ interface ProjectsResponse {
 export const useProjects = () => {
   return useQuery({
     queryKey: ['projects'],
+
     queryFn: async (): Promise<Project[]> => {
       const { data } = await axiosInstance.get<ProjectsResponse>('/projects/');
-      console.log('📋 Projects fetched:', data);
-      return data.data;
+      // Sort by createdAt descending (newest first)
+      const sortedProjects = data.data.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      console.log('📋 Projects fetched (newest first):', sortedProjects);
+      return sortedProjects;
     },
     staleTime: 2 * 60 * 1000,
     gcTime: 5 * 60 * 1000,
