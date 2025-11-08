@@ -455,7 +455,7 @@ const ProjectMgmtSetup = ({
       )}
 
       {!hideButton && !isReviewMode && activeMethod && (
-        <button
+        <Button
           type="submit"
           onClick={handleSubmit(handleFormSubmit)}
           className="h-[60px] w-full cursor-pointer rounded-[8px] bg-[#086ACE] text-[16px] text-gray-50 hover:bg-[#8EA8C2] hover:text-gray-50 disabled:cursor-not-allowed disabled:bg-gray-400"
@@ -472,7 +472,7 @@ const ProjectMgmtSetup = ({
           ) : (
             'Next'
           )}
-        </button>
+        </Button>
       )}
     </div>
   );

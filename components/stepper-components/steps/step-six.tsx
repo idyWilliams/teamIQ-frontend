@@ -1,6 +1,6 @@
 // components/stepper/step-six.tsx
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import RightArrow from '../../icons/RightArrow';
 import { Button } from '../../ui/button';
 import {
@@ -26,31 +26,25 @@ interface StepSixProps {
 }
 
 const StepSix = ({ onSubmit }: StepSixProps) => {
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const { getProjectData, getFinalProjectData, clearStore } = useProjectStore();
   const projectData = getProjectData();
   const queryClient = useQueryClient();
 
   const createCompleteProject = useCreateCompleteProject();
 
-  const handleCreateProject = () => {
+  const handleCreateProject = async () => {
     const finalData = getFinalProjectData();
-    console.log('📤 Final data to be submitted:', finalData);
+    console.log('Final data to be submitted:', finalData);
 
-    createCompleteProject.mutate(finalData, {
-      onSuccess: () => {
-        clearStore();
-        toast.success('Project created successfully!');
-        queryClient.invalidateQueries({ queryKey: ['projects'] });
-        onSubmit();
-      },
-      onError: (error: any) => {
-        const errorMessage =
-          error.response?.data?.detail ||
-          error.response?.data?.message ||
-          'Failed to create project';
-        toast.error(errorMessage);
-      },
-    });
+    setIsRefreshing(true);
+
+    try {
+      await queryClient.invalidateQueries({ queryKey: ['projects'] });
+      onSubmit();
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   const getStep1DefaultValues = () => {
@@ -285,22 +279,13 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
 
       <div className="mt-8 flex gap-4">
         <Button
-          variant="outline"
-          className="flex-1"
-          onClick={() => window.history.back()}
-          disabled={createCompleteProject.isPending}
-        >
-          Back
-        </Button>
-        <Button
-          className="flex-1 cursor-pointer bg-[#086ACE] p-6 text-base font-semibold hover:bg-[#086ACE]/90 disabled:cursor-not-allowed disabled:bg-gray-400"
           onClick={handleCreateProject}
-          disabled={createCompleteProject.isPending || !projectData.step1}
+          disabled={isRefreshing || !projectData.step1}
+          className="flex-1 cursor-pointer bg-[#086ACE] p-6 text-base font-semibold hover:bg-[#086ACE]/90 disabled:cursor-not-allowed disabled:bg-gray-400"
         >
-          {createCompleteProject.isPending ? (
+          {isRefreshing ? (
             <div className="flex items-center gap-2">
               <Loader className="h-4 w-4 animate-spin" />
-              Creating Project...
             </div>
           ) : (
             'Create Project'
