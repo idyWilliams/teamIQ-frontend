@@ -1,4 +1,4 @@
-import ProjectScreen from '@/components/projectscreen';
+import ProjectScreen from '@/app/(user)/member/projects/components/projectscreen';
 
 export default function ProjectPage() {
   return (

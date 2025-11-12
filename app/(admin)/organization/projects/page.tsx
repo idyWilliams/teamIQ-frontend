@@ -14,18 +14,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Calendar, Circle, Plus, Loader, AlertCircle } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import StepperModal from '@/components/stepper-components/steps/stepper-modal';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import {
   useProjects,
   type Project as ApiProject,
 } from '@/services/hooks/useProjectGet';
+import StepperModal from './components/stepper-components/steps/stepper-modal';
 
 /* ----------------------------------------------------------------------
    🧩 IMAGE WRAPPER COMPONENT

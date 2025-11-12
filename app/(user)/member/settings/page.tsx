@@ -1,7 +1,7 @@
 'use client';
-import NotificationsSettings from '@/components/notification ';
-import Password from '@/components/settings-component/password';
-import MyDetails from '@/components/settings-component/my-details';
+import NotificationsSettings from '@/app/(user)/member/settings/components/notification ';
+import Password from '@/app/(user)/member/settings/components/password';
+import MyDetails from '@/app/(user)/member/settings/components/my-details';
 import PlanSettings from '@/components/plan';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';

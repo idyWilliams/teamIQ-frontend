@@ -11,10 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import OrgAppCard from '@/components/org-app-card';
+import OrgAppCard from '@/app/(admin)/organization/app/components/org-app-card';
 
 // Mock data for apps and their integrations displayed on the page.
-import app from '@/components/org-app-lists';
+import app from '@/app/(admin)/organization/app/components/org-app-lists';
 
 
 

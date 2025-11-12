@@ -7,7 +7,6 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { toast } from 'sonner';
 import { usePassword } from '@/services/hooks/useAuth';
 import Link from 'next/link';
 

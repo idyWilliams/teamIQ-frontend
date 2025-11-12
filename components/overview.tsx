@@ -6,30 +6,30 @@ import { useState } from 'react';
 import { WaveProgressCard } from './wave-progress';
 import { dashboardCards, activeBlockers, progressData } from '@/constants';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog";
-import OrganizationalDetails from './organization-dashboard-components/organizationalOnboarding';
-
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import OrganizationalDetails from './org-onboarding-comps/organizationalOnboarding';
 
 const DashbordOverview = () => {
-const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="space-y-6 p-4">
       <div>
-        <div className="mb-[48px] bg-iq-war-100 border-iq-war-300 rounded-[10px] border px-[56px] py-[26px] flex items-center justify-between">
-          <div className='flex items-center gap-[10px] '>
+        <div className="bg-iq-war-100 border-iq-war-300 mb-[48px] flex items-center justify-between rounded-[10px] border px-[56px] py-[26px]">
+          <div className="flex items-center gap-[10px]">
             <Avatar>
-            <AvatarImage src="/images/danger.svg" alt="danger-icon" />
-            <AvatarFallback>D</AvatarFallback>
-          </Avatar>
-          <p className="text-[16px] text-neutral-950 ">
-            Complete your organization details to unlock full access.
-          </p></div>
-          
-          <button onClick={() => setIsModalOpen(true)}  className="bg-iq-600 cursor-pointer hover:bg-iq-800 duration-500 rounded-[8px] p-[10px] text-neutral-50">
+              <AvatarImage src="/images/danger.svg" alt="danger-icon" />
+              <AvatarFallback>D</AvatarFallback>
+            </Avatar>
+            <p className="text-[16px] text-neutral-950">
+              Complete your organization details to unlock full access.
+            </p>
+          </div>
+
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-iq-600 hover:bg-iq-800 cursor-pointer rounded-[8px] p-[10px] text-neutral-50 duration-500"
+          >
             Complete Now
           </button>
         </div>
@@ -51,17 +51,15 @@ const [isModalOpen, setIsModalOpen] = useState(false);
         <div className="space-y-4 lg:col-span-1">
           <ActiveBlockers blockers={activeBlockers} />
         </div>
-      </div> 
+      </div>
       {/* Fill form */}
-         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-            <DialogContent className="w-[900px] sm:!max-w-[900px] overflow-y-auto max-h-[90vh] !pt-0 [&>button]:hidden">
-              <OrganizationalDetails onClose={() => setIsModalOpen(false)} />
-            </DialogContent>
-          </Dialog>
-
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-h-[90vh] w-[900px] overflow-y-auto !pt-0 sm:!max-w-[900px] [&>button]:hidden">
+          <OrganizationalDetails onClose={() => setIsModalOpen(false)} />
+        </DialogContent>
+      </Dialog>
     </div>
-
   );
-};     
+};
 
 export default DashbordOverview;

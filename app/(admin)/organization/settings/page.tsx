@@ -3,10 +3,10 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import SettingIntergratedApp from '@/components/organizational-settings-component/intergratedApp';
-import TeamMemberTab from '@/components/organizational-settings-component/TeamMember';
+import SettingIntergratedApp from '@/app/(admin)/organization/settings/components/intergratedApp';
+import TeamMemberTab from '@/app/(admin)/organization/settings/components/TeamMember';
 import PlanSettings from '@/components/plan';
-import OrganisationProfileTab from '@/components/organizational-settings-component/OrgProfileTab';
+import OrganisationProfileTab from '@/app/(admin)/organization/settings/components/OrgProfileTab';
 
 function Settings() {
   const router = useRouter();

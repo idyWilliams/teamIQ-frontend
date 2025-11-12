@@ -1,16 +1,16 @@
-"use client";
+'use client';
 import {
   DndContext,
   MouseSensor,
   TouchSensor,
   useSensor,
   useSensors,
-} from "@dnd-kit/core";
-import { Column } from "@/components/Column";
-import { useTasks } from "@/store/useTask";
-import { COLUMNS } from "@/components/constants";
-import React from "react";
-import Subnavbar from "@/components/user-dashboard-component/task/Subnavbar";
+} from '@dnd-kit/core';
+import { Column } from '@/app/(user)/member/tasks/components/Column';
+import { useTasks } from '@/store/useTask';
+import { COLUMNS } from '@/components/constants';
+import React from 'react';
+import Subnavbar from '@/app/(user)/member/tasks/components/Subnavbar';
 
 export default function TasksPage() {
   const mouseSensor = useSensor(MouseSensor);
@@ -21,10 +21,10 @@ export default function TasksPage() {
     },
   });
   const sensors = useSensors(mouseSensor, touchSensor);
-  const { tasks, handleDragEnd, searchQuery, setSearchQuery } = useTasks();
-  console.log("Rendering TasksPage with tasks:", tasks);
+  const { tasks, handleDragEnd, searchQuery } = useTasks();
+  console.log('Rendering TasksPage with tasks:', tasks);
 
-  const filteredTasks = tasks.filter((task) =>
+  const filteredTasks = tasks.filter(task =>
     task.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -34,16 +34,16 @@ export default function TasksPage() {
         <Subnavbar />
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
           <div className="flex gap-6 overflow-x-auto pb-4">
-            {COLUMNS.map((column) => (
+            {COLUMNS.map(column => (
               <div
                 key={column.id}
-                className="min-w-[300px] max-w-[320px] flex-shrink-0"
+                className="max-w-[320px] min-w-[300px] flex-shrink-0"
               >
                 <Column
                   key={column.id}
                   column={column}
                   tasks={filteredTasks.filter(
-                    (task) => task.status === column.id
+                    task => task.status === column.id
                   )}
                 />
               </div>

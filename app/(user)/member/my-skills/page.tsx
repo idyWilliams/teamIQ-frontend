@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Select,
@@ -6,39 +6,39 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import GitHubCalendar from "react-github-calendar";
-import CardSliderMobile from "@/components/card-slider-mobile";
-import { cn } from "@/lib/utils";
-import SkillRatingsCard from "@/components/skill-ratings-card";
-import RaderChartCard from "@/components/Rader-chart-card";
-import SkillRecommendationCard from "@/components/skill-recommendation-card";
+} from '@/components/ui/select';
+import GitHubCalendar from 'react-github-calendar';
+import CardSliderMobile from '@/app/(user)/member/my-skills/components/card-slider-mobile';
+import { cn } from '@/lib/utils';
+import SkillRatingsCard from '@/app/(user)/member/my-skills/components/skill-ratings-card';
+import RaderChartCard from '@/app/(user)/member/my-skills/components/Rader-chart-card';
+import SkillRecommendationCard from '@/app/(user)/member/my-skills/components/skill-recommendation-card';
 
 const chartData = [
-  { skill: "Design", percentage: 50 },
-  { skill: "Typescript", percentage: 75 },
-  { skill: "Python", percentage: 60 },
-  { skill: "Communication", percentage: 70 },
-  { skill: "Micro Services", percentage: 50 },
-  { skill: "React", percentage: 50 },
+  { skill: 'Design', percentage: 50 },
+  { skill: 'Typescript', percentage: 75 },
+  { skill: 'Python', percentage: 60 },
+  { skill: 'Communication', percentage: 70 },
+  { skill: 'Micro Services', percentage: 50 },
+  { skill: 'React', percentage: 50 },
 ];
 
 const contributions = [
-  { text: "Contributions - All Time", value: "3.3K" },
-  { text: "Contributions - 2024", value: "890" },
-  { text: " Longest Streak - All Time", value: "78 Days" },
-  { text: "Longest Streak - 2024", value: "91 Days" },
+  { text: 'Contributions - All Time', value: '3.3K' },
+  { text: 'Contributions - 2024', value: '890' },
+  { text: ' Longest Streak - All Time', value: '78 Days' },
+  { text: 'Longest Streak - 2024', value: '91 Days' },
 ];
 
 const cardTexts = [
-  { text: "Total Skill", icon: "icon-[hugeicons--briefcase-04]" },
+  { text: 'Total Skill', icon: 'icon-[hugeicons--briefcase-04]' },
   {
-    text: "Average Score",
-    icon: "icon-[fluent--data-trending-16-regular]",
+    text: 'Average Score',
+    icon: 'icon-[fluent--data-trending-16-regular]',
   },
   {
-    text: "Recommendation",
-    icon: "icon-[heroicons-solid--cube]",
+    text: 'Recommendation',
+    icon: 'icon-[heroicons-solid--cube]',
   },
 ];
 
@@ -49,65 +49,65 @@ const cardValues = [
 ];
 
 const skills = [
-  { skill: "React", skillLevel: 100, color: "#6182FB" },
-  { skill: "design", skillLevel: 75, color: "#D26FF3" },
-  { skill: "Python", skillLevel: 50, color: "#FC5A59" },
-  { skill: "Typescript", skillLevel: 30, color: "#FAA144" },
-  { skill: "Communiacation", skillLevel: 80, color: "#6182FB" },
+  { skill: 'React', skillLevel: 100, color: '#6182FB' },
+  { skill: 'design', skillLevel: 75, color: '#D26FF3' },
+  { skill: 'Python', skillLevel: 50, color: '#FC5A59' },
+  { skill: 'Typescript', skillLevel: 30, color: '#FAA144' },
+  { skill: 'Communiacation', skillLevel: 80, color: '#6182FB' },
 ];
 
 const skillRecommendations = [
   {
-    skill: "Typescript",
+    skill: 'Typescript',
     skillLevel: 30,
-    skillClass: "Low",
+    skillClass: 'Low',
     description: [
-      "Explore advanced Generics",
-      "Refactor project with more strict style",
+      'Explore advanced Generics',
+      'Refactor project with more strict style',
     ],
   },
   {
-    skill: "Design",
+    skill: 'Design',
     skillLevel: 45,
-    skillClass: "Medium",
+    skillClass: 'Medium',
     description: [
-      "Explore advanced Generics",
-      "Refactor project with more strict style",
+      'Explore advanced Generics',
+      'Refactor project with more strict style',
     ],
   },
   {
-    skill: "Python",
+    skill: 'Python',
     skillLevel: 70,
-    skillClass: "High",
+    skillClass: 'High',
     description: [
-      "Explore advanced Generics",
-      "Refactor project with more strict style",
+      'Explore advanced Generics',
+      'Refactor project with more strict style',
     ],
   },
 ];
 
 const ThemeInput = {
-  dark: ["#8EA8C2", "#5B80A7", "#B3C4D6", "#384259", "#093C70"],
+  dark: ['#8EA8C2', '#5B80A7', '#B3C4D6', '#384259', '#093C70'],
 };
 
 export default function MySkillsPage() {
   return (
     <>
-      <div className="mb-[40px] hidden lg:flex justify-between gap-[16px] items-center">
+      <div className="mb-[40px] hidden items-center justify-between gap-[16px] lg:flex">
         {cardTexts?.map((cardText, idx) => (
           <div
             key={idx}
-            className="border min-w-[200px] w-[33%] rounded-[16px] p-[24px] h-[120px]"
+            className="h-[120px] w-[33%] min-w-[200px] rounded-[16px] border p-[24px]"
           >
-            <div className="flex justify-between items-center mb-[8px]">
+            <div className="mb-[8px] flex items-center justify-between">
               <h3 className="font-semibold">{cardText?.text}</h3>
               <span
-                className={cn(cardText.icon, "size-5 text-[#086ACE]")}
+                className={cn(cardText.icon, 'size-5 text-[#086ACE]')}
               ></span>
             </div>
-            <div className="font-bold text-xl">
+            <div className="text-xl font-bold">
               {cardValues?.at(idx)?.value}
-              {cardValues?.at(idx)?.isPercent && "%"}
+              {cardValues?.at(idx)?.isPercent && '%'}
             </div>
           </div>
         ))}
@@ -117,12 +117,12 @@ export default function MySkillsPage() {
         <CardSliderMobile cardItems={cardTexts} cardValues={cardValues} />
       </div>
       {/* Rader Chart */}
-      <div className="w-full h-fit lg:h-[500px] flex flex-col lg:flex-row gap-[24px] mb-[40px]">
+      <div className="mb-[40px] flex h-fit w-full flex-col gap-[24px] lg:h-[500px] lg:flex-row">
         <RaderChartCard chartData={chartData} />
         {/* Skill recommendation- RHS */}
-        <div className="w-full lg:w-[35%] border py-[24px] rounded-[16px] flex flex-col gap-[24px] lg:max-h-[548px]">
-          <h3 className="font-semibold px-[12px]">Skill Recommendation</h3>
-          <div className="flex flex-col p-[12px] gap-[24px] max-h-[500px] lg:max-h-[400px] overflow-y-scroll [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex w-full flex-col gap-[24px] rounded-[16px] border py-[24px] lg:max-h-[548px] lg:w-[35%]">
+          <h3 className="px-[12px] font-semibold">Skill Recommendation</h3>
+          <div className="flex max-h-[500px] flex-col gap-[24px] overflow-y-scroll p-[12px] [scrollbar-width:none] lg:max-h-[400px] [&::-webkit-scrollbar]:hidden">
             {skillRecommendations?.map((skillDesc, idx) => (
               <SkillRecommendationCard key={idx} skillData={skillDesc} />
             ))}
@@ -130,24 +130,24 @@ export default function MySkillsPage() {
         </div>
       </div>
       {/* Contributions */}
-      <div className="flex flex-col lg:flex-row lg:h-[420px] gap-[24px] mb-[40px]">
+      <div className="mb-[40px] flex flex-col gap-[24px] lg:h-[420px] lg:flex-row">
         {/* LHS */}
-        <div className="lg:w-[65%] flex flex-col item-center justify-start border rounded-[16px] p-[24px]">
-          <div className="h-[58px] w-full bg-neutral-50 flex items-center justify-between p-[12px] mb-[20px]">
-            <div className="flex gap-[8px] items-center lg:p-[12px]">
-              <div className="px-[10px] min-w-fit text-[12px] py-[8px] bg-white rounded-[8px] text-neutral-500 shadow-[0_1px_2px_0_#1018280D]">
+        <div className="item-center flex flex-col justify-start rounded-[16px] border p-[24px] lg:w-[65%]">
+          <div className="mb-[20px] flex h-[58px] w-full items-center justify-between bg-neutral-50 p-[12px]">
+            <div className="flex items-center gap-[8px] lg:p-[12px]">
+              <div className="min-w-fit rounded-[8px] bg-white px-[10px] py-[8px] text-[12px] text-neutral-500 shadow-[0_1px_2px_0_#1018280D]">
                 All Timer Contribution
               </div>
-              <div className="hidden lg:block px-[10px] py-[8px] text-[12px] bg-white rounded-[8px] text-neutral-500 shadow-[0_1px_2px_0_#1018280D]">
+              <div className="hidden rounded-[8px] bg-white px-[10px] py-[8px] text-[12px] text-neutral-500 shadow-[0_1px_2px_0_#1018280D] lg:block">
                 2023
               </div>
             </div>
-            <div className="flex items-center justify-center bg-white shadow-[0_1px_2px_0_#1018280D] rounded-[8px] lg:rounded-0 md:shadow-none">
-              <div className="lg:hidden px-[10px] py-[8px] text-[12px] bg-white rounded-[8px] text-neutral-500">
+            <div className="lg:rounded-0 flex items-center justify-center rounded-[8px] bg-white shadow-[0_1px_2px_0_#1018280D] md:shadow-none">
+              <div className="rounded-[8px] bg-white px-[10px] py-[8px] text-[12px] text-neutral-500 lg:hidden">
                 2023
               </div>
               <Select>
-                <SelectTrigger className="bg-white border-0  text-[12px] lg:shadow-[0_1px_2px_0_#1018280D]">
+                <SelectTrigger className="border-0 bg-white text-[12px] lg:shadow-[0_1px_2px_0_#1018280D]">
                   <SelectValue placeholder="Slack" />
                 </SelectTrigger>
                 <SelectContent>
@@ -161,42 +161,42 @@ export default function MySkillsPage() {
           <div>
             <GitHubCalendar
               username="atimscreative"
-              colorScheme={"dark"}
+              colorScheme={'dark'}
               hideColorLegend={true}
               hideTotalCount={true}
               theme={ThemeInput}
             />
           </div>
-          <div className="mt-[28px] lg:mt-auto gap-[8px] lg:gap-0 flex flex-wrap justify-between items-center">
+          <div className="mt-[28px] flex flex-wrap items-center justify-between gap-[8px] lg:mt-auto lg:gap-0">
             <p className="text-[12px]">James Alfred’s Slack Contribution</p>
             <div className="flex gap-[4px]">
-              <span className="text-[12px] me-[12px]">Less</span>
-              <span className="border block w-[14px] h-[16px] bg-iq-50 rounded-[5px]"></span>
-              <span className="border block w-[14px] h-[16px] bg-iq-100 rounded-[5px]"></span>
-              <span className="border block w-[14px] h-[16px] bg-iq-200 rounded-[5px]"></span>
-              <span className="border block w-[14px] h-[16px] bg-iq-300 rounded-[5px]"></span>
-              <span className="border block w-[14px] h-[16px] bg-iq-400 rounded-[5px]"></span>
-              <span className="border block w-[14px] h-[16px] bg-iq-500 rounded-[5px]"></span>
-              <span className="border block w-[14px] h-[16px] bg-iq-600 rounded-[5px]"></span>
-              <span className="text-[12px] ms-[12px]">More</span>
+              <span className="me-[12px] text-[12px]">Less</span>
+              <span className="bg-iq-50 block h-[16px] w-[14px] rounded-[5px] border"></span>
+              <span className="bg-iq-100 block h-[16px] w-[14px] rounded-[5px] border"></span>
+              <span className="bg-iq-200 block h-[16px] w-[14px] rounded-[5px] border"></span>
+              <span className="bg-iq-300 block h-[16px] w-[14px] rounded-[5px] border"></span>
+              <span className="bg-iq-400 block h-[16px] w-[14px] rounded-[5px] border"></span>
+              <span className="bg-iq-500 block h-[16px] w-[14px] rounded-[5px] border"></span>
+              <span className="bg-iq-600 block h-[16px] w-[14px] rounded-[5px] border"></span>
+              <span className="ms-[12px] text-[12px]">More</span>
             </div>
           </div>
         </div>
 
         {/* RHS */}
-        <div className="relative bg-[#086ACE] lg:w-[35%] lg:h-[100%] h-[350px] rounded-[16px]">
+        <div className="relative h-[350px] rounded-[16px] bg-[#086ACE] lg:h-[100%] lg:w-[35%]">
           {/* Timeline */}
-          <div className="before:absolute before:left-[2rem] before:top-0 before:bottom-0 before:bg-white before:w-[2px] before:h-[280px] flex flex-col w-full gap-[32px] pt-[49px]">
+          <div className="flex w-full flex-col gap-[32px] pt-[49px] before:absolute before:top-0 before:bottom-0 before:left-[2rem] before:h-[280px] before:w-[2px] before:bg-white">
             {/* Each Timeline item */}
             {contributions?.map((contribution, idx) => (
               <div
                 key={idx}
-                className="before:absolute before:block before:rounded-full before:w-[24px] before:h-[24px] before:outline-[5px] before:outline-[#086ACE] before:bg-white before:left-[1.3rem] left-[0px] max-w-[75%] ml-[3.3rem]"
+                className="left-[0px] ml-[3.3rem] max-w-[75%] before:absolute before:left-[1.3rem] before:block before:h-[24px] before:w-[24px] before:rounded-full before:bg-white before:outline-[5px] before:outline-[#086ACE]"
               >
-                <p className="text-[#B3C4D6] text-[12px]">
+                <p className="text-[12px] text-[#B3C4D6]">
                   {contribution?.text}
                 </p>
-                <p className="text-white font-bold">{contribution?.value}</p>
+                <p className="font-bold text-white">{contribution?.value}</p>
               </div>
             ))}
           </div>

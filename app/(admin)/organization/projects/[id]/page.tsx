@@ -3,7 +3,7 @@ import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import AssignedTeamMembers from '@/components/assigned-team-member';
+import AssignedTeamMembers from '@/app/(user)/member/projects/components/assigned-team-member';
 import ProjectOverview from '@/components/project-overview';
 
 function ProjectDetails() {
@@ -34,7 +34,7 @@ function ProjectDetails() {
         </TabsList>
 
         {projectsTabs.map(tab => (
-          <TabsContent key={tab.value} value={tab.value} className="pt-10 ml-4">
+          <TabsContent key={tab.value} value={tab.value} className="ml-4 pt-10">
             {tab.content}
           </TabsContent>
         ))}
