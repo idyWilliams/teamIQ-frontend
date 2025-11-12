@@ -15,11 +15,11 @@ import {
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import axiosInstance from '@/services/axios';
-import { users } from '@/services/api';
-import { Camera } from 'lucide-react';
+import axiosInstance, { tokenStorage } from '@/services/axios';
+import { Camera, Loader2 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'nextjs-toploader/app';
+import jwtDecode from 'jwt-decode';
 
 // ✅ Yup validation schema
 const schema = yup.object({
@@ -48,21 +48,20 @@ const schema = yup.object({
     }),
   profile: yup
     .mixed()
-    .required('Profile image is required')
+    .nullable()
     .test('fileType', 'Only image files are allowed', (value: any) => {
-      console.log(value, 'FOR VAD', typeof value);
-
+      if (!value) return true; // allow no image
       return (
-        value &&
         typeof value === 'object' &&
-        ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'].includes(
-          value.type
-        )
+        ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'].includes(value.type)
       );
     }),
 });
 
 type FormData = yup.InferType<typeof schema>;
+
+// Decode token type
+type TokenPayload = { id: number };
 
 export default function AccountSetup() {
   const { user, updateUser } = useAuthStore();
@@ -83,69 +82,70 @@ export default function AccountSetup() {
 
   const handleFileUpload = (e: any) => {
     const file = e.target.files?.[0];
-
     if (!file) return;
 
-    if (file) setPreview(URL.createObjectURL(file));
+    setPreview(URL.createObjectURL(file));
     setValue('profile', file);
-    console.log(e.target.files, 'PHO');
   };
 
   const onSubmit = async (data: FormData | any) => {
-    // return console.log(errors, data);
-
     try {
       setLoading(true);
 
-      // 1️⃣ Upload image to /image endpoint
-      const formData = new FormData();
-      formData.append('file', data.profile);
-      formData.append('image_type', 'profile');
-      formData.append('update_db', 'true');
+      // ✅ Get userId from JWT token
+      const token = tokenStorage.get();
+      if (!token) throw new Error('Not logged in');
+      const decoded = jwtDecode<TokenPayload>(token);
+      const userId = decoded.id;
 
-      const uploadResponse = await axiosInstance.post('/image', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      let imageUrl = user?.profile_image;
 
-      console.log('uploadResponse:', uploadResponse);
+      // Only upload if user selected a new file
+      if (data.profile) {
+        const formData = new FormData();
+        formData.append('file', data.profile);
+        formData.append('image_type', 'profile');
+        formData.append('update_db', 'true');
 
-      const imageUrl = uploadResponse?.data?.data?.url; // depends on backend response shape
+        const uploadResponse = await axiosInstance.post('/image', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
 
-      // 2️⃣ Get user_id (replace with actual logic or state)
-      const userId = user?.id; // You’ll likely get this from auth context or local storage
-      if (!imageUrl) return;
+        imageUrl = uploadResponse?.data?.data?.url;
+      }
+
+      // Prepare final payload
       const final = {
         track: data.track,
-        stacks: data.stack,
-        profile_image: imageUrl,
-      };
-      console.log(final);
-
-      // 3️⃣ Update profile with track, stack, and image
-      const res = await axiosInstance.put(users.byId(userId), {
-        track: data.track,
-        stacks: data.stack,
+        stacks: data.stack || [],
         profile_image: imageUrl || user?.profile_img,
-      });
+      };
+
+      // ✅ Use correct PUT endpoint with userId
+      const res = await axiosInstance.put(`/users/${userId}`, final);
 
       alert('✅ Profile updated successfully!');
-      console.log(res);
-
       updateUser(res?.data?.data);
       router.push('/member');
     } catch (error: any) {
       console.error('Profile update failed:', error);
-      alert('❌ Failed to update profile. Try again.');
+
+      const msg =
+        error?.response?.data?.detail?.[0]?.msg ||
+        'Failed to update profile. Try again.';
+      alert(`❌ ${msg}`);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    console.log(user);
     if (user) {
       setPreview(user?.profile_image);
-      reset({ track: user?.track });
+      reset({
+        track: user?.track || '',
+        stack: user?.stacks?.join(', ') || '',
+      });
     }
   }, [reset, user]);
 
@@ -161,18 +161,18 @@ export default function AccountSetup() {
           <div className="mt-5 flex items-center justify-center">
             <div className="relative">
               <Image
-                src={(preview as string) || '/images/avatar.png'}
+                src={preview || '/images/avatar.png'}
                 alt="avatar"
                 width={100}
                 height={100}
                 priority
-                className="size-[100px] rounded-full bg-neutral-100 object-cover"
+                className="w-24 h-24 rounded-full bg-neutral-100 object-cover"
               />
               <Button
                 type="button"
                 variant="ghost"
                 id="profile"
-                className="bg-iq-500 absolute -right-2 bottom-0 size-8 rounded-full border-2 border-white text-white"
+                className="bg-iq-500 absolute -right-2 bottom-0 w-8 h-8 rounded-full border-2 border-white text-white"
                 onClick={() => fileInputRef.current?.click()}
               >
                 <Camera size={24} />
@@ -180,7 +180,6 @@ export default function AccountSetup() {
             </div>
           </div>
 
-          {/* Profile upload input */}
           <div className="mt-4">
             <Input
               ref={fileInputRef}
@@ -190,9 +189,7 @@ export default function AccountSetup() {
               className="hidden"
             />
             {errors.profile && (
-              <p className="mt-1 text-sm text-red-500">
-                {errors.profile.message}
-              </p>
+              <p className="mt-1 text-sm text-red-500">{errors.profile.message}</p>
             )}
           </div>
         </div>
@@ -203,24 +200,18 @@ export default function AccountSetup() {
             <Label htmlFor="track" className="mb-2 text-[17px] font-normal">
               Select Track
             </Label>
-            <Select onValueChange={val => setValue('track', val)}>
+            <Select onValueChange={(val) => setValue('track', val)}>
               <SelectTrigger className="w-full border-0 border-b border-[#B3C4D6] bg-[#F7F7F7]">
                 <SelectValue placeholder="Frontend Developer" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Frontend Developer">
-                  Frontend Developer
-                </SelectItem>
-                <SelectItem value="Backend Developer">
-                  Backend Developer
-                </SelectItem>
+                <SelectItem value="Frontend Developer">Frontend Developer</SelectItem>
+                <SelectItem value="Backend Developer">Backend Developer</SelectItem>
                 <SelectItem value="QA Tester">QA Tester</SelectItem>
               </SelectContent>
             </Select>
             {errors.track && (
-              <p className="mt-1 text-sm text-red-500">
-                {errors.track.message}
-              </p>
+              <p className="mt-1 text-sm text-red-500">{errors.track.message}</p>
             )}
           </div>
 
@@ -241,19 +232,25 @@ export default function AccountSetup() {
               className="border-0 border-b border-[#B3C4D6] bg-[#F7F7F7] px-4 py-3"
             />
             {errors.stack && (
-              <p className="mt-1 text-sm text-red-500">
-                {errors.stack.message}
-              </p>
+              <p className="mt-1 text-sm text-red-500">{errors.stack.message}</p>
             )}
           </div>
         </div>
 
+        {/* Submit button with loading spinner */}
         <Button
           type="submit"
           disabled={loading}
-          className="mt-6 h-auto w-full rounded-md bg-[#086ACE] py-3 text-white hover:bg-[#086bcec0]"
+          className="mt-6 h-auto w-full rounded-md bg-[#086ACE] py-3 text-white hover:bg-[#086bcec0] flex items-center justify-center gap-2"
         >
-          {loading ? 'Submitting...' : 'Submit'}
+          {loading ? (
+            <>
+              <Loader2 className="animate-spin w-5 h-5" />
+              Submitting...
+            </>
+          ) : (
+            'Submit'
+          )}
         </Button>
       </form>
     </section>
