@@ -19,7 +19,8 @@ import axiosInstance, { tokenStorage } from '@/services/axios';
 import { Camera, Loader2 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'nextjs-toploader/app';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+
 
 // ✅ Yup validation schema
 const schema = yup.object({
@@ -47,10 +48,11 @@ const schema = yup.object({
         .filter((t: any) => t.length > 0);
     }),
   profile: yup
-    .mixed()
+    .mixed<File>()
     .nullable()
-    .test('fileType', 'Only image files are allowed', (value: any) => {
-      if (!value) return true; // allow no image
+    .notRequired() // ✅ makes image optional
+    .test('fileType', 'Only image files are allowed', (value) => {
+      if (!value) return true; // Skip if no image
       return (
         typeof value === 'object' &&
         ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'].includes(value.type)
@@ -58,7 +60,11 @@ const schema = yup.object({
     }),
 });
 
-type FormData = yup.InferType<typeof schema>;
+  type FormData = {
+  track: string;
+  stack: string[];
+  profile?: File | null;
+};
 
 // Decode token type
 type TokenPayload = { id: number };
@@ -71,13 +77,13 @@ export default function AccountSetup() {
   const router = useRouter();
 
   const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-    reset,
-  } = useForm<FormData>({
-    resolver: yupResolver(schema),
+  register,
+  handleSubmit,
+  setValue,
+  formState: { errors },
+  reset,
+  } = useForm<any>({
+    resolver: yupResolver(schema as any),
   });
 
   const handleFileUpload = (e: any) => {
@@ -188,8 +194,10 @@ export default function AccountSetup() {
               onChange={handleFileUpload}
               className="hidden"
             />
-            {errors.profile && (
-              <p className="mt-1 text-sm text-red-500">{errors.profile.message}</p>
+            {errors.track && (
+            <p className="mt-1 text-sm text-red-500">
+              {typeof errors.track.message === "string" ? errors.track.message : ""}
+            </p>
             )}
           </div>
         </div>
@@ -211,7 +219,9 @@ export default function AccountSetup() {
               </SelectContent>
             </Select>
             {errors.track && (
-              <p className="mt-1 text-sm text-red-500">{errors.track.message}</p>
+              <p className="mt-1 text-sm text-red-500">
+                {typeof errors.track.message === "string" ? errors.track.message : ""}
+              </p>
             )}
           </div>
 
@@ -231,8 +241,10 @@ export default function AccountSetup() {
               {...register('stack')}
               className="border-0 border-b border-[#B3C4D6] bg-[#F7F7F7] px-4 py-3"
             />
-            {errors.stack && (
-              <p className="mt-1 text-sm text-red-500">{errors.stack.message}</p>
+            {errors.track && (
+              <p className="mt-1 text-sm text-red-500">
+                {typeof errors.track.message === "string" ? errors.track.message : ""}
+              </p>
             )}
           </div>
         </div>
