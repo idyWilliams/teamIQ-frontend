@@ -380,17 +380,19 @@ export default function ProjectsPage() {
                 {table.getRowModel().rows.map(row => (
                   <tr
                     key={row.id}
-                    onClick={() =>
-                      (window.location.href = `/organization/projects/${row.original.id}`)
-                    }
                     className="cursor-pointer border-t transition hover:bg-gray-50"
                   >
                     {row.getVisibleCells().map(cell => (
                       <td key={cell.id} className="p-2">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
+                        <Link
+                          href={`/organization/projects/${row.original.id}`}
+                          className="block h-full w-full"
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </Link>
                       </td>
                     ))}
                   </tr>
