@@ -33,3 +33,19 @@ export function useGetInvitedUsers() {
     },
   });
 }
+
+
+export const useRevokeInvite = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (invitationId: number) => {
+      const res = await api.post(`/api/v1/invitations/${invitationId}/revoke`);
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success('Invite revoked successfully!');
+      queryClient.invalidateQueries({ queryKey: ['get-assinged-users'] });
+    },
+  });
+};
