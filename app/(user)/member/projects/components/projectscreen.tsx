@@ -3,6 +3,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { useRouter } from 'nextjs-toploader/app';
 import Image from 'next/image';
+import { useGetMyProjects } from '@/services/hooks/useProjectGet';
 
 const projects = [
   {
@@ -45,6 +46,8 @@ const projects = [
 
 export default function ProjectScreen() {
   const router = useRouter();
+  const {data, error, isLoading} = useGetMyProjects()
+  console.log("component projects", data)
 
   const handleProjectClick = (projectId: string) => {
     router.push(`/member/projects/${projectId}`);

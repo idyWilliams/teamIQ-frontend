@@ -16,6 +16,7 @@ const api = {
   users: {
     byId: (userId: number) => `/users/${userId}`,
     organizationUsers: '/users/organization/users',
+    getProjects: '/users/me/projects'
   },
 
   organizations: {
