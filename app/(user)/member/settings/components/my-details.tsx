@@ -266,7 +266,7 @@ const MyDetails = () => {
               )}
             </div>
 
-            {/* Right: Edit/Save button */}
+            {/* Right: Edit/Save button */}       
             <div className="flex items-center">
               {info.editable ? (
                 editingInfo === info.key ? (

@@ -1,3 +1,5 @@
+
+
 export type FieldType = {
   label: string;
   value: string | string[];
@@ -36,3 +38,69 @@ export const organizationData: OrganizationDataType = [
     ],
   },
 ];
+
+
+
+// Field sections matching the Figma design
+export const fieldSections = [
+  {
+    id: 'profile',
+    title: 'Organization Profile',
+    fields: [
+      {
+        label: 'Organization Name',
+        key: 'name',
+        type: 'text',
+        required: true,
+        editable: true,
+      },
+      {
+        label: 'Business Industry',
+        key: 'sector',
+        type: 'text',
+        editable: true,
+      },
+      {
+        label: 'Employee Size',
+        key: 'team_size',
+        type: 'text',
+        editable: true,
+      },
+    ] as FieldConfig[],
+  },
+  {
+    id: 'location',
+    title: 'Business Location',
+    fields: [
+      { label: 'Country', key: 'country', type: 'text', editable: true },
+      { label: 'Location', key: 'address', type: 'text', editable: true },
+    ] as FieldConfig[],
+  },
+  {
+    id: 'contact',
+    title: 'Primary Contact',
+    fields: [
+      {
+        label: 'Contacts',
+        key: 'phone_number',
+        type: 'tel',
+        editable: true,
+      },
+      {
+        label: 'Email',
+        key: 'email',
+        type: 'email',
+        required: true,
+        editable: true,
+      },
+    ] as FieldConfig[],
+  },
+];
+
+export type FieldConfig = {
+  label: string;
+  key: string;
+  type: 'text' | 'email' | 'tel' | 'textarea' | 'url';
+  required?: boolean;
+  editable?: boolean;
+};
