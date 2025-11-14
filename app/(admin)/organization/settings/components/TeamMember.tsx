@@ -13,10 +13,10 @@ const TeamMemberTab = () => {
   console.log("invited users", invitedUsers?.data)
   const [modalOpen, setModalOpen] = useState(false);
 
-  const activeUsers = invitedUsers?.data.filter((user:any) => user.accepted) || []
+  const activeUsers = invitedUsers?.data.filter((user:any) => user.status === "active") || []
   console.log("activeUsers", activeUsers)
 
-  const pendingUsers = invitedUsers?.data.filter((user: any) => user.status === "pending" ) || []
+  const pendingUsers = invitedUsers?.data.filter((user: any) => user.status === "pending" || user.status === "expired" ) || []
   console.log("pendingUsers",pendingUsers)
 
   const openModal = () => {
