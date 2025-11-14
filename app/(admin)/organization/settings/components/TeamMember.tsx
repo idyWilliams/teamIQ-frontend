@@ -6,8 +6,10 @@ import InviteTable from '@/components/organizational-settings-component/member-g
 import PendingInvite from '@/components/organizational-settings-component/member-group/PendingInvite';
 import PendingTable from '@/components/organizational-settings-component/member-group/PendingTable';
 import React, { useState } from 'react';
+import { useGetInvitedUsers } from '@/services/hooks/useInviteUser';
 
 const TeamMemberTab = () => {
+  const {data: invitedUsers, isError, isLoading}= useGetInvitedUsers()
   const [modalOpen, setModalOpen] = useState(false);
 
   const openModal = () => {
