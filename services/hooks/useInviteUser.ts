@@ -1,7 +1,9 @@
 import axiosInstance from '../axios';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { userInvitation } from '../api';
+import api from '@/services/axios';
+
 
 export const useInviteUser = () => {
   const queryClient = useQueryClient();
@@ -21,3 +23,13 @@ export const useInviteUser = () => {
     },
   });
 };
+
+export function useGetInvitedUsers() {
+  return useQuery({
+    queryKey: ['get-assinged-users'],
+    queryFn: async () => {
+      const res = await api.get(userInvitation.getInvitedUsers); 
+      return res.data;
+    },
+  });
+}
