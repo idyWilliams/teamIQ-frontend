@@ -26,6 +26,7 @@ const api = {
 
   userInvitation: {
     register: '/invitations/',
+    getInvitedUsers: '/invitations',
   },
 
   projects: {
