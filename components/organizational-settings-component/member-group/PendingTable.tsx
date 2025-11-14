@@ -55,6 +55,9 @@ const PendingTable = ({pendingUsers = []}: PendingUsersProps ) => {
               </TableCell>
               <TableCell className="border-b border-[#1c1c1c0d]">
                 <div className="flex items-center justify-center gap-2">
+                  <div>
+                    {row.status}
+                  </div>
                   <Button
                     size="sm"
                     className="w-[120px] cursor-pointer bg-[#086ace] whitespace-nowrap text-[#ffffff] hover:bg-transparent hover:text-[#086ace]"
