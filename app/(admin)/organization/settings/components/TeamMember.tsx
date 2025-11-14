@@ -10,7 +10,14 @@ import { useGetInvitedUsers } from '@/services/hooks/useInviteUser';
 
 const TeamMemberTab = () => {
   const {data: invitedUsers, isError, isLoading}= useGetInvitedUsers()
+  console.log("invited users", invitedUsers?.data)
   const [modalOpen, setModalOpen] = useState(false);
+
+  const activeUsers = invitedUsers?.data.filter((user:any) => user.accepted) || []
+  console.log("activeUsers", activeUsers)
+
+  const pendingUsers = invitedUsers?.data.filter((user: any) => user.status === "pending" ) || []
+  console.log("pendingUsers",pendingUsers)
 
   const openModal = () => {
     setModalOpen(true);
@@ -20,11 +27,11 @@ const TeamMemberTab = () => {
     <div className="flex flex-col justify-center p-1">
       <div className="flex items-center justify-center gap-3 border-b p-3 py-0 pb-4">
         <InviteMembers onOpen={openModal} />
-        <InviteTable />
+        <InviteTable activeUsers={activeUsers}/>
       </div>
       <div className="flex items-center justify-center gap-3 py-12">
         <PendingInvite />
-        <PendingTable />
+        <PendingTable pendingUsers={pendingUsers}/>
       </div>
       {
         <InviteTeamMemberModal
