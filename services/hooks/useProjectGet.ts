@@ -1,7 +1,8 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/services/axios';
-import axiosInstance from '@/services/axios';
+import { users as usersApi } from '@/services/api';
+
 
 export interface Project {
   id: number;
@@ -36,7 +37,7 @@ export const useProjects = () => {
     queryKey: ['projects'],
 
     queryFn: async (): Promise<Project[]> => {
-      const { data } = await axiosInstance.get<ProjectsResponse>('/projects/');
+      const { data } = await api.get<ProjectsResponse>('/projects/');
       // Sort by createdAt descending (newest first)
       const sortedProjects = data.data.sort(
         (a, b) =>
@@ -49,3 +50,15 @@ export const useProjects = () => {
     gcTime: 5 * 60 * 1000,
   });
 };
+
+export const useGetMyProjects = () => {
+  return useQuery({
+    queryKey: ['user-projects'],
+
+    queryFn: async() => {
+      const res = await api.get(usersApi.getProjects);
+      console.log("users-get-projects", res.data)
+      return res.data
+    }
+  })
+}
