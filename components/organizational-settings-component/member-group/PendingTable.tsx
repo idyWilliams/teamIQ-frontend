@@ -10,29 +10,48 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 
-const PendingTable = () => {
+interface PendingUsersProps {
+pendingUsers: Array<{
+  id: number,
+    email: string,
+    role: string,
+    status: string,
+    track: string   
+    accepted: boolean
+    createdAt: string 
+}>
+}
+
+const PendingTable = ({pendingUsers}: PendingUsersProps ) => {
+   const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
   return (
     <div className="w-[70%] overflow-x-auto">
       <Table className="">
         <TableHeader className="w-full] boder-b h-[40px] gap-4 p-2">
           <TableRow className="w-full">
-            <TableHead className="border-l p-2">Name</TableHead>
-            <TableHead className="border-l p-2">Stack</TableHead>
+            <TableHead className="border-l p-2">Email</TableHead>
+            <TableHead className="border-l p-2">Track</TableHead>
             <TableHead className="border-l p-2">Date</TableHead>
             <TableHead className="border-l p-2">Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {pendingData.map(row => (
+          {pendingUsers?.map(row => (
             <TableRow key={row.id}>
               <TableCell className="border-b border-[#1c1c1c0d]">
-                {row.name}
+                {row.email}
               </TableCell>
               <TableCell className="border-b border-[#1c1c1c0d]">
-                {row.stack}
+                {row.track}
               </TableCell>
               <TableCell className="border-b border-[#1c1c1c0d]">
-                {row.dateSent}
+                {formatDate(row.createdAt)}
               </TableCell>
               <TableCell className="border-b border-[#1c1c1c0d]">
                 <div className="flex items-center justify-center gap-2">
