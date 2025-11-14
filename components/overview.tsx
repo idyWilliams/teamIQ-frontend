@@ -21,7 +21,6 @@
 //     setShowCard(false); // ✅ hides the card
 //   };
 
-
 //   return (
 //     <div className="space-y-6 p-4">
 //       <div>
@@ -39,7 +38,7 @@
 
 //           <button
 //             onClick={() => { setIsModalOpen(true); }}
-            
+
 //             className="bg-iq-600 hover:bg-iq-800 cursor-pointer rounded-[8px] p-[10px] text-neutral-50 duration-500"
 //           >
 //             Complete Now
@@ -82,16 +81,13 @@
 //       )}
 //     </div>
 
-
 //   );
 // };
 
 // export default DashbordOverview;
 
-
-
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CardItem from './cardItem';
 import ChartLineDefault from './chart-line';
 import ActiveBlockers from './active-blockers';
@@ -101,17 +97,25 @@ import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import OrganizationalDetails from './org-onboarding-comps/organizationalOnboarding';
 import OnboardingSuccess from './org-onboarding-comps/onboardingSuccess';
+import { useAuthStore } from '@/store/useAuthStore';
 
 const DashboardOverview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showCard, setShowCard] = useState(true);
+  const [showCard, setShowCard] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const { user } = useAuthStore();
 
   const handleComplete = () => {
     setShowSuccessModal(false);
     setIsModalOpen(false);
     setShowCard(false); // ✅ hides the card after onboarding
   };
+
+  useEffect(() => {
+    if (user && !user?.domain_link) {
+      setShowCard(true);
+    }
+  }, [user]);
 
   return (
     <div className="space-y-6 p-4">
@@ -163,17 +167,16 @@ const DashboardOverview = () => {
       </div>
 
       {/* 🧩 Onboarding Modal */}
-     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-  <DialogContent className="max-h-[90vh] w-[900px] overflow-y-auto !pt-0 sm:!max-w-[900px] [&>button]:hidden">
-    <OrganizationalDetails 
-      onClose={() => setIsModalOpen(false)} 
-      onSuccess={() => {
-        setShowSuccessModal(true);
-      }} 
-    />
-  </DialogContent>
-</Dialog>
-
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-h-[90vh] w-[900px] overflow-y-auto !pt-0 sm:!max-w-[900px] [&>button]:hidden">
+          <OrganizationalDetails
+            onClose={() => setIsModalOpen(false)}
+            onSuccess={() => {
+              setShowSuccessModal(true);
+            }}
+          />
+        </DialogContent>
+      </Dialog>
 
       {/* 🎉 Success Modal */}
       {showSuccessModal && (
