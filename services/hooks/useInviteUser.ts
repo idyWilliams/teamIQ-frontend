@@ -19,7 +19,7 @@ export const useInviteUser = () => {
     },
     onSuccess: () => {
       toast.success('Invited sent sucessfully!');
-      queryClient.invalidateQueries({ queryKey: ['invitation'] });
+      queryClient.invalidateQueries({ queryKey: ['get-assinged-users'] });
     },
   });
 };
@@ -33,3 +33,34 @@ export function useGetInvitedUsers() {
     },
   });
 }
+
+
+export const useRevokeInvite = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (invitationId: number) => {
+      const res = await api.post(`/api/v1/invitations/${invitationId}/revoke`);
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success('Invite revoked successfully!');
+      queryClient.invalidateQueries({ queryKey: ['get-assinged-users'] });
+    },
+  });
+};
+
+export const useResendInvite = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (invitationId: number) => {
+      const res = await api.post(`/api/v1/invitations/${invitationId}/resend`);
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success('Invite resent successfully!');
+      queryClient.invalidateQueries({ queryKey: ['get-assinged-users'] });
+    },
+  });
+};
