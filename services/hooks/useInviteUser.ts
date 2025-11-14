@@ -19,7 +19,7 @@ export const useInviteUser = () => {
     },
     onSuccess: () => {
       toast.success('Invited sent sucessfully!');
-      queryClient.invalidateQueries({ queryKey: ['invitation'] });
+      queryClient.invalidateQueries({ queryKey: ['get-assinged-users'] });
     },
   });
 };
