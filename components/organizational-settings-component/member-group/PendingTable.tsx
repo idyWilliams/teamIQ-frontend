@@ -9,6 +9,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import { useRevokeInvite } from '@/services/hooks/useInviteUser';
 
 interface PendingUsersProps {
 pendingUsers?: Array<{
@@ -23,12 +24,17 @@ pendingUsers?: Array<{
 }
 
 const PendingTable = ({pendingUsers = []}: PendingUsersProps ) => {
+  const { mutate: revokeInvite } = useRevokeInvite();
    const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
     });
+  };
+
+   const handleRevoke = (invitationId: number) => {
+    revokeInvite(invitationId);
   };
   return (
     <div className="w-[70%] overflow-x-auto">
@@ -67,6 +73,7 @@ const PendingTable = ({pendingUsers = []}: PendingUsersProps ) => {
                   <Button
                     size="sm"
                     className="w-[120px] cursor-pointer border border-[#086ace] bg-[#ffffff] whitespace-nowrap text-[#086ace] hover:bg-[#086ace] hover:text-[#ffffff]"
+                   onClick={() => handleRevoke(row.id)}
                   >
                     Revoke Invite
                   </Button>
