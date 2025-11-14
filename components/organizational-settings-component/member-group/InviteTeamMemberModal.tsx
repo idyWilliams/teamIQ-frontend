@@ -129,6 +129,18 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Tracks</SelectLabel>
+                        <SelectItem value="product-manager">
+                          Product Manager
+                        </SelectItem>
+                         <SelectItem value="qa-engineer">
+                          QA Engineers 
+                        </SelectItem>
+                        <SelectItem value="data-analyst">
+                          Data Analyst 
+                        </SelectItem>
+                        <SelectItem value="software-engineer">
+                         Software Engineer
+                        </SelectItem>
                         <SelectItem value="product-design">
                           Product Design
                         </SelectItem>
