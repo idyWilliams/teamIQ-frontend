@@ -64,7 +64,7 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
     try {
       const res = await mutateAsync(data);
       console.log(res);
-      toast.success('Invite sent successfully');
+      // toast.success('Invite sent successfully');
       reset();
       onClose();
     } catch (error) {
