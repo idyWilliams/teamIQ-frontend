@@ -150,7 +150,6 @@ export const useOnboardingComplete = () => {
 
   return useMutation({
     mutationFn: async (payload: {
-      organization_image: string;
       description: string;
       sector: string;
       social_media_handles: {
@@ -164,19 +163,19 @@ export const useOnboardingComplete = () => {
       phone_number: string;
     }) => {
       const res = await axiosInstance.patch(
-        organizations.onboardingComplete,
+        organizations.onboardingComplete, 
         payload
       );
       return res.data;
     },
     onSuccess: data => {
-      toast.success(data?.message || 'Onboarding completed successfully!');
+      // toast.success(data?.message || 'Onboarding completed successfully!');
       queryClient.invalidateQueries({ queryKey: ['organizations'] });
     },
     onError: (error: any) => {
       const message =
         error?.response?.data?.message || 'Failed to complete onboarding.';
-      toast.error(message);
+      // toast.error(message);
     },
   });
 };

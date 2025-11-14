@@ -10,9 +10,13 @@ import { X } from 'lucide-react';
 import Image from 'next/image';
 import { useState, useRef, ChangeEvent } from 'react';
 import { useOnboardingComplete } from '@/services/hooks/useAuth';
+import axiosInstance from '@/services/axios';
 import { toast } from 'sonner';
 import OnboardingSuccess from './onboardingSuccess';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { useAuthStore } from '@/store/useAuthStore';
+import { users } from '@/services/api';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
 // Validation schema using Yup
 
@@ -36,16 +40,34 @@ const validationSchema = yup.object({
   website: yup.string().trim(),
   phone_number: yup.string().trim(),
   favourite_tools: yup.string().trim(),
-  organization_image: yup.string().required('project image is required!'),
+  organization_image:yup
+      .mixed()
+      .test('fileType', 'Only image files are allowed', (value: any) => {
+        console.log(value, 'FOR VAD', typeof value);
+  
+        return (
+          value &&
+          typeof value === 'object' &&
+          ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'].includes(
+            value.type
+          )
+        );
+      }),
 });
 
 type OrganizationForm = yup.InferType<typeof validationSchema>;
 interface organizationalDetailsprops {
   onClose?: () => void;
+  onSuccess?: () => void;
 }
 
 // Organizational Details Component
-const OrganizationalDetails = ({ onClose }: organizationalDetailsprops) => {
+const OrganizationalDetails = ({ onClose, onSuccess }: organizationalDetailsprops) => {
+
+    const [loading, setLoading] = useState(false);
+     const { user, updateUser } = useAuthStore();
+
+
   const [preview, setPreview] = useState<string | null>('');
   const imgUploadRef = useRef<HTMLInputElement | null>(null);
   // Fn for Handling File Upload
@@ -64,7 +86,7 @@ const OrganizationalDetails = ({ onClose }: organizationalDetailsprops) => {
 
   // Modal state for success modal
 
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+ 
 
   // React Hook Form setup
 
@@ -95,18 +117,63 @@ const OrganizationalDetails = ({ onClose }: organizationalDetailsprops) => {
 
   const onboarding = useOnboardingComplete();
 
-  const submit = (data: any) => {
-    onboarding.mutate(data, {
+  const submit = async (data: OrganizationForm | any) => {
+
+
+
+    try {
+      setLoading(true);
+
+      // 1️⃣ Upload image to /image endpoint
+      const formData = new FormData();
+      formData.append('file', data.organization_image);
+      formData.append('image_type', 'organization_image');
+      formData.append('update_db', 'true');
+
+      const uploadResponse = await axiosInstance.post('/image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+
+      const imageUrl = uploadResponse?.data?.data?.url; // depends on backend response shape
+
+      // 2️⃣ Get user_id (replace with actual logic or state)
+      const userId = user?.id; // You’ll likely get this from auth context or local storage
+      if (!imageUrl) return;
+      const final = {
+        ...data,
+        organization_image: imageUrl || user?.profile_img,
+        users: {
+          byId: (id: string) => {
+            return {
+              id,
+              email: user?.email,
+              name: user?.name,
+              organization_image: user?.profile_img,
+            };
+          },
+        },
+      };
+
+
+      // 3️⃣
+      onboarding.mutate(final, {
       onSuccess: () => {
         toast.success('Onboarding completed successfully!');
-        setShowSuccessModal(true);
+         onSuccess?.();
       },
       onError: (error: any) => {
         toast.error(
           error?.response?.data?.message || 'Failed to complete onboarding.'
         );
       },
-    }); // data contains all organzation fields
+    }); 
+    } catch (error: any) {
+      console.error(' update failed:', error);
+      alert('❌ Failed to update. Try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const styleInput =
@@ -313,13 +380,7 @@ const OrganizationalDetails = ({ onClose }: organizationalDetailsprops) => {
           </Button>
         </div>
       </form>
-      {showSuccessModal && (
-        <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
-          <DialogContent className="max-h-[90vh] w-[900px] overflow-y-auto !pt-0 sm:!max-w-[900px] [&>button]:hidden">
-            <OnboardingSuccess onClose={() => { setShowSuccessModal(false); onClose?.(); }} />
-          </DialogContent>
-        </Dialog>
-      )}
+    
     </div>
   );
 };
