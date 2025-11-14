@@ -43,7 +43,9 @@ const Header = ({ isMobile, onOpenNotification }: HeaderProps) => {
               </AvatarFallback>
             </Avatar>
             <span className="font-bold text-neutral-800">
-              {user.first_name} {user.last_name}
+              <span className="font-bold text-neutral-800">
+                {user?.first_name} {user?.last_name}
+              </span>
             </span>
           </div>
 
