@@ -7,9 +7,12 @@ import RadialChart from "@/components/radial-chart";
 import RecentCard from "@/components/recent-card";
 import Deadline from "@/components/deadline-card";
 import Loading from "@/components/dashboardSkeleton"
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
+  const {user} = useAuthStore()
+  console.log("user", user)
 
   // simulate API fetch delay
   useEffect(() => {
@@ -59,7 +62,7 @@ export default function Dashboard() {
   return (
     <div className="px-6">
       <h2 className="font-semibold pt-5 pb-9 text-2xl max-sm:text-xl">
-        Welcome back, James Alfred
+        Welcome back, {user?.first_name} {user?.last_name}
       </h2>
       {/* desktop card display */}
       <div className="hidden gap-4 sm:flex mb-12 max-lg:flex-wrap ">
