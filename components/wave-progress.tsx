@@ -91,7 +91,7 @@ export function WaveProgressCard({ progressData, title, showButton = true }: Wav
         </CardHeader>
         <CardContent>
           <div
-            className="grid items-start justify-items-center gap-1 lg:grid-cols-4 xl:grid-cols-5"
+            className="grid items-start justify-items-center gap-1 lg:grid-cols-3 xl:grid-cols-3"
             // style={{
             //   gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))",
             // }}
