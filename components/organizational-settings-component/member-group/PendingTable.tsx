@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 
 interface PendingUsersProps {
-pendingUsers: Array<{
+pendingUsers?: Array<{
   id: number,
     email: string,
     role: string,
@@ -22,7 +22,7 @@ pendingUsers: Array<{
 }>
 }
 
-const PendingTable = ({pendingUsers}: PendingUsersProps ) => {
+const PendingTable = ({pendingUsers = []}: PendingUsersProps ) => {
    const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
