@@ -21,11 +21,10 @@ const api = {
   },
 
   organizations: {
-    byId: (org_id: number) => `/organizations/organizations/${org_id}`,
+    byId: (org_id: number) => `/organizations/${org_id}`,
     signup: '/organizations/signup',
     onboardingComplete: '/organizations/onboarding-complete',
     profile: '/organizations/me/profile',
-    update: (org_id: string) => `/organizations/${org_id}`,
   },
 
   userInvitation: {

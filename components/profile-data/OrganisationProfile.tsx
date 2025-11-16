@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Edit } from 'lucide-react';
+import { Edit, Loader } from 'lucide-react';
 import {
   useOrgProfile,
   useUpdateOrgProfile,
   OrgProfile,
 } from '@/services/hooks/useOrgProfile';
 import { Input } from '../ui/input';
+import { toast } from 'sonner';
 
 interface FieldConfig {
   label: string;
@@ -16,7 +17,11 @@ interface FieldConfig {
   required?: boolean;
 }
 
-const fieldSections: { id: string; title: string; fields: FieldConfig[] }[] = [
+const fieldSections: {
+  id: string;
+  title: string;
+  fields: FieldConfig[];
+}[] = [
   {
     id: 'profile',
     title: 'Organization Profile',
@@ -25,7 +30,6 @@ const fieldSections: { id: string; title: string; fields: FieldConfig[] }[] = [
         label: 'Organization Name',
         key: 'organization_name',
         type: 'text',
-        required: true,
       },
       { label: 'Business Industry', key: 'sector', type: 'text' },
       { label: 'Employee Size', key: 'team_size', type: 'text' },
@@ -44,57 +48,67 @@ const fieldSections: { id: string; title: string; fields: FieldConfig[] }[] = [
     title: 'Primary Contact',
     fields: [
       { label: 'Phone Number', key: 'phone_number', type: 'tel' },
-      { label: 'Email', key: 'email', type: 'email', required: true },
+      { label: 'Email', key: 'email', type: 'email' },
     ],
   },
 ];
 
 const OrganisationProfile = () => {
-  const { data: profileData, isLoading, error, refetch } = useOrgProfile();
+  const { data, isLoading, error } = useOrgProfile();
   const updateProfile = useUpdateOrgProfile();
 
+  //Track which field is currently being edited
   const [editingField, setEditingField] = useState<keyof OrgProfile | null>(
     null
   );
+
+  // Local state to manage form data
   const [formData, setFormData] = useState<Partial<OrgProfile>>({});
 
+  // Sync fetched data to formData state
   useEffect(() => {
-    if (profileData) {
-      setFormData(profileData);
+    if (data) {
+      setFormData(data);
     }
-  }, [profileData]);
+  }, [data]);
 
+  //Updates a single field in the local form state
   const handleChange = (key: keyof OrgProfile, value: string) => {
     setFormData(prev => ({ ...prev, [key]: value }));
   };
 
+  // Resets the form data to the original fetched data and exits edit mode
   const handleCancel = () => {
-    if (profileData) {
-      setFormData(profileData);
+    if (data) {
+      setFormData(data);
     }
     setEditingField(null);
   };
 
   const handleSave = async (fieldKey: keyof OrgProfile) => {
-    if (!profileData?.id) return;
-
-    const orgId = profileData.id.toString();
-    const fieldValue = formData[fieldKey];
-
+    setEditingField(null);
+    if (!data) return;
+    const orgId = data.id;
+    const fieldValue = formData[fieldKey]; // Get the current value of the field from formData
     try {
       await updateProfile.mutateAsync({
         org_id: orgId,
         data: { [fieldKey]: fieldValue },
       });
-      setEditingField(null);
-      refetch();
     } catch (err) {
+      toast.error('Failed to update organization profile.');
       console.error('Failed to update field:', err);
     }
   };
 
   if (isLoading)
-    return <div className="p-5">Loading organization profile...</div>;
+    return (
+      <div className="flex p-5">
+        {' '}
+        <Loader className="animate-spin" />{' '}
+        <span className="ml-2">Loading organization profile...</span>
+      </div>
+    );
   if (error)
     return (
       <div className="p-5 text-red-600">
@@ -103,15 +117,25 @@ const OrganisationProfile = () => {
     );
 
   return (
-    <div className="mx-auto w-full p-5">
+    <div className="mx-auto w-full px-5">
       {fieldSections.map(section => (
         <div key={section.id} className="mb-6">
           <h2 className="mb-3 text-lg font-semibold">{section.title}</h2>
           <div className="flex flex-col gap-3 rounded-xl border p-4">
+            
+            {/* Render each field in the section */}
             {section.fields.map(field => {
               const isEditing = editingField === field.key;
-              const rawValue = formData[field.key] ?? '';
-              const value = typeof rawValue === 'object' ? JSON.stringify(rawValue) : String(rawValue);
+              const rawValue = formData[field.key] ?? ''; // Use formData to get the current value
+              
+              // Safety check to convert rawValue to string for input display
+              const value =
+                typeof rawValue === 'object'
+                  ? JSON.stringify(rawValue)
+                  : String(rawValue);
+              
+              //disable email field editing
+              const isDisable = field.key === 'email';
 
               return (
                 <div
@@ -127,6 +151,7 @@ const OrganisationProfile = () => {
                         value={value}
                         onChange={e => handleChange(field.key, e.target.value)}
                         autoFocus
+                        disabled={isDisable}
                       />
                     ) : (
                       <span className="text-sm text-gray-600">
@@ -154,7 +179,9 @@ const OrganisationProfile = () => {
                     ) : (
                       <button
                         onClick={() => setEditingField(field.key)}
-                        className="flex items-center gap-1 text-sm text-blue-600"
+                        //email field cannot be edited
+                        className={`flex items-center gap-1 text-sm ${isDisable ? 'cursor-not-allowed opacity-30' : 'cursor-pointer text-gray-600'}`}
+                        disabled={isDisable}
                       >
                         Edit <Edit size={16} />
                       </button>

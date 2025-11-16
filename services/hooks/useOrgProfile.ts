@@ -6,23 +6,20 @@ import { toast } from 'sonner';
 import { AxiosError } from 'axios';
 
 
+export interface OrgProfileResponse {
+  data: OrgProfile;
+}
 export interface OrgProfile {
-  id: string;
+  id: number;
   organization_name: string;
   team_size: string;
   organization_image: string;
   description: string;
   sector: string;
-  social_media_handles: {
-    additionalProp1: string;
-    additionalProp2: string;
-    additionalProp3: string;
-  };
-  domain_link: string;
-  favorite_tools: string[];
   website: string;
   country: string;
   phone_number: string;
+  email?: string;
 }
 
 export interface ApiErrorResponse {
@@ -34,11 +31,10 @@ export const useOrgProfile = () => {
   return useQuery<OrgProfile, AxiosError<ApiErrorResponse>>({
     queryKey: ['orgProfile'],
     queryFn: async () => {
-      const res = await axiosInstance.get<OrgProfile>(organizations.profile);
-      return res.data;
+      const res = await axiosInstance.get<OrgProfileResponse>(organizations.profile);
+      return res.data.data;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 1,
   });
 };
 
@@ -46,10 +42,10 @@ export const useOrgProfile = () => {
 export const useUpdateOrgProfile = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<OrgProfile, AxiosError<ApiErrorResponse>, { org_id: string; data: Partial<OrgProfile> }>({
+  return useMutation<OrgProfile, AxiosError<ApiErrorResponse>, { org_id: number; data: Partial<OrgProfile> }>({
     mutationFn: async ({ org_id, data }) => {
       const res = await axiosInstance.patch<OrgProfile>(
-        organizations.update(org_id),
+        organizations.byId(org_id),
         data
       );
       return res.data;
