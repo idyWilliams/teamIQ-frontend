@@ -1,3 +1,5 @@
+import { profile } from "console";
+
 // services/api.ts
 const api = {
   auth: {
@@ -20,9 +22,10 @@ const api = {
   },
 
   organizations: {
-    byId: (orgId: number) => `/organizations/organizations/${orgId}`,
+    byId: (org_id: number) => `/organizations/${org_id}`,
     signup: '/organizations/signup',
     onboardingComplete: '/organizations/onboarding-complete',
+    profile: '/organizations/me/profile',
   },
 
   userInvitation: {
