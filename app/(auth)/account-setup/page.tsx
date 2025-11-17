@@ -15,12 +15,10 @@ import {
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import axiosInstance, { tokenStorage } from '@/services/axios';
+import axiosInstance from '@/services/axios';
 import { Camera, Loader2 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'nextjs-toploader/app';
-import { jwtDecode } from 'jwt-decode';
-
 
 // ✅ Yup validation schema
 const schema = yup.object({
@@ -51,23 +49,22 @@ const schema = yup.object({
     .mixed<File>()
     .nullable()
     .notRequired() // ✅ makes image optional
-    .test('fileType', 'Only image files are allowed', (value) => {
+    .test('fileType', 'Only image files are allowed', value => {
       if (!value) return true; // Skip if no image
       return (
         typeof value === 'object' &&
-        ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'].includes(value.type)
+        ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'].includes(
+          value.type
+        )
       );
     }),
 });
 
-  type FormData = {
+type FormData = {
   track: string;
   stack: string[];
   profile?: File | null;
 };
-
-// Decode token type
-type TokenPayload = { id: number };
 
 export default function AccountSetup() {
   const { user, updateUser } = useAuthStore();
@@ -77,11 +74,11 @@ export default function AccountSetup() {
   const router = useRouter();
 
   const {
-  register,
-  handleSubmit,
-  setValue,
-  formState: { errors },
-  reset,
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
   } = useForm<any>({
     resolver: yupResolver(schema as any),
   });
@@ -97,13 +94,6 @@ export default function AccountSetup() {
   const onSubmit = async (data: FormData | any) => {
     try {
       setLoading(true);
-
-      // ✅ Get userId from JWT token
-      const token = tokenStorage.get();
-      if (!token) throw new Error('Not logged in');
-      const decoded = jwtDecode<TokenPayload>(token);
-      const userId = decoded.id;
-
       let imageUrl = user?.profile_image;
 
       // Only upload if user selected a new file
@@ -128,7 +118,7 @@ export default function AccountSetup() {
       };
 
       // ✅ Use correct PUT endpoint with userId
-      const res = await axiosInstance.put(`/users/${userId}`, final);
+      const res = await axiosInstance.put(`/users/${user?.id}`, final);
 
       alert('✅ Profile updated successfully!');
       updateUser(res?.data?.data);
@@ -172,13 +162,13 @@ export default function AccountSetup() {
                 width={100}
                 height={100}
                 priority
-                className="w-24 h-24 rounded-full bg-neutral-100 object-cover"
+                className="h-24 w-24 rounded-full bg-neutral-100 object-cover"
               />
               <Button
                 type="button"
                 variant="ghost"
                 id="profile"
-                className="bg-iq-500 absolute -right-2 bottom-0 w-8 h-8 rounded-full border-2 border-white text-white"
+                className="bg-iq-500 absolute -right-2 bottom-0 h-8 w-8 rounded-full border-2 border-white text-white"
                 onClick={() => fileInputRef.current?.click()}
               >
                 <Camera size={24} />
@@ -195,9 +185,11 @@ export default function AccountSetup() {
               className="hidden"
             />
             {errors.track && (
-            <p className="mt-1 text-sm text-red-500">
-              {typeof errors.track.message === "string" ? errors.track.message : ""}
-            </p>
+              <p className="mt-1 text-sm text-red-500">
+                {typeof errors.track.message === 'string'
+                  ? errors.track.message
+                  : ''}
+              </p>
             )}
           </div>
         </div>
@@ -208,19 +200,25 @@ export default function AccountSetup() {
             <Label htmlFor="track" className="mb-2 text-[17px] font-normal">
               Select Track
             </Label>
-            <Select onValueChange={(val) => setValue('track', val)}>
+            <Select onValueChange={val => setValue('track', val)}>
               <SelectTrigger className="w-full border-0 border-b border-[#B3C4D6] bg-[#F7F7F7]">
                 <SelectValue placeholder="Frontend Developer" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Frontend Developer">Frontend Developer</SelectItem>
-                <SelectItem value="Backend Developer">Backend Developer</SelectItem>
+                <SelectItem value="Frontend Developer">
+                  Frontend Developer
+                </SelectItem>
+                <SelectItem value="Backend Developer">
+                  Backend Developer
+                </SelectItem>
                 <SelectItem value="QA Tester">QA Tester</SelectItem>
               </SelectContent>
             </Select>
             {errors.track && (
               <p className="mt-1 text-sm text-red-500">
-                {typeof errors.track.message === "string" ? errors.track.message : ""}
+                {typeof errors.track.message === 'string'
+                  ? errors.track.message
+                  : ''}
               </p>
             )}
           </div>
@@ -243,7 +241,9 @@ export default function AccountSetup() {
             />
             {errors.track && (
               <p className="mt-1 text-sm text-red-500">
-                {typeof errors.track.message === "string" ? errors.track.message : ""}
+                {typeof errors.track.message === 'string'
+                  ? errors.track.message
+                  : ''}
               </p>
             )}
           </div>
@@ -253,11 +253,11 @@ export default function AccountSetup() {
         <Button
           type="submit"
           disabled={loading}
-          className="mt-6 h-auto w-full rounded-md bg-[#086ACE] py-3 text-white hover:bg-[#086bcec0] flex items-center justify-center gap-2"
+          className="mt-6 flex h-auto w-full items-center justify-center gap-2 rounded-md bg-[#086ACE] py-3 text-white hover:bg-[#086bcec0]"
         >
           {loading ? (
             <>
-              <Loader2 className="animate-spin w-5 h-5" />
+              <Loader2 className="h-5 w-5 animate-spin" />
               Submitting...
             </>
           ) : (
