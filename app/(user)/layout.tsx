@@ -18,26 +18,10 @@ export default function TeamDashboardLayout({ children }: LayoutProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false); // mobile menu and close icon
   const [showNotifications, setShowNotifications] = useState(false); // for notification
   const pathname = usePathname();
-  const [isMobile, setIsMobile] = useState(false); // for mobile screen
 
   // Dashboard route
   const isDashboardRoute =
     pathname === '/member' || pathname.startsWith('/member/dashboard');
-
-  // to control mobile state
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    handleResize();
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   return (
     <div className="flex h-screen">

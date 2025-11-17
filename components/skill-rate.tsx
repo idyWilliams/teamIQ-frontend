@@ -1,29 +1,29 @@
 const SkillRate = ({
   skill,
   skillLevel = 0,
-  color = "#F7F7F7",
+  color = '#F7F7F7',
 }: {
   skill: string;
   skillLevel: number;
   color: string;
 }) => {
   return (
-    <div className="relative flex justify-end items-center bg-[#F7F7F7] rounded-[8px] h-[40px] lg:h-[49px] overflow-clip px-[24px]">
+    <div className="relative flex h-[40px] items-center justify-end overflow-clip rounded-[8px] bg-[#F7F7F7] px-[24px] lg:h-[49px]">
       <div
         className={
-          "absolute left-[-1px] top-0 bottom-0 flex items-center justify-center text-white lg:text-[14px] font-bold"
+          'absolute top-0 bottom-0 left-[-1px] flex -translate-x-[2%] -skew-x-[20deg] items-center justify-center overflow-clip rounded-tr-md rounded-br-md font-bold text-white lg:text-[14px]'
         }
         style={{
-          clipPath: `polygon(0 0, 100% 0, ${
-            skillLevel < 100 ? 90 : 100
-          }% 100%, 0 100%)`,
-          width: `${skillLevel}%`,
+          // clipPath: `polygon(0 0, 100% 0, ${
+          //   skillLevel < 100 ? 90 : 100
+          // }% 100%, 0 100%)`,
+          width: `${skillLevel + 5}%`,
           backgroundColor: `${color}`,
         }}
       >
         {skillLevel}%
       </div>
-      <span className="font-semibold text-[13px] lg:text-[14px] relative z-10">
+      <span className="relative z-10 text-[13px] font-semibold lg:text-[14px]">
         {skill}
       </span>
     </div>

@@ -8,32 +8,32 @@ interface TeamMemberCardProps {
   className?: string;
 }
 
-export default function TeamMemberCard({ 
-  name, 
-  role, 
-  avatar, 
+export default function TeamMemberCard({
+  name,
+  role,
+  avatar,
   onClick,
-  className = ""
+  className = '',
 }: TeamMemberCardProps) {
   return (
     <div
       onClick={onClick}
-      className={`flex flex-col items-center p-4 border border-gray-200 rounded-lg bg-white cursor-pointer hover:border-blue-500 hover:shadow-md transition-all ${className}`}
+      className={`flex cursor-pointer flex-col items-center rounded-lg border border-gray-200 bg-white p-4 transition-all hover:border-blue-500 hover:shadow-md ${className}`}
     >
       <Image
         src={avatar}
         alt={`${name} profile picture`}
         width={64}
         height={64}
-        className="w-16 h-16 rounded-full object-cover mb-3"
+        className="mb-3 h-16 w-16 rounded-full object-cover"
       />
-      <div className="text-center w-full">
-        <h3 className="font-semibold text-gray-900 mb-1 text-sm truncate">
+      <div className="w-full text-center">
+        <h3 className="mb-1 truncate text-sm font-semibold text-gray-900">
           {name}
         </h3>
-        <div className="flex items-center justify-center gap-1.5">
-          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full flex-shrink-0"></span>
-          <span className="text-xs text-blue-600 truncate">{role}</span>
+        <div className="mx-auto flex w-fit items-center justify-center gap-1.5 rounded-full bg-blue-500/5 px-3 py-1">
+          <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-500"></span>
+          <span className="truncate text-xs text-blue-600">{role}</span>
         </div>
       </div>
     </div>
