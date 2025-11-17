@@ -1,8 +1,54 @@
-import { useState } from "react";
+import { useState } from 'react';
+import Image, { StaticImageData } from 'next/image';
 
-export function AppDetailModal({ app, onClose, onInstall }) {
-  const [step, setStep] = useState(1);
-  const [agreed, setAgreed] = useState(false);
+interface Apps {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  logo: string | StaticImageData;
+  color: string;
+  features: string[];
+  permissions: string[];
+  pricing: string;
+}
+
+interface AppDetailModalProps {
+  app: Apps;
+  onClose: () => void;
+  onInstall: (app: Apps) => void;
+}
+
+export function AppDetailModal({
+  app,
+  onClose,
+  onInstall,
+}: AppDetailModalProps) {
+  const [step, setStep] = useState<number>(1);
+  const [agreed, setAgreed] = useState<boolean>(false);
+
+  const renderLogo = (
+    logo: string | StaticImageData,
+    size: 'small' | 'large' = 'large'
+  ) => {
+    const dimensions =
+      size === 'large' ? { width: 64, height: 64 } : { width: 48, height: 48 };
+    const textSize = size === 'large' ? 'text-4xl' : 'text-2xl';
+
+    if (typeof logo === 'string') {
+      return <span className={textSize}>{logo}</span>;
+    }
+
+    return (
+      <Image
+        src={logo}
+        alt="App logo"
+        width={dimensions.width}
+        height={dimensions.height}
+        className="object-contain"
+      />
+    );
+  };
 
   return (
     <div
@@ -19,9 +65,9 @@ export function AppDetailModal({ app, onClose, onInstall }) {
             <div className="bg-card border-border sticky top-0 flex items-center justify-between border-b px-8 py-6">
               <div className="flex items-center gap-4">
                 <div
-                  className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${app.color} flex items-center justify-center text-4xl shadow-lg`}
+                  className={`h-16 w-16 rounded-2xl  flex items-center justify-center shadow-lg`}
                 >
-                  {app.logo}
+                  {renderLogo(app.logo, 'large')}
                 </div>
                 <div>
                   <h2 className="text-foreground text-2xl font-semibold">
@@ -195,9 +241,9 @@ export function AppDetailModal({ app, onClose, onInstall }) {
             <div className="space-y-6 px-8 py-6">
               <div className="bg-muted flex items-start gap-4 rounded-xl p-4">
                 <div
-                  className={`h-12 w-12 rounded-xl bg-gradient-to-br ${app.color} flex flex-shrink-0 items-center justify-center text-2xl shadow-md`}
+                  className={`h-12 w-12 rounded-xl  flex flex-shrink-0 items-center justify-center shadow-md`}
                 >
-                  {app.logo}
+                  {renderLogo(app.logo, 'small')}
                 </div>
                 <div className="flex-1">
                   <h3 className="text-foreground font-semibold">{app.name}</h3>

@@ -1,16 +1,16 @@
 'use client';
 import { useState } from 'react';
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 import { AppDetailModal } from '@/components/marketPlace/AppDetailModal';
-import { AppCard, apps, categories } from '@/components/apps/appCards';
+import { AppCard, apps, categories, Apps } from '@/components/apps/appCards';
 import { EmptyState } from '@/components/emptyState/empty';
 
 export default function TeamIQMarketplace() {
-  const [installedApps, setInstalledApps] = useState([]);
-  const [showMarketplace, setShowMarketplace] = useState(true);
-  const [selectedApp, setSelectedApp] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [installedApps, setInstalledApps] = useState<Apps[]>([]);
+  const [showMarketplace, setShowMarketplace] = useState<boolean>(true);
+  const [selectedApp, setSelectedApp] = useState<Apps | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   const filteredApps = apps.filter(app => {
     const matchesSearch =
@@ -24,9 +24,28 @@ export default function TeamIQMarketplace() {
     return matchesSearch && matchesCategory && notInstalled;
   });
 
-  const handleInstall = app => {
+  const handleInstall = (app: Apps) => {
     setInstalledApps([...installedApps, app]);
     setShowMarketplace(false);
+  };
+
+  // Helper function to render logo (emoji string or StaticImageData)
+  const renderLogo = (logo: string | StaticImageData, name: string) => {
+    if (typeof logo === 'string') {
+      // It's an emoji string
+      return <span className="text-2xl">{logo}</span>;
+    }
+
+    // It's a StaticImageData object
+    return (
+      <Image
+        src={logo}
+        alt={name}
+        width={40}
+        height={40}
+        className="h-10 w-10 object-contain"
+      />
+    );
   };
 
   if (!showMarketplace && installedApps.length === 0) {
@@ -142,19 +161,7 @@ export default function TeamIQMarketplace() {
                   <div
                     className={`h-14 w-14 rounded-2xl bg-gradient-to-br ${app.color} mb-4 flex items-center justify-center shadow-lg`}
                   >
-                    {typeof app.logo === 'string' ? (
-                      <Image
-                        src={app.logo}
-                        alt={app.name}
-                        className="h-10 w-10 object-contain"
-                      />
-                    ) : (
-                      <Image
-                        src={app.logo}
-                        alt={app.name}
-                        className="h-10 w-10 object-contain"
-                      />
-                    )}
+                    {renderLogo(app.logo, app.name)}
                   </div>
 
                   <h3 className="text-foreground mb-1 text-lg font-semibold">
