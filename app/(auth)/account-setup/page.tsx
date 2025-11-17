@@ -16,10 +16,10 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import axiosInstance from '@/services/axios';
-import { users } from '@/services/api';
-import { Camera } from 'lucide-react';
+import { Camera, Loader2 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'nextjs-toploader/app';
+import { users } from '@/services/api';
 
 // ✅ Yup validation schema
 const schema = yup.object({
@@ -47,13 +47,12 @@ const schema = yup.object({
         .filter((t: any) => t.length > 0);
     }),
   profile: yup
-    .mixed()
-    .required('Profile image is required')
-    .test('fileType', 'Only image files are allowed', (value: any) => {
-      console.log(value, 'FOR VAD', typeof value);
-
+    .mixed<File>()
+    .nullable()
+    .notRequired() // ✅ makes image optional
+    .test('fileType', 'Only image files are allowed', value => {
+      if (!value) return true; // Skip if no image
       return (
-        value &&
         typeof value === 'object' &&
         ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'].includes(
           value.type
@@ -62,7 +61,11 @@ const schema = yup.object({
     }),
 });
 
-type FormData = yup.InferType<typeof schema>;
+type FormData = {
+  track: string;
+  stack: string[];
+  profile?: File | null;
+};
 
 export default function AccountSetup() {
   const { user, updateUser } = useAuthStore();
@@ -77,75 +80,69 @@ export default function AccountSetup() {
     setValue,
     formState: { errors },
     reset,
-  } = useForm<FormData>({
-    resolver: yupResolver(schema),
+  } = useForm<any>({
+    resolver: yupResolver(schema as any),
   });
 
   const handleFileUpload = (e: any) => {
     const file = e.target.files?.[0];
-
     if (!file) return;
 
-    if (file) setPreview(URL.createObjectURL(file));
+    setPreview(URL.createObjectURL(file));
     setValue('profile', file);
-    console.log(e.target.files, 'PHO');
   };
 
   const onSubmit = async (data: FormData | any) => {
-    // return console.log(errors, data);
-
     try {
       setLoading(true);
+      let imageUrl = user?.profile_image;
 
-      // 1️⃣ Upload image to /image endpoint
-      const formData = new FormData();
-      formData.append('file', data.profile);
-      formData.append('image_type', 'profile');
-      formData.append('update_db', 'true');
+      // Only upload if user selected a new file
+      if (data.profile) {
+        const formData = new FormData();
+        formData.append('file', data.profile);
+        formData.append('image_type', 'profile');
+        formData.append('update_db', 'true');
 
-      const uploadResponse = await axiosInstance.post('/image', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+        const uploadResponse = await axiosInstance.post('/image', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
 
-      console.log('uploadResponse:', uploadResponse);
+        imageUrl = uploadResponse?.data?.data?.url;
+      }
 
-      const imageUrl = uploadResponse?.data?.data?.url; // depends on backend response shape
-
-      // 2️⃣ Get user_id (replace with actual logic or state)
-      const userId = user?.id; // You’ll likely get this from auth context or local storage
-      if (!imageUrl) return;
+      // Prepare final payload
       const final = {
         track: data.track,
-        stacks: data.stack,
-        profile_image: imageUrl,
-      };
-      console.log(final);
-
-      // 3️⃣ Update profile with track, stack, and image
-      const res = await axiosInstance.put(users.byId(userId), {
-        track: data.track,
-        stacks: data.stack,
+        stacks: data.stack || [],
         profile_image: imageUrl || user?.profile_img,
-      });
+      };
+
+      // ✅ Use correct PUT endpoint with userId
+      const res = await axiosInstance.put(users.byId(user?.id), final);
 
       alert('✅ Profile updated successfully!');
-      console.log(res);
-
       updateUser(res?.data?.data);
       router.push('/member');
     } catch (error: any) {
       console.error('Profile update failed:', error);
-      alert('❌ Failed to update profile. Try again.');
+
+      const msg =
+        error?.response?.data?.detail?.[0]?.msg ||
+        'Failed to update profile. Try again.';
+      alert(`❌ ${msg}`);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    console.log(user);
     if (user) {
       setPreview(user?.profile_image);
-      reset({ track: user?.track });
+      reset({
+        track: user?.track || '',
+        stack: user?.stacks?.join(', ') || '',
+      });
     }
   }, [reset, user]);
 
@@ -161,18 +158,18 @@ export default function AccountSetup() {
           <div className="mt-5 flex items-center justify-center">
             <div className="relative">
               <Image
-                src={(preview as string) || '/images/avatar.png'}
+                src={preview || '/images/avatar.png'}
                 alt="avatar"
                 width={100}
                 height={100}
                 priority
-                className="size-[100px] rounded-full bg-neutral-100 object-cover"
+                className="h-24 w-24 rounded-full bg-neutral-100 object-cover"
               />
               <Button
                 type="button"
                 variant="ghost"
                 id="profile"
-                className="bg-iq-500 absolute -right-2 bottom-0 size-8 rounded-full border-2 border-white text-white"
+                className="bg-iq-500 absolute -right-2 bottom-0 h-8 w-8 rounded-full border-2 border-white text-white"
                 onClick={() => fileInputRef.current?.click()}
               >
                 <Camera size={24} />
@@ -180,7 +177,6 @@ export default function AccountSetup() {
             </div>
           </div>
 
-          {/* Profile upload input */}
           <div className="mt-4">
             <Input
               ref={fileInputRef}
@@ -189,9 +185,11 @@ export default function AccountSetup() {
               onChange={handleFileUpload}
               className="hidden"
             />
-            {errors.profile && (
+            {errors.track && (
               <p className="mt-1 text-sm text-red-500">
-                {errors.profile.message}
+                {typeof errors.track.message === 'string'
+                  ? errors.track.message
+                  : ''}
               </p>
             )}
           </div>
@@ -219,7 +217,9 @@ export default function AccountSetup() {
             </Select>
             {errors.track && (
               <p className="mt-1 text-sm text-red-500">
-                {errors.track.message}
+                {typeof errors.track.message === 'string'
+                  ? errors.track.message
+                  : ''}
               </p>
             )}
           </div>
@@ -240,20 +240,30 @@ export default function AccountSetup() {
               {...register('stack')}
               className="border-0 border-b border-[#B3C4D6] bg-[#F7F7F7] px-4 py-3"
             />
-            {errors.stack && (
+            {errors.track && (
               <p className="mt-1 text-sm text-red-500">
-                {errors.stack.message}
+                {typeof errors.track.message === 'string'
+                  ? errors.track.message
+                  : ''}
               </p>
             )}
           </div>
         </div>
 
+        {/* Submit button with loading spinner */}
         <Button
           type="submit"
           disabled={loading}
-          className="mt-6 h-auto w-full rounded-md bg-[#086ACE] py-3 text-white hover:bg-[#086bcec0]"
+          className="mt-6 flex h-auto w-full items-center justify-center gap-2 rounded-md bg-[#086ACE] py-3 text-white hover:bg-[#086bcec0]"
         >
-          {loading ? 'Submitting...' : 'Submit'}
+          {loading ? (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              Submitting...
+            </>
+          ) : (
+            'Submit'
+          )}
         </Button>
       </form>
     </section>
