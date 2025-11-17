@@ -21,8 +21,8 @@ const MyDetails = () => {
 
   // store images
   const [images, setImages] = useState({
-    profile: '/placeholder-profile.jpg',
-    cover: '/placeholder-cover.jpg',
+    profile: '/images/avatar.png',
+    cover: '/images/cover-placeholder.png',
   });
   // preview for upload
   const [preview, setPreview] = useState<string | null>(null);
@@ -126,7 +126,7 @@ const MyDetails = () => {
     <div>
       {/* details cover picture */}
       <div className="relative">
-        <div className="bg-muted-foreground mt-10 h-[200px] w-full rounded-tl-[96px] max-sm:h-[150px]">
+        <div className="bg-muted-foreground h-[200px] w-full rounded-tl-[96px] max-sm:h-[150px]">
           <Image
             width={200}
             height={200}
@@ -145,6 +145,7 @@ const MyDetails = () => {
           />
         </div>
       </div>
+
       {/* --- FIRST MODAL (choose what to edit) --- */}
       <Dialog open={isMainDialogOpen} onOpenChange={setIsMainDialogOpen}>
         <DialogContent>
@@ -266,7 +267,7 @@ const MyDetails = () => {
               )}
             </div>
 
-            {/* Right: Edit/Save button */}       
+            {/* Right: Edit/Save button */}
             <div className="flex items-center">
               {info.editable ? (
                 editingInfo === info.key ? (

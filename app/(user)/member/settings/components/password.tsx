@@ -20,17 +20,23 @@ const Password = () => {
   };
 
   const schema = yup.object().shape({
-    currentPassword: yup.string().required("Password is required"),
-    newPassword: yup.string().min(8, "Password must be at least 8 characters").required("Password is required")
-    ,
+    currentPassword: yup.string().required('Password is required'),
+    newPassword: yup
+      .string()
+      .min(8, 'Password must be at least 8 characters')
+      .required('Password is required'),
     confirmPassword: yup
       .string()
-      .oneOf([yup.ref('newPassword')] , 'Passwords must match')
-      .required("Password is required"),
+      .oneOf([yup.ref('newPassword')], 'Passwords must match')
+      .required('Password is required'),
   });
 
-  const {register,handleSubmit,reset, formState: { errors },} = useForm<PasswordForm>({resolver: yupResolver(schema),
-  });
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<PasswordForm>({ resolver: yupResolver(schema) });
 
   const fields: { id: FormKeys; label: string }[] = [
     { id: 'currentPassword', label: 'Current Password:' },
@@ -45,7 +51,7 @@ const Password = () => {
 
   return (
     <div className="w-full">
-      <h2 className="mt-5 mb-2 text-2xl font-semibold max-sm:mb-1 max-sm:text-xl">
+      <h2 className="mb-2 text-2xl font-semibold max-sm:mb-1 max-sm:text-xl">
         Password
       </h2>
       <p className="text-muted-foreground text-sm">
@@ -58,10 +64,13 @@ const Password = () => {
         onSubmit={handleSubmit(submit)}
       >
         {fields.map(f => (
-          <div key={f.id} className="flex w-full max-w-[576px] max-sm:flex-col gap-2">
+          <div
+            key={f.id}
+            className="flex w-full max-w-[576px] gap-2 max-sm:flex-col"
+          >
             <label
               htmlFor={f.id}
-              className="text-[16px]  max-sm:text-sm sm:w-65"
+              className="text-[16px] max-sm:text-sm sm:w-65"
             >
               {f.label}
             </label>
@@ -71,14 +80,14 @@ const Password = () => {
                 type={showPassword[f.id] ? 'text' : 'password'}
                 id={f.id}
                 placeholder="***********"
-               className={`border-ring bg-muted h-[56px] w-full rounded-[8px] border-b-[1.5px] px-6 py-3 pr-10 ${
-          errors[f.id] ? "border-red-500" : ""
-        }`}
+                className={`border-ring bg-muted h-[56px] w-full rounded-[8px] border-b-[1.5px] px-6 py-3 pr-10 ${
+                  errors[f.id] ? 'border-red-500' : ''
+                }`}
                 {...register(f.id)}
               />
               <button
                 type="button"
-                className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground focus:outline-none"
+                className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2 focus:outline-none"
                 onClick={() =>
                   setShowPassword(prev => ({
                     ...prev,
@@ -98,27 +107,26 @@ const Password = () => {
                   />
                 )}
               </button>
-               {/* ✅ Error for each specific field */}
-   
+              {/* ✅ Error for each specific field */}
             </div>
-             {errors[f.id] && (
-      <p className="text-red-500 text-sm mt-1">
-        {errors[f.id]?.message?.toString()}
-      </p>
-    )}
+            {errors[f.id] && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors[f.id]?.message?.toString()}
+              </p>
+            )}
           </div>
         ))}
 
         <div className="flex gap-4 max-sm:flex-col-reverse max-sm:gap-3">
           <button
             onClick={cancelPassword}
-            className="text-iq border-iq w-full sm:max-w-[280px] rounded-[8px] border-1 py-4"
+            className="text-iq border-iq w-full rounded-[8px] border-1 py-4 sm:max-w-[280px]"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="text-primary-foreground bg-iq w-full sm:max-w-[280px] rounded-[8px] border-1 py-4"
+            className="text-primary-foreground bg-iq w-full rounded-[8px] border-1 py-4 sm:max-w-[280px]"
           >
             Update
           </button>
