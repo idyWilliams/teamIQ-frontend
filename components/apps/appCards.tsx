@@ -1,13 +1,25 @@
+import Image, { StaticImageData } from 'next/image';
+
+// Import all images at the top
+import jiraLogo from '@/public/images/jira.png';
+import githubLogo from '@/public/images/github.svg';
+import slackLogo from '@/public/images/slack.svg';
+import figmaLogo from '@/public/images/figma.svg';
+import gitlabLogo from '@/public/images/gitlab.svg';
+import clickupLogo from '@/public/images/clickup.svg';
+import discordLogo from '@/public/images/discord.svg';
+import teamsLogo from '@/public/images/teams.svg';
+
 export interface Apps {
   id: string;
   name: string;
   category: string;
   description: string;
-  logo: string; // emoji or icon
-  color: string; // Tailwind gradient classes
-  features: string[]; // list of features
-  permissions: string[]; // access permissions
-  pricing: string; // Free, Paid, etc.
+  logo: string | StaticImageData;
+  color: string;
+  features: string[];
+  permissions: string[];
+  pricing: string;
 }
 
 export function AppCard({
@@ -24,9 +36,19 @@ export function AppCard({
     >
       <div className="mb-4 flex items-start justify-between">
         <div
-          className={`h-14 w-14 rounded-2xl bg-gradient-to-br ${app.color} flex items-center justify-center text-3xl shadow-lg`}
+          className={`mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border shadow-lg`}
         >
-          {app.logo}
+          {typeof app.logo === 'string' ? (
+            <span className="text-2xl">{app.logo}</span>
+          ) : (
+            <Image
+              src={app.logo}
+              alt={app.name}
+              width={40}
+              height={40}
+              className="h-10 w-10 object-contain"
+            />
+          )}
         </div>
         <span className="text-iq-500 bg-iq-50 rounded-full px-3 py-1 text-xs font-medium">
           {app.pricing}
@@ -53,7 +75,7 @@ export const apps = [
     category: 'Project Management',
     description:
       'Track issues, manage sprints, and sync project data seamlessly with your TeamIQ workspace.',
-    logo: '🟦',
+    logo: jiraLogo,
     color: 'from-blue-500 to-blue-600',
     features: [
       'Issue tracking',
@@ -70,7 +92,7 @@ export const apps = [
     category: 'Development',
     description:
       'Connect repositories, track commits, and pull requests to measure development velocity.',
-    logo: '⚫',
+    logo: githubLogo,
     color: 'from-gray-700 to-gray-900',
     features: [
       'Repository sync',
@@ -91,7 +113,7 @@ export const apps = [
     category: 'Communication',
     description:
       'Integrate team conversations and measure communication patterns across channels.',
-    logo: '💬',
+    logo: slackLogo,
     color: 'from-purple-500 to-pink-600',
     features: [
       'Message sync',
@@ -108,7 +130,7 @@ export const apps = [
     category: 'Design',
     description:
       'Sync design files, track iterations, and measure design collaboration efficiency.',
-    logo: '🎨',
+    logo: figmaLogo,
     color: 'from-red-500 to-purple-600',
     features: [
       'File sync',
@@ -125,7 +147,7 @@ export const apps = [
     category: 'Development',
     description:
       'Connect your GitLab projects and analyze development workflows end-to-end.',
-    logo: '🦊',
+    logo: gitlabLogo,
     color: 'from-orange-500 to-red-600',
     features: [
       'Project sync',
@@ -142,7 +164,7 @@ export const apps = [
     category: 'Project Management',
     description:
       'Sync tasks, track time, and analyze team productivity with comprehensive metrics.',
-    logo: '✅',
+    logo: clickupLogo,
     color: 'from-pink-500 to-purple-600',
     features: [
       'Task sync',
@@ -193,7 +215,7 @@ export const apps = [
     category: 'Communication',
     description:
       'Integrate meetings, chats, and calls to analyze communication effectiveness.',
-    logo: '👥',
+    logo: teamsLogo,
     color: 'from-blue-600 to-purple-600',
     features: [
       'Meeting analytics',
@@ -210,7 +232,7 @@ export const apps = [
     category: 'Communication',
     description:
       'Connect your server and track community engagement and team interactions.',
-    logo: '🎮',
+    logo: discordLogo,
     color: 'from-indigo-500 to-purple-600',
     features: [
       'Server sync',

@@ -118,7 +118,7 @@ export function EmptyState({ onAddApps }: { onAddApps: () => void }) {
 
       <button
         onClick={onAddApps}
-        className="flex transform items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-lg active:translate-y-0"
+        className="flex transform items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-lg active:translate-y-0 cursor-pointer"
       >
         <svg
           className="h-5 w-5"

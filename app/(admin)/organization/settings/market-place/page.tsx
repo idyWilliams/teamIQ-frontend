@@ -1,12 +1,13 @@
-'use client'
-import { useState } from "react";
-import { AppDetailModal } from "../../../../../components/marketPlace/AppDetailModal";
-import { AppCard, apps, categories } from "../../../../../components/apps/appCards";
-import { EmptyState } from "../../../../../components/emptyState/empty";
+'use client';
+import { useState } from 'react';
+import Image from 'next/image';
+import { AppDetailModal } from '@/components/marketPlace/AppDetailModal';
+import { AppCard, apps, categories } from '@/components/apps/appCards';
+import { EmptyState } from '@/components/emptyState/empty';
 
 export default function TeamIQMarketplace() {
   const [installedApps, setInstalledApps] = useState([]);
-  const [showMarketplace, setShowMarketplace] = useState(false);
+  const [showMarketplace, setShowMarketplace] = useState(true);
   const [selectedApp, setSelectedApp] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -139,10 +140,23 @@ export default function TeamIQMarketplace() {
                   className="bg-card border-border rounded-2xl border p-6"
                 >
                   <div
-                    className={`h-14 w-14 rounded-2xl bg-gradient-to-br ${app.color} mb-4 flex items-center justify-center text-3xl shadow-lg`}
+                    className={`h-14 w-14 rounded-2xl bg-gradient-to-br ${app.color} mb-4 flex items-center justify-center shadow-lg`}
                   >
-                    {app.logo}
+                    {typeof app.logo === 'string' ? (
+                      <Image
+                        src={app.logo}
+                        alt={app.name}
+                        className="h-10 w-10 object-contain"
+                      />
+                    ) : (
+                      <Image
+                        src={app.logo}
+                        alt={app.name}
+                        className="h-10 w-10 object-contain"
+                      />
+                    )}
                   </div>
+
                   <h3 className="text-foreground mb-1 text-lg font-semibold">
                     {app.name}
                   </h3>
