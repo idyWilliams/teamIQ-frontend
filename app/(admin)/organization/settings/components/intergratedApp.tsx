@@ -1,121 +1,352 @@
-"use client";
-import React from "react";
-import { EmptyState } from "@/components/emptyState/empty";
-import IntgratedApps from "@/app/(admin)/organization/settings/components/settings-intergrated-card";
-import { useRouter } from "next/navigation";
+// "use client";
+// import React from "react";
+// import { EmptyState } from "@/components/emptyState/empty";
+// import IntgratedApps from "@/app/(admin)/organization/settings/components/settings-intergrated-card";
+// import { useRouter } from "next/navigation";
+
+// interface CardProps {
+//   name: string;
+//   logo: string;
+//   description: string;
+// }
+
+// export default function SettingIntergratedApp() {
+//   const router = useRouter();
+
+//   // mock data for the cards
+//  const cards: CardProps[] = [
+//   // {
+//   //   name: 'Jira',
+//   //   logo: '/images/devicon_jira.svg',
+//   //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+//   //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+//   //           cursus lectus diam sit convallis dui nunc.`,
+
+//   // },
+//   // {
+//   //   name: 'GitHub',
+//   //   logo: '/images/github.svg',
+//   //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+//   //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+//   //           cursus lectus diam sit convallis dui nunc.`,
+
+//   // },
+//   // {
+//   //   name: 'ClickUp',
+//   //   logo: '/images/clickup.svg',
+//   //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+//   //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+//   //           cursus lectus diam sit convallis dui nunc.`,
+
+//   // },
+//   // {
+//   //   name: 'GitLab',
+//   //   logo: '/images/gitlab.svg',
+//   //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+//   //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+//   //           cursus lectus diam sit convallis dui nunc.`,
+
+//   // },
+//   // {
+//   //   name: 'Figma',
+//   //   logo: '/images/figma.svg',
+//   //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+//   //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+//   //           cursus lectus diam sit convallis dui nunc.`,
+
+//   // },
+//   // {
+//   //   name: 'Slack',
+//   //   logo: '/images/slack.svg',
+//   //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+//   //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+//   //           cursus lectus diam sit convallis dui nunc.`,
+
+//   // },
+//   // {
+//   //   name: 'Discord',
+//   //   logo: '/images/discord.svg',
+//   //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+//   //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+//   //           cursus lectus diam sit convallis dui nunc.`,
+
+//   // },
+//   // {
+//   //   name: 'Azure Repos',
+//   //   logo: '/images/Azure.svg',
+//   //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+//   //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+//   //           cursus lectus diam sit convallis dui nunc.`,
+
+//   // },
+//   // {
+//   //   name: 'Teams',
+//   //   logo: '/images/teams.svg',
+//   //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
+//   //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
+//   //           cursus lectus diam sit convallis dui nunc.`,
+
+//   // },
+// ];
+
+//  const handleAddApps = () => {
+
+//    router.push('/organization/settings/market-place');
+//  };
+
+//  return (
+//    <div className="px-6">
+//      <h2 className="pb-2 text-2xl font-semibold">Integrated Apps</h2>
+//      <p className="text-gray-600">
+//        Integrate various apps to increase your productivity across your projects
+//      </p>
+//      <hr className="my-6" />
+
+//      {cards.length === 0 ? (
+//        <EmptyState onAddApps={handleAddApps} />
+//      ) : (
+//        <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-stretch gap-5">
+//          {cards.map((card, i) => (
+//            <IntgratedApps key={i} {...card} />
+//          ))}
+//        </div>
+//      )}
+//    </div>
+//  );
+// }
+
+'use client';
+
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { EmptyState } from '@/components/emptyState/empty';
 
 
-interface CardProps {
-  name: string;
-  logo: string;
-  description: string;
-}
+import { apps } from '@/components/apps/appCards';
+import { Connection } from '@/types/integrations';
+import { useIntegrations } from '@/context/IntegrationContext';
+import { ConnectionCard } from '@/components/integrations/ConnectionCard';
 
-export default function SettingIntergratedApp() {
+export default function SettingIntegratedApp() {
   const router = useRouter();
+  const { connections, loading } = useIntegrations();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterApp, setFilterApp] = useState<string>('All');
 
-  // mock data for the cards
- const cards: CardProps[] = [
-  // {
-  //   name: 'Jira',
-  //   logo: '/images/devicon_jira.svg',
-  //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-  //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-  //           cursus lectus diam sit convallis dui nunc.`,
+  // Group connections by app
+  const groupedConnections = connections.reduce(
+    (acc: { [x: string]: any[]; }, conn: { appId: string | number; }) => {
+      if (!acc[conn.appId]) {
+        acc[conn.appId] = [];
+      }
+      acc[conn.appId].push(conn);
+      return acc;
+    },
+    {} as Record<string, typeof connections>
+  );
 
-  // },
-  // {
-  //   name: 'GitHub',
-  //   logo: '/images/github.svg',
-  //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-  //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-  //           cursus lectus diam sit convallis dui nunc.`,
+  // Get unique apps that have connections
+  const connectedApps = Object.keys(groupedConnections)
+    .map(appId => apps.find(app => app.id === appId))
+    .filter(Boolean);
 
-  // },
-  // {
-  //   name: 'ClickUp',
-  //   logo: '/images/clickup.svg',
-  //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-  //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-  //           cursus lectus diam sit convallis dui nunc.`,
+  // Filter connections
+  const filteredConnections = connections.filter((conn: { displayName: string; providerAccountName: string; appName: string; appId: string; }) => {
+    const matchesSearch =
+      conn.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      conn.providerAccountName
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      conn.appName.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter = filterApp === 'All' || conn.appId === filterApp;
+    return matchesSearch && matchesFilter;
+  });
 
-  // },
-  // {
-  //   name: 'GitLab',
-  //   logo: '/images/gitlab.svg',
-  //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-  //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-  //           cursus lectus diam sit convallis dui nunc.`,
+  const handleAddApps = () => {
+    router.push('/organization/settings/market-place');
+  };
 
-  // },
-  // {
-  //   name: 'Figma',
-  //   logo: '/images/figma.svg',
-  //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-  //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-  //           cursus lectus diam sit convallis dui nunc.`,
+  if (loading) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <div className="flex items-center gap-3">
+          <svg
+            className="text-iq-500 h-8 w-8 animate-spin"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
+          </svg>
+          <span className="text-muted-foreground">Loading integrations...</span>
+        </div>
+      </div>
+    );
+  }
 
-  // },
-  // {
-  //   name: 'Slack',
-  //   logo: '/images/slack.svg',
-  //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-  //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-  //           cursus lectus diam sit convallis dui nunc.`,
+  return (
+    <div className="px-6">
+      {/* Header */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-semibold">Integrated Apps</h2>
+            <p className="mt-1 text-gray-600">
+              Integrate various apps to increase your productivity across your
+              projects
+            </p>
+          </div>
 
-  // },
-  // {
-  //   name: 'Discord',
-  //   logo: '/images/discord.svg',
-  //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-  //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-  //           cursus lectus diam sit convallis dui nunc.`,
+          <button
+            onClick={handleAddApps}
+            className="bg-iq-500 hover:bg-iq-600 flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-colors"
+          >
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Browse Apps
+          </button>
+        </div>
+      </div>
 
-  // },
-  // {
-  //   name: 'Azure Repos',
-  //   logo: '/images/Azure.svg',
-  //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-  //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-  //           cursus lectus diam sit convallis dui nunc.`,
+      <hr className="my-6" />
 
-  // },
-  // {
-  //   name: 'Teams',
-  //   logo: '/images/teams.svg',
-  //   description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
-  //           senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
-  //           cursus lectus diam sit convallis dui nunc.`,
+      {connections.length === 0 ? (
+        <EmptyState onAddApps={handleAddApps} />
+      ) : (
+        <>
+          {/* Stats Card */}
+          <div className="from-iq-50 to-iq-100 border-iq-200 mb-6 rounded-xl border bg-gradient-to-br p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-iq-800 text-3xl font-bold">
+                  {connections.length}
+                </p>
+                <p className="text-iq-700 text-sm font-medium">
+                  Active Connection{connections.length !== 1 ? 's' : ''}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-iq-800 text-3xl font-bold">
+                  {connectedApps.length}
+                </p>
+                <p className="text-iq-700 text-sm font-medium">
+                  Integrated App{connectedApps.length !== 1 ? 's' : ''}
+                </p>
+              </div>
+              <div className="bg-iq-500/10 flex h-16 w-16 items-center justify-center rounded-full">
+                <svg
+                  className="text-iq-500 h-8 w-8"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
 
-  // },
-];
+          {/* Filters */}
+          <div className="mb-6 flex gap-4">
+            {/* Search */}
+            <div className="relative flex-1">
+              <svg
+                className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search connections..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="border-border focus:ring-iq-500 w-full rounded-lg border py-2 pr-4 pl-10 text-sm transition-all focus:border-transparent focus:ring-2 focus:outline-none"
+              />
+            </div>
 
+            {/* App Filter */}
+            <select
+              value={filterApp}
+              onChange={e => setFilterApp(e.target.value)}
+              className="border-border focus:ring-iq-500 rounded-lg border px-4 py-2 text-sm transition-all focus:border-transparent focus:ring-2 focus:outline-none"
+            >
+              <option value="All">All Apps ({connections.length})</option>
+              {connectedApps.map(app => {
+                if (!app) return null;
+                const count = groupedConnections[app.id]?.length || 0;
+                return (
+                  <option key={app.id} value={app.id}>
+                    {app.name} ({count})
+                  </option>
+                );
+              })}
+            </select>
+          </div>
 
-
-
-
- const handleAddApps = () => {
-
-   router.push('/organization/settings/market-place');
- };
-
- return (
-   <div className="px-6">
-     <h2 className="pb-2 text-2xl font-semibold">Integrated Apps</h2>
-     <p className="text-gray-600">
-       Integrate various apps to increase your productivity across your projects
-     </p>
-     <hr className="my-6" />
-
-     {cards.length === 0 ? (
-       <EmptyState onAddApps={handleAddApps} />
-     ) : (
-       <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] items-stretch gap-5">
-         {cards.map((card, i) => (
-           <IntgratedApps key={i} {...card} />
-         ))}
-       </div>
-     )}
-   </div>
- );
+          {/* Connections Grid */}
+          {filteredConnections.length === 0 ? (
+            <div className="bg-muted flex flex-col items-center justify-center rounded-xl p-12">
+              <svg
+                className="text-muted-foreground mb-4 h-12 w-12"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <p className="text-muted-foreground text-center">
+                No connections found matching your search
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5">
+              {filteredConnections.map((connection: Connection) => (
+                <ConnectionCard key={connection.id} connection={connection} />
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
 }

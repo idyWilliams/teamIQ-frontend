@@ -1,31 +1,28 @@
-import { useState } from 'react';
-import Image, { StaticImageData } from 'next/image';
+'use client';
 
-interface Apps {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  logo: string | StaticImageData;
-  color: string;
-  features: string[];
-  permissions: string[];
-  pricing: string;
-}
+import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from 'react';
+import Image, { StaticImageData } from 'next/image';
+import { useRouter } from 'next/navigation';
+
+import { Apps } from '@/types/integrations';
+import { useIntegrations } from '@/context/IntegrationContext';
 
 interface AppDetailModalProps {
   app: Apps;
   onClose: () => void;
-  onInstall: (app: Apps) => void;
 }
 
-export function AppDetailModal({
-  app,
-  onClose,
-  onInstall,
-}: AppDetailModalProps) {
+export function AppDetailModal({ app, onClose }: AppDetailModalProps) {
+  const router = useRouter();
+  const { addConnection, getConnectionsByApp } = useIntegrations();
+
   const [step, setStep] = useState<number>(1);
   const [agreed, setAgreed] = useState<boolean>(false);
+  const [isConnecting, setIsConnecting] = useState<boolean>(false);
+  const [connectionSuccess, setConnectionSuccess] = useState<boolean>(false);
+
+  // Check existing connections for this app
+  const existingConnections = getConnectionsByApp(app.id);
 
   const renderLogo = (
     logo: string | StaticImageData,
@@ -50,6 +47,41 @@ export function AppDetailModal({
     );
   };
 
+  const simulateOAuthFlow = async () => {
+    if (!agreed) return;
+
+    setIsConnecting(true);
+
+    try {
+      // Simulate OAuth redirect delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Simulate getting user info from OAuth provider
+      const mockAccountInfo = {
+        name: `demo_user_${Math.floor(Math.random() * 1000)}`,
+        email: `user${Math.floor(Math.random() * 1000)}@example.com`,
+        displayName: undefined, // User can customize later
+      };
+
+      // Add connection
+      const newConnection = addConnection(app, mockAccountInfo);
+
+      setConnectionSuccess(true);
+
+      // Show success message briefly
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Close modal and redirect to integrations page
+      onClose();
+      router.push('/organization/settings?tab=integrated-apps');
+    } catch (error) {
+      console.error('Connection failed:', error);
+      alert('Failed to connect. Please try again.');
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
@@ -59,9 +91,35 @@ export function AppDetailModal({
         className="bg-card max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl shadow-2xl"
         onClick={e => e.stopPropagation()}
       >
-        {step === 1 && (
+        {connectionSuccess ? (
+          <div className="flex min-h-[400px] flex-col items-center justify-center p-8">
+            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
+              <svg
+                className="h-10 w-10 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <h2 className="text-foreground mb-2 text-2xl font-semibold">
+              Connected Successfully!
+            </h2>
+            <p className="text-muted-foreground text-center">
+              {app.name} has been connected to your organization.
+              <br />
+              Redirecting to integrations...
+            </p>
+          </div>
+        ) : step === 1 ? (
           <>
-            {/* Header */}
+            {/* Step 1: App Details */}
             <div className="bg-card border-border sticky top-0 flex items-center justify-between border-b px-8 py-6">
               <div className="flex items-center gap-4">
                 <div
@@ -98,8 +156,38 @@ export function AppDetailModal({
               </button>
             </div>
 
-            {/* Content */}
             <div className="space-y-6 px-8 py-6">
+              {/* Show existing connections if any */}
+              {existingConnections.length > 0 && (
+                <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+                  <div className="flex gap-3">
+                    <svg
+                      className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <div className="text-sm">
+                      <p className="mb-1 font-medium text-blue-800">
+                        Existing Connections
+                      </p>
+                      <p className="text-blue-700">
+                        You already have {existingConnections.length} {app.name}{' '}
+                        account{existingConnections.length > 1 ? 's' : ''}{' '}
+                        connected. You can add another account if needed.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div>
                 <h3 className="text-foreground mb-2 text-lg font-semibold">
                   About this app
@@ -112,7 +200,7 @@ export function AppDetailModal({
                   Features
                 </h3>
                 <div className="grid grid-cols-2 gap-2">
-                  {app.features.map((feature, i) => (
+                  {app.features.map((feature: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined, i: Key | null | undefined) => (
                     <div
                       key={i}
                       className="text-muted-foreground flex items-center gap-2 text-sm"
@@ -141,7 +229,7 @@ export function AppDetailModal({
                   Required Permissions
                 </h3>
                 <div className="bg-muted space-y-2 rounded-xl p-4">
-                  {app.permissions.map((permission, i) => (
+                  {app.permissions.map((permission: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined, i: Key | null | undefined) => (
                     <div
                       key={i}
                       className="text-foreground flex items-center gap-2 text-sm"
@@ -192,7 +280,6 @@ export function AppDetailModal({
               </div>
             </div>
 
-            {/* Footer */}
             <div className="bg-card border-border sticky bottom-0 border-t px-8 py-6">
               <button
                 onClick={() => setStep(2)}
@@ -202,16 +289,15 @@ export function AppDetailModal({
               </button>
             </div>
           </>
-        )}
-
-        {step === 2 && (
+        ) : (
           <>
-            {/* Header */}
+            {/* Step 2: Review & Confirm */}
             <div className="bg-card border-border sticky top-0 border-b px-8 py-6">
               <div className="text-muted-foreground mb-6 flex items-center gap-3">
                 <button
                   onClick={() => setStep(1)}
                   className="hover:text-foreground transition-colors"
+                  disabled={isConnecting}
                 >
                   <svg
                     className="h-5 w-5"
@@ -237,7 +323,6 @@ export function AppDetailModal({
               </p>
             </div>
 
-            {/* Content */}
             <div className="space-y-6 px-8 py-6">
               <div className="bg-muted flex items-start gap-4 rounded-xl p-4">
                 <div
@@ -251,7 +336,7 @@ export function AppDetailModal({
                     will be able to:
                   </p>
                   <ul className="mt-2 space-y-1">
-                    {app.permissions.map((permission, i) => (
+                    {app.permissions.map((permission: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined, i: Key | null | undefined) => (
                       <li
                         key={i}
                         className="text-foreground flex items-center gap-2 text-sm"
@@ -270,7 +355,8 @@ export function AppDetailModal({
                     type="checkbox"
                     checked={agreed}
                     onChange={e => setAgreed(e.target.checked)}
-                    className="border-border checked:bg-iq-500 checked:border-iq-500 focus:ring-iq-200 mt-1 h-5 w-5 rounded border-2 transition-all focus:ring-2"
+                    disabled={isConnecting}
+                    className="border-border checked:bg-iq-500 checked:border-iq-500 focus:ring-iq-200 mt-1 h-5 w-5 rounded border-2 transition-all focus:ring-2 disabled:opacity-50"
                   />
                   <span className="text-muted-foreground group-hover:text-foreground text-sm transition-colors">
                     I agree to the{' '}
@@ -295,27 +381,47 @@ export function AppDetailModal({
               </div>
             </div>
 
-            {/* Footer */}
             <div className="bg-card border-border sticky bottom-0 space-y-3 border-t px-8 py-6">
               <button
-                onClick={() => {
-                  if (agreed) {
-                    onInstall(app);
-                    onClose();
-                  }
-                }}
-                disabled={!agreed}
+                onClick={simulateOAuthFlow}
+                disabled={!agreed || isConnecting}
                 className={`w-full rounded-xl px-6 py-3 font-semibold transition-all ${
-                  agreed
+                  agreed && !isConnecting
                     ? 'bg-iq-500 hover:bg-iq-600 text-white hover:shadow-lg'
                     : 'bg-muted text-muted-foreground cursor-not-allowed'
                 }`}
               >
-                Connect {app.name}
+                {isConnecting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg
+                      className="h-5 w-5 animate-spin"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    Connecting...
+                  </span>
+                ) : (
+                  `Connect ${app.name}`
+                )}
               </button>
               <button
                 onClick={onClose}
-                className="text-muted-foreground hover:text-foreground w-full rounded-xl px-6 py-3 font-medium transition-colors"
+                disabled={isConnecting}
+                className="text-muted-foreground hover:text-foreground w-full rounded-xl px-6 py-3 font-medium transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>

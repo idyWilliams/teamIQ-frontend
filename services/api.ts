@@ -52,7 +52,7 @@ const api = {
   },
 
   default: {
-    root: '/', // base root endpoint
+    root: '/', 
   },
 };
 

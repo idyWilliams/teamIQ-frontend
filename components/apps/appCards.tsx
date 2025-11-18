@@ -1,6 +1,4 @@
 import Image, { StaticImageData } from 'next/image';
-
-// Import all images at the top
 import jiraLogo from '@/public/images/jira.png';
 import githubLogo from '@/public/images/github.svg';
 import slackLogo from '@/public/images/slack.svg';
@@ -9,46 +7,63 @@ import gitlabLogo from '@/public/images/gitlab.svg';
 import clickupLogo from '@/public/images/clickup.svg';
 import discordLogo from '@/public/images/discord.svg';
 import teamsLogo from '@/public/images/teams.svg';
-
-export interface Apps {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  logo: string | StaticImageData;
-  color: string;
-  features: string[];
-  permissions: string[];
-  pricing: string;
-}
+import { Apps } from '@/types/integrations';
 
 export function AppCard({
   app,
   onConnect,
+  isConnected = false,
 }: {
   app: Apps;
   onConnect: (app: Apps) => void;
+  isConnected?: boolean;
 }) {
+  const renderLogo = (logo: string | StaticImageData, name: string) => {
+    if (typeof logo === 'string') {
+      return <span className="text-2xl">{logo}</span>;
+    }
+
+    return (
+      <Image
+        src={logo}
+        alt={name}
+        width={40}
+        height={40}
+        className="h-10 w-10 object-contain"
+      />
+    );
+  };
+
   return (
     <div
-      className="group bg-card border-border hover:border-iq-300 cursor-pointer rounded-2xl border p-6 transition-all duration-300 hover:shadow-xl"
+      className="group bg-card border-border hover:border-iq-300 relative cursor-pointer rounded-2xl border p-6 transition-all duration-300 hover:shadow-xl"
       onClick={() => onConnect(app)}
     >
+      {/* Connection Badge */}
+      {isConnected && (
+        <div className="absolute top-4 right-4 flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
+          <svg
+            className="h-3 w-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+          Connected
+        </div>
+      )}
+
       <div className="mb-4 flex items-start justify-between">
         <div
-          className={`mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border shadow-lg`}
+          className={`h-14 w-14 rounded-2xl  mb-4 flex items-center justify-center shadow-lg`}
         >
-          {typeof app.logo === 'string' ? (
-            <span className="text-2xl">{app.logo}</span>
-          ) : (
-            <Image
-              src={app.logo}
-              alt={app.name}
-              width={40}
-              height={40}
-              className="h-10 w-10 object-contain"
-            />
-          )}
+          {renderLogo(app.logo, app.name)}
         </div>
         <span className="text-iq-500 bg-iq-50 rounded-full px-3 py-1 text-xs font-medium">
           {app.pricing}
@@ -62,7 +77,7 @@ export function AppCard({
       </p>
 
       <button className="bg-iq-500 hover:bg-iq-600 w-full rounded-xl px-4 py-2.5 font-medium text-white transition-colors group-hover:shadow-md">
-        Connect
+        {isConnected ? 'Add Another Account' : 'Connect'}
       </button>
     </div>
   );
@@ -85,6 +100,7 @@ export const apps = [
     ],
     permissions: ['Read project data', 'Sync issues', 'Access team members'],
     pricing: 'Free',
+    authType: 'oauth', // ADD THIS LINE
   },
   {
     id: 'github',
@@ -106,6 +122,7 @@ export const apps = [
       'View pull requests',
     ],
     pricing: 'Free',
+    authType: 'oauth', // ADD THIS LINE
   },
   {
     id: 'slack',
@@ -123,6 +140,7 @@ export const apps = [
     ],
     permissions: ['Read messages', 'Access channels', 'View user activity'],
     pricing: 'Free',
+    authType: 'oauth', // ADD THIS LINE
   },
   {
     id: 'figma',
@@ -140,6 +158,7 @@ export const apps = [
     ],
     permissions: ['Read files', 'Access comments', 'View team activity'],
     pricing: 'Free',
+    authType: 'oauth',
   },
   {
     id: 'gitlab',
@@ -157,6 +176,7 @@ export const apps = [
     ],
     permissions: ['Read projects', 'Access pipelines', 'View merge requests'],
     pricing: 'Free',
+    authType: 'oauth',
   },
   {
     id: 'clickup',
@@ -174,6 +194,7 @@ export const apps = [
     ],
     permissions: ['Read tasks', 'Access time logs', 'View team data'],
     pricing: 'Free',
+    authType: 'apikey', // Only API key!
   },
   {
     id: 'notion',
@@ -191,6 +212,7 @@ export const apps = [
     ],
     permissions: ['Read pages', 'Access databases', 'View activity'],
     pricing: 'Free',
+    authType: 'oauth',
   },
   {
     id: 'asana',
@@ -208,6 +230,7 @@ export const apps = [
     ],
     permissions: ['Read projects', 'Access tasks', 'View team data'],
     pricing: 'Free',
+    authType: 'oauth',
   },
   {
     id: 'teams',
@@ -225,6 +248,7 @@ export const apps = [
     ],
     permissions: ['Read messages', 'Access meetings', 'View call data'],
     pricing: 'Free',
+    authType: 'oauth',
   },
   {
     id: 'discord',
@@ -242,6 +266,7 @@ export const apps = [
     ],
     permissions: ['Read messages', 'Access channels', 'View members'],
     pricing: 'Free',
+    authType: 'oauth',
   },
   {
     id: 'trello',
@@ -259,6 +284,7 @@ export const apps = [
     ],
     permissions: ['Read boards', 'Access cards', 'View activity'],
     pricing: 'Free',
+    authType: 'apikey', // Trello's main integration is with API key/token
   },
   {
     id: 'linear',
@@ -276,8 +302,10 @@ export const apps = [
     ],
     permissions: ['Read issues', 'Access projects', 'View cycles'],
     pricing: 'Free',
+    authType: 'apikey', // Linear is API key based
   },
 ];
+
 
 export const categories = [
   'All',

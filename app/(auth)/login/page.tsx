@@ -60,7 +60,8 @@ export default function Login() {
         console.log(res, role);
 
         authenticate({
-          user: res?.data?.organization || res?.data?.user,
+          user: res?.data?.user,
+          organization: res?.data?.organization,
           token: res?.data?.access_token,
         });
 

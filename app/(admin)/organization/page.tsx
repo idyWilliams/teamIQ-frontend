@@ -5,12 +5,12 @@ import DashbordOverview from '@/components/overview';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ProjectStatus from '@/components/project-status';
 import Team from '@/components/team';
-import { tokenStorage } from '@/services/axios';
+// import { tokenStorage } from '@/services/axios';
 
 export default function OverviewPage() {
-  useEffect(() => {
-    console.log(tokenStorage.get(), "AUTH");
-  }, []);
+  // useEffect(() => {
+  //   console.log(tokenStorage.get(), "AUTH");
+  // }, []);
   return (
     <div className="h-full">
       <Tabs defaultValue="overview" className="flex h-full flex-col">
