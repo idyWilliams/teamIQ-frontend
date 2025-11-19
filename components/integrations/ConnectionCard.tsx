@@ -4,6 +4,7 @@ import app from '@/app/(admin)/organization/app/components/org-app-lists';
 import Image, { StaticImageData } from 'next/image';
 import { useState } from 'react';
 import { apps } from '../apps/appCards';
+import { useIntegrations } from '@/context/IntegrationContext';
 
 // Mock data for demonstration
 const mockConnection = {
@@ -21,7 +22,7 @@ const mockConnection = {
 interface Connection {
   id: string;
   appName: string;
-  logo: string | { src: string };
+  logo: string | StaticImageData;
   displayName: string;
   providerAccountName: string;
   providerAccountEmail: string;
@@ -39,27 +40,27 @@ export function ConnectionCard({ connection }: ConnectionCardProps) {
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [displayName, setDisplayName] = useState(connection.displayName);
+  const { connections, loading, removeConnection } = useIntegrations();
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
-const renderLogo = (logo: string | StaticImageData, name: string) => {
-  if (typeof logo === 'string') {
-    return <span className="text-2xl">{logo}</span>;  // Wrap string in span
-  }
+  const renderLogo = (logo: string | StaticImageData, name: string) => {
+    if (typeof logo === 'string') {
+      return <span className="text-2xl">{logo}</span>;
+    }
 
-  return (
-    <Image
-      src={logo}
-      alt={name}
-      width={40}
-      height={40}
-      className="h-10 w-10 object-contain"
-    />
-  );
-};
+    return (
+      <Image
+        src={logo}
+        alt={name}
+        width={40}
+        height={40}
+        className="h-10 w-10 object-contain"
+      />
+    );
+  };
 
   const handleSync = async () => {
     setIsSyncing(true);
     try {
-      // Simulate sync
       await new Promise(resolve => setTimeout(resolve, 2000));
       console.log('Syncing connection:', connection.id);
     } catch (error) {
@@ -74,6 +75,7 @@ const renderLogo = (logo: string | StaticImageData, name: string) => {
     if (
       confirm(`Are you sure you want to disconnect ${connection.displayName}?`)
     ) {
+      removeConnection(connection.id);
       console.log('Disconnecting:', connection.id);
       setShowMenu(false);
     }
@@ -86,7 +88,8 @@ const renderLogo = (logo: string | StaticImageData, name: string) => {
       setShowMenu(false);
     }
   };
-
+  console.log('Selected Provider:', selectedProvider);
+  console.log('connection:', connection);
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -204,23 +207,8 @@ const renderLogo = (logo: string | StaticImageData, name: string) => {
       <div
         className={`mb-4 flex h-16 w-16 items-center justify-center rounded-2xl shadow-lg`}
       >
-        {apps
-          .filter(app => app.authType === 'oauth')
-          .map(app => (
-            <button
-              key={app.id}
-              className={`flex items-center gap-3 rounded-lg border px-4 py-3 shadow-sm transition-all ${
-                selectedProvider === app.id
-                  ? 'border-iq-500 bg-iq-50'
-                  : 'border-gray-200 bg-white'
-              }`}
-              onClick={() => setSelectedProvider(app.id)}
-            >
-              {/* Render logo directly, not wrapped in span */}
-              {renderLogo(app.logo, app.name)}
-              <span className="font-medium">{app.name}</span>
-            </button>
-          ))}
+        {renderLogo(connection?.logo, connection.appName)}
+        {/* <span className="font-medium">{connection.appName}</span> */}
       </div>
 
       {/* Name */}
