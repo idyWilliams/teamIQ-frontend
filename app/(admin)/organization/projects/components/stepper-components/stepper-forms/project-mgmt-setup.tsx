@@ -22,7 +22,7 @@ import {
   useUpdateProjectStep2,
 } from '@/services/hooks/useProject';
 import { toast } from 'sonner';
-import { useProjectStore } from '@/store/useProjectstore';
+// import { useProjectStore } from '@/store/useProjectstore';
 import { Loader } from 'lucide-react';
 
 interface ProjectMgmtSetupProps {
@@ -49,7 +49,7 @@ const ProjectMgmtSetup = ({
   const [isReviewMode, setIsReviewMode] = useState(false);
 
   const updateProjectStep2 = useUpdateProjectStep2(projectId || 0);
-  const setStep2Data = useProjectStore(state => state.setStep2Data);
+  // const setStep2Data = useProjectStore(state => state.setStep2Data);
 
   interface FormValues {
     projectType: string;
@@ -186,7 +186,7 @@ const ProjectMgmtSetup = ({
     };
 
     console.log('STEP 2 API PAYLOAD:', apiData);
-    setStep2Data(apiData);
+    // setStep2Data(apiData);
 
     if (!projectId) {
       console.log('No projectId available, skipping API call');

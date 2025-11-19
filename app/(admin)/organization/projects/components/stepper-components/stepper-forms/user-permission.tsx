@@ -12,7 +12,7 @@ import {
   type User as ApiUser,
 } from '@/services/hooks/useUsers';
 import { toast } from 'sonner';
-import { useProjectStore } from '@/store/useProjectstore';
+// import { useProjectStore } from '@/store/useProjectstore';
 // import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface UserPermissionProps {
@@ -47,7 +47,7 @@ const UserPermission = ({
   defaultValues,
 }: UserPermissionProps) => {
   const updateProjectStep5 = useUpdateProjectStep5(projectId || 0);
-  const setStep5Data = useProjectStore(state => state.setStep5Data);
+  // const setStep5Data = useProjectStore(state => state.setStep5Data);
 
   const { data: users, isLoading, error } = useOrganizationUsers();
 
@@ -188,7 +188,7 @@ const UserPermission = ({
 
     console.log('STEP 5 API PAYLOAD:', apiData);
 
-    setStep5Data(apiData);
+    // setStep5Data(apiData);
 
     if (!projectId) {
       console.log('No projectId available, skipping API call');

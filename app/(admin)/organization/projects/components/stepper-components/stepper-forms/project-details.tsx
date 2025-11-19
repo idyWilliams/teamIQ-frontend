@@ -44,7 +44,7 @@ import {
 } from '@/components/ui/command';
 import { useCreateProjectStep1 } from '@/services/hooks/useProject';
 import { toast } from 'sonner';
-import { useProjectStore } from '@/store/useProjectstore';
+// import { useProjectStore } from '@/store/useProjectstore';
 import {
   useOrganizationUsers,
   type User as ApiUser,
@@ -122,7 +122,7 @@ const NewProjectDetails = ({
     error: usersError,
   } = useOrganizationUsers();
 
-  const setStep1Data = useProjectStore(state => state.setStep1Data);
+  // const setStep1Data = useProjectStore(state => state.setStep1Data);
 
   // Fn for Handling File Upload
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
@@ -311,7 +311,7 @@ const NewProjectDetails = ({
 
     console.log('FINAL API PAYLOAD:', apiData);
 
-    setStep1Data(apiData);
+    // setStep1Data(apiData);
 
     createProjectMutation.mutate(apiData, {
       onSuccess: responseData => {
