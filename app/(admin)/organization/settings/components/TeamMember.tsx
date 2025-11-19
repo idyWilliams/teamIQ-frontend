@@ -10,12 +10,14 @@ import { useGetInvitedUsers } from '@/services/hooks/useInviteUser';
 import { Users } from 'lucide-react';
 
 const TeamMemberTab = () => {
-  const { data: invitedUsers, isError, isLoading } = useGetInvitedUsers();
+  const { data: invitedUsers } = useGetInvitedUsers();
   console.log('invited users', invitedUsers?.data);
   const [modalOpen, setModalOpen] = useState(false);
 
   const activeUsers =
-    invitedUsers?.data.filter((user: any) => user.status === 'active' || user.accepted) || [];
+    invitedUsers?.data.filter(
+      (user: any) => user.status === 'active' || user.accepted
+    ) || [];
   console.log('activeUsers', activeUsers);
 
   const pendingUsers =

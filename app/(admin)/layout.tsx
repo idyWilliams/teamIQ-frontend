@@ -37,7 +37,7 @@ export default function OrganizationDashboardLayout({
                     priority
                     className="size-6 rounded-full object-cover object-center"
                   />
-                  <span>{user?.organization_name || 'Isentry Technology'}</span>
+                  <span>{user?.organization_name || ''}</span>
                 </div>
                 <div className="relative">
                   <Label htmlFor="search" className="sr-only">

@@ -447,7 +447,7 @@ const NewProjectDetails = ({
               />
             ) : defaultValues ? (
               <div className="text-center">
-                <span className="icon-[et--check-circle] size-7 text-green-500"></span>
+                <span className="icon-[material-symbols--check-circle] size-7 text-green-500"></span>
                 <p className="text-[14px] text-green-600">Image uploaded</p>
               </div>
             ) : (

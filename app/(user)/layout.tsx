@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import RightSideBar from '@/components/user-dashboard-component/RightSideBar';
 import Header from '@/components/user-dashboard-component/Header';
@@ -35,7 +35,7 @@ export default function TeamDashboardLayout({ children }: LayoutProps) {
 
       {/* sidebar for mobile  */}
       <aside
-        className={`fixed top-0 right-0 z-40 h-screen w-64 transform border-r text-[#a6a2a2] transition-transform duration-300 lg:hidden ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed top-0 right-0 z-40 h-screen w-64 transform border-r text-[#a6a2a2] transition-transform duration-300 xl:hidden ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <Sidebar closeSidebar={() => setIsOpen(false)} />
       </aside>
@@ -48,14 +48,17 @@ export default function TeamDashboardLayout({ children }: LayoutProps) {
           {/* Left Sidebar (30%) */}
           <>
             <aside
-              className={`fixed top-0 right-0 z-40 hidden h-screen w-[15%] transform border-l border-neutral-300 bg-white transition-transform duration-300 lg:static xl:block ${isOpen ? 'translate-x-0' : 'translate-x-full'} md:translate-x-0`}
+              className={`fixed top-0 left-0 z-40 hidden h-screen w-[15%] transform border-l border-neutral-300 bg-white transition-transform duration-300 xl:block ${isOpen ? 'translate-x-0' : 'translate-x-full'} md:translate-x-0`}
             >
-              <Sidebar closeSidebar={() => setIsOpen(!isOpen)} />
+              <Sidebar
+                className="w-full"
+                closeSidebar={() => setIsOpen(!isOpen)}
+              />
             </aside>
           </>
 
           {/* Main dashboard (80%) */}
-          <div className="flex w-full grow flex-col px-4 lg:flex-1 lg:p-6">
+          <div className="flex w-full grow flex-col px-4 lg:flex-1 lg:p-6 xl:ml-[15%]">
             {/* Header */}
             <Header onOpenNotification={() => setShowNotifications(true)} />
 

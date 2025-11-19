@@ -1,12 +1,16 @@
 'use client';
 
 import * as React from 'react';
-import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react';
-import { NavMain } from '@/components/nav-main';
+import {
+  AudioWaveform,
+  Brain,
+  Command,
+  GalleryVerticalEnd,
+  LogOut,
+} from 'lucide-react';
 import { NavProjects } from '@/components/nav-projects';
 import NavSettings from './NavSettings';
-import { NavUser } from '@/components/nav-user';
-import { TeamSwitcher } from '@/components/team-switcher';
+
 import {
   Sidebar,
   SidebarContent,
@@ -14,6 +18,9 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar';
+import { Button } from './ui/button';
+import { useAuthStore } from '@/store/useAuthStore';
+import Link from 'next/link';
 
 const data = {
   user: {
@@ -106,14 +113,21 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { logout } = useAuthStore();
+
   return (
     <Sidebar
       collapsible="icon"
       className="border-r border-gray-200 bg-white"
       {...props}
     >
-      <SidebarHeader className="border-b border-gray-100 py-3">
-        <TeamSwitcher teams={data.teams} />
+      <SidebarHeader>
+        <Link
+          href="/organization"
+          className="inline-flex items-center gap-3 text-xl font-bold text-blue-500"
+        >
+          <Brain /> TeamIQ
+        </Link>
       </SidebarHeader>
 
       <SidebarContent className="mt-2 gap-y-0">
@@ -123,7 +137,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-gray-100 py-3">
-        <NavUser user={data.user} />
+        <Button onClick={() => logout()}>
+          <LogOut />
+          Log out
+        </Button>
       </SidebarFooter>
 
       <SidebarRail />
