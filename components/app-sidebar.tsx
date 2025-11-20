@@ -7,6 +7,7 @@ import { NavProjects } from '@/components/nav-projects';
 import NavSettings from './NavSettings';
 import { NavUser } from '@/components/nav-user';
 import { TeamSwitcher } from '@/components/team-switcher';
+import NavLogo from './nav-logo';
 import {
   Sidebar,
   SidebarContent,
@@ -105,6 +106,10 @@ const data = {
   ],
 };
 
+interface LogoProps {
+  label: string;
+}
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar
@@ -113,7 +118,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {...props}
     >
       <SidebarHeader className="border-b border-gray-100 py-3">
-        <TeamSwitcher teams={data.teams} />
+        {/* <TeamSwitcher teams={data.teams} /> */}
+        <NavLogo label="Logo" />
       </SidebarHeader>
 
       <SidebarContent className="mt-2 gap-y-0">
@@ -123,7 +129,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-gray-100 py-3">
-        <NavUser user={data.user} />
+        {/* <NavUser user={data.user} /> */}
       </SidebarFooter>
 
       <SidebarRail />
