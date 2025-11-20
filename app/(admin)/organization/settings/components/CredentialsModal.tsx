@@ -2,6 +2,7 @@
 'use client';
 import Image, { StaticImageData } from "next/image";
 import { useEffect, useState } from "react";
+import { useGetProviderCredentials, useSaveProviderCredentials } from "@/services/hooks/useIntegrations";
 
 export function CredentialsModal({
   provider,
@@ -21,11 +22,23 @@ export function CredentialsModal({
   const [clientId, setClientId] = useState('');
   const [clientSecret, setClientSecret] = useState('');
   const [redirectUri, setRedirectUri] = useState('');
-  const [saving, setSaving] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [showSecret, setShowSecret] = useState(false);
+
+  const { data: credentials, isLoading: loading } = useGetProviderCredentials(organizationId, provider);
+  const { mutate: saveCredentials, isPending: saving } = useSaveProviderCredentials();
+
+  useEffect(() => {
+    if (credentials) {
+      setClientId(credentials.client_id || '');
+      setClientSecret(credentials.client_secret || '');
+      setRedirectUri(
+        credentials.redirect_uri ||
+          `https://app.teamiq.com/auth/callback/${provider}`
+      );
+    }
+  }, [credentials, provider]);
 
 
   const renderLogo = (logo: string | StaticImageData) => {
@@ -43,61 +56,28 @@ export function CredentialsModal({
     );
   };
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch(
-          `/api/v1/integrations/provider-credentials?orgId=${organizationId}&provider=${provider}`
-        );
-        if (res.ok) {
-          const data = await res.json();
-          setClientId(data.client_id || '');
-          setClientSecret(data.client_secret || '');
-          setRedirectUri(
-            data.redirect_uri ||
-              `https://app.teamiq.com/auth/callback/${provider}`
-          );
-        }
-      } catch {
-        setRedirectUri(`https://app.teamiq.com/auth/callback/${provider}`);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [organizationId, provider]);
-
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
     setErrorMsg(null);
     setSuccessMsg(null);
 
-    try {
-      const resp = await fetch('/api/v1/integrations/provider-credentials', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          organization_id: organizationId,
-          provider,
-          client_id: clientId,
-          client_secret: clientSecret,
-          redirect_uri: redirectUri,
-        }),
-      });
-
-      if (resp.ok) {
+    saveCredentials({
+      organization_id: organizationId,
+      provider,
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uri: redirectUri,
+    }, {
+      onSuccess: () => {
         setSuccessMsg(
           'Credentials saved successfully! Your team can now connect.'
         );
         setTimeout(() => onClose(), 2000);
-      } else {
+      },
+      onError: () => {
         setErrorMsg('Failed to save credentials. Please try again.');
       }
-    } catch {
-      setErrorMsg('Network error. Please check your connection.');
-    } finally {
-      setSaving(false);
-    }
+    });
   };
 
   const copyToClipboard = (text: string) => {

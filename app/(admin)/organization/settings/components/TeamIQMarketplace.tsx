@@ -8,11 +8,12 @@ import { AppCard, apps, categories } from '@/components/apps/appCards';
 import { EmptyState } from '@/components/emptyState/empty';
 import { useIntegrations } from '@/context/IntegrationContext';
 import { Apps } from '@/types/integrations';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function TeamIQMarketplace() {
   const router = useRouter();
   const { connections, isAppConnected } = useIntegrations();
-
+  const organizationId = useAuthStore(state => state.user?.id);
   const [selectedApp, setSelectedApp] = useState<Apps | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -31,24 +32,7 @@ export default function TeamIQMarketplace() {
     return matchesSearch && matchesCategory && matchesConnectedFilter;
   });
 
-  // Helper function to render logo
-//   const renderLogo = (logo: string | StaticImageData, name: string) => {
-//     if (typeof logo === 'string') {
-//       return <span className="text-2xl">{logo}</span>;
-//     }
 
-//     return (
-//       <Image
-//         src={logo}
-//         alt={name}
-//         width={40}
-//         height={40}
-//         className="h-10 w-10 object-contain"
-//       />
-//     );
-//   };
-
-  // Get connected apps
   const connectedApps = apps.filter(app => isAppConnected(app.id));
 
   return (
@@ -239,6 +223,7 @@ export default function TeamIQMarketplace() {
         <AppDetailModal
           app={selectedApp}
           onClose={() => setSelectedApp(null)}
+          organizationId={organizationId}
         />
       )}
 

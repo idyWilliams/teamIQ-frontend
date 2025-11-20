@@ -51,6 +51,11 @@ const api = {
     githubWebhook: '/integrations/github/webhook',
     'provider-credentials': (organizationId: string, provider: string) =>
       `integrations/provider-credentials?orgId=${organizationId}&provider=${provider}`,
+    list: '/integrations/',
+    byId: (id: string) => `/integrations/${id}`,
+    sync: (id: string) => `/integrations/${id}/sync`,
+    saveApiKey: '/integrations/save-apikey',
+    providerCredentials: '/integrations/provider-credentials',
   },
 
   default: {

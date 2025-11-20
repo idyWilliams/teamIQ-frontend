@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image, { StaticImageData } from 'next/image';
+import { useSaveApiKey } from '@/services/hooks/useIntegrations';
 import { useRouter } from 'next/navigation';
 import { Apps } from '@/types/integrations';
 import { useIntegrations } from '@/context/IntegrationContext';
@@ -19,9 +20,9 @@ export function AppDetailModal({
 }: AppDetailModalProps) {
   const router = useRouter();
   const { getConnectionsByApp, fetchConnections } = useIntegrations();
+  const { mutate: saveApiKey, isPending: isConnecting } = useSaveApiKey();
   const [step, setStep] = useState<number>(1);
   const [agreed, setAgreed] = useState<boolean>(false);
-  const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [connectionSuccess, setConnectionSuccess] = useState<boolean>(false);
   const [apiKey, setApiKey] = useState<string>('');
   const [apiKeyError, setApiKeyError] = useState<string | null>(null);
@@ -50,45 +51,30 @@ export function AppDetailModal({
 
   // --- Handler for OAuth flow
   const handleOAuthConnect = () => {
-    setIsConnecting(true);
     window.location.href = `/api/v1/integrations/oauth/start?provider=${app.id}&orgId=${organizationId}`;
   };
 
   // --- Handler for API Key flow
   const handleApiKeyConnect = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsConnecting(true);
     setApiKeyError(null);
-    try {
-      const resp = await fetch('/api/v1/integrations/save-apikey', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          orgId: organizationId,
-          provider: app.id,
-          apiKey,
-        }),
-      });
-      if (!resp.ok) {
-        try {
-          const { detail } = await resp.json();
-          setApiKeyError(detail || 'Failed to connect');
-        } catch {
-          setApiKeyError('Failed to connect.');
+    saveApiKey({
+        apiKey,
+        provider: app.id,
+        organizationId,
+    }, {
+        onSuccess: () => {
+            setConnectionSuccess(true);
+            setTimeout(() => {
+                onClose();
+                fetchConnections();
+                router.push('/organization/settings?tab=integrated-apps');
+            }, 1200);
+        },
+        onError: (error: any) => {
+            setApiKeyError(error.response?.data?.detail || 'Failed to connect.');
         }
-        setIsConnecting(false);
-        return;
-      }
-      setConnectionSuccess(true);
-      setTimeout(() => {
-        onClose();
-        fetchConnections();
-        router.push('/organization/settings?tab=integrated-apps');
-      }, 1200);
-    } catch {
-      setApiKeyError('Network error');
-    }
-    setIsConnecting(false);
+    });
   };
 
   return (
