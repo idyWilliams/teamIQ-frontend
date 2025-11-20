@@ -56,19 +56,19 @@ export default ProjectWrapper;
 const projectsTabs = [
   {
     label: 'Project Overview',
-    href: '/member/projects?tab=overview',
+    href: '/organization/projects?tab=overview',
     value: 'overview',
     content: <ProjectOverview />,
   },
   {
     label: 'Tasks Allocation',
-    href: '/member/projects?tab=tasks',
+    href: '/organization/projects?tab=tasks',
     value: 'tasks',
     content: <h1>Task</h1>,
   },
   {
     label: 'Assign Team Member',
-    href: '/member/projects?tab=assign-team-member',
+    href: '/organization/projects?tab=assign-team-member',
     value: 'assign-team-member',
     content: <AssignedTeamMembers />,
   },
