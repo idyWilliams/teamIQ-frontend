@@ -1,23 +1,8 @@
 'use client';
 
-import app from '@/app/(admin)/organization/app/components/org-app-lists';
 import Image, { StaticImageData } from 'next/image';
 import { useState } from 'react';
-import { apps } from '../apps/appCards';
 import { useIntegrations } from '@/context/IntegrationContext';
-
-// Mock data for demonstration
-const mockConnection = {
-  id: 'conn-1',
-  appName: 'Jira',
-  logo: '🟦',
-  displayName: 'Product Development Board',
-  providerAccountName: 'Acme Corp Workspace',
-  providerAccountEmail: 'team@acme.com',
-  isActive: true,
-  lastSyncedAt: new Date(Date.now() - 3600000).toISOString(),
-  color: 'from-blue-500 to-blue-600',
-};
 
 interface Connection {
   id: string;
@@ -28,7 +13,7 @@ interface Connection {
   providerAccountEmail: string;
   isActive: boolean;
   lastSyncedAt: string;
-  color?: string;
+  provider: string;
 }
 
 interface ConnectionCardProps {
@@ -40,13 +25,12 @@ export function ConnectionCard({ connection }: ConnectionCardProps) {
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [displayName, setDisplayName] = useState(connection.displayName);
-  const { connections, loading, removeConnection } = useIntegrations();
-  const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
-  const renderLogo = (logo: string | StaticImageData, name: string) => {
-    if (typeof logo === 'string') {
-      return <span className="text-2xl">{logo}</span>;
-    }
+  const { removeConnection, syncConnection } = useIntegrations();
 
+  // Utility for rendering logos (emoji or image path)
+  const renderLogo = (logo: string | StaticImageData, name: string) => {
+    if (typeof logo === 'string')
+      return <span className="text-2xl">{logo}</span>;
     return (
       <Image
         src={logo}
@@ -60,36 +44,27 @@ export function ConnectionCard({ connection }: ConnectionCardProps) {
 
   const handleSync = async () => {
     setIsSyncing(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Syncing connection:', connection.id);
-    } catch (error) {
-      console.error('Sync failed:', error);
-    } finally {
-      setIsSyncing(false);
-      setShowMenu(false);
-    }
+    await syncConnection(connection.id);
+    setIsSyncing(false);
+    setShowMenu(false);
   };
 
-  const handleDisconnect = () => {
+  const handleDisconnect = async () => {
     if (
       confirm(`Are you sure you want to disconnect ${connection.displayName}?`)
     ) {
-      removeConnection(connection.id);
-      console.log('Disconnecting:', connection.id);
+      await removeConnection(connection.id);
       setShowMenu(false);
     }
   };
 
   const handleSaveName = () => {
-    if (displayName.trim()) {
-      console.log('Updating connection name:', displayName.trim());
-      setIsEditing(false);
-      setShowMenu(false);
-    }
+    // Optionally: add custom endpoint to PATCH display name backend
+    setIsEditing(false);
+    setShowMenu(false);
   };
-  console.log('Selected Provider:', selectedProvider);
-  console.log('connection:', connection);
+
+  // Readable last synced; you can adjust based on your UX
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -123,12 +98,10 @@ export function ConnectionCard({ connection }: ConnectionCardProps) {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+              d="M12 5v.01M12 12v.01M12 19v.01"
             />
           </svg>
         </button>
-
-        {/* Dropdown Menu */}
         {showMenu && (
           <>
             <div
@@ -204,14 +177,11 @@ export function ConnectionCard({ connection }: ConnectionCardProps) {
       </div>
 
       {/* Logo */}
-      <div
-        className={`mb-4 flex h-16 w-16 items-center justify-center rounded-2xl shadow-lg`}
-      >
-        {renderLogo(connection?.logo, connection.appName)}
-        {/* <span className="font-medium">{connection.appName}</span> */}
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl shadow-lg">
+        {renderLogo(connection.logo, connection.appName)}
       </div>
 
-      {/* Name */}
+      {/* Name Display/Editing */}
       {isEditing ? (
         <div className="mb-3 space-y-2">
           <input
@@ -264,9 +234,8 @@ export function ConnectionCard({ connection }: ConnectionCardProps) {
         </p>
       </div>
 
-      {/* Footer */}
+      {/* Footer: Status and Last Synced */}
       <div className="border-border flex items-center justify-between border-t pt-4">
-        {/* Status */}
         <div className="flex items-center gap-2">
           <div
             className={`h-2.5 w-2.5 rounded-full ${connection.isActive ? 'animate-pulse bg-green-500' : 'bg-red-500'}`}
@@ -277,8 +246,6 @@ export function ConnectionCard({ connection }: ConnectionCardProps) {
             {connection.isActive ? 'Active' : 'Inactive'}
           </span>
         </div>
-
-        {/* Last Synced */}
         <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
           <svg
             className="h-3.5 w-3.5"
@@ -294,71 +261,6 @@ export function ConnectionCard({ connection }: ConnectionCardProps) {
             />
           </svg>
           <span>{formatDate(connection.lastSyncedAt)}</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Demo Component
-export default function ConnectionCardsDemo() {
-  const connections: Connection[] = [
-    {
-      ...mockConnection,
-      id: 'conn-1',
-      appName: 'Jira',
-      logo: '🟦',
-      color: 'from-blue-500 to-blue-600',
-      displayName: 'Product Development',
-      lastSyncedAt: new Date(Date.now() - 1800000).toISOString(),
-    },
-    {
-      ...mockConnection,
-      id: 'conn-2',
-      appName: 'GitHub',
-      logo: '⚫',
-      color: 'from-gray-700 to-gray-900',
-      displayName: 'Main Repository',
-      providerAccountName: 'acme-org',
-      lastSyncedAt: new Date(Date.now() - 7200000).toISOString(),
-    },
-    {
-      ...mockConnection,
-      id: 'conn-3',
-      appName: 'Slack',
-      logo: '💬',
-      color: 'from-purple-500 to-pink-600',
-      displayName: 'Team Workspace',
-      lastSyncedAt: new Date(Date.now() - 300000).toISOString(),
-    },
-    {
-      ...mockConnection,
-      id: 'conn-4',
-      appName: 'Figma',
-      logo: '🎨',
-      color: 'from-red-500 to-purple-600',
-      displayName: 'Design System',
-      isActive: false,
-      lastSyncedAt: new Date(Date.now() - 86400000).toISOString(),
-    },
-  ];
-
-  return (
-    <div className="bg-background min-h-screen p-6">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-8">
-          <h1 className="text-foreground mb-2 text-3xl font-bold">
-            My Connections
-          </h1>
-          <p className="text-muted-foreground">
-            Manage your connected apps and sync data
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {connections.map(connection => (
-            <ConnectionCard key={connection.id} connection={connection} />
-          ))}
         </div>
       </div>
     </div>

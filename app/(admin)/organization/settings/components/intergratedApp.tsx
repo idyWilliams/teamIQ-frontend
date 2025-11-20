@@ -1,12 +1,8 @@
-
-
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { EmptyState } from '@/components/emptyState/empty';
-
-
 import { apps } from '@/components/apps/appCards';
 import { Connection } from '@/types/integrations';
 import { useIntegrations } from '@/context/IntegrationContext';
@@ -18,34 +14,41 @@ export default function SettingIntegratedApp() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterApp, setFilterApp] = useState<string>('All');
 
-  // Group connections by app
-  const groupedConnections = connections.reduce(
-    (acc: { [x: string]: any[]; }, conn: { appId: string | number; }) => {
-      if (!acc[conn.appId]) {
-        acc[conn.appId] = [];
-      }
-      acc[conn.appId].push(conn);
-      return acc;
-    },
-    {} as Record<string, typeof connections>
+  // Use 'provider' for grouping (backend uses .provider as app id)
+  const groupedConnections = useMemo(
+    () =>
+      connections.reduce(
+        (acc, conn) => {
+          if (!acc[conn.provider]) acc[conn.provider] = [];
+          acc[conn.provider].push(conn);
+          return acc;
+        },
+        {} as Record<string, Connection[]>
+      ),
+    [connections]
   );
 
-  // Get unique apps that have connections
+  // Unique apps that actually have connections
   const connectedApps = Object.keys(groupedConnections)
-    .map(appId => apps.find(app => app.id === appId))
+    .map(provider => apps.find(app => app.id === provider))
     .filter(Boolean);
 
-  // Filter connections
-  const filteredConnections = connections.filter((conn: { displayName: string; providerAccountName: string; appName: string; appId: string; }) => {
-    const matchesSearch =
-      conn.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      conn.providerAccountName
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      conn.appName.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = filterApp === 'All' || conn.appId === filterApp;
-    return matchesSearch && matchesFilter;
-  });
+  // Filter logic: search and app filter
+  const filteredConnections = useMemo(
+    () =>
+      connections.filter(conn => {
+        const matchesSearch =
+          conn.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          conn.providerAccountName
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          conn.appName.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesFilter =
+          filterApp === 'All' || conn.provider === filterApp;
+        return matchesSearch && matchesFilter;
+      }),
+    [connections, searchQuery, filterApp]
+  );
 
   const handleAddApps = () => {
     router.push('/organization/settings/market-place');
@@ -92,7 +95,6 @@ export default function SettingIntegratedApp() {
               projects
             </p>
           </div>
-
           <button
             onClick={handleAddApps}
             className="bg-iq-500 hover:bg-iq-600 flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-colors"

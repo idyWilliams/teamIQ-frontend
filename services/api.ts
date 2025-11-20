@@ -16,7 +16,7 @@ const api = {
   users: {
     byId: (userId: number) => `/users/${userId}`,
     organizationUsers: '/users/organization/users',
-    getProjects: '/users/me/projects'
+    getProjects: '/users/me/projects',
   },
 
   organizations: {
@@ -49,10 +49,12 @@ const api = {
 
   integrations: {
     githubWebhook: '/integrations/github/webhook',
+    'provider-credentials': (organizationId: string, provider: string) =>
+      `integrations/provider-credentials?orgId=${organizationId}&provider=${provider}`,
   },
 
   default: {
-    root: '/', 
+    root: '/',
   },
 };
 
