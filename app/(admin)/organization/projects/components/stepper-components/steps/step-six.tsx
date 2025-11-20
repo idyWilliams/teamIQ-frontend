@@ -15,7 +15,7 @@ import UserPermission from '../stepper-forms/user-permission';
 import NewProjectDetails from '../stepper-forms/project-details';
 import ProjectMgmtSetup from '../stepper-forms/project-mgmt-setup';
 import VersionControlSetup from '../stepper-forms/version-control-setup';
-// import { useProjectStore } from '@/store/useProjectstore';
+import { useProjectStore } from '@/store/useProjectstore';
 import { useCreateCompleteProject } from '@/services/hooks/useProject';
 import { Loader } from 'lucide-react';
 import { toast } from 'sonner';

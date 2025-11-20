@@ -1,0 +1,9 @@
+  46-build-the-project-details-page-for-the-organization-dashboard[m 0f15f25 Add comments for proper documentation
+  FIx-BUG-ON-AUTH-FLOW-LOGIN/SIGNUP                               [m 6088816 [[34morigin/FIx-BUG-ON-AUTH-FLOW-LOGIN/SIGNUP[m: behind 4] Fix auth country select and update auth flows
+* [32mUI/organization/teammembers-tab                                 [m d95809c [[34morigin/UI/organization/teammembers-tab[m: ahead 3] Merge branch 'staging' of https://github.com/idyWilliams/teamIQ-frontend into UI/organization/teammembers-tab
+  UI/organization_team_matrix                                     [m 0f15f25 [[34morigin/UI/organization_team_matrix[m] Add comments for proper documentation
+  integrated-App-Tab                                              [m c81c874 [[34morigin/integrated-App-Tab[m: behind 22] feat: Add Integrated App tab
+  master                                                          [m 0d83e1a [[34morigin/master[m: behind 60] Merge pull request #95 from idyWilliams/feature/complete-stepper-modal
+  prj-101-build-organisation-team                                 [m 32854a8 [[34morigin/prj-101-build-organisation-team[m] final changes on the organisation-team header(navigation bar)
+  staging                                                         [m 00570d2 [[34morigin/staging[m] replaced dashboard call with team page text
+  ui_org/settings_profile                                         [m aa6c977 [[34morigin/ui_org/settings_profile[m: behind 2] added profile page under organization setting
