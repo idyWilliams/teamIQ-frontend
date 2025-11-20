@@ -5,7 +5,7 @@ import React from 'react';
 import { teamMembers, TeamMember } from '@/constants/team-member';
 import Image from 'next/image';
 
-function tracks() {
+function tracks({ className = '', children }) {
   type Track = {
     id: number;
     icon: string;
@@ -48,7 +48,9 @@ function tracks() {
   return (
     <>
       {/* This component is not positioned well on the page. Position it accordingly once imported */}
-      <div className="w-[382px] max-w-sm rounded-xl border border-gray-100 bg-white p-4">
+      <div
+        className={`w-[382px] max-w-sm rounded-xl border border-gray-100 bg-white p-4 ${className}`}
+      >
         <h2 className="mb-4 text-lg font-semibold text-gray-900">Tracks</h2>
         <div className="flex flex-col gap-6">
           {allTracks.map(track => (
