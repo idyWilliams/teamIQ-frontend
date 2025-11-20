@@ -1,5 +1,3 @@
-
-
 'use client';
 import React, { useEffect, useState, useRef } from 'react';
 import CardItem from './cardItem';
@@ -17,8 +15,8 @@ const DashboardOverview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showCard, setShowCard] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-    // for mobile carousel
-    const [activeIndex, setActiveIndex] = useState(0);
+  // for mobile carousel
+  const [activeIndex, setActiveIndex] = useState(0);
   const { user } = useAuthStore();
 
   const handleComplete = () => {
@@ -33,21 +31,21 @@ const DashboardOverview = () => {
     }
   }, [user]);
 
-    const scrollRef = useRef<HTMLDivElement | null>(null);
-    useEffect(() => {
-      const container = scrollRef.current;
-      if (!container) return;
-  
-      const onScroll = () => {
-        const cardWidth = container.clientWidth;
-        const scrollLeft = container.scrollLeft;
-        const index = Math.round(scrollLeft / cardWidth);
-        setActiveIndex(index);
-      };
-  
-      container.addEventListener('scroll', onScroll);
-      return () => container.removeEventListener('scroll', onScroll);
-    }, []);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const onScroll = () => {
+      const cardWidth = container.clientWidth;
+      const scrollLeft = container.scrollLeft;
+      const index = Math.round(scrollLeft / cardWidth);
+      setActiveIndex(index);
+    };
+
+    container.addEventListener('scroll', onScroll);
+    return () => container.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
     <div className="space-y-6 p-4">
@@ -84,40 +82,40 @@ const DashboardOverview = () => {
           ))}
         </div>
         {/* card display in mobile */}
-              <div className="mb-8 sm:hidden">
-                <div
-                  ref={scrollRef}
-                  className="hide-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth"
-                >
-                  {dashboardCards.map((card, i) => (
-                    <div key={i} className="w-full shrink-0 snap-center">
-                      <CardItem {...card} />
-                    </div>
-                  ))}
-                </div>
-                {/* indicator button container */}
-                <div className="mt-4 flex justify-center gap-2">
-                  {dashboardCards.map((_, i) => (
-                    <button
-                      key={i}
-                      className={`h-2 w-2 rounded-full ${
-                        i === activeIndex ? 'bg-blue-500' : 'bg-gray-300'
-                      }`}
-                    />
-                  ))}
-                </div>
+        <div className="mb-8 sm:hidden">
+          <div
+            ref={scrollRef}
+            className="hide-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth"
+          >
+            {dashboardCards.map((card, i) => (
+              <div key={i} className="w-full shrink-0 snap-center">
+                <CardItem {...card} />
               </div>
+            ))}
+          </div>
+          {/* indicator button container */}
+          <div className="mt-4 flex justify-center gap-2">
+            {dashboardCards.map((_, i) => (
+              <button
+                key={i}
+                className={`h-2 w-2 rounded-full ${
+                  i === activeIndex ? 'bg-blue-500' : 'bg-gray-300'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* 🟦 Charts and blockers */}
-      <div className="flex flex-col gap-4 lg:flex-row">
-        <div className="max-w-md space-y-4 flex-shrink-0 ">
+      <div className="flex max-w-full flex-col gap-4 overflow-hidden lg:flex-row">
+        <div className="min-w-0 flex-1 space-y-4">
           <WaveProgressCard progressData={progressData} zeroMargin={true} />
           <div className="mt-6">
             <ChartLineDefault />
           </div>
         </div>
-        <div className="space-y-4 lg:col-span-1">
+        <div className="w-full flex-shrink-0 space-y-4 lg:w-80">
           <ActiveBlockers blockers={activeBlockers} />
         </div>
       </div>
