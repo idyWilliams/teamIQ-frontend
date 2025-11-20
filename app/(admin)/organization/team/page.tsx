@@ -4,8 +4,10 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 
 import React from 'react';
-import OrgTeamOverviewTab from '@/components/org.overview';
-import Tracks from '@/components/tracks';
+// import Tracks from '@/components/tracks';
+import OrganizationTeamMember from '@/components/organizationTeamMember';
+import OrganizationTeamMembersTabLayout from '@/components/organizationTeamMembersTabLayout';
+import OrgTeamOverviewTab from '@/components/OrgTeamOverviewTab';
 
 function TeamPage() {
   const router = useRouter();
@@ -39,7 +41,7 @@ function TeamPage() {
         </TabsContent>
 
         <TabsContent value="team" className="pt-6">
-          <Tracks />
+          <OrganizationTeamMembersTabLayout />
         </TabsContent>
       </Tabs>
     </section>

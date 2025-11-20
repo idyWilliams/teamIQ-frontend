@@ -39,7 +39,7 @@ const performanceData = [
   { month: 'Dec', value: 90 },
 ];
 
-export default function Overview() {
+export default function OrgTeamOverviewTab() {
   return (
     <div className="grid w-full grid-cols-[2fr_1fr] gap-4 p-6">
       <div className="space-y-4">
@@ -78,7 +78,6 @@ export default function Overview() {
                       strokeWidth={0}
                       cornerRadius={20}
                       paddingAngle={4}
-                    
                     >
                       {taskData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
