@@ -155,8 +155,8 @@ const DashboardOverview = () => {
 
       {/* 🟦 Charts and blockers */}
       <div className="flex gap-4">
-        <div className="grow space-y-4 lg:col-span-2">
-          <WaveProgressCard progressData={progressData} />
+        <div className="max-w-md space-y-4 flex-shrink-0 ">
+          <WaveProgressCard progressData={progressData} zeroMargin={true} />
           <div className="mt-6">
             <ChartLineDefault />
           </div>
