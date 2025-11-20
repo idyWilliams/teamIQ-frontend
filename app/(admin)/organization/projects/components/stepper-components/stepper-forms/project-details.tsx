@@ -235,7 +235,6 @@ const NewProjectDetails = ({
   useEffect(() => {
     if (defaultValues) {
       setIsReviewMode(true);
-      console.log('🔄 Setting default values:', defaultValues);
     }
   }, [defaultValues]);
 
@@ -272,8 +271,6 @@ const NewProjectDetails = ({
   };
 
   const handleFormSubmit = async (formData: FormValues) => {
-    console.log('📝 FORM DATA RECEIVED:', formData);
-
     // Skip API call in review mode
     if (isReviewMode) {
       if (onSubmit) {
@@ -309,18 +306,12 @@ const NewProjectDetails = ({
       is_visible: formData.visibility,
     };
 
-    console.log('FINAL API PAYLOAD:', apiData);
-
     setStep1Data(apiData);
 
     createProjectMutation.mutate(apiData, {
       onSuccess: responseData => {
-        console.log('Project creation successful:', responseData);
-
         const projectId = responseData.data.project_id;
         const projectData = responseData.data.project;
-
-        console.log('Created Project ID:', projectId);
 
         toast.success('Project created successfully!');
 
@@ -333,7 +324,6 @@ const NewProjectDetails = ({
         }
       },
       onError: (error: any) => {
-        console.error('Project creation failed:', error);
         const errorMessage =
           error.response?.data?.detail ||
           error.response?.data?.message ||
@@ -371,8 +361,6 @@ const NewProjectDetails = ({
 
   useEffect(() => {
     if (defaultValues) {
-      console.log('🔄 Setting default values:', defaultValues);
-
       setValue('projectName', defaultValues.projectName);
       setValue('description', defaultValues.description);
       setValue('stack', defaultValues.stack);
@@ -387,7 +375,6 @@ const NewProjectDetails = ({
   }, [defaultValues, setValue]);
 
   useEffect(() => {
-    console.log('Current stacks:', stacks);
     setValue('stack', stacks, { shouldValidate: true });
   }, [stacks, setValue]);
 

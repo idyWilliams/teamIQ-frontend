@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 
 import React from 'react';
 import OrgTeamOverviewTab from '@/components/org.overview';
+import Tracks from '@/components/tracks';
 
 function TeamPage() {
   const router = useRouter();
@@ -37,7 +38,9 @@ function TeamPage() {
           <OrgTeamOverviewTab />
         </TabsContent>
 
-        <TabsContent value="team" className="pt-6"></TabsContent>
+        <TabsContent value="team" className="pt-6">
+          <Tracks />
+        </TabsContent>
       </Tabs>
     </section>
   );

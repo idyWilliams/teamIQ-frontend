@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
   PieChart,
@@ -15,6 +15,7 @@ import {
   Tooltip,
 } from 'recharts';
 import { ArrowUpRight } from 'lucide-react';
+import Tracks from './tracks';
 
 const taskData = [
   { name: 'In progress', value: 4, color: '#8b5cf6' },
@@ -40,21 +41,23 @@ const performanceData = [
 
 export default function Overview() {
   return (
-    <div className="p-6">
-      <>
+    <div className="grid w-full grid-cols-[2fr_1fr] gap-4 p-6">
+      <div className="space-y-4">
         {/* Total Project Task Card */}
         <Card className="w-full shadow-sm">
-          <CardContent className="p-6">
+          <CardHeader>
+            <CardTitle>Total Project Task</CardTitle>
+          </CardHeader>
+          <CardContent className="px-6">
             <div className="flex items-center justify-between">
               {/* Left Section */}
               <div className="flex flex-col gap-4">
-                <h3 className="text-sm font-medium text-gray-600">
-                  Total Project Task
-                </h3>
-                <div className="flex items-end gap-4">
+                <div className="flex gap-4">
                   <h2 className="text-6xl font-bold text-gray-900">234</h2>
                   <div className="mb-2">
-                    <p className="mb-2 text-sm text-gray-600">Total Task</p>
+                    <p className="mb-2 text-base font-medium text-gray-800">
+                      Total Task
+                    </p>
                     <Button className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
                       <ArrowUpRight className="h-4 w-4" />
                       23+ Unassigned Task
@@ -64,7 +67,7 @@ export default function Overview() {
               </div>
 
               {/* Center - Donut Chart */}
-              <div className="h-64 w-64">
+              <div className="h-54 w-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -74,6 +77,8 @@ export default function Overview() {
                       dataKey="value"
                       strokeWidth={0}
                       cornerRadius={20}
+                      paddingAngle={4}
+                    
                     >
                       {taskData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
@@ -168,7 +173,9 @@ export default function Overview() {
             </div>
           </CardContent>
         </Card>
-      </>
+      </div>
+
+      <Tracks />
     </div>
   );
 }

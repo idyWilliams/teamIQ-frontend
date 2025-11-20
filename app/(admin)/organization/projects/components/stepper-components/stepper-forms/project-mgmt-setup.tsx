@@ -98,15 +98,12 @@ const ProjectMgmtSetup = ({
   useEffect(() => {
     if (defaultValues) {
       setIsReviewMode(true);
-      console.log('Setting Step 2 default values:', defaultValues);
     }
   }, [defaultValues]);
 
   // Set default values when they are provided
   useEffect(() => {
     if (defaultValues) {
-      console.log('🔄 Setting Step 2 default values:', defaultValues);
-
       // Set form values
       setValue('app', defaultValues.app);
       setValue('integrationMethod', defaultValues.integrationMethod);
@@ -147,11 +144,7 @@ const ProjectMgmtSetup = ({
   }, [projectType, activeMethod, setValue, resetField, isReviewMode]);
 
   const handleFormSubmit = async (data: FormValues) => {
-    console.log('🚀 STEP 2 FORM SUBMITTED:', data);
-    console.log('🆕 Project ID for Step 2:', projectId);
-
     if (isReviewMode) {
-      console.log('📋 Review mode - skipping API call');
       onSubmit();
       return;
     }
@@ -185,11 +178,9 @@ const ProjectMgmtSetup = ({
         data.integrationMethod === 'OAuth' ? data.token : undefined,
     };
 
-    console.log('STEP 2 API PAYLOAD:', apiData);
     setStep2Data(apiData);
 
     if (!projectId) {
-      console.log('No projectId available, skipping API call');
       toast.success('Project management setup saved locally');
       onSubmit();
       return;
@@ -197,12 +188,10 @@ const ProjectMgmtSetup = ({
 
     updateProjectStep2.mutate(apiData, {
       onSuccess: responseData => {
-        console.log('Step 2 completed successfully:', responseData);
         toast.success('Project management tool configured!');
         onSubmit();
       },
       onError: (error: any) => {
-        console.error('Step 2 failed:', error);
         const errorMessage =
           error.response?.data?.detail ||
           error.response?.data?.message ||

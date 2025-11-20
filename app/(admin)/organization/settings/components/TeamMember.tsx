@@ -11,20 +11,17 @@ import { Users } from 'lucide-react';
 
 const TeamMemberTab = () => {
   const { data: invitedUsers } = useGetInvitedUsers();
-  console.log('invited users', invitedUsers?.data);
   const [modalOpen, setModalOpen] = useState(false);
 
   const activeUsers =
     invitedUsers?.data.filter(
       (user: any) => user.status === 'active' || user.accepted
     ) || [];
-  console.log('activeUsers', activeUsers);
 
   const pendingUsers =
     invitedUsers?.data.filter(
       (user: any) => user.status === 'pending' || user.status === 'expired'
     ) || [];
-  console.log('pendingUsers', pendingUsers);
 
   const openModal = () => {
     setModalOpen(true);

@@ -141,7 +141,6 @@ export default function ProjectsPage() {
     return apiProjects.map(transformProject);
   }, [apiProjects]);
 
-  console.log('projects......', projects);
 
   const columns = useMemo(
     () => [
