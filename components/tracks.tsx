@@ -5,7 +5,7 @@ import React from 'react';
 import { teamMembers, TeamMember } from '@/constants/team-member';
 import Image from 'next/image';
 
-function tracks({ className = '', children }) {
+function tracks({ className = '', children = null }) {
   type Track = {
     id: number;
     icon: string;
