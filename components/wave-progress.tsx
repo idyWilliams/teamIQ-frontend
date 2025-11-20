@@ -16,13 +16,14 @@ interface WaveProgressCardProps {
   progressData?: WaveProgressProps[];
   title?: string;
   showButton?: boolean;
+  zeroMargin?: boolean;
 }
 
 /**Pass default data to make the component reusable
  * Allows passing default progress data for reusability.
  * Will be replaced once we integrate an API
  */
-export function WaveProgressCard({ progressData, title, showButton = true }: WaveProgressCardProps) {
+export function WaveProgressCard({ progressData, title, showButton = true, zeroMargin = false }: WaveProgressCardProps) {
   const defaultData: WaveProgressProps[] = [
     {
       percentage: 50,
@@ -65,7 +66,7 @@ export function WaveProgressCard({ progressData, title, showButton = true }: Wav
   const dataToRender = progressData?.length ? progressData : defaultData;
 
   return (
-    <div className="m-6 border-gray-50">
+    <div className={`${zeroMargin ? '' : 'm-6'} border-gray-50`}>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <CardTitle>{title || 'Team Skills Overview'}</CardTitle>
@@ -89,9 +90,9 @@ export function WaveProgressCard({ progressData, title, showButton = true }: Wav
             </button>
           )}
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-0">
           <div
-            className="grid items-start justify-items-center gap-1 lg:grid-cols-3 xl:grid-cols-3"
+            className="grid items-start justify-items-center gap-0 lg:grid-cols-3 xl:grid-cols-3"
             // style={{
             //   gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))",
             // }}
@@ -164,7 +165,7 @@ export function WaveProgress({
     <div className="flex flex-col w-full items-center gap-1 p-1">
       {/* Wave Progress Container */}
       <div
-        className="relative w-[150px] h-[180px] grow rounded-lg overflow-hidden border border-blue-200"
+        className="relative w-[135px] h-[150px] grow rounded-lg overflow-hidden border border-blue-200"
         style={{ backgroundColor }}
       >
         {/* Wave Animation Container */}
