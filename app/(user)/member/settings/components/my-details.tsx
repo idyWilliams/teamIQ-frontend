@@ -57,7 +57,7 @@ export default function MyDetails() {
   >(null);
   const [images, setImages] = useState({
     profile: '/images/avatar.png',
-    cover: '/images/cover-placeholder.png',
+    cover: '/images/cover-image.jpg',
   });
   const [preview, setPreview] = useState<string | null>(null);
   const [editType, setEditType] = useState<'profile' | 'cover' | null>(null);
@@ -86,10 +86,10 @@ export default function MyDetails() {
       location: (user.country as string) ?? (user.location as string) ?? '',
     });
 
-    setImages({
-      profile: user.profile_image ?? '/placeholder-profile.jpg',
-      cover: user.cover_image ?? '/placeholder-cover.jpg',
-    });
+    setImages(prev => ({
+      profile: user.profile_image || prev.profile,
+      cover: user.cover_image || prev.cover,
+    }));
   }, [user]);
 
   /* ---------- Blob preview cleanup ---------- */
@@ -326,6 +326,7 @@ export default function MyDetails() {
             height={200}
             className="h-[200px] w-full rounded-tl-[96px] object-cover max-sm:h-[150px]"
             unoptimized
+            priority
           />
         </div>
 
