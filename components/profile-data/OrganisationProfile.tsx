@@ -9,6 +9,7 @@ import {
 } from '@/services/hooks/useOrgProfile';
 import { Input } from '../ui/input';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface FieldConfig {
   label: string;
@@ -56,6 +57,7 @@ const fieldSections: {
 const OrganisationProfile = () => {
   const { data, isLoading, error } = useOrgProfile();
   const updateProfile = useUpdateOrgProfile();
+  const { updateUser } = useAuthStore();
 
   //Track which field is currently being edited
   const [editingField, setEditingField] = useState<keyof OrgProfile | null>(
@@ -69,8 +71,9 @@ const OrganisationProfile = () => {
   useEffect(() => {
     if (data) {
       setFormData(data);
+      updateUser({ data });
     }
-  }, [data]);
+  }, [data, updateUser]);
 
   //Updates a single field in the local form state
   const handleChange = (key: keyof OrgProfile, value: string) => {
@@ -91,10 +94,12 @@ const OrganisationProfile = () => {
     const orgId = data.id;
     const fieldValue = formData[fieldKey]; // Get the current value of the field from formData
     try {
-      await updateProfile.mutateAsync({
+      const res = await updateProfile.mutateAsync({
         org_id: orgId,
         data: { [fieldKey]: fieldValue },
       });
+      console.log(res);
+      updateUser({ data: { ...(res as any)?.data } });
     } catch (err) {
       toast.error('Failed to update organization profile.');
       console.error('Failed to update field:', err);
@@ -122,18 +127,17 @@ const OrganisationProfile = () => {
         <div key={section.id} className="mb-6">
           <h2 className="mb-3 text-lg font-semibold">{section.title}</h2>
           <div className="flex flex-col gap-3 rounded-xl border p-4">
-            
             {/* Render each field in the section */}
             {section.fields.map(field => {
               const isEditing = editingField === field.key;
               const rawValue = formData[field.key] ?? ''; // Use formData to get the current value
-              
+
               // Safety check to convert rawValue to string for input display
               const value =
                 typeof rawValue === 'object'
                   ? JSON.stringify(rawValue)
                   : String(rawValue);
-              
+
               //disable email field editing
               const isDisable = field.key === 'email';
 
@@ -164,10 +168,11 @@ const OrganisationProfile = () => {
                     {isEditing ? (
                       <>
                         <button
+                          disabled={updateProfile.isPending}
                           className="rounded bg-blue-600 px-3 py-1 text-sm text-white"
                           onClick={() => handleSave(field.key)}
                         >
-                          Save
+                          {updateProfile?.isPending ? 'saving..,' : 'Save'}
                         </button>
                         <button
                           className="rounded border px-3 py-1 text-sm"

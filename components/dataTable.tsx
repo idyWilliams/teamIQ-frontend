@@ -71,7 +71,7 @@ export function DataTable({ columns, data }: DataTableProps) {
       </div>
 
       {/* Table */}
-      <div className="rounded-md border border-gray-200">
+      <div className="w-full rounded-md border border-gray-200">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map(headerGroup => (

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { DataTable } from '@/components/dataTable';
 import { columns } from '@/components/ui/columns';
@@ -97,7 +96,7 @@ const mockData: TeamMember[] = [
 
 export default function TeamMembersPage() {
   return (
-    <div className="mx-auto w-full max-w-7xl bg-white p-6">
+    <div className="w-full grow bg-white p-6">
       <DataTable columns={columns} data={mockData} />
     </div>
   );
