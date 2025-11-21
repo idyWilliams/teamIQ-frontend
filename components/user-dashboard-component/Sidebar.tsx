@@ -124,7 +124,7 @@ const Sidebar = ({ closeSidebar, className }: SidebarProps) => {
 const SidebarHeader = React.memo(() => (
   <Link
     href="/member"
-    className="mt-6 mb-8 inline-flex items-center gap-3 px-3 text-xl font-bold text-blue-500"
+    className="mt-6 mb-8 hidden items-center gap-3 px-3 text-xl font-bold text-blue-500 xl:inline-flex"
   >
     <Brain /> TeamIQ
   </Link>
@@ -157,7 +157,7 @@ const SidebarNavigation = React.memo(
 
     return (
       <>
-        <p className="px-4 py-3 text-sm text-[#a2a3a4]">Pages</p>
+        <p className="mt-14 px-4 py-3 text-sm text-[#a2a3a4] xl:mt-0">Pages</p>
         <nav
           className="flex flex-1 flex-col gap-1 overflow-y-auto px-2"
           role="navigation"

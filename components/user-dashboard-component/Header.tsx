@@ -1,19 +1,38 @@
 'use client';
 
-import React from 'react';
+import React, { SetStateAction } from 'react';
 import { Input } from '../ui/input';
-import { Search, Bell } from 'lucide-react';
+import { Search, Bell, X, Menu, Brain } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import Link from 'next/link';
 
 type HeaderProps = {
   onOpenNotification: () => void;
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<SetStateAction<boolean>>;
 };
 
-const Header = ({ onOpenNotification }: HeaderProps) => {
+const Header = ({ onOpenNotification, isOpen, setIsOpen }: HeaderProps) => {
   const { user } = useAuthStore();
   return (
-    <header className="h-[10%] pt-2">
+    <header className="flex items-center justify-between">
+      {/* Mobile menu toggle button */}
+
+      <div className="inline-flex items-center gap-3 xl:hidden">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="z-50 w-6 xl:hidden"
+        >
+          {isOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
+        <Link
+          href="/member"
+          className="z-50 inline-flex items-center gap-3 text-xl font-bold text-blue-500 xl:hidden"
+        >
+          <Brain /> TeamIQ
+        </Link>
+      </div>
       {/* Mobile View */}
       <div className="flex items-center justify-end gap-4 xl:hidden">
         {/* Left - Initials */}
@@ -33,7 +52,7 @@ const Header = ({ onOpenNotification }: HeaderProps) => {
         </div>
       </div>
       {/* // Desktop View */}
-      <div className="hidden items-center justify-end gap-4 lg:justify-between xl:flex">
+      <div className="hidden items-center justify-end gap-4 lg:justify-between xl:flex xl:grow">
         {/* Left - Initials + Full Name */}
         <div className="inline-flex items-center gap-2">
           <Avatar>

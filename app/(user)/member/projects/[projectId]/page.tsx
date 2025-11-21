@@ -13,7 +13,7 @@ function ProjectDetails() {
   const activeTab = searchparams.get('tab') || 'overview';
 
   return (
-    <div>
+    <div className="pt-4 xl:pt-0">
       <Tabs
         value={activeTab}
         onValueChange={(value: string) =>

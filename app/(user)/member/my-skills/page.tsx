@@ -92,7 +92,7 @@ const ThemeInput = {
 
 export default function MySkillsPage() {
   return (
-    <>
+    <section className="pt-4">
       <div className="mb-[40px] hidden items-center justify-between gap-[16px] lg:flex">
         {cardTexts?.map((cardText, idx) => (
           <div
@@ -205,6 +205,6 @@ export default function MySkillsPage() {
 
       {/* Skill Rating */}
       <SkillRatingsCard skillRatingData={skills} />
-    </>
+    </section>
   );
 }

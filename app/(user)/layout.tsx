@@ -24,18 +24,10 @@ export default function TeamDashboardLayout({ children }: LayoutProps) {
     pathname === '/member' || pathname.startsWith('/member/dashboard');
 
   return (
-    <div className="flex h-screen">
-      {/* Mobile menu toggle button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-0 right-0 left-4 z-50 mt-3.5 w-10 p-4 xl:hidden"
-      >
-        {isOpen ? <X size={28} /> : <Menu size={28} />}
-      </button>
-
+    <div className="flex h-screen justify-stretch">
       {/* sidebar for mobile  */}
       <aside
-        className={`fixed top-0 right-0 z-40 h-screen w-64 transform border-r text-[#a6a2a2] transition-transform duration-300 xl:hidden ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed top-0 left-0 z-40 h-screen w-full transform border-r text-[#a6a2a2] transition-transform duration-300 xl:hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <Sidebar closeSidebar={() => setIsOpen(false)} />
       </aside>
@@ -58,9 +50,12 @@ export default function TeamDashboardLayout({ children }: LayoutProps) {
           </>
 
           {/* Main dashboard (80%) */}
-          <div className="flex w-full grow flex-col px-4 lg:flex-1 lg:p-6 xl:ml-[15%]">
+          <div className="flex w-full grow flex-col px-4 pt-4 lg:flex-1 lg:p-6 xl:ml-[15%]">
             {/* Header */}
-            <Header onOpenNotification={() => setShowNotifications(true)} />
+            <Header
+              onOpenNotification={() => setShowNotifications(true)}
+              {...{ isOpen, setIsOpen }}
+            />
 
             {/* Main content */}
             <main className="flex-1">{children}</main>
@@ -69,14 +64,17 @@ export default function TeamDashboardLayout({ children }: LayoutProps) {
       ) : (
         <>
           {/* Left Sidebar (15%) */}
-          <div className="hidden w-[15%] border-r lg:block">
+          <div className="hidden w-[15%] border-r xl:block">
             <Sidebar />
           </div>
 
           {/* Middle dashboard (70%) */}
-          <div className="flex w-full flex-col p-4 md:w-[70%] lg:p-6">
+          <div className="flex w-full flex-col p-4 lg:p-6 xl:w-[70%]">
             {/* Header */}
-            <Header onOpenNotification={() => setShowNotifications(true)} />
+            <Header
+              onOpenNotification={() => setShowNotifications(true)}
+              {...{ isOpen, setIsOpen }}
+            />
 
             {/* Main content */}
             <main className="flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -85,7 +83,7 @@ export default function TeamDashboardLayout({ children }: LayoutProps) {
           </div>
 
           {/* Right Sidebar (15%) */}
-          <div className="hidden w-[15%] border-l lg:block">
+          <div className="hidden w-[15%] border-l xl:block">
             <RightSideBar />
           </div>
 
