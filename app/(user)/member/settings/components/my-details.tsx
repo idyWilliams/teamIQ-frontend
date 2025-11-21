@@ -15,6 +15,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { users } from '@/services/api';
+import { useImageUpload } from '@/services/hooks/useImageUpload';
 
 /* -------------------------------------------------------------
    Types
@@ -34,6 +35,8 @@ type UserFromStore = {
   name?: string;
   phone?: string;
   location?: string;
+  track?: string;
+  stacks?: string;
 };
 
 /* -------------------------------------------------------------
@@ -44,6 +47,7 @@ export default function MyDetails() {
     user: UserFromStore | null;
     updateUser: (payload: Partial<UserFromStore>) => void;
   };
+  const { mutate: uploadImage, isPending, error } = useImageUpload();
 
   /* ---------- UI state ---------- */
   const [formData, setFormData] = useState({
@@ -57,7 +61,7 @@ export default function MyDetails() {
   >(null);
   const [images, setImages] = useState({
     profile: '/images/avatar.png',
-    cover: '/images/cover-placeholder.png',
+    cover: '/images/cover-image.jpg',
   });
   const [preview, setPreview] = useState<string | null>(null);
   const [editType, setEditType] = useState<'profile' | 'cover' | null>(null);
@@ -86,10 +90,10 @@ export default function MyDetails() {
       location: (user.country as string) ?? (user.location as string) ?? '',
     });
 
-    setImages({
-      profile: user.profile_image ?? '/placeholder-profile.jpg',
-      cover: user.cover_image ?? '/placeholder-cover.jpg',
-    });
+    setImages(prev => ({
+      profile: user.profile_image || prev.profile,
+      cover: user.cover_image || prev.cover,
+    }));
   }, [user]);
 
   /* ---------- Blob preview cleanup ---------- */
@@ -103,14 +107,10 @@ export default function MyDetails() {
      → always include every field the backend already knows
      → then overwrite with edited values                     */
   const buildPayloadFromForm = (): Record<string, any> => {
-    const payload: Record<string, any> = {
-      ...(user?.first_name && { first_name: user.first_name }),
-      ...(user?.last_name && { last_name: user.last_name }),
-      ...(user?.username && { username: user.username }),
-      ...(user?.email && { email: user.email }),
-      ...(user?.phone_number && { phone_number: user.phone_number }),
-      ...(user?.country && { country: user.country }),
-      ...(user?.bio && { bio: user.bio }),
+    const payload: Record<string, any> = {      
+      ...user, 
+      track: user?.track || '',
+      stacks: user?.stacks || [],
     };
 
     const { name, phone, location } = formData;
@@ -201,7 +201,6 @@ export default function MyDetails() {
   const handleSaveImage = async () => {
     if (!user || !editType)
       return toast.error('Upload failed: missing user or target');
-
     if (!file) return toast.error('No file selected');
 
     const form = new FormData();
@@ -209,8 +208,8 @@ export default function MyDetails() {
 
     // backend expects image_type & update_db as **query params**
     const params = new URLSearchParams({
-      image_type: editType === 'profile' ? 'profile' : 'general', // cover → general (or add enum on backend)
-      update_db: 'true',
+      image_type: editType === 'profile' ? 'profile' : 'general',
+      update_db: 'false', 
     });
 
     try {
@@ -228,17 +227,13 @@ export default function MyDetails() {
       setImages(p => ({ ...p, [editType]: imageUrl }));
 
       // ---- 3. Persist to user record ---------------------------------------
-      const putPayload: any = {
+      const updatedUser = {
+        ...user,
         ...(editType === 'profile'
           ? { profile_image: imageUrl }
           : { cover_image: imageUrl }),
       };
-      const putRes = await axiosInstance.put(
-        users.byId(user?.id as number),
-        putPayload
-      );
-      const updated = putRes?.data?.data ?? putRes?.data;
-      if (updated) updateUser(updated);
+      updateUser(updatedUser);
 
       toast.success(
         `${editType === 'profile' ? 'Profile' : 'Cover'} image updated`
@@ -326,6 +321,7 @@ export default function MyDetails() {
             height={200}
             className="h-[200px] w-full rounded-tl-[96px] object-cover max-sm:h-[150px]"
             unoptimized
+            priority
           />
         </div>
 
@@ -541,8 +537,8 @@ export default function MyDetails() {
                 <Button variant="outline" onClick={handleCancel}>
                   Cancel
                 </Button>
-                <Button onClick={handleSaveImage} disabled={loading}>
-                  {loading ? (
+                <Button onClick={handleSaveImage} disabled={isPending}>
+                  {isPending ? (
                     <>
                       <Loader2 className="mr-2 size-4 animate-spin" />
                       Uploading…
