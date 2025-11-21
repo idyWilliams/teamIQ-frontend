@@ -3,33 +3,51 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader } from 'lucide-react';
+import { toast } from 'sonner';
+import { usePasswordResetConfirm } from '@/services/hooks/useAuth';
+import { useAuthStore } from '@/store/useAuthStore';
 
-type FormKeys = 'currentPassword' | 'newPassword' | 'confirmPassword';
+type FormKeys = 'currentPassword' | 'new_password' | 'confirmPassword';
 type PasswordForm = Record<FormKeys, string>;
 
+const schema = yup.object().shape({
+  currentPassword: yup.string().required('Password is required'),
+  new_password: yup
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .required('Password is required'),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref('new_password')], 'Passwords must match')
+    .required('Password is required'),
+});
+
 const Password = () => {
+  const { token } = useAuthStore();
+  const resetMutation = usePasswordResetConfirm();
   const [showPassword, setShowPassword] = useState<Record<FormKeys, boolean>>({
     currentPassword: false,
-    newPassword: false,
+    new_password: false,
     confirmPassword: false,
   });
 
   const submit = (data: PasswordForm) => {
-    console.log(data); // data contains all password fields
-  };
+    if (!token) {
+      toast.error('Invalid or missing token.');
+      return;
+    }
 
-  const schema = yup.object().shape({
-    currentPassword: yup.string().required('Password is required'),
-    newPassword: yup
-      .string()
-      .min(8, 'Password must be at least 8 characters')
-      .required('Password is required'),
-    confirmPassword: yup
-      .string()
-      .oneOf([yup.ref('newPassword')], 'Passwords must match')
-      .required('Password is required'),
-  });
+    resetMutation.mutate(
+      { token, new_password: data.new_password },
+      {
+        onSuccess: () => {
+          toast.success('Password updated successfully!.');
+          reset();
+        },
+      }
+    );
+  };
 
   const {
     register,
@@ -40,7 +58,7 @@ const Password = () => {
 
   const fields: { id: FormKeys; label: string }[] = [
     { id: 'currentPassword', label: 'Current Password:' },
-    { id: 'newPassword', label: 'New Password:' },
+    { id: 'new_password', label: 'New Password:' },
     { id: 'confirmPassword', label: 'Confirm New Password:' },
   ];
 
@@ -119,16 +137,24 @@ const Password = () => {
 
         <div className="flex gap-4 max-sm:flex-col-reverse max-sm:gap-3">
           <button
+            disabled={resetMutation.isPending}
             onClick={cancelPassword}
             className="text-iq border-iq w-full rounded-[8px] border-1 py-4 sm:max-w-[280px]"
           >
             Cancel
           </button>
           <button
+            disabled={resetMutation.isPending}
             type="submit"
-            className="text-primary-foreground bg-iq w-full rounded-[8px] border-1 py-4 sm:max-w-[280px]"
+            className="text-primary-foreground bg-iq flex w-full items-center justify-center gap-2 rounded-[8px] border-1 py-4 sm:max-w-[280px]"
           >
-            Update
+            {resetMutation.isPending ? (
+              <>
+                <Loader className="animate-spin" /> Updating...
+              </>
+            ) : (
+              'Update'
+            )}
           </button>
         </div>
       </form>

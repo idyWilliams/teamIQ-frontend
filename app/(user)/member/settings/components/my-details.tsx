@@ -47,7 +47,7 @@ export default function MyDetails() {
     user: UserFromStore | null;
     updateUser: (payload: Partial<UserFromStore>) => void;
   };
-  const { mutate: uploadImage, isPending, error } = useImageUpload();
+  const { mutate: uploadImage, isPending, } = useImageUpload();
 
   /* ---------- UI state ---------- */
   const [formData, setFormData] = useState({
@@ -107,8 +107,8 @@ export default function MyDetails() {
      → always include every field the backend already knows
      → then overwrite with edited values                     */
   const buildPayloadFromForm = (): Record<string, any> => {
-    const payload: Record<string, any> = {      
-      ...user, 
+    const payload: Record<string, any> = {
+      ...user,
       track: user?.track || '',
       stacks: user?.stacks || [],
     };
@@ -209,7 +209,7 @@ export default function MyDetails() {
     // backend expects image_type & update_db as **query params**
     const params = new URLSearchParams({
       image_type: editType === 'profile' ? 'profile' : 'general',
-      update_db: 'false', 
+      update_db: 'false',
     });
 
     try {
@@ -313,7 +313,7 @@ export default function MyDetails() {
     <div>
       {/* COVER + PROFILE */}
       <div className="relative">
-        <div className="bg-muted-foreground mt-10 h-[200px] w-full rounded-tl-[96px] max-sm:h-[150px]">
+        <div className="bg-muted-foreground h-[200px] w-full rounded-tl-[96px] max-sm:h-[150px]">
           <Image
             src={images.cover}
             alt="cover"
@@ -441,7 +441,7 @@ export default function MyDetails() {
         {Accounts.map((acc, i) => (
           <div
             key={i}
-            className="border-border flex max-w-[350px] items-center justify-between rounded-[8px] border-1 px-4 py-3"
+            className="border-border flex max-w-full items-center justify-between rounded-[8px] border-1 px-4 py-3 sm:max-w-[350px]"
           >
             <div>
               <div className="flex items-center gap-1">
