@@ -112,6 +112,10 @@ const data = {
   ],
 };
 
+interface LogoProps {
+  label: string;
+}
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { logout } = useAuthStore();
 

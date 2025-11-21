@@ -1,4 +1,4 @@
-import { profile } from "console";
+import { profile } from 'console';
 
 // services/api.ts
 const api = {
@@ -18,7 +18,7 @@ const api = {
   users: {
     byId: (userId: number) => `/users/${userId}`,
     organizationUsers: '/users/organization/users',
-    getProjects: '/users/me/projects'
+    getProjects: '/users/me/projects',
   },
 
   organizations: {
@@ -31,6 +31,8 @@ const api = {
   userInvitation: {
     register: '/invitations/',
     getInvitedUsers: '/invitations',
+    resendInvitation: '/invitations',
+    revokeInvitation: '/invitations',
   },
 
   projects: {

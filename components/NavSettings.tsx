@@ -55,7 +55,7 @@ export default function NavSettings({ settings }: NavSettingsProp) {
                       onClick={() => router.push(item.url)}
                       tooltip={item.title}
                       className={cn(
-                        'relative flex items-center gap-3 rounded-md px-5 py-2.5 text-[14px] transition-all duration-200',
+                        'relative flex cursor-pointer items-center gap-3 rounded-md px-5 py-2.5 text-[14px] transition-all duration-200',
                         isActive
                           ? 'bg-blue-50 font-medium !text-blue-600'
                           : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
