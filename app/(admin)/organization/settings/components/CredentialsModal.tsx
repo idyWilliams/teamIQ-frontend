@@ -33,10 +33,13 @@ export function CredentialsModal({
     if (credentials) {
       setClientId(credentials.client_id || '');
       setClientSecret(credentials.client_secret || '');
-      setRedirectUri(
-        credentials.redirect_uri ||
-          `https://app.teamiq.com/auth/callback/${provider}`
-      );
+
+      // Use backend API URL for OAuth callback (not frontend URL)
+      // Backend handles the OAuth callback at /auth/callback/{provider}
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://teamiq-backend.onrender.com/api/v1';
+      const defaultRedirectUri = `${apiBaseUrl.replace('/api/v1', '')}/auth/callback/${provider}`;
+
+      setRedirectUri(credentials.redirect_uri || defaultRedirectUri);
     }
   }, [credentials, provider]);
 

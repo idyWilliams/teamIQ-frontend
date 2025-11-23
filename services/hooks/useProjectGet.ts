@@ -37,9 +37,22 @@ export const useProjects = () => {
     queryKey: ['projects'],
 
     queryFn: async (): Promise<Project[]> => {
-      const { data } = await api.get<ProjectsResponse>('/projects/');
+      const { data } = await api.get<any>('/projects/');
+      console.log('Raw Projects Response:', data);
+
+      let projects: Project[] = [];
+
+      if (Array.isArray(data)) {
+        projects = data;
+      } else if (Array.isArray(data?.data)) {
+        projects = data.data;
+      } else {
+        console.warn('Projects data is missing or undefined:', data);
+        return [];
+      }
+
       // Sort by createdAt descending (newest first)
-      const sortedProjects = data.data.sort(
+      const sortedProjects = projects.sort(
         (a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );

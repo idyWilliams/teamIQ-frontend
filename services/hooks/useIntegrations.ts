@@ -84,3 +84,35 @@ export const useSaveProviderCredentials = () => {
         },
     });
 }
+
+// Hook to get external accounts for mapping
+export const useGetExternalAccounts = (provider: string, email: string) => {
+  return useQuery({
+    queryKey: ['external-accounts', provider, email],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        integrations.externalAccounts(provider, email)
+      );
+      return response.data;
+    },
+    enabled: !!provider && !!email,
+  });
+};
+
+// Hook to get integration resources
+export const useGetIntegrationResources = (
+  connectionId: string | null,
+  provider: string
+) => {
+  return useQuery({
+    queryKey: ['integration-resources', connectionId, provider],
+    queryFn: async () => {
+      if (!connectionId) return [];
+      const response = await axiosInstance.get(
+        integrations.resources(connectionId, provider)
+      );
+      return response.data;
+    },
+    enabled: !!connectionId && !!provider,
+  });
+};

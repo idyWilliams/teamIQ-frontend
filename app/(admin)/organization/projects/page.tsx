@@ -20,6 +20,7 @@ import {
   type Project as ApiProject,
 } from '@/services/hooks/useProjectGet';
 import StepperModal from './components/stepper-components/steps/stepper-modal';
+import { useRouter } from 'next/navigation';
 
 /* ----------------------------------------------------------------------
    🧩 IMAGE WRAPPER COMPONENT
@@ -131,6 +132,7 @@ export default function ProjectsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sorting, setSorting] = useState([{ id: 'progress', desc: true }]);
   const columnHelper = createColumnHelper<TableProject>();
+  const router = useRouter();
 
   // Use the projects hook
   const { data: apiProjects, isLoading, error } = useProjects();
@@ -331,7 +333,7 @@ export default function ProjectsPage() {
         </h1>
         {projects.length > 0 && (
           <Button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => router.push('/organization/projects/create')}
             className="flex items-center gap-2"
           >
             <Plus size={18} /> New Project

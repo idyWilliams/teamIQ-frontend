@@ -38,11 +38,11 @@ export default function SettingIntegratedApp() {
     () =>
       connections.filter(conn => {
         const matchesSearch =
-          conn.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          conn.providerAccountName
+          (conn.displayName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (conn.providerAccountName || '')
             .toLowerCase()
             .includes(searchQuery.toLowerCase()) ||
-          conn.appName.toLowerCase().includes(searchQuery.toLowerCase());
+          (conn.appName || '').toLowerCase().includes(searchQuery.toLowerCase());
         const matchesFilter =
           filterApp === 'All' || conn.provider === filterApp;
         return matchesSearch && matchesFilter;
