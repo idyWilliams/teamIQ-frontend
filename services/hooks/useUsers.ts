@@ -43,7 +43,7 @@ export function useOrganizationUsers() {
     queryFn: async (): Promise<User[]> => {
       const res = await api.get<UsersResponse>(usersApi.organizationUsers);
       console.log('👥 Organization users fetched:', res.data);
-      return res.data.data; // Directly return the data array from response
+      return res.data.data; 
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes

@@ -8,6 +8,7 @@ import Sidebar from '@/components/user-dashboard-component/Sidebar';
 import RightSidebarModal from '@/components/user-dashboard-component/modals/RightSidebarModal';
 import { Button } from '@/components/ui/button';
 import { Bell, Menu, X } from 'lucide-react';
+import RequireAuth from '@/components/auth/RequireAuth';
 
 // type props for children
 type LayoutProps = {
@@ -24,6 +25,9 @@ export default function TeamDashboardLayout({ children }: LayoutProps) {
     pathname === '/member' || pathname.startsWith('/member/dashboard');
 
   return (
+    <RequireAuth>
+
+
     <div className="flex h-screen justify-stretch">
       {/* sidebar for mobile  */}
       <aside
@@ -37,17 +41,14 @@ export default function TeamDashboardLayout({ children }: LayoutProps) {
       {/* conditional rendering for layouts */}
       {isDashboardRoute ? (
         <>
-          {/* Left Sidebar (30%) */}
-          <>
-            <aside
-              className={`fixed top-0 left-0 z-40 hidden h-screen w-[15%] transform border-l border-neutral-300 bg-white transition-transform duration-300 xl:block ${isOpen ? 'translate-x-0' : 'translate-x-full'} md:translate-x-0`}
-            >
-              <Sidebar
-                className="w-full"
-                closeSidebar={() => setIsOpen(!isOpen)}
-              />
-            </aside>
-          </>
+          <aside
+            className={`fixed top-0 left-0 z-40 hidden h-screen w-[15%] transform border-l border-neutral-300 bg-white transition-transform duration-300 xl:block ${isOpen ? 'translate-x-0' : 'translate-x-full'} md:translate-x-0`}
+          >
+            <Sidebar
+              className="w-full"
+              closeSidebar={() => setIsOpen(!isOpen)}
+            />
+          </aside>
 
           {/* Main dashboard (80%) */}
           <div className="flex w-full grow flex-col px-4 pt-4 lg:flex-1 lg:p-6 xl:ml-[15%]">
@@ -100,6 +101,7 @@ export default function TeamDashboardLayout({ children }: LayoutProps) {
           )}
         </>
       )}
-    </div>
+      </div>
+          </RequireAuth>
   );
 }

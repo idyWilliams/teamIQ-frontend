@@ -1,4 +1,6 @@
+
 'use client';
+import RequireAuth from '@/components/auth/RequireAuth';
 import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import Image from 'next/image';
@@ -16,6 +18,8 @@ export default function OrganizationDashboardLayout({
   const { user } = useAuthStore();
 
   return (
+    <RequireAuth>
+
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset className="flex h-screen flex-row overflow-hidden">
@@ -40,7 +44,7 @@ export default function OrganizationDashboardLayout({
                   <span>{user?.organization_name || ''}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  
+
                   <button className="p-2 lg:hidden">
                     <Search className="size-4 opacity-50" />
                   </button>
@@ -48,7 +52,7 @@ export default function OrganizationDashboardLayout({
                     <Bell className="size-4 opacity-50" />
                   </button>
 
-                  
+
                   <div className="relative hidden lg:block">
                     <Label htmlFor="search" className="sr-only">
                       Search
@@ -65,11 +69,11 @@ export default function OrganizationDashboardLayout({
             </div>
           </header>
 
-          {/* 1. overflow-auto; 2. min-w-full,w-max */}
-          <div className="hide-scrollbar min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
-            <div className="w-full">{children}</div>
+            {/* 1. overflow-auto; 2. min-w-full,w-max */}
+            <div className="hide-scrollbar min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
+              <div className="w-full">{children}</div>
+            </div>
           </div>
-        </div>
 
         <div className="bg-background hide-scrollbar hidden h-full w-[20%] shrink-0 overflow-auto border-l lg:block">
           <div className="p-4">
@@ -78,5 +82,6 @@ export default function OrganizationDashboardLayout({
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </RequireAuth>
   );
 }
