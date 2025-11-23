@@ -375,8 +375,8 @@ const OrganizationalDetails = ({ onClose, onSuccess }: organizationalDetailsprop
             disabled={onboarding.isPending}
           >
             {onboarding.isPending
-              ? 'Reviewed and Submitting...'
-              : 'Reviewed and Submitted'}
+              ? 'Reviewing and Submitting...'
+              : 'Review and Submit'}
           </Button>
         </div>
       </form>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -16,7 +16,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 import { toast } from 'sonner';
-import Link from 'next/link';
 
 type CloseModalProp = {
   open: boolean;
@@ -47,7 +46,6 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
       role: 'intern',
     },
   });
-  const [inviteLink, setInviteLink] = useState('');
 
   useEffect(() => {
     if (open) {
@@ -132,14 +130,14 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
                         <SelectItem value="product-manager">
                           Product Manager
                         </SelectItem>
-                         <SelectItem value="qa-engineer">
-                          QA Engineers 
+                        <SelectItem value="qa-engineer">
+                          QA Engineers
                         </SelectItem>
                         <SelectItem value="data-analyst">
-                          Data Analyst 
+                          Data Analyst
                         </SelectItem>
                         <SelectItem value="software-engineer">
-                         Software Engineer
+                          Software Engineer
                         </SelectItem>
                         <SelectItem value="product-design">
                           Product Design
@@ -165,12 +163,6 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
             >
               {isSubmitting ? 'Sending...' : 'Send Invite'}
             </Button>
-          </div>
-          <div>
-            <p className="mb-3 font-semibold text-amber-500">
-              Note: Copy the link and send to the Intern (Only in Development)
-            </p>
-            <Link href={inviteLink}>{inviteLink}</Link>
           </div>
         </form>
       </div>

@@ -2,7 +2,7 @@ import React, { useState, useCallback, useMemo, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { sidebarLinks, SidebarLinkType } from './data/sideLink';
-import { ChevronDown, ChevronUp, LogOut, User } from 'lucide-react';
+import { Brain, ChevronDown, ChevronUp, LogOut } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useAuthStore } from '@/store/useAuthStore';
 
@@ -122,10 +122,12 @@ const Sidebar = ({ closeSidebar, className }: SidebarProps) => {
 
 // Sidebar Header Component
 const SidebarHeader = React.memo(() => (
-  <div className="mb-5 flex items-center gap-2 p-4">
-    <User className="h-5 w-5 rounded-full text-[#000009]" aria-hidden="true" />
-    <span className="font-medium text-[#555555]">Logo</span>
-  </div>
+  <Link
+    href="/member"
+    className="mt-6 mb-8 hidden items-center gap-3 px-3 text-xl font-bold text-blue-500 xl:inline-flex"
+  >
+    <Brain /> TeamIQ
+  </Link>
 ));
 
 SidebarHeader.displayName = 'SidebarHeader';
@@ -155,7 +157,7 @@ const SidebarNavigation = React.memo(
 
     return (
       <>
-        <p className="px-4 py-3 text-sm text-[#a2a3a4]">Pages</p>
+        <p className="mt-14 px-4 py-3 text-sm text-[#a2a3a4] xl:mt-0">Pages</p>
         <nav
           className="flex flex-1 flex-col gap-1 overflow-y-auto px-2"
           role="navigation"

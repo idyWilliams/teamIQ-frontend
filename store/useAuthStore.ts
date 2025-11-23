@@ -68,7 +68,7 @@ export const useAuthStore = create<AuthState>()(
       updateUser: data => {
         const currentUser = get().user;
         if (!currentUser) return;
-        set({ user: { ...currentUser, ...data } });
+        set(state => ({ user: { ...state.user, ...data } }));
       },
 
       validateToken: async () => {

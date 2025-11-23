@@ -35,7 +35,6 @@ const StepSix = ({ onSubmit }: StepSixProps) => {
 
   const handleCreateProject = async () => {
     const finalData = getFinalProjectData();
-    console.log('Final data to be submitted:', finalData);
 
     setIsRefreshing(true);
 

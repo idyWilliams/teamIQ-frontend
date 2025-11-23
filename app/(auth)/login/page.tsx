@@ -4,7 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -29,7 +29,6 @@ const schema = yup.object().shape({
 export default function Login() {
   const { isPending, mutate } = useLogin();
   const authenticate = useAuthStore(state => state.authorize);
-  const user = useAuthStore(s => s.user);
 
   const router = useRouter();
   // Initializing react-hook-form with Yup

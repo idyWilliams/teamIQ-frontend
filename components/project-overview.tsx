@@ -28,7 +28,7 @@ const ProjectOverview = () => {
   const pathname = usePathname();
 
   return (
-    <div className="flex h-screen gap-[32px] p-[24px]">
+    <div className="flex h-screen gap-[32px]">
       {/* Left hand side containing Descriptions and documents*/}
       <div className="flex w-[100%] flex-col gap-[32px] overflow-scroll [scrollbar-width:none] md:w-[793px] lg:w-[70%] [&::-webkit-scrollbar]:hidden">
         {isMobile && (

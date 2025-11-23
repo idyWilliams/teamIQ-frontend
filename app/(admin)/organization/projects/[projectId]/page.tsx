@@ -34,7 +34,7 @@ function ProjectDetails() {
         </TabsList>
 
         {projectsTabs.map(tab => (
-          <TabsContent key={tab.value} value={tab.value} className="pt-10">
+          <TabsContent key={tab.value} value={tab.value} className="ml-4 pt-10">
             {tab.content}
           </TabsContent>
         ))}
@@ -56,19 +56,19 @@ export default ProjectWrapper;
 const projectsTabs = [
   {
     label: 'Project Overview',
-    href: '/member/projects?tab=overview',
+    href: '/organization/projects?tab=overview',
     value: 'overview',
     content: <ProjectOverview />,
   },
   {
-    label: 'Tasks',
-    href: '/member/projects?tab=tasks',
+    label: 'Tasks Allocation',
+    href: '/organization/projects?tab=tasks',
     value: 'tasks',
     content: <h1>Task</h1>,
   },
   {
     label: 'Assign Team Member',
-    href: '/member/projects?tab=assign-team-member',
+    href: '/organization/projects?tab=assign-team-member',
     value: 'assign-team-member',
     content: <AssignedTeamMembers />,
   },

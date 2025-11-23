@@ -70,7 +70,6 @@ const UserPermission = ({
   useEffect(() => {
     if (defaultValues) {
       setIsReviewMode(true);
-      console.log('🔄 Setting User Permission default values:', defaultValues);
     }
   }, [defaultValues]);
 
@@ -97,10 +96,6 @@ const UserPermission = ({
       });
 
       setTeamList(transformedUsers);
-      console.log(
-        '🔄 Transformed team list with default values:',
-        transformedUsers
-      );
 
       // Set form values from defaultValues
       if (defaultValues) {
@@ -161,9 +156,6 @@ const UserPermission = ({
   };
 
   const handleFormSubmit = async (data: FormData) => {
-    console.log('STEP 5 FORM DATA:', data);
-    console.log('Project ID for Step 5:', projectId);
-
     // Prepare API payload
     const apiData = {
       members: [
@@ -186,12 +178,9 @@ const UserPermission = ({
       ],
     };
 
-    console.log('STEP 5 API PAYLOAD:', apiData);
-
     setStep5Data(apiData);
 
     if (!projectId) {
-      console.log('No projectId available, skipping API call');
       toast.success('Team members saved locally');
       if (onSubmit) onSubmit();
       return;
@@ -211,12 +200,10 @@ const UserPermission = ({
 
     updateProjectStep5.mutate(apiData, {
       onSuccess: responseData => {
-        console.log('Step 5 completed successfully:', responseData);
         toast.success('Team members added successfully!');
         if (onSubmit) onSubmit();
       },
       onError: (error: any) => {
-        console.error('Step 5 failed:', error);
         const errorMessage =
           error.response?.data?.detail ||
           error.response?.data?.message ||

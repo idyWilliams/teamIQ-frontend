@@ -13,7 +13,7 @@ function ProjectDetails() {
   const activeTab = searchparams.get('tab') || 'overview';
 
   return (
-    <div>
+    <div className="pt-4 xl:pt-0">
       <Tabs
         value={activeTab}
         onValueChange={(value: string) =>
@@ -21,12 +21,12 @@ function ProjectDetails() {
         }
         className="w-full p-0"
       >
-        <TabsList className="w-full grow justify-start rounded-none border-b bg-transparent p-0">
+        <TabsList className="w-full grow justify-start rounded-none border-b bg-transparent p-0 ease-in-out">
           {projectsTabs.map(tab => (
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className="relative w-fit rounded-none border-none bg-transparent px-2 py-2 text-gray-600 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#086ACE] after:transition-all after:duration-300 data-[state=active]:bg-transparent data-[state=active]:text-[#086ACE] data-[state=active]:shadow-none data-[state=active]:after:w-full"
+              className="relative w-fit grow-0 rounded-none border-none bg-transparent py-2 text-gray-600 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#086ACE] after:transition-all after:duration-300 data-[state=active]:bg-transparent data-[state=active]:text-[#086ACE] data-[state=active]:shadow-none data-[state=active]:after:w-full md:px-8"
             >
               {tab.label}
             </TabsTrigger>
@@ -34,7 +34,7 @@ function ProjectDetails() {
         </TabsList>
 
         {projectsTabs.map(tab => (
-          <TabsContent key={tab.value} value={tab.value} className="ml-4 pt-10">
+          <TabsContent key={tab.value} value={tab.value} className="pt-6">
             {tab.content}
           </TabsContent>
         ))}
@@ -61,7 +61,7 @@ const projectsTabs = [
     content: <ProjectOverview />,
   },
   {
-    label: 'Tasks Allocation',
+    label: 'Tasks',
     href: '/member/projects?tab=tasks',
     value: 'tasks',
     content: <h1>Task</h1>,

@@ -25,10 +25,7 @@ const StepperModal = ({ onClose }: StepperModalProps) => {
   const next = (projectData?: { projectId: number; projectData: any }) => {
     if (projectData && projectData.projectId) {
       setCurrentProjectId(projectData.projectId); // ✅ Store project ID
-      console.log(
-        '🆔 Stored Project ID for next steps:',
-        projectData.projectId
-      );
+    
     }
     setCurrentStep(prev => prev + 1);
   };
