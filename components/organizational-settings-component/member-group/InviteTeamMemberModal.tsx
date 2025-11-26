@@ -67,7 +67,7 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
       onClose();
     } catch (error) {
       console.error(error, 'failed to send');
-      toast.error('Error occur while sendind');
+      toast.error('Error occur while sending');
     }
   };
 
