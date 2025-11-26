@@ -86,12 +86,12 @@ export const useSaveProviderCredentials = () => {
 }
 
 // Hook to get external accounts for mapping
-export const useGetExternalAccounts = (connectionId: number | undefined) => {
+export const useGetExternalAccounts = (connectionId: number | undefined, resourceId?: string) => {
   return useQuery({
-    queryKey: ['external-accounts', connectionId],
+    queryKey: ['external-accounts', connectionId, resourceId],
     queryFn: async () => {
       const response = await axiosInstance.get(
-        integrations.externalAccounts(connectionId)
+        integrations.externalAccounts(connectionId, resourceId)
       );
       return response.data;
     },

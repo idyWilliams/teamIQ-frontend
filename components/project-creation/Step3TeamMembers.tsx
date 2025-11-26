@@ -531,9 +531,31 @@ function ProviderAccountSelector({
   selectedAccountId: string;
   onSelect: (id: string) => void;
 }) {
-  // ✅ Use connectionId to fetch users from the correct integration
-  const { data: accounts = [], isLoading } = useGetExternalAccounts(connectionId);
-  // ✅ Handle missing connection gracefully
+  const { selectedResources } = useProjectCreation();
+
+
+  const providerResources = selectedResources?.filter(
+    r => r.provider?.toLowerCase() === provider.toLowerCase() &&
+         r.connectionId === String(connectionId)
+  );
+
+
+  const resource = providerResources?.[0];
+  const resourceIdentifier = resource?.resourceName || resource?.resourceId;
+
+  console.log('🔍 ProviderAccountSelector Debug:', {
+    provider,
+    connectionId,
+    resourceIdentifier,
+    resourceName: resource?.resourceName,
+    resourceId: resource?.resourceId,
+    allProviderResources: providerResources,
+    allSelectedResources: selectedResources,
+  });
+
+
+  const { data: accounts = [], isLoading } = useGetExternalAccounts(connectionId, resourceIdentifier);
+
   if (!connectionId) {
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 p-4">

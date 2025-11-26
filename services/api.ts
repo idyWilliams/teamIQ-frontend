@@ -61,8 +61,10 @@ const api = {
     sync: (id: string) => `/integrations/${id}/sync`,
     saveApiKey: '/integrations/save-apikey',
     providerCredentials: '/integrations/provider-credentials',
-    externalAccounts: (connectionId: number | undefined) =>
-      `/integrations/${connectionId}/users`,
+    externalAccounts: (connectionId: number | undefined, resourceId?: string) =>
+      resourceId
+        ? `/integrations/${connectionId}/users?resource_id=${encodeURIComponent(resourceId)}`
+        : `/integrations/${connectionId}/users`,
     // externalAccounts: (provider: string, email: string) =>
     //   `/integrations/external-accounts?provider=${provider}&email=${email}`,
     resources: (connectionId: string, provider: string) =>
