@@ -71,8 +71,8 @@ export function WaveProgressCard({
   const dataToRender = progressData?.length ? progressData : defaultData;
 
   return (
-    <div className={`${zeroMargin ? '' : 'm-6'} border-gray-50`}>
-      <Card>
+    <div className={`${zeroMargin ? '' : 'm-6'} border-gray-50 `}>
+      <Card className='shadow-none'>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <CardTitle>{title || 'Team Skills Overview'}</CardTitle>
           {/* Conditionally render “View More” button */}
@@ -95,7 +95,7 @@ export function WaveProgressCard({
             </button>
           )}
         </CardHeader>
-        <CardContent className="px-0">
+        <CardContent className="px-4">
           <div
             className="grid items-start justify-items-center gap-0"
             style={{
