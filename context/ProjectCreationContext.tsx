@@ -9,9 +9,12 @@ import React, {
 } from 'react';
 import { useIntegrations } from '@/context/IntegrationContext';
 import { useRouter } from 'next/navigation';
+import axiosInstance from '@/services/axios';
+import { projects } from '@/services/api';
 
 interface ProjectCreationContextType {
   // Step 1: Project Details
+  projectId?: number; // Optional: for edit mode
   projectName: string;
   setProjectName: (name: string) => void;
   projectDescription: string;
@@ -89,9 +92,11 @@ const ProjectCreationContext = createContext<
 export function ProjectCreationProvider({
   children,
   organizationId,
+  projectId,
 }: {
   children: React.ReactNode;
   organizationId: string;
+  projectId?: number;
 }) {
   const router = useRouter();
   const { connections } = useIntegrations();
@@ -369,32 +374,26 @@ export function ProjectCreationProvider({
     setIsCreating(true);
     setError(null);
     try {
-      const response = await fetch('/api/v1/projects/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          organization_id: organizationId,
-          name: projectName,
-          description: projectDescription,
-          resources: selectedResources,
-          members: selectedMembers,
-          team_lead_id: teamLead.userId,
-        }),
+      const { data: project } = await axiosInstance.post(projects.create, {
+        organization_id: organizationId,
+        name: projectName,
+        description: projectDescription,
+        resources: selectedResources,
+        members: selectedMembers,
+        team_lead_id: teamLead.userId,
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to create project');
-      }
-
-      const project = await response.json();
 
       // Success - redirect to project page
       router.push(`/organization/projects/${project.id}`);
       reset();
     } catch (err: any) {
-      setError(err.message);
-      throw err;
+      const errorMessage =
+        err.response?.data?.detail ||
+        err.response?.data?.message ||
+        err.message ||
+        'Failed to create project';
+      setError(errorMessage);
+      // throw err; // Optional: re-throw if needed by caller, but currently void
     } finally {
       setIsCreating(false);
     }
@@ -419,6 +418,7 @@ export function ProjectCreationProvider({
   }, []);
 
   const value: ProjectCreationContextType = {
+    projectId,
     projectName,
     setProjectName,
     projectDescription,

@@ -1,11 +1,10 @@
 'use client';
-
 import { useState } from 'react';
 import { useProjectCreation } from '@/context/ProjectCreationContext';
-import { useOrganizationUsers, User } from '@/services/hooks/useUsers';
+import { useOrganizationUsers } from '@/services/hooks/useUsers';
 import { useGetExternalAccounts } from '@/services/hooks/useIntegrations';
+import { useMapUser, useUnmapUser } from '@/services/hooks/useUserMappings';
 import Image from 'next/image';
-
 interface OrgMember {
   id: string;
   first_name: string;
@@ -14,11 +13,9 @@ interface OrgMember {
   profile_image?: string;
   role: string;
 }
-
 export function Step3TeamMembers() {
   const {
     selectedMembers,
-    teamLead,
     addMember,
     removeMember,
     updateMemberRole,
@@ -26,13 +23,9 @@ export function Step3TeamMembers() {
     getMemberMappingStatus,
     getRequiredProviders,
     validationErrors,
+    selectedResources, // ✅ Get selected resources from context
   } = useProjectCreation();
-
   const { data: users = [], isLoading: loading } = useOrganizationUsers();
-
-  // Transform User[] to OrgMember[] to match existing component structure
-  // or adapt component to use User type directly.
-  // Adapting to match existing OrgMember interface for minimal friction:
   const orgMembers: OrgMember[] = users.map(user => ({
     id: user.id.toString(),
     first_name: user.first_name,
@@ -41,12 +34,9 @@ export function Step3TeamMembers() {
     profile_image: user.profile_image || undefined,
     role: user.role,
   }));
-
   const [searchQuery, setSearchQuery] = useState('');
   const [showMappingModal, setShowMappingModal] = useState<string | null>(null);
-
   const requiredProviders = getRequiredProviders();
-
   const filteredMembers = orgMembers.filter(
     member =>
       `${member.first_name} ${member.last_name}`
@@ -54,10 +44,8 @@ export function Step3TeamMembers() {
         .includes(searchQuery.toLowerCase()) ||
       member.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
   const isMemberSelected = (memberId: string) =>
     selectedMembers.some(m => m.userId === memberId);
-
   const handleToggleMember = (member: OrgMember) => {
     if (isMemberSelected(member.id)) {
       removeMember(member.id);
@@ -71,10 +59,16 @@ export function Step3TeamMembers() {
       });
     }
   };
-
+  // ✅ Helper to get connection ID for a provider
+  const getConnectionIdForProvider = (provider: string): string | undefined => {
+    // Find the first resource that matches this provider
+    const resource = selectedResources?.find(
+      r => r.provider?.toLowerCase() === provider.toLowerCase()
+    );
+    return resource?.connectionId;
+  };
   const hasTeamLeadError = validationErrors.some(e => e.includes('team lead'));
   const hasMappingError = validationErrors.some(e => e.includes('mapped'));
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -86,7 +80,6 @@ export function Step3TeamMembers() {
           Select team members and map them to their accounts in linked tools
         </p>
       </div>
-
       {/* Validation Errors */}
       {(hasTeamLeadError || hasMappingError) && (
         <div className="space-y-2">
@@ -114,7 +107,6 @@ export function Step3TeamMembers() {
           )}
         </div>
       )}
-
       {/* Required Providers Info */}
       {requiredProviders.length > 0 && (
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
@@ -144,7 +136,6 @@ export function Step3TeamMembers() {
           </div>
         </div>
       )}
-
       {/* Search */}
       <div className="relative">
         <svg
@@ -168,7 +159,6 @@ export function Step3TeamMembers() {
           className="w-full rounded-lg border border-gray-300 py-3 pr-4 pl-10 outline-none focus:border-transparent focus:ring-2 focus:ring-blue-500"
         />
       </div>
-
       {loading ? (
         <div className="flex items-center justify-center py-12">
           <svg
@@ -210,7 +200,6 @@ export function Step3TeamMembers() {
                 </button>
               )}
             </div>
-
             {selectedMembers.length === 0 ? (
               <div className="rounded-lg border-2 border-dashed border-gray-300 p-8 text-center">
                 <svg
@@ -241,7 +230,6 @@ export function Step3TeamMembers() {
                   );
                   const mappingStatus = getMemberMappingStatus(member.userId);
                   const isTeamLead = member.role === 'team_lead';
-
                   return (
                     <div
                       key={member.userId}
@@ -299,7 +287,6 @@ export function Step3TeamMembers() {
                               </svg>
                             </button>
                           </div>
-
                           <div className="mb-3 flex items-center gap-2">
                             <select
                               value={member.role}
@@ -320,7 +307,6 @@ export function Step3TeamMembers() {
                               <option value="member">Member</option>
                               <option value="viewer">Viewer</option>
                             </select>
-
                             {requiredProviders.length > 0 && (
                               <button
                                 onClick={() =>
@@ -348,7 +334,6 @@ export function Step3TeamMembers() {
                               </button>
                             )}
                           </div>
-
                           {!mappingStatus.isMapped &&
                             requiredProviders.length > 0 && (
                               <p className="text-xs text-red-600">
@@ -364,7 +349,6 @@ export function Step3TeamMembers() {
               </div>
             )}
           </div>
-
           {/* Available Members */}
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-gray-700">
@@ -428,7 +412,6 @@ export function Step3TeamMembers() {
           </div>
         </div>
       )}
-
       {/* External Account Mapping Modal */}
       {showMappingModal && (
         <ExternalAccountMappingModal
@@ -436,27 +419,81 @@ export function Step3TeamMembers() {
           providers={requiredProviders}
           onClose={() => setShowMappingModal(null)}
           onUpdateMapping={updateMemberMapping}
+          getConnectionId={getConnectionIdForProvider}
         />
       )}
     </div>
   );
 }
-
 function ExternalAccountMappingModal({
   member,
   providers,
   onClose,
   onUpdateMapping,
-}: any) {
-  const [mappings, setMappings] = useState(member.externalMappings);
+  getConnectionId,
+}: {
+  member: any;
+  providers: string[];
+  onClose: () => void;
+  onUpdateMapping: (userId: string, provider: string, externalId: string) => void;
+  getConnectionId: (provider: string) => string | undefined;
+}) {
+  const { projectId } = useProjectCreation();
+  const [mappings, setMappings] = useState(member.externalMappings || {});
+  const { mutateAsync: mapUser } = useMapUser();
+  const { mutateAsync: unmapUser } = useUnmapUser();
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSave = () => {
-    Object.entries(mappings).forEach(([provider, externalId]) => {
-      if (externalId) {
-        onUpdateMapping(member.userId, provider, externalId as string);
-      }
-    });
-    onClose();
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const promises = Object.entries(mappings).map(async ([provider, externalId]) => {
+        const id = externalId as string;
+
+        // Update local state
+        onUpdateMapping(member.userId, provider, id);
+
+        // If we have a project ID, make API calls
+        if (projectId) {
+          if (id) {
+            // Find the resource to get external username/email if possible
+            // We need to find the account details.
+            // Since we don't have the full account object here, we might need to fetch it or pass it.
+            // However, the payload requires external_user_id. 'id' IS the external_user_id (from ProviderAccountSelector value).
+            // We might miss external_username/email if we don't have them.
+            // ProviderAccountSelector uses useGetExternalAccounts which returns the accounts.
+            // But we only have the ID here.
+
+            // For now, we send what we have. The backend might fetch the rest or they are optional.
+            // The user payload showed them as optional.
+
+            await mapUser({
+              project_id: projectId,
+              user_id: Number(member.userId), // Assuming userId is numeric string
+              provider,
+              external_user_id: id,
+              // external_username: ???,
+              // external_email: ???
+            });
+          } else {
+            // Unmap
+            await unmapUser({
+              project_id: projectId,
+              user_id: Number(member.userId),
+              provider,
+            });
+          }
+        }
+      });
+
+      await Promise.all(promises);
+      onClose();
+    } catch (error) {
+      console.error('Failed to save mappings:', error);
+      // Toast is handled by the hook
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -496,32 +533,42 @@ function ExternalAccountMappingModal({
             </button>
           </div>
         </div>
-
         <div className="max-h-[60vh] space-y-4 overflow-y-auto p-6">
-          {providers.map((provider: string) => (
-            <ProviderAccountSelector
-              key={provider}
-              provider={provider}
-              memberEmail={member.userEmail}
-              selectedAccountId={mappings[provider] || ''}
-              onSelect={(accountId: string) =>
-                setMappings({ ...mappings, [provider]: accountId })
-              }
-            />
-          ))}
+          {providers.map((provider: string) => {
+            const connectionId = getConnectionId(provider);
+            return (
+              <ProviderAccountSelector
+                key={provider}
+                provider={provider}
+                connectionId={connectionId}
+                memberEmail={member.userEmail}
+                selectedAccountId={mappings[provider] || ''}
+                onSelect={(accountId: string) =>
+                  setMappings({ ...mappings, [provider]: accountId })
+                }
+              />
+            );
+          })}
         </div>
-
         <div className="flex justify-end gap-3 border-t bg-gray-50 p-6">
           <button
             onClick={onClose}
-            className="rounded-lg border border-gray-300 px-6 py-2.5 font-medium transition hover:bg-gray-100"
+            disabled={isSaving}
+            className="rounded-lg border border-gray-300 px-6 py-2.5 font-medium transition hover:bg-gray-100 disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className="rounded-lg bg-blue-500 px-6 py-2.5 font-medium text-white transition hover:bg-blue-600"
+            disabled={isSaving}
+            className="rounded-lg bg-blue-500 px-6 py-2.5 font-medium text-white transition hover:bg-blue-600 disabled:opacity-50 flex items-center gap-2"
           >
+            {isSaving && (
+              <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            )}
             Save Mappings
           </button>
         </div>
@@ -529,30 +576,62 @@ function ExternalAccountMappingModal({
     </div>
   );
 }
-
 function ProviderAccountSelector({
   provider,
+  connectionId,
   memberEmail,
   selectedAccountId,
   onSelect,
 }: {
   provider: string;
+  connectionId: string | undefined;
   memberEmail: string;
   selectedAccountId: string;
   onSelect: (id: string) => void;
 }) {
-  const { data: accounts = [], isLoading } = useGetExternalAccounts(
-    provider,
-    memberEmail
+  const { selectedResources } = useProjectCreation();
+
+
+  const providerResources = selectedResources?.filter(
+    r => r.provider?.toLowerCase() === provider.toLowerCase() &&
+         r.connectionId === connectionId
   );
 
+
+  const resource = providerResources?.[0];
+  const resourceIdentifier = resource?.resourceName || resource?.resourceId;
+
+  console.log('🔍 ProviderAccountSelector Debug:', {
+    provider,
+    connectionId,
+    resourceIdentifier,
+    resourceName: resource?.resourceName,
+    resourceId: resource?.resourceId,
+    allProviderResources: providerResources,
+    allSelectedResources: selectedResources,
+  });
+
+
+  const { data: accounts = [], isLoading } = useGetExternalAccounts(connectionId ? Number(connectionId) : undefined, resourceIdentifier);
+
+  if (!connectionId) {
+    return (
+      <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+        <label className="mb-2 block text-sm font-semibold capitalize text-red-800">
+          {provider} Account
+        </label>
+        <p className="text-sm text-red-600">
+          No connection found for {provider}. Please ensure you&apos;ve linked this tool in Step 2.
+        </p>
+      </div>
+    );
+  }
   const hasEmailMatch = accounts.some(
     (acc: any) => acc.email?.toLowerCase() === memberEmail.toLowerCase()
   );
-
   return (
     <div className="rounded-lg border bg-gray-50 p-4">
-      <label className="mb-3 block text-sm font-semibold text-gray-700 capitalize">
+      <label className="mb-3 block text-sm font-semibold capitalize text-gray-700">
         {provider} Account
       </label>
       {isLoading ? (
@@ -579,7 +658,9 @@ function ProviderAccountSelector({
           Loading accounts...
         </div>
       ) : accounts.length === 0 ? (
-        <p className="text-sm text-red-600">No accounts found for this tool</p>
+        <p className="text-sm text-red-600">
+          No accounts found for this tool. Please check your integration settings.
+        </p>
       ) : (
         <>
           {hasEmailMatch && (
