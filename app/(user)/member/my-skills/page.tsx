@@ -92,7 +92,7 @@ const ThemeInput = {
 
 export default function MySkillsPage() {
   return (
-    <section className="pt-4">
+    <section className="pt-[32px]">
       <div className="mb-[40px] hidden items-center justify-between gap-[16px] lg:flex">
         {cardTexts?.map((cardText, idx) => (
           <div
@@ -120,8 +120,8 @@ export default function MySkillsPage() {
       <div className="mb-[40px] flex h-fit w-full flex-col gap-[24px] lg:h-[500px] lg:flex-row">
         <RaderChartCard chartData={chartData} />
         {/* Skill recommendation- RHS */}
-        <div className="flex w-full flex-col gap-[24px] rounded-[16px] border py-[24px] lg:max-h-[548px] lg:w-[35%]">
-          <h3 className="px-[12px] font-semibold">Skill Recommendation</h3>
+        <div className="flex w-full flex-col mt-[8px] rounded-[16px] border py-[24px] lg:max-h-[548px] lg:w-[35%]">
+          <h3 className="px-[12px] font-semibold mb-[12px]">Skill Recommendation</h3>
           <div className="flex max-h-[500px] flex-col gap-[24px] overflow-y-scroll p-[12px] [scrollbar-width:none] lg:max-h-[400px] [&::-webkit-scrollbar]:hidden">
             {skillRecommendations?.map((skillDesc, idx) => (
               <SkillRecommendationCard key={idx} skillData={skillDesc} />
@@ -130,7 +130,7 @@ export default function MySkillsPage() {
         </div>
       </div>
       {/* Contributions */}
-      <div className="mb-[40px] flex flex-col gap-[24px] lg:h-[420px] lg:flex-row">
+      <div className="mb-[40px] mt-[10px] flex flex-col gap-[24px] lg:h-[420px] lg:flex-row">
         {/* LHS */}
         <div className="item-center flex flex-col justify-start rounded-[16px] border p-[24px] lg:w-[65%]">
           <div className="mb-[20px] flex h-[58px] w-full items-center justify-between bg-neutral-50 p-[12px]">

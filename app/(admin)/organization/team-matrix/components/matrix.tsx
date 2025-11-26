@@ -8,7 +8,7 @@ import CardItem from '../../../../../components/cardItem';
 export default function matrix() {
   return (
     <>
-      <div className="grid w-full grid-cols-4 gap-2">
+      <div className="grid w-full grid-cols-4 gap-2 px-6">
         {cardData.map((item, i) => (
           <CardItem
             key={i}
@@ -18,13 +18,15 @@ export default function matrix() {
           />
         ))}
       </div>
-      <div className="flex gap-4">
-        <div>
+      <div className="flex ">
+        <div className='flex-2'>
           <WaveProgressCard title="Skill Gap Analysis" />
           <TeamSkillStrength />
           <ProjectReadiness />
         </div>
+        <div className='flex-1'>
         <TeamRecommendation />
+        </div>
       </div>
     </>
   );

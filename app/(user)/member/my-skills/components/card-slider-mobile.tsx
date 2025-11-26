@@ -48,12 +48,12 @@ const CardSliderMobile = ({ cardItems, cardValues }: CardSliderProps) => {
             className="snap-center shrink-0 w-full border min-w-[200px] rounded-[16px] p-[24px] h-[120px]"
           >
             <div className="flex justify-between items-center mb-[8px]">
-              <h3 className="font-semibold">{cardItem?.text}</h3>
+              <h3 className="font-semibold text-[14px]">{cardItem?.text}</h3>
               <span
-                className={cn(cardItem.icon, "size-5 text-[#086ACE]")}
+                className={cn(cardItem.icon, "size-[28px] text-[#086ACE]")}
               ></span>
             </div>
-            <div className="font-bold text-xl">
+            <div className="font-bold text-[24px]">
               {cardValues?.at(idx)?.value}
               {cardValues?.at(idx)?.isPercent && "%"}
             </div>
