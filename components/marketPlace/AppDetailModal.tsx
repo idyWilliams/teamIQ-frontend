@@ -51,7 +51,11 @@ export function AppDetailModal({
 
   // --- Handler for OAuth flow
   const handleOAuthConnect = () => {
-    window.location.href = `/api/v1/integrations/oauth/start?provider=${app.id}&orgId=${organizationId}`;
+    // Use backend API URL for OAuth (not frontend URL)
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://teamiq-backend.onrender.com/api/v1';
+    const oauthUrl = `${apiBaseUrl}/integrations/oauth/start?provider=${app.id}&orgId=${organizationId}`;
+
+    window.location.href = oauthUrl;
   };
 
   // --- Handler for API Key flow
