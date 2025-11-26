@@ -343,9 +343,9 @@ export default function MyDetails() {
 
       {/* Header + Edit button */}
       <div className="flex items-center justify-between px-6 pt-7">
-        <div className="ml-[30%] max-sm:mt-8 max-sm:ml-0">
-          <p className="text-sm font-medium">Profile</p>
-          <p className="text-muted-foreground text-xs">Update your details</p>
+        <div className="ml-[27%] max-sm:mt-8 max-sm:ml-0">
+          <p className="text-lg font-medium">Profile</p>
+          <p className="text-muted-foreground text-sm">Update your details</p>
         </div>
 
         <button
