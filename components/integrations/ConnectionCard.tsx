@@ -27,6 +27,8 @@ export function ConnectionCard({ connection }: ConnectionCardProps) {
   const [displayName, setDisplayName] = useState(connection.displayName);
   const { removeConnection, syncConnection } = useIntegrations();
 
+  console.log(connection, "connection");
+
   // Utility for rendering logos (emoji or image path)
   const renderLogo = (logo: string | StaticImageData, name: string) => {
     if (typeof logo === 'string')
