@@ -1,11 +1,9 @@
 'use client';
-
 import { useState } from 'react';
 import { useProjectCreation } from '@/context/ProjectCreationContext';
-import { useOrganizationUsers, User } from '@/services/hooks/useUsers';
+import { useOrganizationUsers } from '@/services/hooks/useUsers';
 import { useGetExternalAccounts } from '@/services/hooks/useIntegrations';
 import Image from 'next/image';
-
 interface OrgMember {
   id: string;
   first_name: string;
@@ -14,11 +12,9 @@ interface OrgMember {
   profile_image?: string;
   role: string;
 }
-
 export function Step3TeamMembers() {
   const {
     selectedMembers,
-    teamLead,
     addMember,
     removeMember,
     updateMemberRole,
@@ -26,13 +22,9 @@ export function Step3TeamMembers() {
     getMemberMappingStatus,
     getRequiredProviders,
     validationErrors,
+    selectedResources, // ✅ Get selected resources from context
   } = useProjectCreation();
-
   const { data: users = [], isLoading: loading } = useOrganizationUsers();
-
-  // Transform User[] to OrgMember[] to match existing component structure
-  // or adapt component to use User type directly.
-  // Adapting to match existing OrgMember interface for minimal friction:
   const orgMembers: OrgMember[] = users.map(user => ({
     id: user.id.toString(),
     first_name: user.first_name,
@@ -41,12 +33,9 @@ export function Step3TeamMembers() {
     profile_image: user.profile_image || undefined,
     role: user.role,
   }));
-
   const [searchQuery, setSearchQuery] = useState('');
   const [showMappingModal, setShowMappingModal] = useState<string | null>(null);
-
   const requiredProviders = getRequiredProviders();
-
   const filteredMembers = orgMembers.filter(
     member =>
       `${member.first_name} ${member.last_name}`
@@ -54,10 +43,8 @@ export function Step3TeamMembers() {
         .includes(searchQuery.toLowerCase()) ||
       member.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
   const isMemberSelected = (memberId: string) =>
     selectedMembers.some(m => m.userId === memberId);
-
   const handleToggleMember = (member: OrgMember) => {
     if (isMemberSelected(member.id)) {
       removeMember(member.id);
@@ -71,10 +58,16 @@ export function Step3TeamMembers() {
       });
     }
   };
-
+  // ✅ Helper to get connection ID for a provider
+  const getConnectionIdForProvider = (provider: string): number | undefined => {
+    // Find the first resource that matches this provider
+    const resource = selectedResources?.find(
+      r => r.provider?.toLowerCase() === provider.toLowerCase()
+    );
+    return resource?.connectionId;
+  };
   const hasTeamLeadError = validationErrors.some(e => e.includes('team lead'));
   const hasMappingError = validationErrors.some(e => e.includes('mapped'));
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -86,7 +79,6 @@ export function Step3TeamMembers() {
           Select team members and map them to their accounts in linked tools
         </p>
       </div>
-
       {/* Validation Errors */}
       {(hasTeamLeadError || hasMappingError) && (
         <div className="space-y-2">
@@ -114,7 +106,6 @@ export function Step3TeamMembers() {
           )}
         </div>
       )}
-
       {/* Required Providers Info */}
       {requiredProviders.length > 0 && (
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
@@ -144,7 +135,6 @@ export function Step3TeamMembers() {
           </div>
         </div>
       )}
-
       {/* Search */}
       <div className="relative">
         <svg
@@ -168,7 +158,6 @@ export function Step3TeamMembers() {
           className="w-full rounded-lg border border-gray-300 py-3 pr-4 pl-10 outline-none focus:border-transparent focus:ring-2 focus:ring-blue-500"
         />
       </div>
-
       {loading ? (
         <div className="flex items-center justify-center py-12">
           <svg
@@ -210,7 +199,6 @@ export function Step3TeamMembers() {
                 </button>
               )}
             </div>
-
             {selectedMembers.length === 0 ? (
               <div className="rounded-lg border-2 border-dashed border-gray-300 p-8 text-center">
                 <svg
@@ -241,7 +229,6 @@ export function Step3TeamMembers() {
                   );
                   const mappingStatus = getMemberMappingStatus(member.userId);
                   const isTeamLead = member.role === 'team_lead';
-
                   return (
                     <div
                       key={member.userId}
@@ -299,7 +286,6 @@ export function Step3TeamMembers() {
                               </svg>
                             </button>
                           </div>
-
                           <div className="mb-3 flex items-center gap-2">
                             <select
                               value={member.role}
@@ -320,7 +306,6 @@ export function Step3TeamMembers() {
                               <option value="member">Member</option>
                               <option value="viewer">Viewer</option>
                             </select>
-
                             {requiredProviders.length > 0 && (
                               <button
                                 onClick={() =>
@@ -348,7 +333,6 @@ export function Step3TeamMembers() {
                               </button>
                             )}
                           </div>
-
                           {!mappingStatus.isMapped &&
                             requiredProviders.length > 0 && (
                               <p className="text-xs text-red-600">
@@ -364,7 +348,6 @@ export function Step3TeamMembers() {
               </div>
             )}
           </div>
-
           {/* Available Members */}
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-gray-700">
@@ -428,7 +411,6 @@ export function Step3TeamMembers() {
           </div>
         </div>
       )}
-
       {/* External Account Mapping Modal */}
       {showMappingModal && (
         <ExternalAccountMappingModal
@@ -436,20 +418,26 @@ export function Step3TeamMembers() {
           providers={requiredProviders}
           onClose={() => setShowMappingModal(null)}
           onUpdateMapping={updateMemberMapping}
+          getConnectionId={getConnectionIdForProvider}
         />
       )}
     </div>
   );
 }
-
 function ExternalAccountMappingModal({
   member,
   providers,
   onClose,
   onUpdateMapping,
-}: any) {
-  const [mappings, setMappings] = useState(member.externalMappings);
-
+  getConnectionId,
+}: {
+  member: any;
+  providers: string[];
+  onClose: () => void;
+  onUpdateMapping: (userId: string, provider: string, externalId: string) => void;
+  getConnectionId: (provider: string) => number | undefined;
+}) {
+  const [mappings, setMappings] = useState(member.externalMappings || {});
   const handleSave = () => {
     Object.entries(mappings).forEach(([provider, externalId]) => {
       if (externalId) {
@@ -458,7 +446,6 @@ function ExternalAccountMappingModal({
     });
     onClose();
   };
-
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
@@ -496,21 +483,23 @@ function ExternalAccountMappingModal({
             </button>
           </div>
         </div>
-
         <div className="max-h-[60vh] space-y-4 overflow-y-auto p-6">
-          {providers.map((provider: string) => (
-            <ProviderAccountSelector
-              key={provider}
-              provider={provider}
-              memberEmail={member.userEmail}
-              selectedAccountId={mappings[provider] || ''}
-              onSelect={(accountId: string) =>
-                setMappings({ ...mappings, [provider]: accountId })
-              }
-            />
-          ))}
+          {providers.map((provider: string) => {
+            const connectionId = getConnectionId(provider);
+            return (
+              <ProviderAccountSelector
+                key={provider}
+                provider={provider}
+                connectionId={connectionId}
+                memberEmail={member.userEmail}
+                selectedAccountId={mappings[provider] || ''}
+                onSelect={(accountId: string) =>
+                  setMappings({ ...mappings, [provider]: accountId })
+                }
+              />
+            );
+          })}
         </div>
-
         <div className="flex justify-end gap-3 border-t bg-gray-50 p-6">
           <button
             onClick={onClose}
@@ -529,30 +518,40 @@ function ExternalAccountMappingModal({
     </div>
   );
 }
-
 function ProviderAccountSelector({
   provider,
+  connectionId,
   memberEmail,
   selectedAccountId,
   onSelect,
 }: {
   provider: string;
+  connectionId: number | undefined;
   memberEmail: string;
   selectedAccountId: string;
   onSelect: (id: string) => void;
 }) {
-  const { data: accounts = [], isLoading } = useGetExternalAccounts(
-    provider,
-    memberEmail
-  );
-
+  // ✅ Use connectionId to fetch users from the correct integration
+  const { data: accounts = [], isLoading } = useGetExternalAccounts(connectionId);
+  // ✅ Handle missing connection gracefully
+  if (!connectionId) {
+    return (
+      <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+        <label className="mb-2 block text-sm font-semibold capitalize text-red-800">
+          {provider} Account
+        </label>
+        <p className="text-sm text-red-600">
+          No connection found for {provider}. Please ensure you've linked this tool in Step 2.
+        </p>
+      </div>
+    );
+  }
   const hasEmailMatch = accounts.some(
     (acc: any) => acc.email?.toLowerCase() === memberEmail.toLowerCase()
   );
-
   return (
     <div className="rounded-lg border bg-gray-50 p-4">
-      <label className="mb-3 block text-sm font-semibold text-gray-700 capitalize">
+      <label className="mb-3 block text-sm font-semibold capitalize text-gray-700">
         {provider} Account
       </label>
       {isLoading ? (
@@ -579,7 +578,9 @@ function ProviderAccountSelector({
           Loading accounts...
         </div>
       ) : accounts.length === 0 ? (
-        <p className="text-sm text-red-600">No accounts found for this tool</p>
+        <p className="text-sm text-red-600">
+          No accounts found for this tool. Please check your integration settings.
+        </p>
       ) : (
         <>
           {hasEmailMatch && (
