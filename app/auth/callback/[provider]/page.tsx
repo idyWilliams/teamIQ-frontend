@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import Image, { StaticImageData } from 'next/image';
 import jiraLogo from '@/public/images/jira.png';
 import githubLogo from '@/public/images/github.svg';
@@ -27,15 +27,16 @@ const PROVIDER_CONFIG: Record<string, { name: string; icon: StaticImageData | st
 
 type CallbackState = 'success' | 'error';
 
-export default function OAuthCallback({ params }: { params: { provider: string } }) {
+export default function OAuthCallback() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const params = useParams();
   const [state, setState] = useState<CallbackState>('success');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  const provider = params.provider;
+  const provider = params.provider as string;
   const config = PROVIDER_CONFIG[provider] || {
-    name: provider.charAt(0).toUpperCase() + provider.slice(1),
+    name: provider?.charAt(0).toUpperCase() + provider?.slice(1),
     icon: '🔗',
   };
 
@@ -63,7 +64,7 @@ export default function OAuthCallback({ params }: { params: { provider: string }
         router.push('/organization/settings?tab=integrated-apps');
       }, 2000);
     } else {
-     
+
       setState('error');
       setErrorMessage('Invalid callback state.');
       setTimeout(() => {

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useProjectCreation } from '@/context/ProjectCreationContext';
 import { useOrganizationUsers } from '@/services/hooks/useUsers';
 import { useGetExternalAccounts } from '@/services/hooks/useIntegrations';
+import { useMapUser, useUnmapUser } from '@/services/hooks/useUserMappings';
 import Image from 'next/image';
 interface OrgMember {
   id: string;
@@ -59,7 +60,7 @@ export function Step3TeamMembers() {
     }
   };
   // ✅ Helper to get connection ID for a provider
-  const getConnectionIdForProvider = (provider: string): number | undefined => {
+  const getConnectionIdForProvider = (provider: string): string | undefined => {
     // Find the first resource that matches this provider
     const resource = selectedResources?.find(
       r => r.provider?.toLowerCase() === provider.toLowerCase()
@@ -435,17 +436,66 @@ function ExternalAccountMappingModal({
   providers: string[];
   onClose: () => void;
   onUpdateMapping: (userId: string, provider: string, externalId: string) => void;
-  getConnectionId: (provider: string) => number | undefined;
+  getConnectionId: (provider: string) => string | undefined;
 }) {
+  const { projectId } = useProjectCreation();
   const [mappings, setMappings] = useState(member.externalMappings || {});
-  const handleSave = () => {
-    Object.entries(mappings).forEach(([provider, externalId]) => {
-      if (externalId) {
-        onUpdateMapping(member.userId, provider, externalId as string);
-      }
-    });
-    onClose();
+  const { mutateAsync: mapUser } = useMapUser();
+  const { mutateAsync: unmapUser } = useUnmapUser();
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const promises = Object.entries(mappings).map(async ([provider, externalId]) => {
+        const id = externalId as string;
+
+        // Update local state
+        onUpdateMapping(member.userId, provider, id);
+
+        // If we have a project ID, make API calls
+        if (projectId) {
+          if (id) {
+            // Find the resource to get external username/email if possible
+            // We need to find the account details.
+            // Since we don't have the full account object here, we might need to fetch it or pass it.
+            // However, the payload requires external_user_id. 'id' IS the external_user_id (from ProviderAccountSelector value).
+            // We might miss external_username/email if we don't have them.
+            // ProviderAccountSelector uses useGetExternalAccounts which returns the accounts.
+            // But we only have the ID here.
+
+            // For now, we send what we have. The backend might fetch the rest or they are optional.
+            // The user payload showed them as optional.
+
+            await mapUser({
+              project_id: projectId,
+              user_id: Number(member.userId), // Assuming userId is numeric string
+              provider,
+              external_user_id: id,
+              // external_username: ???,
+              // external_email: ???
+            });
+          } else {
+            // Unmap
+            await unmapUser({
+              project_id: projectId,
+              user_id: Number(member.userId),
+              provider,
+            });
+          }
+        }
+      });
+
+      await Promise.all(promises);
+      onClose();
+    } catch (error) {
+      console.error('Failed to save mappings:', error);
+      // Toast is handled by the hook
+    } finally {
+      setIsSaving(false);
+    }
   };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
@@ -503,14 +553,22 @@ function ExternalAccountMappingModal({
         <div className="flex justify-end gap-3 border-t bg-gray-50 p-6">
           <button
             onClick={onClose}
-            className="rounded-lg border border-gray-300 px-6 py-2.5 font-medium transition hover:bg-gray-100"
+            disabled={isSaving}
+            className="rounded-lg border border-gray-300 px-6 py-2.5 font-medium transition hover:bg-gray-100 disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className="rounded-lg bg-blue-500 px-6 py-2.5 font-medium text-white transition hover:bg-blue-600"
+            disabled={isSaving}
+            className="rounded-lg bg-blue-500 px-6 py-2.5 font-medium text-white transition hover:bg-blue-600 disabled:opacity-50 flex items-center gap-2"
           >
+            {isSaving && (
+              <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            )}
             Save Mappings
           </button>
         </div>
@@ -526,7 +584,7 @@ function ProviderAccountSelector({
   onSelect,
 }: {
   provider: string;
-  connectionId: number | undefined;
+  connectionId: string | undefined;
   memberEmail: string;
   selectedAccountId: string;
   onSelect: (id: string) => void;
@@ -536,7 +594,7 @@ function ProviderAccountSelector({
 
   const providerResources = selectedResources?.filter(
     r => r.provider?.toLowerCase() === provider.toLowerCase() &&
-         r.connectionId === String(connectionId)
+         r.connectionId === connectionId
   );
 
 
@@ -554,7 +612,7 @@ function ProviderAccountSelector({
   });
 
 
-  const { data: accounts = [], isLoading } = useGetExternalAccounts(connectionId, resourceIdentifier);
+  const { data: accounts = [], isLoading } = useGetExternalAccounts(connectionId ? Number(connectionId) : undefined, resourceIdentifier);
 
   if (!connectionId) {
     return (
@@ -563,7 +621,7 @@ function ProviderAccountSelector({
           {provider} Account
         </label>
         <p className="text-sm text-red-600">
-          No connection found for {provider}. Please ensure you've linked this tool in Step 2.
+          No connection found for {provider}. Please ensure you&apos;ve linked this tool in Step 2.
         </p>
       </div>
     );
