@@ -21,10 +21,28 @@ export function IntegrationProvider({
   children,
   organizationId,
 }: IntegrationProviderProps) {
-  const { data: connections = [], isLoading: loading, refetch: fetchConnections } = useGetIntegrations(organizationId);
-  const { mutate: removeConnection } = useDeleteIntegration();
-  const { mutate: syncConnection } = useSyncIntegration();
+  const { data: connections = [], isLoading: loading, refetch } = useGetIntegrations(organizationId);
+  const { mutateAsync: removeConnectionMutation } = useDeleteIntegration();
+  const { mutateAsync: syncConnectionMutation } = useSyncIntegration();
 
+  // Wrap mutations to match the expected interface
+  const removeConnection = useCallback(
+    async (id: string) => {
+      await removeConnectionMutation(id);
+    },
+    [removeConnectionMutation]
+  );
+
+  const syncConnection = useCallback(
+    async (id: string) => {
+      await syncConnectionMutation(id);
+    },
+    [syncConnectionMutation]
+  );
+
+  const fetchConnections = useCallback(async () => {
+    await refetch();
+  }, [refetch]);
 
   // Helpers and selectors (based on fetched backend state)
   const getConnectionsByApp = useCallback(
