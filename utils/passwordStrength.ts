@@ -5,6 +5,7 @@ export interface StrengthCriteria {
   specialChar: boolean;
   number: boolean;
   capital: boolean;
+  lowercase: boolean;
 }
 
 export type StrengthStatus = 'Weak' | 'Moderate' | 'Strong';
@@ -22,12 +23,13 @@ export const calculateStrength = (
     specialChar: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
     number: /\d/.test(password),
     capital: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
   };
 
   const passed = Object.values(criteria).filter(Boolean).length;
 
   let status: StrengthStatus;
-  if (passed <= 1) status = 'Weak';
+  if (passed <= 2) status = 'Weak';
   else if (passed <= 3) status = 'Moderate';
   else status = 'Strong';
 

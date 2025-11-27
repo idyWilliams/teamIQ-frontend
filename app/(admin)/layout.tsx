@@ -1,21 +1,29 @@
-import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import Image from "next/image";
-import { Label } from "@/components/ui/label";
-import { Search } from "lucide-react";
-import { SidebarInput, SidebarTrigger } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
+
+'use client';
+import RequireAuth from '@/components/auth/RequireAuth';
+import { AppSidebar } from '@/components/app-sidebar';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import Image from 'next/image';
+import { Label } from '@/components/ui/label';
+import { Bell, Search } from 'lucide-react';
+import { SidebarInput, SidebarTrigger } from '@/components/ui/sidebar';
+import { Separator } from '@/components/ui/separator';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function OrganizationDashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { user } = useAuthStore();
+
   return (
+    <RequireAuth>
+
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="flex flex-row h-screen overflow-hidden">
-        <div className="grow flex flex-col min-h-0 overflow-hidden">
+      <SidebarInset className="flex h-screen flex-row overflow-hidden">
+        <div className="flex min-h-0 grow flex-col overflow-hidden">
           <header className="h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
             <div className="flex items-center gap-2 px-4">
               <SidebarTrigger className="-ml-1" />
@@ -23,45 +31,57 @@ export default function OrganizationDashboardLayout({
                 orientation="vertical"
                 className="mr-2 data-[orientation=vertical]:h-4"
               />
-              <div className="flex grow justify-between items-center">
-                <div className="flex gap-3 items-center py-3">
+              <div className="flex grow items-center justify-between">
+                <div className="flex items-center gap-3 py-3">
                   <Image
-                    src="/images/avatar.jpg"
+                    src={user?.organization_image || '/images/avatar.jpg'}
                     alt="avatar"
                     width={100}
                     height={100}
                     priority
-                    className="rounded-full object-center object-cover size-6"
+                    className="size-6 rounded-full object-cover object-center"
                   />
-                  <span>Isentry Technology</span>
+                  <span>{user?.organization_name || ''}</span>
                 </div>
-                <div className="relative">
-                  <Label htmlFor="search" className="sr-only">
-                    Search
-                  </Label>
-                  <SidebarInput
-                    id="search"
-                    placeholder="Type to search..."
-                    className="h-8 pl-7"
-                  />
-                  <Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
+                <div className="flex items-center gap-2">
+
+                  <button className="p-2 lg:hidden">
+                    <Search className="size-4 opacity-50" />
+                  </button>
+                  <button className="p-2 lg:hidden">
+                    <Bell className="size-4 opacity-50" />
+                  </button>
+
+
+                  <div className="relative hidden lg:block">
+                    <Label htmlFor="search" className="sr-only">
+                      Search
+                    </Label>
+                    <SidebarInput
+                      id="search"
+                      placeholder="Type to search..."
+                      className="h-8 pl-7"
+                    />
+                    <Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
+                  </div>
                 </div>
               </div>
             </div>
           </header>
-          
-          {/* 1. overflow-auto; 2. min-w-full,w-max */}
-          <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden hide-scrollbar">
-            <div className="w-full">{children}</div>
+
+            {/* 1. overflow-auto; 2. min-w-full,w-max */}
+            <div className="hide-scrollbar min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
+              <div className="w-full">{children}</div>
+            </div>
           </div>
-        </div>
-       
-        <div className="w-[20%] h-full border-l shrink-0 bg-background overflow-auto hide-scrollbar">
+
+        <div className="bg-background hide-scrollbar hidden h-full w-[20%] shrink-0 overflow-auto border-l lg:block">
           <div className="p-4">
-            <p className="text-sm text-muted-foreground">Notification</p>
+            <p className="text-muted-foreground text-sm">Notification</p>
           </div>
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </RequireAuth>
   );
 }

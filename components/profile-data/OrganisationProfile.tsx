@@ -1,32 +1,304 @@
 'use client';
 
-import React from 'react';
-import { Edit } from 'lucide-react';
-import { organizationData } from '@/utils/organisationData';
+import React, { useState, useEffect } from 'react';
+import { Edit, Loader } from 'lucide-react';
+import {
+  useOrgProfile,
+  useUpdateOrgProfile,
+  OrgProfile,
+} from '@/services/hooks/useOrgProfile';
+import { Input } from '../ui/input';
+import { toast } from 'sonner';
+import { useAuthStore } from '@/store/useAuthStore';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
+import CountrySelect from '@/app/(auth)/signup/components/country-select';
+import { Controller, useForm } from 'react-hook-form';
+import countryList from '@/app/(auth)/signup/components/country-list';
+
+const teamSizeOptions = [
+  { value: '1-10', label: '1-10' },
+  { value: '11-50', label: '11-50' },
+  { value: '51-200', label: '51-200' },
+  { value: '201-500', label: '201-500' },
+  { value: '501-1000', label: '501-1000' },
+  { value: '1000+', label: '1000+' },
+];
+
+interface FieldConfig {
+  label: string;
+  key: keyof OrgProfile;
+  type:
+    | 'text'
+    | 'email'
+    | 'tel'
+    | 'textarea'
+    | 'url'
+    | 'select'
+    | 'country'
+    | 'country-code';
+  required?: boolean;
+  options?: { value: string; label: string }[];
+}
+
+const fieldSections: {
+  id: string;
+  title: string;
+  fields: FieldConfig[];
+}[] = [
+  {
+    id: 'profile',
+    title: 'Organization Profile',
+    fields: [
+      {
+        label: 'Organization Name',
+        key: 'organization_name',
+        type: 'text',
+      },
+      { label: 'Business Industry', key: 'sector', type: 'text' },
+      {
+        label: 'Team Size',
+        key: 'team_size',
+        type: 'select',
+        options: teamSizeOptions,
+      },
+    ],
+  },
+  {
+    id: 'location',
+    title: 'Business Location',
+    fields: [
+      { label: 'Country', key: 'country', type: 'country' },
+      { label: 'Website', key: 'website', type: 'url' },
+    ],
+  },
+  {
+    id: 'contact',
+    title: 'Primary Contact',
+    fields: [
+      { label: 'Phone Number', key: 'phone_number', type: 'tel' },
+      { label: 'Email', key: 'email', type: 'email' },
+    ],
+  },
+];
 
 const OrganisationProfile = () => {
+  const { data, isLoading, error } = useOrgProfile();
+  const updateProfile = useUpdateOrgProfile();
+  const { updateUser } = useAuthStore();
+  const { control, setValue, watch } = useForm({
+    defaultValues: {
+      country: '',
+    },
+  });
+
+  const countryValue = watch('country');
+
+  //Track which field is currently being edited
+  const [editingField, setEditingField] = useState<keyof OrgProfile | null>(
+    null
+  );
+
+  // Local state to manage form data
+  const [formData, setFormData] = useState<Partial<OrgProfile>>({});
+
+  // Sync fetched data to formData state
+  useEffect(() => {
+    if (data) {
+      setFormData(data);
+      setValue('country', data.country || '');
+      updateUser({ data });
+    }
+  }, [data, updateUser, setValue]);
+
+  // Update formData when country changes
+  useEffect(() => {
+    if (countryValue && editingField === 'country') {
+      setFormData(prev => ({ ...prev, country: countryValue }));
+    }
+  }, [countryValue, editingField]);
+
+  //Updates a single field in the local form state
+  const handleChange = (key: keyof OrgProfile, value: string) => {
+    setFormData(prev => ({ ...prev, [key]: value }));
+  };
+
+  // Resets the form data to the original fetched data and exits edit mode
+  const handleCancel = () => {
+    if (data) {
+      setFormData(data);
+      setValue('country', data.country || '');
+    }
+    setEditingField(null);
+  };
+
+  const handleSave = async (fieldKey: keyof OrgProfile) => {
+    setEditingField(null);
+    if (!data) return;
+    const orgId = data.id;
+    const fieldValue = formData[fieldKey]; // Get the current value of the field from formData
+    try {
+      const res = await updateProfile.mutateAsync({
+        org_id: orgId,
+        data: { [fieldKey]: fieldValue },
+      });
+      console.log(res);
+      if (res) {
+        setFormData(prev => ({ ...prev, ...res }));
+        updateUser({ data: { ...(res as any)?.data } });
+      }
+    } catch (err) {
+      // toast.error('Failed to update organization profile.');
+      console.error('Failed to update field:', err);
+    }
+  };
+
+  if (isLoading)
+    return (
+      <div className="flex p-5">
+        {' '}
+        <Loader className="animate-spin" />{' '}
+        <span className="ml-2">Loading organization profile...</span>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="p-5 text-red-600">
+        Unable to load organization profile.
+      </div>
+    );
+
   return (
-    <div className="mx-auto w-full">
-      {organizationData.map(org => (
-        <div key={org.id} className="mx-auto p-5">
-          <h2 className="p-2 text-lg">{org.title}</h2>
-          <div className="p1 flex flex-col gap-2 rounded-xl border p-4">
-            {org.fields.map((field, index) => (
-              <div key={index} className="flex items-center justify-between">
-                <div className="flex items-center gap-3 space-y-1">
-                  <span className="text-sm text-[#0B0B0B]">{field.label}:</span>
-                  <span className="text-sm">
-                    {Array.isArray(field.value)
-                      ? field.value.join(', ')
-                      : field.value}
-                  </span>
+    <div className="mx-auto w-full px-5">
+      {fieldSections.map(section => (
+        <div key={section.id} className="mb-6">
+          <h2 className="mb-3 text-lg font-semibold">{section.title}</h2>
+          <div className="flex flex-col gap-3 rounded-xl border p-4">
+            {/* Render each field in the section */}
+            {section.fields.map(field => {
+              const isEditing = editingField === field.key;
+              const rawValue = formData[field.key] ?? ''; // Use formData to get the current value
+
+              // Safety check to convert rawValue to string for input display
+              const value =
+                typeof rawValue === 'object'
+                  ? JSON.stringify(rawValue)
+                  : String(rawValue);
+
+              //disable email field editing
+              const isDisable = field.key === 'email';
+
+              return (
+                <div
+                  key={field.key}
+                  className="flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3 space-y-1">
+                    <span className="text-sm font-medium">{field.label}:</span>
+                    {isEditing ? (
+                      <>
+                        {field.type === 'select' && field.options && (
+                          <Select
+                            value={value}
+                            onValueChange={newValue =>
+                              handleChange(field.key, newValue)
+                            }
+                          >
+                            <SelectTrigger className="w-48">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {field.options.map(option => (
+                                <SelectItem
+                                  key={option.value}
+                                  value={option.value}
+                                >
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                        {field.type === 'country' && (
+                          <div className="w-48">
+                            <CountrySelect
+                              control={control}
+                              name="country"
+                              label=""
+                              errors={{}}
+                            />
+                          </div>
+                        )}
+                        {['text', 'email', 'url', 'tel'].includes(field.type) &&
+                          field.type !== 'country-code' && (
+                            <Input
+                              className="rounded-md border px-2 py-1"
+                              type={field.type}
+                              value={value}
+                              onChange={e =>
+                                handleChange(field.key, e.target.value)
+                              }
+                              autoFocus
+                              disabled={isDisable}
+                            />
+                          )}
+                      </>
+                    ) : (
+                      <span className="text-sm text-gray-600">
+                        {field.key === 'country' && value ? (
+                          <span className="flex items-center gap-2">
+                            <img
+                              src={
+                                countryList.find(c => c.name === value)?.flag
+                              }
+                              alt={value}
+                              className="h-4 w-5 object-cover"
+                            />
+                            {value}
+                          </span>
+                        ) : (
+                          value || 'Not set'
+                        )}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {isEditing ? (
+                      <>
+                        <button
+                          disabled={updateProfile.isPending}
+                          className="rounded bg-blue-600 px-3 py-1 text-sm text-white"
+                          onClick={() => handleSave(field.key)}
+                        >
+                          {updateProfile?.isPending ? 'saving..,' : 'Save'}
+                        </button>
+                        <button
+                          className="rounded border px-3 py-1 text-sm"
+                          onClick={handleCancel}
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => setEditingField(field.key)}
+                        //email field cannot be edited
+                        className={`flex items-center gap-1 text-sm ${isDisable ? 'cursor-not-allowed opacity-30' : 'cursor-pointer text-gray-600'}`}
+                        disabled={isDisable}
+                      >
+                        Edit <Edit size={16} />
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <button className="flex cursor-pointer items-center justify-between gap-1 bg-transparent text-sm text-[#3c3c3c] hover:text-[#e4e7ec]">
-                  <span className="text-[16px]">Edit</span>
-                  <Edit size={12} />
-                </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       ))}

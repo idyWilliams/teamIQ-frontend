@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
+import { useGetInvitedUsers } from '@/services/hooks/useInviteUser';
 import { Button } from '@/components/ui/button';
-import { data } from '../../../utils/data';
 import { Trash2 } from 'lucide-react';
 import {
   Table,
@@ -12,24 +12,35 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-const InviteTable = () => {
+interface InviteTableProps {
+  activeUsers?: Array<{
+    id: number;
+    email: string;
+    role: string;
+    status: string;
+    track: string;
+    accepted: boolean;
+  }>;
+  isLoading?: boolean;
+}
+
+const InviteTable = ({ activeUsers, isLoading }: InviteTableProps) => {
+  if (isLoading) return <p>Loading...</p>;
   return (
     <div className="mx-auto w-[70%]">
       <Table className="h-[60%] w-full">
         <TableHeader className="boder-b h-[40px] w-[700px] gap-4 p-2">
           <TableRow className="w-full">
-            <TableHead className="h-[20px] border-l p-2">Name</TableHead>
-            <TableHead className="h-[20px] border-l p-2">Stack</TableHead>
-            <TableHead className="h-[20px] border-l p-2">
-              Employment Type
-            </TableHead>
+            <TableHead className="h-[20px] border-l p-2">Email</TableHead>
+            <TableHead className="h-[20px] border-l p-2">Track</TableHead>
+            <TableHead className="h-[20px] border-l p-2">Role</TableHead>
             <TableHead className="h-[20px] border-l p-2">Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map((row, idx) => (
+          {activeUsers?.map((row, idx) => (
             <TableRow
-              key={row.id}
+              key={row?.id}
               className={`${idx % 2 === 1 ? 'bg-[#f8f9fb]' : 'bg-[#ffffff]'} `}
             >
               <TableCell className="flex h-[40px] items-center gap-2 border-[#1c1c1c0d]">
@@ -40,16 +51,16 @@ const InviteTable = () => {
                   height={40}
                   className="rounded-full"
                 />
-                {row.name}
+                {row?.email}
               </TableCell>
               <TableCell className="h-[40px] border-[#1c1c1c0d]">
-                {row.employmentType}
+                {row?.track}
               </TableCell>
               <TableCell className="h-[40px] border-[#1c1c1c0d]">
-                {row.stack}
+                {row?.role}
               </TableCell>
               <TableCell className="flex h-[40px] items-center justify-end gap-2 border-[#1c1c1c0d]">
-                {row.status}
+                {row?.status}
                 <Button
                   variant="ghost"
                   size="icon"

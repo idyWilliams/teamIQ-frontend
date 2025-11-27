@@ -3,6 +3,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axiosInstance from '@/services/axios';
 import { auth, organizations } from '@/services/api';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useRouter } from 'next/navigation';
+import { AxiosError } from 'axios';
+import { useState } from 'react';
 
 interface SignupOrgData {
   name: string;
@@ -14,7 +18,7 @@ interface SignupOrgData {
 
 // Login Individual & Organization
 export const useLogin = () => {
-  return useMutation({
+  return useMutation<any, AxiosError, { email: string; password: string }>({
     mutationFn: async (payload: { email: string; password: string }) => {
       console.log('Payload being sent:', payload);
       const { data } = await axiosInstance.post(auth.login, payload);
@@ -22,9 +26,6 @@ export const useLogin = () => {
     },
   });
 };
-import { useAuthStore } from '@/store/useAuthStore';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 //Register Individual
 export const useRegisterIndividual = () => {
@@ -42,7 +43,7 @@ export const useRegisterIndividual = () => {
     }) => {
       setLoading(true);
       const res = await axiosInstance.post(
-        `${auth.loginIndividual}?invitation_code=${invitation_code}`,
+        auth.registerIndividual(invitation_code),
         data
       );
       return res.data;
@@ -79,10 +80,10 @@ export const useSignupOrg = () => {
       toast.success('Organization created successfully! Redirecting...');
 
       // Step 1: Extract tokens and user info (adjust keys if needed)
-      const { user, token } = responseData.data || responseData;
+      const { organization, access_token } = responseData.data || responseData;
 
       // Step 2: Save them in Zustand
-      authorize({ user, token });
+      authorize({ user: organization as any, token: access_token });
 
       // Step 3: Invalidate queries and redirect
       queryClient.invalidateQueries({ queryKey: ['organizations'] });
@@ -94,9 +95,9 @@ export const useSignupOrg = () => {
         'Signup Error:',
         error.response?.data?.detail || error.response?.data
       );
-      toast.error(
-        error.response?.data?.message || 'Signup failed. Please try again.'
-      );
+      // toast.error(
+      //   error.response?.data?.message || 'Signup failed. Please try again.'
+      // );
     },
   });
 };
@@ -126,7 +127,7 @@ export const usePassword = () => {
 export const usePasswordResetConfirm = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (payload: { token: string; password: string }) => {
+    mutationFn: async (payload: { token: string; new_password: string }) => {
       const res = await axiosInstance.post(auth.confirmPasswordReset, payload);
       return res.data;
     },
@@ -141,3 +142,42 @@ export const usePasswordResetConfirm = () => {
     },
   });
 };
+
+// Onboarding Complete Hook
+export const useOnboardingComplete = () => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: async (payload: {
+      description: string;
+      sector: string;
+      social_media_handles: {
+        additionalProp1: string;
+        additionalProp2: string;
+        additionalProp3: string;
+      };
+      domain_link: string;
+      favorite_tools: string;
+      website: string;
+      phone_number: string;
+    }) => {
+      const res = await axiosInstance.patch(
+        organizations.onboardingComplete, 
+        payload
+      );
+      return res.data;
+    },
+    onSuccess: data => {
+      // toast.success(data?.message || 'Onboarding completed successfully!');
+      queryClient.invalidateQueries({ queryKey: ['organizations'] });
+    },
+    onError: (error: any) => {
+      const message =
+        error?.response?.data?.message || 'Failed to complete onboarding.';
+      // toast.error(message);
+    },
+  });
+};
+
+

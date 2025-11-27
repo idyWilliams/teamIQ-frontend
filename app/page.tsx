@@ -1,43 +1,39 @@
-"use client";
-import Image from "next/image";
-import Link from "next/link";
-import React, { useState } from 'react';
-import { useSignupOrg } from "@/services/hooks/useAuth";
-// import { toast } from "sonner";
+'use client';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Home() {
- 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative h-screen w-full overflow-hidden">
       <Image
-        src={"/images/authbg.jpg"}
+        src={'/images/authbg.jpg'}
         alt="login-graphics"
         width={5000}
         height={1066}
         priority
-        className="w-full h-full object-cover object-center absolute top-0 left-0"
+        className="absolute top-0 left-0 h-full w-full object-cover object-center"
       />
-      <div className="bg-blue-950/70 backdrop-blur-[10px] absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center">
-        <h1 className="text-6xl font-bold text-white mb-10 ">
+      <div className="absolute top-0 left-0 flex h-full w-full flex-col items-center justify-center bg-blue-950/70 backdrop-blur-[10px]">
+        <h1 className="mb-10 text-6xl font-bold text-white">
           Welcome to Team IQ
         </h1>
 
         <div className="flex gap-3">
           <Link
             href="/login"
-            className="py-3 px-8 bg-white text-blue-800 rounded-2xl inline-block"
+            className="inline-block rounded-2xl bg-white px-8 py-3 text-blue-800"
           >
             Login
           </Link>
           <Link
-            href="/auth/signup"
-            className="py-3 px-8 bg-white text-blue-800 rounded-2xl inline-block"
+            href="/organization"
+            className="inline-block rounded-2xl bg-white px-8 py-3 text-blue-800"
           >
             Organization
           </Link>
           <Link
             href="/member"
-            className="py-3 px-8 bg-white text-blue-800 rounded-2xl inline-block"
+            className="inline-block rounded-2xl bg-white px-8 py-3 text-blue-800"
           >
             Team Member
           </Link>

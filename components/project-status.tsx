@@ -1,6 +1,7 @@
 import { Dot } from 'lucide-react';
 import ActiveBlockers from './active-blockers';
 import { activeBlockers } from '@/constants';
+import OrganizationalDetails from './org-onboarding-comps/organizationalOnboarding';
 
 const Datas = [
   {

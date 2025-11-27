@@ -14,6 +14,7 @@ import { useLogin } from '@/services/hooks/useAuth';
 import { useRouter } from 'nextjs-toploader/app';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Loader } from 'lucide-react';
+import { AxiosError } from 'axios';
 
 // Validation schema
 const schema = yup.object().shape({
@@ -47,29 +48,38 @@ export default function Login() {
   });
 
   // Handle form submit
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: any, e: any) => {
+    e.preventDefault();
     mutate(data, {
       onSuccess: res => {
         console.log('Form values:', data, res);
         toast.success('Login successful!');
 
-        const role = res?.data?.organization?.role;
+        const role = res?.data?.organization?.role || res?.data?.user?.role;
+        console.log(res, role);
+
+        authenticate({
+          user: res?.data?.user,
+          organization: res?.data?.organization,
+          token: res?.data?.access_token,
+        });
+
         console.log('User role:', role);
         if (role === 'organization') {
-          authenticate({
-            user: res?.data?.organization || res?.data?.user,
-            token: res?.data?.access_token,
-          });
           router.push('/organization');
-        } else if (role === 'intern') {
-          router.push('/member');
+        } else {
+          if (!res?.data?.user?.profile_image) router.push('/account-setup');
+          else router.push('/member');
         }
 
         reset();
       },
-      onError: err => {
-        console.error('Login error:', err);
-        toast.error('Login failed. Please check your credentials.');
+      onError: (error: AxiosError) => {
+        console.error('Login error:', error.response?.data);
+        toast.error(
+          (error?.response?.data as any)?.detail ||
+            'Login failed. Please check your credentials.'
+        );
       },
     });
   };

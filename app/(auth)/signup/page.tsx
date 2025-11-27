@@ -1,34 +1,34 @@
-"use client";
-import React, { Fragment, useState } from "react";
-import OrganizationForm from "@/components/sign-up-form/organization-form";
-import IndividualForm from "@/components/sign-up-form/individual-form";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
+'use client';
+import React, { Fragment, useState } from 'react';
+import OrganizationForm from '@/app/(auth)/signup/components/organization-form';
+import IndividualForm from '@/app/(auth)/signup/components/individual-form';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 
 export default function SignUp() {
-  const [mode, setMode] = useState("individual");
+  const [mode, setMode] = useState('individual');
   return (
     <>
-      <div className="mx-auto lg:max-w-lg xl:max-w-xl w-full md:px-3 md:py-2 py-1 px-1">
-        <h3 className="text-[#0A427B] lg:text-[#0B0B0B] font-semibold tracking-tight text-[26px] md:text-[32px] my-4 md:my-6 text-center lg:text-left">
+      <div className="mx-auto w-full px-1 py-1 md:px-3 md:py-2 lg:max-w-lg xl:max-w-xl">
+        <h3 className="my-4 text-center text-[26px] font-semibold tracking-tight text-[#0A427B] md:my-6 md:text-[32px] lg:text-left lg:text-[#0B0B0B]">
           Sign Up
         </h3>
         <Tabs value={mode} onValueChange={setMode}>
-          <TabsList className="bg-transparent mb-6 md:mb-8 grid grid-cols-2 rounded-none shadow-none p-0 gap-2 w-full">
-            {["individual", "organization"].map((tab) => (
+          <TabsList className="mb-6 grid w-full grid-cols-2 gap-2 rounded-none bg-transparent p-0 shadow-none md:mb-8">
+            {['individual', 'organization'].map(tab => (
               <TabsTrigger
                 key={tab}
                 value={tab}
                 className={cn(
-                  "bg-transparent border-0 rounded-none shadow-none capitalize relative",
-                  "border-b border-[#E4E7EC] py-2 sm:py-3 px-0 w-full text-center text-sm sm:text-base min-w-0 min-h-[44px]",
-                  "data-[state=active]:shadow-none data-[state=active]:bg-transparent",
-                  "focus-visible:ring-0 focus-visible:ring-offset-0 ring-0 outline-none",
-                  "data-[state=active]:border-b data-[state=active]:border-[#062444] data-[state=active]:font-medium data-[state=active]:text-[#062444]"
+                  'relative rounded-none border-0 bg-transparent capitalize shadow-none',
+                  'min-h-[44px] w-full min-w-0 border-b border-[#E4E7EC] px-0 py-2 text-center text-sm sm:py-3 sm:text-base',
+                  'data-[state=active]:bg-transparent data-[state=active]:shadow-none',
+                  'ring-0 outline-none focus-visible:ring-0 focus-visible:ring-offset-0',
+                  'data-[state=active]:border-b data-[state=active]:border-[#062444] data-[state=active]:font-medium data-[state=active]:text-[#062444]'
                 )}
               >
                 <span className="md:hidden">
-                  {tab === "individual" ? "user" : tab}
+                  {tab === 'individual' ? 'user' : tab}
                 </span>
                 <span className="hidden md:inline">{tab}</span>
               </TabsTrigger>

@@ -1,3 +1,5 @@
+import { profile } from 'console';
+
 // services/api.ts
 const api = {
   auth: {
@@ -9,26 +11,33 @@ const api = {
     loginOrg: '/auth/login/organization',
     loginGoogle: '/auth/login/google',
     callbackGoogle: '/auth/callback/google',
-    passwordReset:"/auth/password-reset",
-    confirmPasswordReset:"/auth/password-reset/confirm"
+    passwordReset: '/auth/password-reset',
+    confirmPasswordReset: '/auth/password-reset/confirm',
   },
 
   users: {
-    byId: (userId: number) => `/users/users/${userId}`,
+    byId: (userId: number) => `/users/${userId}`,
+    organizationUsers: '/users/organization/users',
+    getProjects: '/users/me/projects',
   },
 
   organizations: {
-    byId: (orgId: number) => `/organizations/organizations/${orgId}`,
+    byId: (org_id: number) => `/organizations/${org_id}`,
     signup: '/organizations/signup',
+    onboardingComplete: '/organizations/onboarding-complete',
+    profile: '/organizations/me/profile',
   },
 
   userInvitation: {
-    register: '/api/v1/invitations/',
+    register: '/invitations/',
+    getInvitedUsers: '/invitations',
+    resendInvitation: '/invitations',
+    revokeInvitation: '/invitations',
   },
 
   projects: {
     list: '/projects/',
-    create: '/projects/',
+    create: '/projects/create',
     byId: (id: number) => `/projects/${id}`,
   },
 
@@ -45,10 +54,30 @@ const api = {
 
   integrations: {
     githubWebhook: '/integrations/github/webhook',
+    'provider-credentials': (organizationId: string, provider: string) =>
+      `integrations/provider-credentials?orgId=${organizationId}&provider=${provider}`,
+    list: '/integrations/',
+    byId: (id: string) => `/integrations/${id}`,
+    sync: (id: string) => `/integrations/${id}/sync`,
+    saveApiKey: '/integrations/save-apikey',
+    providerCredentials: '/integrations/provider-credentials',
+    externalAccounts: (connectionId: number | undefined, resourceId?: string) =>
+      resourceId
+        ? `/integrations/${connectionId}/users?resource_id=${encodeURIComponent(resourceId)}`
+        : `/integrations/${connectionId}/users`,
+    // externalAccounts: (provider: string, email: string) =>
+    //   `/integrations/external-accounts?provider=${provider}&email=${email}`,
+    resources: (connectionId: string, provider: string) =>
+      `/integrations/${connectionId}/resources?provider=${provider}`,
+  },
+
+  userMappings: {
+    map: '/user-mappings/map',
+    unmap: '/user-mappings/unmap',
   },
 
   default: {
-    root: '/', // base root endpoint
+    root: '/',
   },
 };
 
@@ -61,5 +90,6 @@ export const {
   tasks,
   dashboard,
   integrations,
+  userMappings,
   default: defaultApi,
 } = api;

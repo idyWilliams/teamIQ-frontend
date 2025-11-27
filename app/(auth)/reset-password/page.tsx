@@ -1,5 +1,5 @@
 'use client';
-import ResetPasswordForm from '@/components/reset-password-form';
+import ResetPasswordForm from '@/app/(auth)/reset-password/components/reset-password-form';
 import React, { Suspense } from 'react';
 
 
