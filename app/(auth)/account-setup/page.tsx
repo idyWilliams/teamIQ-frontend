@@ -20,12 +20,25 @@ import * as yup from "yup";
 
 // Yup schema
 const schema = yup.object({
-  track: yup.string().required("Track is required"),
+  track: yup
+    .string()
+    .required("Track is required")
+    .oneOf(["Frontend Developer", "Backend Developer", "QA Tester"], "Invalid track"),
+  
   stack: yup
     .string()
     .required("Stack is required")
-    .min(2, "Stack must be at least 2 characters"),
+    .test(
+      "valid-stacks",
+      "Each stack must be at least 2 characters and contain only letters, numbers",
+      (value) => {
+        if (!value) return false;
+        const stacks = value.split(",").map((s) => s.trim());
+        return stacks.every((s) => /^[a-zA-Z0-9+#.\-]{2,}$/.test(s));
+      }
+    ),
 });
+
 
 type FormData = yup.InferType<typeof schema>;
 
@@ -35,9 +48,10 @@ export default function AccountSetup() {
     register,
     handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<FormData>({
     resolver: yupResolver(schema),
+     mode: "onChange",
   });
 
   // Submition handler
@@ -125,10 +139,13 @@ export default function AccountSetup() {
         </div>
 {/* Submition buttton */}
         <Button
-          type="submit"
-          className="bg-[#086ACE] hover:bg-[#086bcec0] hover:cursor-pointer text-white mt-6 md:mt-8 w-full py-3 h-auto rounded-md">
-          Submit
-        </Button>
+  type="submit"
+  disabled={!isValid} // disable if form is invalid
+  className={`bg-[#086ACE] hover:bg-[#086bcec0] hover:cursor-pointer text-white mt-6 md:mt-8 w-full py-3 h-auto rounded-md 
+    ${!isValid ? "opacity-50 cursor-not-allowed" : ""}`}
+>
+  Submit
+</Button>
       </form>
     </section>
   );
