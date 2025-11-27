@@ -10,12 +10,40 @@ import {
 import { Input } from '../ui/input';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/useAuthStore';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
+import CountrySelect from '@/app/(auth)/signup/components/country-select';
+import { Controller, useForm } from 'react-hook-form';
+import countryList from '@/app/(auth)/signup/components/country-list';
+
+const teamSizeOptions = [
+  { value: '1-10', label: '1-10' },
+  { value: '11-50', label: '11-50' },
+  { value: '51-200', label: '51-200' },
+  { value: '201-500', label: '201-500' },
+  { value: '501-1000', label: '501-1000' },
+  { value: '1000+', label: '1000+' },
+];
 
 interface FieldConfig {
   label: string;
   key: keyof OrgProfile;
-  type: 'text' | 'email' | 'tel' | 'textarea' | 'url';
+  type:
+    | 'text'
+    | 'email'
+    | 'tel'
+    | 'textarea'
+    | 'url'
+    | 'select'
+    | 'country'
+    | 'country-code';
   required?: boolean;
+  options?: { value: string; label: string }[];
 }
 
 const fieldSections: {
@@ -33,14 +61,19 @@ const fieldSections: {
         type: 'text',
       },
       { label: 'Business Industry', key: 'sector', type: 'text' },
-      { label: 'Employee Size', key: 'team_size', type: 'text' },
+      {
+        label: 'Team Size',
+        key: 'team_size',
+        type: 'select',
+        options: teamSizeOptions,
+      },
     ],
   },
   {
     id: 'location',
     title: 'Business Location',
     fields: [
-      { label: 'Country', key: 'country', type: 'text' },
+      { label: 'Country', key: 'country', type: 'country' },
       { label: 'Website', key: 'website', type: 'url' },
     ],
   },
@@ -58,6 +91,13 @@ const OrganisationProfile = () => {
   const { data, isLoading, error } = useOrgProfile();
   const updateProfile = useUpdateOrgProfile();
   const { updateUser } = useAuthStore();
+  const { control, setValue, watch } = useForm({
+    defaultValues: {
+      country: '',
+    },
+  });
+
+  const countryValue = watch('country');
 
   //Track which field is currently being edited
   const [editingField, setEditingField] = useState<keyof OrgProfile | null>(
@@ -71,9 +111,17 @@ const OrganisationProfile = () => {
   useEffect(() => {
     if (data) {
       setFormData(data);
+      setValue('country', data.country || '');
       updateUser({ data });
     }
-  }, [data, updateUser]);
+  }, [data, updateUser, setValue]);
+
+  // Update formData when country changes
+  useEffect(() => {
+    if (countryValue && editingField === 'country') {
+      setFormData(prev => ({ ...prev, country: countryValue }));
+    }
+  }, [countryValue, editingField]);
 
   //Updates a single field in the local form state
   const handleChange = (key: keyof OrgProfile, value: string) => {
@@ -84,6 +132,7 @@ const OrganisationProfile = () => {
   const handleCancel = () => {
     if (data) {
       setFormData(data);
+      setValue('country', data.country || '');
     }
     setEditingField(null);
   };
@@ -99,9 +148,12 @@ const OrganisationProfile = () => {
         data: { [fieldKey]: fieldValue },
       });
       console.log(res);
-      updateUser({ data: { ...(res as any)?.data } });
+      if (res) {
+        setFormData(prev => ({ ...prev, ...res }));
+        updateUser({ data: { ...(res as any)?.data } });
+      }
     } catch (err) {
-      toast.error('Failed to update organization profile.');
+      // toast.error('Failed to update organization profile.');
       console.error('Failed to update field:', err);
     }
   };
@@ -149,17 +201,69 @@ const OrganisationProfile = () => {
                   <div className="flex items-center gap-3 space-y-1">
                     <span className="text-sm font-medium">{field.label}:</span>
                     {isEditing ? (
-                      <Input
-                        className="rounded-md border px-2 py-1"
-                        type={field.type}
-                        value={value}
-                        onChange={e => handleChange(field.key, e.target.value)}
-                        autoFocus
-                        disabled={isDisable}
-                      />
+                      <>
+                        {field.type === 'select' && field.options && (
+                          <Select
+                            value={value}
+                            onValueChange={newValue =>
+                              handleChange(field.key, newValue)
+                            }
+                          >
+                            <SelectTrigger className="w-48">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {field.options.map(option => (
+                                <SelectItem
+                                  key={option.value}
+                                  value={option.value}
+                                >
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                        {field.type === 'country' && (
+                          <div className="w-48">
+                            <CountrySelect
+                              control={control}
+                              name="country"
+                              label=""
+                              errors={{}}
+                            />
+                          </div>
+                        )}
+                        {['text', 'email', 'url', 'tel'].includes(field.type) &&
+                          field.type !== 'country-code' && (
+                            <Input
+                              className="rounded-md border px-2 py-1"
+                              type={field.type}
+                              value={value}
+                              onChange={e =>
+                                handleChange(field.key, e.target.value)
+                              }
+                              autoFocus
+                              disabled={isDisable}
+                            />
+                          )}
+                      </>
                     ) : (
                       <span className="text-sm text-gray-600">
-                        {value || 'Not set'}
+                        {field.key === 'country' && value ? (
+                          <span className="flex items-center gap-2">
+                            <img
+                              src={
+                                countryList.find(c => c.name === value)?.flag
+                              }
+                              alt={value}
+                              className="h-4 w-5 object-cover"
+                            />
+                            {value}
+                          </span>
+                        ) : (
+                          value || 'Not set'
+                        )}
                       </span>
                     )}
                   </div>
