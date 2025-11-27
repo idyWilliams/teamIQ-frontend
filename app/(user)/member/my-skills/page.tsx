@@ -53,7 +53,7 @@ const skills = [
   { skill: 'design', skillLevel: 75, color: '#D26FF3' },
   { skill: 'Python', skillLevel: 50, color: '#FC5A59' },
   { skill: 'Typescript', skillLevel: 30, color: '#FAA144' },
-  { skill: 'Communiacation', skillLevel: 80, color: '#6182FB' },
+  { skill: 'Communication', skillLevel: 80, color: '#6182FB' },
 ];
 
 const skillRecommendations = [
