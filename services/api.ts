@@ -38,7 +38,7 @@ const api = {
   projects: {
     list: '/projects/',
     create: '/projects/create',
-    byId: (id: number) => `/projects/${id}`,
+    byId: (project_id: number) => `/projects/${project_id}`,
   },
 
   tasks: {

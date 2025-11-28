@@ -1,31 +1,128 @@
+'use client'
+
+import { CreatedProject, useProject } from '@/services/hooks/useProjectGet';
 import ProgresWithDate from './progres-with-date';
 import IconList from './ui/icon-list';
 import LinkedDocs from './linked-docs';
 import AiSummary from './ai-summary';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from './ui/button';
-import { usePathname } from 'next/navigation';
-const dummyStacks = [
-  { imgSrc: '/images/nodejs.png', stack: 'NodeJS' },
-  { imgSrc: '/images/figma.png', stack: 'Figma' },
-  { imgSrc: '/images/html.png', stack: 'HTML' },
-  { imgSrc: '/images/css.png', stack: 'CSS' },
-];
-const dummyApps = [
-  { imgSrc: '/images/slack.png', stack: 'Slack' },
-  { imgSrc: '/images/github.png', stack: 'Github' },
-  { imgSrc: '/images/Jira.png', stack: 'Jira' },
-  { imgSrc: '/images/gitlab.png', stack: 'Gitlab' },
-];
+import { usePathname, useParams, useRouter } from 'next/navigation';
+import { Loader, AlertCircle } from 'lucide-react';
+import Image from 'next/image';
 
-const dummyLinkedDocs = [
-  'Software Requirements Specification (SRS).pdf',
-  'Project_Plan.docx',
-  'Design_Mockups.sketch',
-];
-const ProjectOverview = () => {
+interface ProjectOverviewProps {
+  project: CreatedProject;
+}
+
+
+// Icon mapping for tools
+const iconMap: Record<string, string> = {
+  // Communication tools
+  slack: '/images/slack.png',
+  discord: '/images/discord.png',
+  teams: '/images/teams.png',
+  // Version control
+  github: '/images/github.png',
+  gitlab: '/images/gitlab.png',
+  bitbucket: '/images/bitbucket.png',
+  // Project management
+  jira: '/images/jira.png',
+  asana: '/images/asana.png',
+  trello: '/images/trello.png',
+  clickup: '/images/clickup.png',
+  // Design tools
+  figma: '/images/figma.png',
+  sketch: '/images/sketch.png',
+  // Tech stacks
+  nodejs: '/images/nodejs.png',
+  react: '/images/react.png',
+  python: '/images/python.png',
+  javascript: '/images/javascript.png',
+  typescript: '/images/typescript.png',
+  html: '/images/html.png',
+  css: '/images/css.png',
+  java: '/images/java.png',
+  csharp: '/images/csharp.png',
+  php: '/images/php.png',
+  ruby: '/images/ruby.png',
+  go: '/images/go.png',
+  rust: '/images/rust.png',
+  swift: '/images/swift.png',
+  kotlin: '/images/kotlin.png',
+};
+
+const ProjectOverview = ({ project }: ProjectOverviewProps) => {
   const isMobile = useIsMobile();
   const pathname = usePathname();
+  const router = useRouter();
+  const params = useParams();
+
+  // Get project ID from URL params
+  const projectId = params?.id as string;
+
+  // Debug logging
+  console.log('🔍 ProjectOverview Debug:', {
+    params,
+    projectId,
+    pathname,
+  });
+
+  // Format date range
+  const formatDateRange = () => {
+    const startDate = new Date(project.start_date).toLocaleDateString('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
+    const endDate = new Date(project.end_date).toLocaleDateString('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
+    return `${startDate} - ${endDate}`;
+  };
+
+  // Get integrated apps
+  const getIntegratedApps = () => {
+    const apps = [];
+    if (project.pm_tool) {
+      apps.push({
+        imgSrc:
+          iconMap[project.pm_tool.toLowerCase()] || '/images/default-app.png',
+        stack: project.pm_tool,
+      });
+    }
+    if (project.vc_tool) {
+      apps.push({
+        imgSrc:
+          iconMap[project.vc_tool.toLowerCase()] || '/images/default-app.png',
+        stack: project.vc_tool,
+      });
+    }
+    if (project.comm_tool) {
+      apps.push({
+        imgSrc:
+          iconMap[project.comm_tool.toLowerCase()] || '/images/default-app.png',
+        stack: project.comm_tool,
+      });
+    }
+    return apps;
+  };
+
+  // Get tech stacks
+  const getTechStacks = () => {
+    return (project.stacks || []).map(stack => ({
+      imgSrc: iconMap[stack.toLowerCase()] || '/images/default-stack.png',
+      stack: stack,
+    }));
+  };
+
+  const integratedApps = getIntegratedApps();
+  const techStacks = getTechStacks();
+
+  // Placeholder for linked documents (you may need to fetch this from another endpoint)
+  const linkedDocs: string[] = [];
 
   return (
     <div className="flex h-screen gap-[32px]">
@@ -44,29 +141,16 @@ const ProjectOverview = () => {
               Description
             </h2>
             {pathname.includes('/organization') && (
-              <Button className="bg-[#086ACE] px-[24px] py-[16px] text-[14px] text-[#FFFFFA] hover:bg-[#086bcee0]">
+              <Button
+                onClick={() => router.push('/project-creation/Step1ProjectDetails')}
+                className="bg-blue-500 px-[24px] py-[16px] text-[14px] text-[#FFFFFA] hover:bg-[#086bcee0]"
+              >
                 Edit Project
               </Button>
             )}
           </div>
           <p className="text-[13px] leading-relaxed lg:text-[14px]">
-            Lorem ipsum dolor sit amet consectetur. Sed est vel id gravida orci
-            nascetur tincidunt amet. Vestibulum eu sagittis ac elementum nam
-            lacus. Nisi viverra dolor a tortor tellus. Netus blandit vitae
-            mattis lacus volutpat cursus. Non lobortis massa fringilla elit ut
-            fusce tincidunt quisque turpis. Sed aliquam arcu pellentesque augue
-            augue. Gravida purus eget sed vitae laoreet viverra. Nec feugiat
-            amet elementum etiam urna euismod.Sit proin risus amet sagittis
-            mattis pretium ultrices quam sapien. Volutpat nunc sem sed aliquet
-            elementum amet. Ut posuere sagittis integer laoreet luctus.
-            Suspendisse odio tellus at mauris tincidunt tempor gravida. Tellus
-            pretium ultricies ornare enim pretium curabitur sem. Congue gravida
-            at tortor est. Ut metus ipsum ac elementum. Consequat lorem semper
-            id in purus aenean massa luctus. Sit euismod nullam imperdiet non
-            vulputate aliquam. Sapien orci nisi sed pharetra sit scelerisque
-            sociis amet. Diam quis felis blandit mattis a amet in a nisi. Felis
-            porta at in sed. Amet vulputate sed et scelerisque mi sollicitudin
-            aliquam morbi. Adipiscing velit quis nibh sit
+            {project.description || 'No description provided for this project.'}
           </p>
         </div>
         <div>
@@ -74,30 +158,36 @@ const ProjectOverview = () => {
             Project Timeline
           </h2>
           <ProgresWithDate
-            date="1st May - 24th June 2025"
-            percentageProgress={8}
+            date={formatDateRange()}
+            percentageProgress={project.pct_complete}
           />
         </div>
-        <div>
-          <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
-            Required Stacks
-          </h2>
-          <IconList data={dummyStacks} />
-        </div>
-        <div>
-          <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
-            Integrated Apps
-          </h2>
-          <IconList data={dummyApps} />
-        </div>
-        <div>
-          <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
-            Linked Documents
-          </h2>
-          <LinkedDocs data={dummyLinkedDocs} />
-        </div>
-      </div>
 
+        {techStacks.length > 0 && (
+          <div>
+            <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
+              Required Stacks
+            </h2>
+            <IconList data={techStacks} />
+          </div>
+        )}
+        {integratedApps.length > 0 && (
+          <div>
+            <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
+              Integrated Apps
+            </h2>
+            <IconList data={integratedApps} />
+          </div>
+        )}
+        {linkedDocs.length > 0 && (
+          <div>
+            <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
+              Linked Documents
+            </h2>
+            <LinkedDocs data={linkedDocs} />
+          </div>
+        )}
+      </div>
       {/* Right hand side containing Ai summary */}
       {!isMobile && (
         <div className="flex w-[100%] flex-col gap-[13px] rounded-[8px] p-[24px] shadow-[-1px_2px_30px_0px_#0000000D] md:w-[382px] lg:w-[30%]">
