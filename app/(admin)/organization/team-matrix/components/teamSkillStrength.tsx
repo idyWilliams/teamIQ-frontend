@@ -228,7 +228,7 @@ export default function TeamSkillStrength() {
                   </svg>
                 </button>
                 {/* Header */}
-                <div className="mb-8 flex items-start gap-6">
+                <div className="mb-8 flex items-start gap-4">
                   <Image
                     src={selectedMember.avatar}
                     alt={`${selectedMember.name} profile picture`}
@@ -237,15 +237,15 @@ export default function TeamSkillStrength() {
                     className="h-24 w-24 rounded-full object-cover"
                   />
                   <div className="flex-1">
-                    <div className="mb-2 flex items-center gap-3">
+                    <div className="mb-1 flex items-center gap-3">
                       <h2 className="text-2xl font-bold text-gray-900">
                         {selectedMember.name}
                       </h2>
-                      <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
+                      <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-medium text-gray-700">
                         {selectedMember.status}
                       </span>
                     </div>
-                    <p className="mb-2 text-gray-600">{selectedMember.role}</p>
+                    <p className="mb-1 text-gray-600">{selectedMember.role}</p>
                     <div className="flex items-center gap-1">
                       <svg
                         className="h-5 w-5 text-yellow-400"
@@ -265,14 +265,14 @@ export default function TeamSkillStrength() {
                   {/* Left Column */}
                   <div>
                     {/* Contact Information */}
-                    <div className="mb-8">
-                      <h3 className="mb-4 text-lg font-semibold text-gray-900">
+                    <div className="mb-6 rounded-lg bg-[#F7F7F7] p-4">
+                      <h3 className="mb-3 text-lg font-semibold text-gray-900">
                         Contact Information
                       </h3>
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-3 text-gray-700">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-gray-700">
                           <svg
-                            className="h-5 w-5 flex-shrink-0"
+                            className="h-4 w-4 flex-shrink-0"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -288,9 +288,9 @@ export default function TeamSkillStrength() {
                             {selectedMember.email}
                           </span>
                         </div>
-                        <div className="flex items-center gap-3 text-gray-700">
+                        <div className="flex items-center gap-2 text-gray-700">
                           <svg
-                            className="h-5 w-5 flex-shrink-0"
+                            className="h-4 w-4 flex-shrink-0"
                             fill="currentColor"
                             viewBox="0 0 24 24"
                           >
@@ -303,7 +303,7 @@ export default function TeamSkillStrength() {
                       </div>
                     </div>
                     {/* Top Skill Rating */}
-                    <div>
+                    <div className="rounded-lg border-2 border-[#F7F7F7] p-4">
                       <h3 className="mb-4 text-lg font-semibold text-gray-900">
                         Top Skill Rating
                       </h3>
@@ -326,7 +326,7 @@ export default function TeamSkillStrength() {
                       </div>
                       <a
                         href="#"
-                        className="flex items-center gap-2 font-medium text-blue-600 hover:underline"
+                        className="text-decoration-line-through flex items-center gap-2 font-medium text-blue-600 hover:underline"
                       >
                         View in Github
                         <svg
@@ -349,7 +349,7 @@ export default function TeamSkillStrength() {
                   {/* Right Column */}
                   <div>
                     {/* Skills */}
-                    <div className="mb-6">
+                    <div className="mb-12">
                       <h3 className="mb-4 text-lg font-semibold text-gray-900">
                         Skill
                       </h3>
@@ -367,7 +367,7 @@ export default function TeamSkillStrength() {
 
                     {/* Specialties */}
                     <div className="mb-6">
-                      <h3 className="mb-4 text-lg font-semibold text-gray-900">
+                      <h3 className="mb-2 text-lg font-semibold text-gray-900">
                         Specialties
                       </h3>
                       <ul className="space-y-2">
@@ -384,7 +384,7 @@ export default function TeamSkillStrength() {
                     </div>
 
                     {/* Performance */}
-                    <div className="rounded-lg bg-gray-50 p-6">
+                    <div className="rounded-lg border-2 border-[#F7F7F7] p-4">
                       <h3 className="mb-4 text-lg font-semibold text-gray-900">
                         Performance
                       </h3>
