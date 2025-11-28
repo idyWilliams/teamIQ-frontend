@@ -1,17 +1,26 @@
-import React from 'react';
+
 import {
   useGetNotifications,
   useMarkAsRead,
 } from '@/services/hooks/useNotifications';
 
-const RightSideBar = () => {
-  const { data: notifications, isLoading } = useGetNotifications();
+const Notification = () => {
+  const {
+    data: notifications,
+    isLoading,
+    isError,
+    error,
+  } = useGetNotifications();
   const { mutate: readNotification } = useMarkAsRead();
+
+  if (isError) {
+    console.log('Error while fetching', error);
+  }
 
   if (isLoading) return <p className="p-2 text-center text-xl">Loading...</p>;
 
   return (
-    <aside className="w-ful hidden h-full rounded-md border p-4 md:block">
+    <div className="h-full w-full overflow-y-auto p-4">
       <h2 className="text-center text-xl">Notifications</h2>
 
       {notifications?.length === 0 ? (
@@ -40,8 +49,8 @@ const RightSideBar = () => {
           </div>
         ))
       )}
-    </aside>
+    </div>
   );
 };
 
-export default RightSideBar;
+export default Notification;
