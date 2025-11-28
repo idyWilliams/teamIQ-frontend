@@ -326,7 +326,7 @@ export default function TeamSkillStrength() {
                       </div>
                       <a
                         href="#"
-                        className="text-decoration-line-through flex items-center gap-2 font-medium text-blue-600 hover:underline"
+                        className="text-decoration-line-through flex justify-center items-center gap-2 font-medium text-blue-600 hover:underline"
                       >
                         View in Github
                         <svg
