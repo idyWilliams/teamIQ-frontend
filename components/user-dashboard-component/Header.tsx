@@ -8,12 +8,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
 
 type HeaderProps = {
+    toggleNotification: () => void;
   onOpenNotification: () => void;
   isOpen: boolean;
   setIsOpen: React.Dispatch<SetStateAction<boolean>>;
 };
 
-const Header = ({ onOpenNotification, isOpen, setIsOpen }: HeaderProps) => {
+const Header = ({toggleNotification, onOpenNotification, isOpen, setIsOpen }: HeaderProps) => {
   const { user } = useAuthStore();
   return (
     <header className="flex items-center justify-between">
@@ -79,7 +80,9 @@ const Header = ({ onOpenNotification, isOpen, setIsOpen }: HeaderProps) => {
               className="w-[348px] pl-10 text-[#393939] placeholder:text-[#bac0cc] focus:ring-0"
             />
           </div>
-          <Bell className="h-6 w-6 cursor-pointer text-[#86898c]" />
+          <button onClick={toggleNotification}>
+            <Bell className="h-6 w-6 cursor-pointer text-[#86898c]" />
+          </button>
         </div>
       </div>
     </header>
