@@ -41,10 +41,10 @@ const performanceData = [
 
 export default function OrgTeamOverviewTab() {
   return (
-    <div className="grid w-full grid-cols-[2fr_1fr] gap-4 p-6">
-      <div className="space-y-4">
+    <div className="flex max-w-full gap-6 py-6">
+      <div className="space-y-4 flex-2 h-full">
         {/* Total Project Task Card */}
-        <Card className="w-full shadow-sm">
+        <Card className="w-full shadow-none">
           <CardHeader>
             <CardTitle>Total Project Task</CardTitle>
           </CardHeader>
@@ -96,7 +96,7 @@ export default function OrgTeamOverviewTab() {
                     return (
                       <div
                         key={index}
-                        className="flex w-full items-center justify-between gap-8"
+                        className="flex max-w-full items-center justify-between gap-8"
                       >
                         <div className="flex items-center gap-3">
                           <div className="h-2 w-32 overflow-hidden rounded-full bg-gray-200">
@@ -125,12 +125,12 @@ export default function OrgTeamOverviewTab() {
         </Card>
 
         {/* Team Performance Card */}
-        <Card className="w-full shadow-sm">
+        <Card className="mx-w-full shadow-none">
           <CardContent className="p-6">
             <h3 className="mb-6 text-sm font-medium text-gray-600">
               Team Performance
             </h3>
-            <div className="h-72 w-full">
+            <div className="h-72 max-w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={performanceData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -173,8 +173,9 @@ export default function OrgTeamOverviewTab() {
           </CardContent>
         </Card>
       </div>
-
-      <Tracks />
+      <div className='flex-1 h-full'>
+        <Tracks />
+      </div>
     </div>
   );
 }

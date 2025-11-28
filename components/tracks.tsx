@@ -48,7 +48,7 @@ function Tracks() {
   return (
     <>
       {/* This component is not positioned well on the page. Position it accordingly once imported */}
-      <div className="w-full rounded-xl border border-gray-100 bg-white p-4">
+      <div className="max-w-full rounded-xl border border-gray-100 bg-white p-4 h-full">
         <h2 className="mb-4 text-lg font-semibold text-gray-900">Tracks</h2>
         <div className="flex flex-col gap-6">
           {allTracks.map(track => (

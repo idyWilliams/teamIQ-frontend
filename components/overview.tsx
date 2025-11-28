@@ -4,12 +4,14 @@ import CardItem from './cardItem';
 import ChartLineDefault from './chart-line';
 import ActiveBlockers from './active-blockers';
 import { WaveProgressCard } from './wave-progress';
-import { dashboardCards, activeBlockers, progressData } from '@/constants';
+import { activeBlockers, progressData } from '@/constants';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import OrganizationalDetails from './org-onboarding-comps/organizationalOnboarding';
 import OnboardingSuccess from './org-onboarding-comps/onboardingSuccess';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useOrganizationUsers } from '@/services/hooks/useUsers';
+import { useProjects } from '@/services/hooks/useProjectGet';
 
 const DashboardOverview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,7 +19,39 @@ const DashboardOverview = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   // for mobile carousel
   const [activeIndex, setActiveIndex] = useState(0);
+  
   const { user } = useAuthStore();
+  const { data: users, isLoading, error } = useOrganizationUsers();
+  const { data: apiProjects } = useProjects();
+
+  // Dynamic dashboard cards based on real data
+  const dashboardCards = [
+    { 
+      title: "Team Members", 
+      avatarUrl: "images/team-member.svg", 
+      content: users ? `${users.length}` : "0"
+    },
+    { 
+      title: "Active Projects", 
+      avatarUrl: "images/active-task.svg", 
+      content: apiProjects ? `${apiProjects.length}` : "0"  
+    },
+    {
+      title: "Completed Project",
+      avatarUrl: "images/completed-task.svg",
+      content: apiProjects ? `${apiProjects.length}` : "0"  
+    },
+    {
+      title: "Pending Project",
+      avatarUrl: "images/pending-task.svg",
+      content: apiProjects ? `${apiProjects.length}` : "0" 
+    },
+    { 
+      title: "Unassigned Task", 
+      avatarUrl: "images/pending-task.svg", 
+      content: "5" 
+    },
+  ];
 
   const handleComplete = () => {
     setShowSuccessModal(false);
@@ -47,8 +81,28 @@ const DashboardOverview = () => {
     return () => container.removeEventListener('scroll', onScroll);
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="space-y-6 py-4">
+        <div className="flex min-h-[200px] items-center justify-center">
+          <div className="text-gray-600">Loading dashboard...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6 py-4">
+        <div className="flex min-h-[200px] items-center justify-center">
+          <div className="text-red-600">Error loading dashboard data</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6 py-4">
       <div>
         {/* 🟨 Card */}
         {showCard && (

@@ -18,12 +18,12 @@ export type SidebarLinkType = {
 export const sidebarLinks: SidebarLinkType[] = [
   {
     label: 'Dashboard',
-    icon: <BookUser />,
+    icon: <BookUser width={20} height={20}/>,
     url: '/member',
   },
   {
     label: 'Projects',
-    icon: <FolderOpenDot />,
+    icon: <FolderOpenDot width={20} height={20} />,
     url: '/member/projects',
     dynamicChildren: (projectId: string) => [
       {
@@ -39,14 +39,14 @@ export const sidebarLinks: SidebarLinkType[] = [
   },
   {
     label: 'Tasks',
-    icon: <UsersRound />,
+    icon: <UsersRound width={20} height={20} />,
     url: '/member/tasks',
   },
 
-  { label: 'My Skills', icon: <Sparkles />, url: '/member/my-skills' },
+  { label: 'My Skills', icon: <Sparkles width={20} height={20} />, url: '/member/my-skills' },
   {
     label: 'Settings',
-    icon: <Settings />,
+    icon: <Settings width={20} height={20} />,
     url: '/member/settings',
     children: [
       { label: 'My Details', url: '/member/settings?tab=my-details' },
