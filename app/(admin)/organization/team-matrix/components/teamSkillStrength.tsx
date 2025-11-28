@@ -318,7 +318,7 @@ export default function TeamSkillStrength() {
                                 {skill.rating}%
                               </div>
                             </div>
-                            <span className="w-20 text-right text-sm font-medium text-gray-900">
+                            <span className="w-20 text-right text-sm font-semibold text-gray-900">
                               {skill.name}
                             </span>
                           </div>
@@ -326,7 +326,7 @@ export default function TeamSkillStrength() {
                       </div>
                       <a
                         href="#"
-                        className="text-decoration-line-through flex justify-center items-center gap-2 font-medium text-blue-600 hover:underline"
+                        className="text-decoration-line-through flex items-center justify-center gap-2 font-medium text-blue-600 hover:underline"
                       >
                         View in Github
                         <svg
