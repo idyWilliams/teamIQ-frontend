@@ -23,49 +23,30 @@ import { users } from '@/services/api';
 
 // ✅ Yup validation schema
 const schema = yup.object({
-  track: yup.string().required('Track is required'),
+  track: yup
+    .string()
+    .required('Track is required')
+    .oneOf(
+      ['Frontend Developer', 'Backend Developer', 'QA Tester'],
+      'Invalid track'
+    ),
+
   stack: yup
-    .mixed()
+    .string()
     .required('Stack is required')
-    .test('minLength', 'Stack must be at least 2 characters', (value: any) => {
-      if (!value) return false;
-      return String(value).length >= 2;
-    })
-    .test('stackArray', 'Stacks must be separated by comma', (value: any) => {
-      if (!value) return false;
-      const stacks = String(value)
-        .split(',')
-        .map((t: any) => t.trim())
-        .filter((t: any) => t.length > 0);
-      return stacks.length > 0;
-    })
-    .transform((value: any) => {
-      if (!value) return [];
-      return String(value)
-        .split(',')
-        .map((t: any) => t.trim())
-        .filter((t: any) => t.length > 0);
-    }),
-  profile: yup
-    .mixed<File>()
-    .nullable()
-    .notRequired() // ✅ makes image optional
-    .test('fileType', 'Only image files are allowed', value => {
-      if (!value) return true; // Skip if no image
-      return (
-        typeof value === 'object' &&
-        ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'].includes(
-          value.type
-        )
-      );
-    }),
+    .test(
+      'valid-stacks',
+      'Each stack must be at least 2 characters and contain only letters, numbers',
+      value => {
+        if (!value) return false;
+        const stacks = value.split(',').map(s => s.trim());
+        return stacks.every(s => /^[a-zA-Z0-9+#.\-]{2,}$/.test(s));
+      }
+    ),
+  // profile: yup.mixed<File>().optional().nullable(),
 });
 
-type FormData = {
-  track: string;
-  stack: string[];
-  profile?: File | null;
-};
+type FormData = yup.InferType<typeof schema>;
 
 export default function AccountSetup() {
   const { user, updateUser } = useAuthStore();
@@ -78,10 +59,16 @@ export default function AccountSetup() {
     register,
     handleSubmit,
     setValue,
-    formState: { errors },
     reset,
-  } = useForm<any>({
-    resolver: yupResolver(schema as any),
+    formState: { errors, isValid },
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+    defaultValues: {
+      track: '',
+      stack: '',
+      // profile: null, 
+    },
   });
 
   const handleFileUpload = (e: any) => {
@@ -89,7 +76,7 @@ export default function AccountSetup() {
     if (!file) return;
 
     setPreview(URL.createObjectURL(file));
-    setValue('profile', file);
+    // setValue('profile', file);
   };
 
   const onSubmit = async (data: FormData | any) => {
@@ -142,6 +129,7 @@ export default function AccountSetup() {
       reset({
         track: user?.track || '',
         stack: user?.stacks?.join(', ') || '',
+        // profile: null,
       });
     }
   }, [reset, user]);
@@ -253,17 +241,10 @@ export default function AccountSetup() {
         {/* Submit button with loading spinner */}
         <Button
           type="submit"
-          disabled={loading}
-          className="mt-6 flex h-auto w-full items-center justify-center gap-2 rounded-md bg-[#086ACE] py-3 text-white hover:bg-[#086bcec0]"
+          disabled={!isValid} // disable if form is invalid
+          className={`mt-6 h-auto w-full rounded-md bg-[#086ACE] py-3 text-white hover:cursor-pointer hover:bg-[#086bcec0] md:mt-8 ${!isValid ? 'cursor-not-allowed opacity-50' : ''}`}
         >
-          {loading ? (
-            <>
-              <Loader2 className="h-5 w-5 animate-spin" />
-              Submitting...
-            </>
-          ) : (
-            'Submit'
-          )}
+          Submit
         </Button>
       </form>
     </section>
