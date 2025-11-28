@@ -25,23 +25,26 @@ import { users } from '@/services/api';
 const schema = yup.object({
   track: yup
     .string()
-    .required("Track is required")
-    .oneOf(["Frontend Developer", "Backend Developer", "QA Tester"], "Invalid track"),
-  
+    .required('Track is required')
+    .oneOf(
+      ['Frontend Developer', 'Backend Developer', 'QA Tester'],
+      'Invalid track'
+    ),
+
   stack: yup
     .string()
-    .required("Stack is required")
+    .required('Stack is required')
     .test(
-      "valid-stacks",
-      "Each stack must be at least 2 characters and contain only letters, numbers",
-      (value) => {
+      'valid-stacks',
+      'Each stack must be at least 2 characters and contain only letters, numbers',
+      value => {
         if (!value) return false;
-        const stacks = value.split(",").map((s) => s.trim());
-        return stacks.every((s) => /^[a-zA-Z0-9+#.\-]{2,}$/.test(s));
+        const stacks = value.split(',').map(s => s.trim());
+        return stacks.every(s => /^[a-zA-Z0-9+#.\-]{2,}$/.test(s));
       }
     ),
+  // profile: yup.mixed<File>().optional().nullable(),
 });
-
 
 type FormData = yup.InferType<typeof schema>;
 
@@ -56,10 +59,16 @@ export default function AccountSetup() {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors, isValid },
   } = useForm<FormData>({
     resolver: yupResolver(schema),
-     mode: "onChange",
+    mode: 'onChange',
+    defaultValues: {
+      track: '',
+      stack: '',
+      // profile: null, 
+    },
   });
 
   const handleFileUpload = (e: any) => {
@@ -67,7 +76,7 @@ export default function AccountSetup() {
     if (!file) return;
 
     setPreview(URL.createObjectURL(file));
-    setValue('profile', file);
+    // setValue('profile', file);
   };
 
   const onSubmit = async (data: FormData | any) => {
@@ -120,6 +129,7 @@ export default function AccountSetup() {
       reset({
         track: user?.track || '',
         stack: user?.stacks?.join(', ') || '',
+        // profile: null,
       });
     }
   }, [reset, user]);
@@ -230,13 +240,12 @@ export default function AccountSetup() {
 
         {/* Submit button with loading spinner */}
         <Button
-  type="submit"
-  disabled={!isValid} // disable if form is invalid
-  className={`bg-[#086ACE] hover:bg-[#086bcec0] hover:cursor-pointer text-white mt-6 md:mt-8 w-full py-3 h-auto rounded-md 
-    ${!isValid ? "opacity-50 cursor-not-allowed" : ""}`}
->
-  Submit
-</Button>
+          type="submit"
+          disabled={!isValid} // disable if form is invalid
+          className={`mt-6 h-auto w-full rounded-md bg-[#086ACE] py-3 text-white hover:cursor-pointer hover:bg-[#086bcec0] md:mt-8 ${!isValid ? 'cursor-not-allowed opacity-50' : ''}`}
+        >
+          Submit
+        </Button>
       </form>
     </section>
   );
