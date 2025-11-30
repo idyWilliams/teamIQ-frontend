@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { CreatedProject, useProject } from '@/services/hooks/useProjectGet';
+import { CreatedProject } from '@/services/hooks/useProjectGet';
 import ProgresWithDate from './progres-with-date';
 import IconList from './ui/icon-list';
 import LinkedDocs from './linked-docs';
@@ -14,7 +14,6 @@ import Image from 'next/image';
 interface ProjectOverviewProps {
   project: CreatedProject;
 }
-
 
 // Icon mapping for tools
 const iconMap: Record<string, string> = {
@@ -56,17 +55,9 @@ const ProjectOverview = ({ project }: ProjectOverviewProps) => {
   const isMobile = useIsMobile();
   const pathname = usePathname();
   const router = useRouter();
-  const params = useParams();
+  // const params = useParams();
 
-  // Get project ID from URL params
-  const projectId = params?.id as string;
-
-  // Debug logging
-  console.log('🔍 ProjectOverview Debug:', {
-    params,
-    projectId,
-    pathname,
-  });
+ 
 
   // Format date range
   const formatDateRange = () => {
@@ -125,9 +116,9 @@ const ProjectOverview = ({ project }: ProjectOverviewProps) => {
   const linkedDocs: string[] = [];
 
   return (
-    <div className="flex h-screen gap-[32px]">
+    <div className="flex h-screen gap-8">
       {/* Left hand side containing Descriptions and documents*/}
-      <div className="flex w-[100%] flex-col gap-[32px] overflow-scroll [scrollbar-width:none] md:w-[793px] lg:w-[70%] [&::-webkit-scrollbar]:hidden">
+      <div className="flex w-full flex-col gap-[32px] overflow-scroll [scrollbar-width:none] md:w-[793px] lg:w-[70%] [&::-webkit-scrollbar]:hidden">
         {isMobile && (
           <div>
             <AiSummary />
@@ -137,13 +128,13 @@ const ProjectOverview = ({ project }: ProjectOverviewProps) => {
         <div>
           <div className="mb-2 flex items-center justify-between">
             {' '}
-            <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
+            <h2 className="mb-3 text-[14px] font-bold lg:text-[16px]">
               Description
             </h2>
             {pathname.includes('/organization') && (
               <Button
-                onClick={() => router.push('/project-creation/Step1ProjectDetails')}
-                className="bg-blue-500 px-[24px] py-[16px] text-[14px] text-[#FFFFFA] hover:bg-[#086bcee0]"
+                onClick={() => router.push('/organization/projects/create')}
+                className="bg-blue-500 px-6 py-4 text-[14px] text-[#FFFFFA] hover:bg-[#086bcee0]"
               >
                 Edit Project
               </Button>
@@ -154,7 +145,7 @@ const ProjectOverview = ({ project }: ProjectOverviewProps) => {
           </p>
         </div>
         <div>
-          <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
+          <h2 className="mb-3 text-[14px] font-bold lg:text-[16px]">
             Project Timeline
           </h2>
           <ProgresWithDate
@@ -165,7 +156,7 @@ const ProjectOverview = ({ project }: ProjectOverviewProps) => {
 
         {techStacks.length > 0 && (
           <div>
-            <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
+            <h2 className="mb-3 text-[14px] font-bold lg:text-[16px]">
               Required Stacks
             </h2>
             <IconList data={techStacks} />
@@ -173,7 +164,7 @@ const ProjectOverview = ({ project }: ProjectOverviewProps) => {
         )}
         {integratedApps.length > 0 && (
           <div>
-            <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
+            <h2 className="mb-3 text-[14px] font-bold lg:text-[16px]">
               Integrated Apps
             </h2>
             <IconList data={integratedApps} />
@@ -181,7 +172,7 @@ const ProjectOverview = ({ project }: ProjectOverviewProps) => {
         )}
         {linkedDocs.length > 0 && (
           <div>
-            <h2 className="mb-[12px] text-[14px] font-bold lg:text-[16px]">
+            <h2 className="mb-3 text-[14px] font-bold lg:text-[16px]">
               Linked Documents
             </h2>
             <LinkedDocs data={linkedDocs} />
@@ -190,7 +181,7 @@ const ProjectOverview = ({ project }: ProjectOverviewProps) => {
       </div>
       {/* Right hand side containing Ai summary */}
       {!isMobile && (
-        <div className="flex w-[100%] flex-col gap-[13px] rounded-[8px] p-[24px] shadow-[-1px_2px_30px_0px_#0000000D] md:w-[382px] lg:w-[30%]">
+        <div className="flex w-full flex-col gap-[13px] rounded-xl p-6 shadow-[-1px_2px_30px_0px_#0000000D] md:w-[382px] lg:w-[30%]">
           <div className="flex items-center">
             <span className="icon-[fluent--sparkle-48-filled] size-5"></span>
             <h2 className="text-[18px] font-bold">AI summary</h2>

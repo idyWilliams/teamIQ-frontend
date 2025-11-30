@@ -26,6 +26,7 @@ function ProjectDetails() {
 
   // Fetch project data at parent level
   const { data: project, isLoading, error } = useProject(projectId);
+  console.log("data", project);
 
   // Loading state
   if (isLoading) {
