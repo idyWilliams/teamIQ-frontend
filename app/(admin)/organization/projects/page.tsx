@@ -384,7 +384,8 @@ export default function ProjectsPage() {
         <div className="py-12 text-center">
           <div className="mb-4 text-lg text-gray-500">No projects found</div>
           <Button
-            onClick={() => setIsModalOpen(true)}
+            // onClick={() => setIsModalOpen(true)}
+                   onClick={() => router.push('/organization/projects/create')}
             className="mx-auto flex items-center gap-2"
           >
             <Plus size={18} /> Create Your First Project

@@ -54,6 +54,8 @@ export default function SettingIntegratedApp() {
     router.push('/organization/settings/market-place');
   };
 
+  console.log(filteredConnections, "filteredConnections")
+
   if (loading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">

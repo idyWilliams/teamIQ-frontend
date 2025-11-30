@@ -4,9 +4,11 @@ import React, {
   createContext,
   useContext,
   useCallback,
+  useMemo,
 } from 'react';
 import { Apps, Connection, IntegrationContextType } from '@/types/integrations';
 import { useGetIntegrations, useDeleteIntegration, useSyncIntegration } from '@/services/hooks/useIntegrations';
+import { getProviderConfig } from '@/lib/providerConfig';
 
 const IntegrationContext = createContext<IntegrationContextType | undefined>(
   undefined
@@ -21,9 +23,28 @@ export function IntegrationProvider({
   children,
   organizationId,
 }: IntegrationProviderProps) {
-  const { data: connections = [], isLoading: loading, refetch } = useGetIntegrations(organizationId);
+  const { data: rawConnections = [], isLoading: loading, refetch } = useGetIntegrations(organizationId);
   const { mutateAsync: removeConnectionMutation } = useDeleteIntegration();
   const { mutateAsync: syncConnectionMutation } = useSyncIntegration();
+
+  // Transform backend connections to include provider config (logo, name, etc.)
+  const connections = useMemo(() => {
+    return rawConnections.map((conn: any) => {
+      const providerConfig = getProviderConfig(conn.provider);
+
+      return {
+        id: conn.id.toString(),
+        provider: conn.provider,
+        appName: providerConfig.name,
+        logo: providerConfig.logo,
+        displayName: `${providerConfig.name} - ${conn.account_id}`,
+        providerAccountName: conn.account_id || 'Unknown Account',
+        providerAccountEmail: conn.account_email || '',
+        isActive: conn.is_active,
+        lastSyncedAt: conn.updated_at || conn.created_at,
+      } as Connection;
+    });
+  }, [rawConnections]);
 
   // Wrap mutations to match the expected interface
   const removeConnection = useCallback(
