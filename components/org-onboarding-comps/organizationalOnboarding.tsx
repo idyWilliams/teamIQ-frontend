@@ -50,12 +50,16 @@ const validationSchema = yup.object({
     .optional()
     .matches(/^[A-Za-z\s]*$/, 'Only letters are allowed'),
   social_media_handles: yup.object().shape({
-    additionalProp1: yup.string().trim(),
-    additionalProp2: yup.string().trim(),
-    additionalProp3: yup.string().trim(),
+    additionalProp1: yup.string().trim().matches(urlRegex, 'Invalid URL'),
+    additionalProp2: yup.string().trim().matches(urlRegex, 'Invalid URL'),
+    additionalProp3: yup.string().trim().matches(urlRegex, 'Invalid URL'),
   }),
   website: yup.string().trim(),
-  phone_number: yup.string().trim(),
+  phone_number: yup
+    .string()
+    .trim()
+    .optional()
+    .matches(phoneRegex, 'Invalid phone number'),
   favourite_tools: yup
     .string()
     .trim()
@@ -116,7 +120,7 @@ const OrganizationalDetails = ({
     formState: { errors },
   } = useForm<OrganizationForm>({
     resolver: yupResolver(validationSchema) as any,
-    mode: 'onBlur',
+    mode: 'onChange',
     reValidateMode: 'onChange',
     defaultValues: {
       organization_name: '',
@@ -366,7 +370,12 @@ const OrganizationalDetails = ({
             placeholder="e.g (319) 555-0115"
             className={styleInput}
             {...register('phone_number')}
-          />
+          />{' '}
+          {errors.phone_number && (
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
+              {errors.phone_number.message}
+            </span>
+          )}
         </div>
 
         <div>
