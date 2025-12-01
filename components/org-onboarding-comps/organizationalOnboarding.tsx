@@ -18,20 +18,37 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { users } from '@/services/api';
 import { DialogTitle } from '@radix-ui/react-dialog';
 
+// Regex
+const nameRegex = /^[A-Z][a-zA-Z]*(?: [A-Z][a-zA-Z]*)*$/;
+const domainRegex = /^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/;
+const urlRegex = /^https?:\/\/.+/;
+const phoneRegex = /^(\+?\d{10,15})$/;
+
 // Validation schema using Yup
 
 const validationSchema = yup.object({
   organization_name: yup
     .string()
-    .trim()
     .required('Organization name is required')
-    .min(3, 'Organization name must be at least 3 characters')
-    .max(20, 'Organization name must not exceed 20 characters')
-    .matches(/^[a-zA-Z ]+$/, 'Only letters are allowed'),
-
-  description: yup.string().trim().required('Description  is required'),
-  domain_link: yup.string().trim().required('Website link  is required'),
-  sector: yup.string().trim(),
+    .trim()
+    .min(3, 'Minimum 3 characters')
+    .max(20, 'Maximum 20 characters')
+    .matches(nameRegex, 'Each word must start with a capital letter'),
+  description: yup
+    .string()
+    .trim()
+    .required('Description is required')
+    .min(10, 'Minimum 10 characters'),
+  domain_link: yup
+    .string()
+    .trim()
+    .required('Domain link is required')
+    .matches(domainRegex, 'Enter a valid domain like example.com'),
+  sector: yup
+    .string()
+    .trim()
+    .optional()
+    .matches(/^[A-Za-z\s]*$/, 'Only letters are allowed'),
   social_media_handles: yup.object().shape({
     additionalProp1: yup.string().trim(),
     additionalProp2: yup.string().trim(),
@@ -39,20 +56,24 @@ const validationSchema = yup.object({
   }),
   website: yup.string().trim(),
   phone_number: yup.string().trim(),
-  favourite_tools: yup.string().trim(),
-  organization_image:yup
-      .mixed()
-      .test('fileType', 'Only image files are allowed', (value: any) => {
-        console.log(value, 'FOR VAD', typeof value);
-  
-        return (
-          value &&
-          typeof value === 'object' &&
-          ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'].includes(
-            value.type
-          )
-        );
-      }),
+  favourite_tools: yup
+    .string()
+    .trim()
+    .optional()
+    .matches(/^[A-Za-z,\s]*$/, 'Only letters and commas allowed'),
+  organization_image: yup
+    .mixed()
+    .required('Organization image is required')
+    .test('fileType', 'Only image files allowed', (value: any) => {
+      if (!value?.[0]) return false;
+      const allowedTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/jpg',
+        'image/webp',
+      ];
+      return allowedTypes.includes(value[0].type);
+    }),
 });
 
 type OrganizationForm = yup.InferType<typeof validationSchema>;
@@ -62,11 +83,12 @@ interface organizationalDetailsprops {
 }
 
 // Organizational Details Component
-const OrganizationalDetails = ({ onClose, onSuccess }: organizationalDetailsprops) => {
-
-    const [loading, setLoading] = useState(false);
-     const { user, updateUser } = useAuthStore();
-
+const OrganizationalDetails = ({
+  onClose,
+  onSuccess,
+}: organizationalDetailsprops) => {
+  const [loading, setLoading] = useState(false);
+  const { user, updateUser } = useAuthStore();
 
   const [preview, setPreview] = useState<string | null>('');
   const imgUploadRef = useRef<HTMLInputElement | null>(null);
@@ -83,10 +105,7 @@ const OrganizationalDetails = ({ onClose, onSuccess }: organizationalDetailsprop
       setValue('organization_image', e.target.files[0] as any);
   }
 
-
   // Modal state for success modal
-
- 
 
   // React Hook Form setup
 
@@ -118,9 +137,6 @@ const OrganizationalDetails = ({ onClose, onSuccess }: organizationalDetailsprop
   const onboarding = useOnboardingComplete();
 
   const submit = async (data: OrganizationForm | any) => {
-
-
-
     try {
       setLoading(true);
 
@@ -133,7 +149,6 @@ const OrganizationalDetails = ({ onClose, onSuccess }: organizationalDetailsprop
       const uploadResponse = await axiosInstance.post('/image', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-
 
       const imageUrl = uploadResponse?.data?.data?.url; // depends on backend response shape
 
@@ -155,19 +170,18 @@ const OrganizationalDetails = ({ onClose, onSuccess }: organizationalDetailsprop
         },
       };
 
-
       // 3️⃣
       onboarding.mutate(final, {
-      onSuccess: () => {
-        toast.success('Onboarding completed successfully!');
-         onSuccess?.();
-      },
-      onError: (error: any) => {
-        toast.error(
-          error?.response?.data?.message || 'Failed to complete onboarding.'
-        );
-      },
-    }); 
+        onSuccess: () => {
+          toast.success('Onboarding completed successfully!');
+          onSuccess?.();
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || 'Failed to complete onboarding.'
+          );
+        },
+      });
     } catch (error: any) {
       console.error(' update failed:', error);
       alert('❌ Failed to update. Try again.');
@@ -380,7 +394,6 @@ const OrganizationalDetails = ({ onClose, onSuccess }: organizationalDetailsprop
           </Button>
         </div>
       </form>
-    
     </div>
   );
 };
