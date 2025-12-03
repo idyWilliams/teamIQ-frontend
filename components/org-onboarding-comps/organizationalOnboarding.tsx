@@ -20,6 +20,8 @@ import { DialogTitle } from '@radix-ui/react-dialog';
 
 // Regex
 const nameRegex = /^[A-Z][a-zA-Z]*(?: [A-Z][a-zA-Z]*)*$/;
+const sectorRegex = /^[A-Za-z\s]+$/;
+const DescripRegex = /^[A-Z].*/;
 const domainRegex = /^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/;
 const urlRegex = /^https?:\/\/.+/;
 const phoneRegex = /^(\+?\d{10,15})$/;
@@ -32,29 +34,31 @@ const validationSchema = yup.object({
     .required('Organization name is required')
     .trim()
     .min(3, 'Minimum 3 characters')
-    .max(20, 'Maximum 20 characters')
+    .max(40, 'Maximum 20 characters')
     .matches(nameRegex, 'Each word must start with a capital letter'),
   description: yup
     .string()
     .trim()
     .required('Description is required')
-    .min(10, 'Minimum 10 characters'),
+    .min(10, 'Minimum 10 characters')
+    .matches(DescripRegex, 'Description must start with a capital letter'),
   domain_link: yup
     .string()
     .trim()
+    .url()
     .required('Domain link is required')
     .matches(domainRegex, 'Enter a valid domain like example.com'),
   sector: yup
     .string()
     .trim()
     .optional()
-    .matches(/^[A-Za-z\s]*$/, 'Only letters are allowed'),
+    .matches(sectorRegex, 'Only letters and spaces allowed'),
   social_media_handles: yup.object().shape({
     additionalProp1: yup.string().trim().matches(urlRegex, 'Invalid URL'),
     additionalProp2: yup.string().trim().matches(urlRegex, 'Invalid URL'),
     additionalProp3: yup.string().trim().matches(urlRegex, 'Invalid URL'),
   }),
-  website: yup.string().trim(),
+  website: yup.string().trim().url(),
   phone_number: yup
     .string()
     .trim()
