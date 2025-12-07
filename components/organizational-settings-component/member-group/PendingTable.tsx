@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useResendInvite } from '@/services/hooks/useInviteUser';
 import { useRevokeInvite } from '@/services/hooks/useInviteUser';
-import { pendingData } from '../../../utils/data';
+// import { pendingData } from '../../../utils/data';
 import { toast } from 'sonner';
 import {
   Table,

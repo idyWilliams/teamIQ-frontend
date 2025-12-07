@@ -1,7 +1,6 @@
 export interface TeamMember {
   name: string;
   id: number;
-  tasks: string | [];
   lastSeen: string;
   avatar?: string;
   role?: string;

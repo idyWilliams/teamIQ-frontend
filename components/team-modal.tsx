@@ -13,7 +13,7 @@ import {
   DialogDescription,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { teamMembers, TeamMember } from '@/constants';
+import {  TeamMember } from '@/constants';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {

@@ -37,7 +37,6 @@ const mapApiUserToTeamMember = (user: ApiUser): MappedTeamMember => ({
   name: `${user.first_name} ${user.last_name}`.trim(),
   email: user.email || '',
   role: user.role,
-  tasks: `${user.role} • Active`,
   lastSeen: user.last_seen
     ? `on ${new Date(user.last_seen).toLocaleDateString()}`
     : 'recently',
@@ -145,7 +144,7 @@ export default function TeamPage() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 ">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
               {teamMembers.map(member => (
                 <div
                   className="w-full"
@@ -154,7 +153,7 @@ export default function TeamPage() {
                 >
                   <OrganizationMemberCard
                     name={member.name}
-                    tasks={member.tasks}
+                    role={member.role?? ""}
                     lastSeen={member.lastSeen}
                     avatar={member.avatar}
                   />
