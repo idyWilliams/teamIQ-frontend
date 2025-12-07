@@ -2,7 +2,7 @@ export interface TeamMember {
   name: string;
   id: number;
   lastSeen: string;
-  avatar?: string;
+  profile_picture?: string;
   role?: string;
   rating?: number;
   status?: string;

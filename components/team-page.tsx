@@ -40,7 +40,7 @@ const mapApiUserToTeamMember = (user: ApiUser): MappedTeamMember => ({
   lastSeen: user.last_seen
     ? `on ${new Date(user.last_seen).toLocaleDateString()}`
     : 'recently',
-  avatar: user.profile_image || undefined,
+  avatar: user.profile_picture || undefined,
 });
 
 export default function TeamPage() {
@@ -56,6 +56,7 @@ export default function TeamPage() {
     if (users) {
       const transformedMembers = users.map(mapApiUserToTeamMember);
       setTeamMembers(transformedMembers);
+      console.log('Wangui Team Members', teamMembers);
     }
   }, [users]);
 
@@ -153,7 +154,7 @@ export default function TeamPage() {
                 >
                   <OrganizationMemberCard
                     name={member.name}
-                    role={member.role?? ""}
+                    role={member.role ?? ''}
                     lastSeen={member.lastSeen}
                     avatar={member.avatar}
                   />
