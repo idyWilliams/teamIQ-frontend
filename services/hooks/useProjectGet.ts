@@ -2,6 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '@/services/axios';
 import { users as usersApi } from '@/services/api';
+import { TeamMember } from '@/constants';
 
 export interface Project {
   id: number;
@@ -24,7 +25,7 @@ export interface Project {
 }
 
 // Members of the organization
-export interface Member {
+export interface Member extends TeamMember {
   id: number;
   first_name: string;
   last_name: string;

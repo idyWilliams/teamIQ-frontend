@@ -10,7 +10,6 @@ import {
   flexRender,
   createColumnHelper,
 } from '@tanstack/react-table';
-
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Calendar, Circle, Plus, Loader, AlertCircle } from 'lucide-react';
@@ -21,6 +20,7 @@ import {
 } from '@/services/hooks/useProjectGet';
 import StepperModal from './components/stepper-components/steps/stepper-modal';
 import { useRouter } from 'next/navigation';
+
 
 /* ----------------------------------------------------------------------
    🧩 IMAGE WRAPPER COMPONENT

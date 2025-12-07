@@ -26,6 +26,7 @@ const api = {
     signup: '/organizations/signup',
     onboardingComplete: '/organizations/onboarding-complete',
     profile: '/organizations/me/profile',
+    teamMembers: '/organizations/members',
   },
 
   userInvitation: {
@@ -44,6 +45,7 @@ const api = {
     list: '/projects/',
     create: '/projects/create',
     byId: (project_id: number) => `/projects/${project_id}`,
+    projectUsers: (project_id: number) => `/projects/${project_id}/users`,
   },
 
   tasks: {
