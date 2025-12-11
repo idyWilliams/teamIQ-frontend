@@ -4,6 +4,16 @@ import Image, { StaticImageData } from 'next/image';
 import { useState } from 'react';
 import { useIntegrations } from '@/context/IntegrationContext';
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+
 interface Connection {
   id: string;
   appName: string;
@@ -25,6 +35,7 @@ export function ConnectionCard({ connection }: ConnectionCardProps) {
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [displayName, setDisplayName] = useState(connection.displayName);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { removeConnection, syncConnection } = useIntegrations();
 
   console.log(connection, "connection");
@@ -51,13 +62,14 @@ export function ConnectionCard({ connection }: ConnectionCardProps) {
     setShowMenu(false);
   };
 
-  const handleDisconnect = async () => {
-    if (
-      confirm(`Are you sure you want to disconnect ${connection.displayName}?`)
-    ) {
-      await removeConnection(connection.id);
-      setShowMenu(false);
-    }
+  const handleDisconnect = () => {
+    setShowMenu(false);
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDisconnect = async () => {
+    await removeConnection(connection.id);
+    setShowDeleteDialog(false);
   };
 
   const handleSaveName = () => {
@@ -265,6 +277,26 @@ export function ConnectionCard({ connection }: ConnectionCardProps) {
           <span>{formatDate(connection.lastSyncedAt)}</span>
         </div>
       </div>
+
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Disconnect Integration</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to disconnect <strong>{connection.displayName}</strong>?
+              This action cannot be undone and may affect workflows relying on this connection.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmDisconnect}>
+              Disconnect
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
