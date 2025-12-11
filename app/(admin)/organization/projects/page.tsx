@@ -16,8 +16,8 @@ import { Progress } from '@/components/ui/progress';
 import { Calendar, Circle, Plus, Loader, AlertCircle } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import {
-  useProjects,
-  type Project as ApiProject,
+  useCreatedProjects,
+  type CreatedProject,
 } from '@/services/hooks/useProjectGet';
 import StepperModal from './components/stepper-components/steps/stepper-modal';
 import { useRouter } from 'next/navigation';
@@ -60,8 +60,15 @@ type TableProject = {
   id: number;
   name: string;
   app: string[];
-  teamLead: string;
-  teamMembers: string[];
+  teamLead: {
+    name: string;
+    avatar?: string;
+  };
+  teamMembers: Array<{
+    id: number;
+    name: string;
+    // avatar?: string;
+  }>;
   startDate: string;
   endDate: string;
   status: 'In Progress' | 'Complete' | 'Pending';
@@ -85,7 +92,7 @@ const iconMap: Record<string, string> = {
    🛠️ UTILITY FUNCTIONS
 ------------------------------------------------------------------------ */
 // Transform API project to table project format
-const transformProject = (apiProject: ApiProject): TableProject => {
+const transformProject = (apiProject: CreatedProject): TableProject => {
   // Determine apps used based on integration tools
   const apps: string[] = [];
   if (apiProject.pm_tool) apps.push(apiProject.pm_tool.toLowerCase());
@@ -103,21 +110,37 @@ const transformProject = (apiProject: ApiProject): TableProject => {
 
   // Determine status based on project data
   const getStatus = (
-    project: ApiProject
+    project: CreatedProject
   ): 'In Progress' | 'Complete' | 'Pending' => {
     if (project.pct_complete === 100) return 'Complete';
     if (project.pct_complete > 0) return 'In Progress';
     return 'Pending';
   };
 
+  // Get full name helper
+  const getFullName = (user: any) => {
+    if (user.first_name && user.last_name) {
+      return `${user.first_name} ${user.last_name}`;
+    }
+    return user.username || user.email || 'Unknown';
+  };
+
   return {
     id: apiProject.id,
     name: apiProject.name,
     app: apps,
-    teamLead: apiProject.project_lead_id
-      ? `User ${apiProject.project_lead_id}`
-      : 'Not assigned',
-    teamMembers: apiProject.stacks.slice(0, 3).map(stack => stack), // Using stacks as placeholder for team members
+    teamLead: {
+      name: apiProject.project_lead_id
+        ? getFullName(apiProject.projectLead)
+        : 'Not assigned',
+      avatar: apiProject.projectLead?.profile_image || '/images/profile.2.jpg',
+    },
+    teamMembers: (apiProject.teamMembers || []).map(member => ({
+      id: member.id,
+      name: getFullName(member),
+      avatar: member.profile_image || '/images/member.png',
+    })),
+    // teamMembers: apiProject.stacks.slice(0, 3).map(stack => stack), // Using stacks as placeholder for team members
     startDate: formatDate(apiProject.start_date),
     endDate: formatDate(apiProject.end_date),
     status: getStatus(apiProject),
@@ -135,14 +158,13 @@ export default function ProjectsPage() {
   const router = useRouter();
 
   // Use the projects hook
-  const { data: apiProjects, isLoading, error } = useProjects();
+  const { data: apiProjects, isLoading, error } = useCreatedProjects();
 
   // Transform API data to table format
   const projects: TableProject[] = useMemo(() => {
     if (!apiProjects) return [];
     return apiProjects.map(transformProject);
   }, [apiProjects]);
-
 
   const columns = useMemo(
     () => [
@@ -184,18 +206,36 @@ export default function ProjectsPage() {
 
       columnHelper.accessor('teamLead', {
         header: 'Team Lead',
-        cell: info => (
-          <div className="flex items-center gap-3">
-            <Image
-              src="/images/profile.2.jpg"
-              alt="Lead"
-              width={28}
-              height={28}
-              className="rounded-full border border-gray-300 object-cover"
-            />
-            {/* <span className="font-medium text-gray-700">{info.getValue()}</span> */}
-          </div>
-        ),
+        cell: info => {
+          const lead = info.getValue();
+          return (
+            <div className="flex items-center gap-3">
+              <div className="relative h-7 w-7 flex-shrink-0">
+                <Image
+                  src={lead.avatar || '/images/profile.2.jpg'}
+                  alt={lead.name}
+                  height={28}
+                  width={28}
+                  // fill
+                  className="rounded-full border border-gray-300 object-cover"
+                />
+              </div>
+              <span className="font-medium text-gray-700">{lead.name}</span>
+            </div>
+          );
+        },
+        // cell: info => (
+        //   <div className="flex items-center gap-3">
+        //     <Image
+        //       src="/images/profile.2.jpg"
+        //       alt="Lead"
+        //       width={28}
+        //       height={28}
+        //       className="rounded-full border border-gray-300 object-cover"
+        //     />
+        //     {/* <span className="font-medium text-gray-700">{info.getValue()}</span> */}
+        //   </div>
+        // ),
       }),
 
       columnHelper.accessor('teamMembers', {
@@ -209,7 +249,7 @@ export default function ProjectsPage() {
                   <Image
                     key={i}
                     src="/images/member.png"
-                    alt={member}
+                    alt={member.name}
                     width={28}
                     height={28}
                     className="rounded-full border-2 border-white object-cover"

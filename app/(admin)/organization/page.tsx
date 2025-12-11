@@ -9,11 +9,11 @@ import Team from '@/components/team';
 export default function OverviewPage() {
   return (
     <div className="h-full">
-      <Tabs defaultValue="overview" className="flex h-full flex-col">
-        <TabsList className="w-full grow justify-start gap-2 rounded-none border-t-0 border-r-0 border-b border-l-0 border-gray-200 bg-transparent p-0">
+      <Tabs defaultValue="overview" className="flex h-full flex-col px-6 ">
+        <TabsList className="w-full grow justify-start  gap-2 rounded-none border-t-0 border-r-0 border-b border-l-0 border-gray-200 bg-transparent p-0">
           <TabsTrigger
             value="overview"
-            className="relative w-fit grow-0 rounded-none border-none bg-transparent px-2 py-2 text-gray-600 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#086ACE] after:transition-all after:duration-300 data-[state=active]:bg-transparent data-[state=active]:text-[#086ACE] data-[state=active]:shadow-none data-[state=active]:after:w-full"
+            className="relative w-fit grow-0 rounded-none border-none  bg-transparent px-2 py-2 text-gray-600 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#086ACE] after:transition-all after:duration-300 data-[state=active]:bg-transparent data-[state=active]:text-[#086ACE] data-[state=active]:shadow-none data-[state=active]:after:w-full"
           >
             Overview
           </TabsTrigger>

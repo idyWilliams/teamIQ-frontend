@@ -20,11 +20,11 @@ import {
 export const description = "A radar chart";
 
 const chartData = [
-  { skill: "Design", percentage: 50 },
+  { skill: "Micro Services", percentage: 50 },
   { skill: "Typescript", percentage: 75 },
   { skill: "Python", percentage: 60 },
   { skill: "Communication", percentage: 70 },
-  { skill: "Micro Services", percentage: 50 },
+  { skill: "Design", percentage: 50 },
   { skill: "React", percentage: 50 },
 ];
 
@@ -45,7 +45,7 @@ export default function ChartRadarDefault() {
         <CardDescription className="max-sm:text-[14px] text-[18px]">Overall score 70/100</CardDescription>
       </CardHeader>
       <CardContent className="pb-0">
-        <ChartContainer config={chartConfig} className="mx-auto  size-[300px] max-sm:size-[250px] ">
+        <ChartContainer config={chartConfig} className="mx-auto  size-[400px] max-sm:size-[300px] ">
           <RadarChart data={chartData}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <PolarAngleAxis dataKey="skill" />

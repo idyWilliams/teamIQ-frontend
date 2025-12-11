@@ -28,9 +28,9 @@ const SkillRecommendationCard = ({
       >
         {skillData?.skillClass}
       </div>
-      <ul className="text-[13px] list-disk">
+      <ul className=" list-inside list-disc " >
         {skillData?.description?.map((desc, idx) => (
-          <li key={idx}>{desc}</li>
+          <li className="text-[13px]  list-disk" key={idx}>{desc}</li>
         ))}
       </ul>
     </div>

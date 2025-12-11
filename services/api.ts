@@ -35,10 +35,15 @@ const api = {
     revokeInvitation: '/invitations',
   },
 
+  userNotification: {
+    getNotification: '/notifications/',
+    markAsRead: (id: number) => `/notification/${id}/read`,
+  },
+
   projects: {
     list: '/projects/',
     create: '/projects/create',
-    byId: (id: number) => `/projects/${id}`,
+    byId: (project_id: number) => `/projects/${project_id}`,
   },
 
   tasks: {
@@ -61,7 +66,10 @@ const api = {
     sync: (id: string) => `/integrations/${id}/sync`,
     saveApiKey: '/integrations/save-apikey',
     providerCredentials: '/integrations/provider-credentials',
-    externalAccounts: (connectionId: number | undefined, resourceId?: string) =>
+    externalAccounts: (
+      connectionId: number | undefined,
+      resourceId?: string
+    ) =>
       resourceId
         ? `/integrations/${connectionId}/users?resource_id=${encodeURIComponent(resourceId)}`
         : `/integrations/${connectionId}/users`,
@@ -86,6 +94,7 @@ export const {
   users,
   organizations,
   userInvitation,
+  userNotification,
   projects,
   tasks,
   dashboard,

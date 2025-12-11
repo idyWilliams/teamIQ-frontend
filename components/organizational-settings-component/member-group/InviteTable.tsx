@@ -1,6 +1,5 @@
 import React from 'react';
 import Image from 'next/image';
-import { useGetInvitedUsers } from '@/services/hooks/useInviteUser';
 import { Button } from '@/components/ui/button';
 import { Trash2 } from 'lucide-react';
 import {
