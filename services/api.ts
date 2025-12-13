@@ -46,6 +46,7 @@ const api = {
     create: '/projects/create',
     byId: (project_id: number) => `/projects/${project_id}`,
     projectUsers: (project_id: number) => `/projects/${project_id}/users`,
+    deleteProject: (project_id: number) => `/projects/${project_id}`,
   },
 
   tasks: {

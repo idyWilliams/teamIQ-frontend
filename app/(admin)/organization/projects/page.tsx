@@ -12,15 +12,42 @@ import {
 } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Calendar, Circle, Plus, Loader, AlertCircle } from 'lucide-react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import {
+  Calendar,
+  Circle,
+  Plus,
+  Loader,
+  AlertCircle,
+  Eye,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import {
   useCreatedProjects,
+  useDeleteProject,
   type CreatedProject,
 } from '@/services/hooks/useProjectGet';
 import StepperModal from './components/stepper-components/steps/stepper-modal';
 import { useRouter } from 'next/navigation';
-
+import { EllipsisVertical } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import MenuDotsOutline from '@/components/icons/MenuDotsOutline';
 
 /* ----------------------------------------------------------------------
    🧩 IMAGE WRAPPER COMPONENT
@@ -73,6 +100,7 @@ type TableProject = {
   endDate: string;
   status: 'In Progress' | 'Complete' | 'Pending';
   progress: number;
+  actions: string;
 };
 
 /* ----------------------------------------------------------------------
@@ -119,10 +147,10 @@ const transformProject = (apiProject: CreatedProject): TableProject => {
 
   // Get full name helper
   const getFullName = (user: any) => {
-    if (user.first_name && user.last_name) {
-      return `${user.first_name} ${user.last_name}`;
+    if (user?.first_name && user?.last_name) {
+      return `${user?.first_name} ${user?.last_name}`;
     }
-    return user.username || user.email || 'Unknown';
+    return user?.username || user?.email || '';
   };
 
   return {
@@ -145,6 +173,7 @@ const transformProject = (apiProject: CreatedProject): TableProject => {
     endDate: formatDate(apiProject.end_date),
     status: getStatus(apiProject),
     progress: apiProject.pct_complete,
+    actions: '',
   };
 };
 
@@ -153,12 +182,21 @@ const transformProject = (apiProject: CreatedProject): TableProject => {
 ------------------------------------------------------------------------ */
 export default function ProjectsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [projectName, setProjectName] = useState('');
+  const [projectId, setProjectId] = useState(0);
   const [sorting, setSorting] = useState([{ id: 'progress', desc: true }]);
   const columnHelper = createColumnHelper<TableProject>();
   const router = useRouter();
 
   // Use the projects hook
   const { data: apiProjects, isLoading, error } = useCreatedProjects();
+
+  const { mutate } = useDeleteProject();
+  const handleDeleteClick = (projectId: number) => {
+    mutate(projectId);
+    // deleteProject.mutateAsync({}).then({}).catch({})
+  };
 
   // Transform API data to table format
   const projects: TableProject[] = useMemo(() => {
@@ -317,6 +355,71 @@ export default function ProjectsPage() {
           </div>
         ),
       }),
+      // columnHelper.accessor('actions', {
+      //   header: 'actions',
+      //   cell: info => (
+      //     <div className="flex w-full min-w-[100px] items-center gap-2">
+      //       <EllipsisVertical className="flex-1" />
+      //       {/* <span className="text-xs text-gray-500">{info.getValue()}%</span> */}
+      //     </div>
+      //   ),
+      // }),
+      columnHelper.display({
+        id: 'actions',
+        header: 'Actions',
+        cell: ({ row }) => {
+          const projectId = row.original.id;
+          setProjectName(row.original.name);
+          setProjectId(row.original.id);
+          return (
+            <div onClick={e => e.stopPropagation()}>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="h-8 w-8 p-0">
+                    <span className="sr-only">Open menu</span>
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuItem
+                    onClick={() =>
+                      router.push(`/organization/projects/${projectId}`)
+                    }
+                    className="cursor-pointer"
+                  >
+                    <Eye className="mr-2 h-4 w-4" /> View Details
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() =>
+                      router.push(`/organization/projects/${projectId}/edit`)
+                    }
+                    className="cursor-pointer"
+                  >
+                    <Pencil className="mr-2 h-4 w-4" /> Edit
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => {
+                      console.log(
+                        projectName,
+                        'Only God knows what Akanimo is doing here!!!'
+                      );
+                      setDeleteModalOpen(true);
+                    }}
+                    className="cursor-pointer text-red-600 focus:text-red-600"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" /> Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          );
+        },
+      }),
     ],
     []
   );
@@ -363,6 +466,7 @@ export default function ProjectsPage() {
       </div>
     );
   }
+  console.log('🔥 RAW PROJECTS FROM API:', apiProjects);
 
   return (
     <div className="w-full overflow-hidden rounded-lg bg-white p-6 shadow-sm">
@@ -385,7 +489,7 @@ export default function ProjectsPage() {
           <div className="mb-4 text-lg text-gray-500">No projects found</div>
           <Button
             // onClick={() => setIsModalOpen(true)}
-                   onClick={() => router.push('/organization/projects/create')}
+            onClick={() => router.push('/organization/projects/create')}
             className="mx-auto flex items-center gap-2"
           >
             <Plus size={18} /> Create Your First Project
@@ -485,6 +589,32 @@ export default function ProjectsPage() {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-h-[90vh] w-[900px] overflow-y-auto !pt-0 sm:!max-w-[900px] [&>button]:hidden">
           <StepperModal onClose={() => setIsModalOpen(false)} />
+        </DialogContent>
+      </Dialog>
+      {/* Delete project confirmation modal */}
+      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Are you sure?</DialogTitle>
+            <DialogDescription>
+              This will permanently delete the project{' '}
+              <span className="font-bold">{projectName}</span>. This action
+              cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                handleDeleteClick(projectId);
+              }}
+            >
+              Delete Project
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

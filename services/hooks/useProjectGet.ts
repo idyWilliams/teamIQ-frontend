@@ -1,7 +1,7 @@
 'use client';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import api from '@/services/axios';
-import { users as usersApi } from '@/services/api';
+import { projects, users as usersApi } from '@/services/api';
 import { TeamMember } from '@/constants';
 
 export interface Project {
@@ -91,7 +91,7 @@ export const useProjectMembers = (projectId: number | undefined) => {
     queryKey: ['project-members', projectId],
     queryFn: async (): Promise<ProjectMember[]> => {
       if (!projectId) return [];
-      
+
       const { data } = await api.get(`/projects/${projectId}/users`);
       console.log('Project Members Response:', data);
 
@@ -247,7 +247,6 @@ export const useProject = (projectId: number | string | undefined) => {
   });
 };
 
-
 export const useGetMyProjects = () => {
   return useQuery({
     queryKey: ['user-projects'],
@@ -255,6 +254,26 @@ export const useGetMyProjects = () => {
     queryFn: async () => {
       const res = await api.get(usersApi.getProjects);
       console.log('users-get-projects', res.data);
+      return res.data;
+    },
+  });
+};
+
+// export const useDeleteProject = project_id => {
+//   return useMutation({
+//     mutationFn: async () => {
+//       const res = await api.delete(projects.deleteProject(projectId));
+//       console.log('Delete project', res.data);
+//       return res.data;
+//     },
+//   });
+// };
+
+export const useDeleteProject = () => {
+  return useMutation({
+    mutationFn: async (projectId: number) => {
+      const res = await api.delete(projects.deleteProject(projectId));
+      console.log('Delete project', res.data);
       return res.data;
     },
   });
