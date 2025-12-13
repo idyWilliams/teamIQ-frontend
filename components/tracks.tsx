@@ -111,7 +111,7 @@ function Tracks() {
                       className="relative z-10 -ml-2 h-6 w-6 overflow-hidden rounded-full border-2 border-white"
                     >
                       <Image
-                        src={member.avatar || '/images/default-avatar.png'}
+                        src={member.profile_picture || '/images/default-avatar.png'}
                         alt={member.name}
                         fill
                         className="object-cover"

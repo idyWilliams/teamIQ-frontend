@@ -89,7 +89,7 @@ const UserPermission = ({
           name: `${user.first_name} ${user.last_name}`.trim(),
           email: user.email,
           job: user.role || 'Team Member',
-          avatar: user.profile_image || undefined,
+          avatar: user.profile_picture || undefined,
           checked: isSelected,
           lead: isLead,
         };

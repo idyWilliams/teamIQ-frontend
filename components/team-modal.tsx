@@ -45,9 +45,9 @@ export const TeamModal: React.FC<{
         {/* Header */}
         <div className="mb-8 flex items-start gap-6">
           {/* Replace Image with Initials */}
-          {selectedMember.avatar ? (
+          {selectedMember.profile_picture ? (
             <Image
-              src={selectedMember.avatar}
+              src={selectedMember.profile_picture}
               alt={selectedMember.name}
               width={96}
               height={96}
