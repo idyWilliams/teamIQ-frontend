@@ -31,7 +31,7 @@ export function Step3TeamMembers() {
     first_name: user.first_name,
     last_name: user.last_name,
     email: user.email,
-    profile_image: user.profile_image || undefined,
+    profile_image: user.profile_picture || undefined,
     role: user.role,
   }));
   const [searchQuery, setSearchQuery] = useState('');

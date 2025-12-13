@@ -2,8 +2,44 @@
 
 import React from 'react';
 // import { CheckCircle, Wrench, FileText, Box } from 'lucide-react';
-import { teamMembers, TeamMember } from '@/constants/team-member';
+import { TeamMember } from '@/constants/team-member';
 import Image from 'next/image';
+
+// TODO: Replace this mock data with your actual team members import if available
+// const teamMembers: TeamMember[] = [
+//   {
+//     id: 1,
+//     name: 'Alice',
+//     avatar: '/images/alice.png',
+//     role: 'Designer',
+//     tasks: [],
+//     lastSeen: new Date().toISOString(),
+//   },
+//   {
+//     id: 2,
+//     name: 'Bob',
+//     avatar: '/images/bob.png',
+//     role: 'Engineer',
+//     tasks: [],
+//     lastSeen: new Date().toISOString(),
+//   },
+//   {
+//     id: 3,
+//     name: 'Charlie',
+//     avatar: '/images/charlie.png',
+//     role: 'Content Writer',
+//     tasks: [],
+//     lastSeen: new Date().toISOString(),
+//   },
+//   {
+//     id: 4,
+//     name: 'Diana',
+//     avatar: '/images/diana.png',
+//     role: 'Product Manager',
+//     tasks: [],
+//     lastSeen: new Date().toISOString(),
+//   },
+// ];
 
 function Tracks() {
   type Track = {
@@ -13,6 +49,8 @@ function Tracks() {
     uncompletedTasks: number;
     members: TeamMember[];
   };
+
+  const teamMembers: TeamMember[] = [];
 
   const allTracks: Track[] = [
     {
@@ -73,7 +111,7 @@ function Tracks() {
                       className="relative z-10 -ml-2 h-6 w-6 overflow-hidden rounded-full border-2 border-white"
                     >
                       <Image
-                        src={member.avatar || '/images/default-avatar.png'}
+                        src={member.profile_picture || '/images/default-avatar.png'}
                         alt={member.name}
                         fill
                         className="object-cover"

@@ -11,7 +11,7 @@ export interface User {
   last_name: string;
   country: string;
   role: string;
-  profile_image: string | null;
+  profile_picture: string | null;
   bio: string | null;
   phone_number: string | null;
   organization_id: number | null;

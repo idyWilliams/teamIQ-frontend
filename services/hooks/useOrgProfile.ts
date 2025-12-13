@@ -4,6 +4,7 @@ import axiosInstance from '@/services/axios';
 import { organizations } from '@/services/api';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
+import api from '@/services/axios'
 
 
 export interface OrgProfileResponse {
@@ -60,6 +61,20 @@ export const useUpdateOrgProfile = () => {
         'Failed to update organization profile.';
       toast.error(message);
       console.error('Update Org Profile Error:', error);
+    },
+  });
+};
+
+
+// GET Organization Members
+export const useOrganizationTeamMember = () => {
+  return useQuery({
+    queryKey: ['organization-members'],
+
+    queryFn: async () => {
+      const res = await api.get('/organizations/members');
+      console.log('organization-members', res.data.data.members);
+      return res.data.data.members;
     },
   });
 };

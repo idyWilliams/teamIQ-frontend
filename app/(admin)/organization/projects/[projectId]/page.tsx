@@ -13,6 +13,7 @@ import { Suspense } from 'react';
 import AssignedTeamMembers from '@/app/(user)/member/projects/components/assigned-team-member';
 import ProjectOverview from '@/components/project-overview';
 import { useProject } from '@/services/hooks/useProjectGet';
+import { useOrganizationTeamMember } from '@/services/hooks/useOrgProfile';
 
 function ProjectDetails() {
   const router = useRouter();
@@ -27,6 +28,7 @@ function ProjectDetails() {
   // Fetch project data at parent level
   const { data: project, isLoading, error } = useProject(projectId);
   console.log("data", project);
+  const { data } = useOrganizationTeamMember();
 
   // Loading state
   if (isLoading) {
@@ -75,7 +77,7 @@ function ProjectDetails() {
       label: 'Assign Team Member',
       href: '/organization/projects?tab=assign-team-member',
       value: 'assign-team-member',
-      content: <AssignedTeamMembers />,
+      content: <AssignedTeamMembers teamMembers={data} />,
     },
   ];
 

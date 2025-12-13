@@ -8,12 +8,16 @@ import React from 'react';
 import OrganizationTeamMember from '@/components/organizationTeamMember';
 import OrganizationTeamMembersTabLayout from '@/components/organizationTeamMembersTabLayout';
 import OrgTeamOverviewTab from '@/components/OrgTeamOverviewTab';
+import { useOrganizationTeamMember } from '@/services/hooks/useOrgProfile';
 
 function TeamPage() {
   const router = useRouter();
   const pathname = usePathname();
   const searchparams = useSearchParams();
   const activeTab = searchparams.get('tab') || 'overview';
+
+  const { data: project, isLoading, error } = useOrganizationTeamMember();
+    console.log("data");
 
   return (
     <section className="">
@@ -29,7 +33,7 @@ function TeamPage() {
             <TabsTrigger
               key={tab}
               value={tab}
-              className="relative w-fit grow-0 cursor-pointer rounded-none border-none bg-transparent  py-2 text-gray-600 capitalize after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#086ACE] after:transition-all after:duration-300 data-[state=active]:bg-transparent data-[state=active]:text-[#086ACE] data-[state=active]:shadow-none data-[state=active]:after:w-full"
+              className="relative w-fit grow-0 cursor-pointer rounded-none border-none bg-transparent py-2 text-gray-600 capitalize after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#086ACE] after:transition-all after:duration-300 data-[state=active]:bg-transparent data-[state=active]:text-[#086ACE] data-[state=active]:shadow-none data-[state=active]:after:w-full"
             >
               {tab === 'team' ? 'Team Members' : 'Overview'}
             </TabsTrigger>

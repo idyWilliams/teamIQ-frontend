@@ -13,7 +13,7 @@ export const columns: ColumnDef<TeamMember>[] = [
     cell: ({ row }) => (
       <div className="flex items-center gap-3">
         <Image
-          src={row.original.avatar || '/images/default-avatar.png'}
+          src={row.original.profile_picture || '/images/default-avatar.png'}
           alt={row.getValue('name')}
           width={32}
           height={32}

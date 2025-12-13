@@ -3,7 +3,7 @@ import { Clock } from 'lucide-react';
 
 interface OrganizationMemberCardProps {
   name: string;
-  tasks: string;
+  role: string;
   lastSeen: string;
   avatar?: string;
   onClick?: () => void;
@@ -11,7 +11,7 @@ interface OrganizationMemberCardProps {
 
 export default function OrganizationMemberCard({
   name,
-  tasks,
+  role,
   lastSeen,
   avatar,
   onClick,
@@ -51,7 +51,7 @@ export default function OrganizationMemberCard({
 
       <div className="w-full text-center">
         <h3 className="truncate text-sm font-semibold text-gray-900">{name}</h3>
-        <p className="mt-1 text-xs text-gray-500 capitalize">{tasks}</p>
+        <p className="mt-1 text-xs text-gray-500 capitalize">{role}</p>
         <div className="mt-2 flex items-center justify-center gap-1 text-xs text-gray-500">
           <Clock size={12} className="text-gray-400" />
           <span>Last seen {lastSeen}</span>

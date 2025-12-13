@@ -1,5 +1,5 @@
 
-type DataType = {
+export type DataType = {
     id: number;
     name: string;
     stack: string;
@@ -7,7 +7,7 @@ type DataType = {
     status: string;
 }
 
-type PendindDataType = {
+export type PendingDataType = {
     id: number;
     name: string;
     stack: string;
@@ -17,16 +17,16 @@ type PendindDataType = {
 
 
 
-export const data: DataType[] = [
-    {id: 1, name: "Kate Morrison", stack: "Product Design", employmentType: "Intern", status: "Active"},
-    {id: 2, name: "Kate Morrison", stack: "Frontend Dev", employmentType: "Intern", status: "Active"},
-    {id: 3,name: "Kate Morrison", stack: "Fullstack Dev", employmentType: "Full-Time", status: "Active"},
-    {id: 4, name: "Kate Morrison", stack: "Backend Dev", employmentType: "Intern", status: "Active"},
-    {id: 5, name: "Kate Morrison", stack: "Fullstack Dev", employmentType: "Full-Time", status: "Active"},
-    {id: 6, name: "Kate Morrison", stack: "Frontend Dev", employmentType: "Intern", status: "Active"},
-]
+// export const data: DataType[] = [
+//     {id: 1, name: "Kate Morrison", stack: "Product Design", employmentType: "Intern", status: "Active"},
+//     {id: 2, name: "Kate Morrison", stack: "Frontend Dev", employmentType: "Intern", status: "Active"},
+//     {id: 3,name: "Kate Morrison", stack: "Fullstack Dev", employmentType: "Full-Time", status: "Active"},
+//     {id: 4, name: "Kate Morrison", stack: "Backend Dev", employmentType: "Intern", status: "Active"},
+//     {id: 5, name: "Kate Morrison", stack: "Fullstack Dev", employmentType: "Full-Time", status: "Active"},
+//     {id: 6, name: "Kate Morrison", stack: "Frontend Dev", employmentType: "Intern", status: "Active"},
+// ]
 
-export const pendingData: PendindDataType[] = [
-    {id: 1, name: "Kate Morrison", stack: "Product Design", dateSent: "Jul 02, 25", status: "Active"},
-    {id: 2, name: "Kate Morrison", stack: "Frontend Dev",dateSent: "Jul 02, 25", status: "Active"},
-]
+// export const pendingData: PendindDataType[] = [
+//     {id: 1, name: "Kate Morrison", stack: "Product Design", dateSent: "Jul 02, 25", status: "Active"},
+//     {id: 2, name: "Kate Morrison", stack: "Frontend Dev",dateSent: "Jul 02, 25", status: "Active"},
+// ]
