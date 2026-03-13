@@ -399,7 +399,7 @@ export default function ProjectsPage() {
                 <DropdownMenuContent align="end" className="w-[160px] bg-white z-50">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-
+``
                   <DropdownMenuItem
                     onClick={() => router.push(`/organization/projects/${project.id}`)}
                     className="cursor-pointer"
