@@ -22,7 +22,7 @@ import { DialogTitle } from '@radix-ui/react-dialog';
 const nameRegex = /^[A-Z][a-zA-Z]*(?: [A-Z][a-zA-Z]*)*$/;
 const sectorRegex = /^[A-Za-z\s]+$/;
 const DescripRegex = /^[A-Z].*/;
-const domainRegex = /^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/;
+const domainRegex = /^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,63}$/;
 const urlRegex = /^https?:\/\/.+/;
 const phoneRegex = /^(\+?\d{10,15})$/;
 
@@ -42,23 +42,27 @@ const validationSchema = yup.object({
     .required('Description is required')
     .min(10, 'Minimum 10 characters')
     .matches(DescripRegex, 'Description must start with a capital letter'),
+  address: yup
+    .string()
+    .trim()
+    .min(3, 'Minimum 10 characters'),
   domain_link: yup
     .string()
     .trim()
-    .url()
     .required('Domain link is required')
     .matches(domainRegex, 'Enter a valid domain like example.com'),
   sector: yup
     .string()
     .trim()
     .optional()
+    .required('Sector is required')
     .matches(sectorRegex, 'Only letters and spaces allowed'),
   social_media_handles: yup.object().shape({
     additionalProp1: yup.string().trim().matches(urlRegex, 'Invalid URL'),
     additionalProp2: yup.string().trim().matches(urlRegex, 'Invalid URL'),
     additionalProp3: yup.string().trim().matches(urlRegex, 'Invalid URL'),
   }),
-  website: yup.string().trim().url(),
+  website: yup.string().trim(),
   phone_number: yup
     .string()
     .trim()
@@ -73,14 +77,17 @@ const validationSchema = yup.object({
     .mixed()
     .required('Organization image is required')
     .test('fileType', 'Only image files allowed', (value: any) => {
-      if (!value?.[0]) return false;
+      // If value is a FileList or array, take the first item. If it's a File, take it directly.
+      const file = value instanceof File ? value : value?.[0];
+      if (!file) return false;
+
       const allowedTypes = [
         'image/jpeg',
         'image/png',
         'image/jpg',
         'image/webp',
       ];
-      return allowedTypes.includes(value[0].type);
+      return allowedTypes.includes(file.type);
     }),
 });
 
@@ -145,6 +152,7 @@ const OrganizationalDetails = ({
   const onboarding = useOnboardingComplete();
 
   const submit = async (data: OrganizationForm | any) => {
+    console.log(`Onboarding Data`, data);
     try {
       setLoading(true);
 
@@ -247,6 +255,11 @@ const OrganizationalDetails = ({
                 </>
               )}
             </div>
+            {errors.organization_image && (
+              <span className="text-iq-err-300 mt-2 block text-center text-xs leading-snug">
+                {errors.organization_image.message}
+              </span>
+            )}
           </div>
           <Label htmlFor="organization_name" className="mb-4 block font-normal">
             Organization Name
@@ -316,6 +329,11 @@ const OrganizationalDetails = ({
             className={styleInput}
             {...register('sector')}
           />
+          {errors.sector && (
+            <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
+              {errors.sector.message}
+            </span>
+          )}
         </div>
 
         <div>
@@ -348,6 +366,25 @@ const OrganizationalDetails = ({
               className={styleInput}
               {...register('social_media_handles.additionalProp3')}
             />
+            {errors.social_media_handles && (
+              <div className="flex flex-col gap-1">
+                {errors.social_media_handles.additionalProp1 && (
+                  <span className="text-iq-err-300 text-xs">
+                    Linkedin: {errors.social_media_handles.additionalProp1.message}
+                  </span>
+                )}
+                {errors.social_media_handles.additionalProp2 && (
+                  <span className="text-iq-err-300 text-xs">
+                    Twitter: {errors.social_media_handles.additionalProp2.message}
+                  </span>
+                )}
+                {errors.social_media_handles.additionalProp3 && (
+                  <span className="text-iq-err-300 text-xs">
+                    Other: {errors.social_media_handles.additionalProp3.message}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -399,9 +436,9 @@ const OrganizationalDetails = ({
           <Button
             className="bg-iq-500 hover:bg-iq-500 h-auto w-full cursor-pointer rounded-md px-6 py-3 text-white hover:text-white md:px-4"
             type="submit"
-            disabled={onboarding.isPending}
+            disabled={onboarding.isPending || loading}
           >
-            {onboarding.isPending
+            {onboarding.isPending || loading
               ? 'Reviewing and Submitting...'
               : 'Review and Submit'}
           </Button>
