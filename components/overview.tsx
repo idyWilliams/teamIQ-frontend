@@ -4,7 +4,7 @@ import CardItem from './cardItem';
 import ChartLineDefault from './chart-line';
 import ActiveBlockers from './active-blockers';
 import { WaveProgressCard } from './wave-progress';
-import { activeBlockers, progressData } from '@/constants';
+import { activeBlockers } from '@/constants';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import OrganizationalDetails from './org-onboarding-comps/organizationalOnboarding';
@@ -164,7 +164,7 @@ const DashboardOverview = () => {
       {/* 🟦 Charts and blockers */}
       <div className="flex max-w-full flex-col gap-4 overflow-hidden lg:flex-row">
         <div className="min-w-0 flex-1 space-y-4">
-          <WaveProgressCard progressData={progressData} zeroMargin={true} />
+          <WaveProgressCard zeroMargin={true} />
           <div className="mt-6">
             <ChartLineDefault />
           </div>
