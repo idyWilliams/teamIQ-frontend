@@ -8,6 +8,8 @@ import {
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
+  Area,
+  AreaChart,
 } from "recharts";
 
 import {
@@ -17,14 +19,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-
-export const description = "A line chart showing team performance over time";
 
 const chartData = [
   { month: "Jan", completion: 25 },
@@ -41,64 +35,77 @@ const chartData = [
   { month: "Dec", completion: 85 },
 ];
 
-const chartConfig = {
-  completion: {
-    label: "Task Completion",
-    color: "#B3C4D6",
-  },
-} satisfies ChartConfig;
-
 export default function ChartLineDefault() {
   return (
-    <Card className="flex flex-col shadow-none h-full">
-      <CardHeader className="items-center pb-4">
-        <CardTitle>Team Performance</CardTitle>
-        <CardDescription>Monthly task completion rate</CardDescription>
+    <Card className="flex flex-col shadow-none h-full border border-gray-100 rounded-xl">
+      <CardHeader className="items-start pb-4 px-5 pt-5">
+        <div className="flex items-center justify-between w-full">
+          <div>
+            <CardTitle className="text-base font-semibold text-gray-900">
+              Team Performance
+            </CardTitle>
+            <CardDescription className="text-sm text-gray-500 mt-0.5">
+              Monthly task completion rate
+            </CardDescription>
+          </div>
+          <div className="flex items-center gap-3 text-xs text-gray-500">
+            <div className="flex items-center gap-1.5">
+              <div className="size-2.5 rounded-full bg-[#086ACE]" />
+              <span>Completion %</span>
+            </div>
+          </div>
+        </div>
       </CardHeader>
-       <CardContent className="flex-1 pb-0">
-                <div className="h-72 max-w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                      <XAxis
-                        dataKey="month"
-                        axisLine={false}
-                        tickLine={false}
-                        tick={{ fill: '#9ca3af', fontSize: 12 }}
-                      />
-                      <YAxis
-                        axisLine={false}
-                        tickLine={false}
-                        ticks={[0, 25, 50, 75, 100]}
-                        domain={[0, 100]}
-                        tickFormatter={completion => `${completion}%`}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: '#1e293b',
-                          border: 'none',
-                          borderRadius: '8px',
-                          color: 'white',
-                        }}
-                        formatter={completion => [`${completion}% Task completed`, '']}
-                        labelStyle={{ display: 'none' }}
-                      />
-    
-                      {/* smooth curve */}
-                      <Line
-                        type="monotone"
-                        dataKey="completion"
-                        stroke="#cbd5e1"
-                        strokeWidth={2}
-                        dot={false}
-                        activeDot={{ r: 6, fill: '#1e293b' }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
+      <CardContent className="flex-1 pb-4 px-5">
+        <div className="h-64 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="completionGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#086ACE" stopOpacity={0.15} />
+                  <stop offset="95%" stopColor="#086ACE" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
+              <XAxis
+                dataKey="month"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: "#9ca3af", fontSize: 11 }}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                ticks={[0, 25, 50, 75, 100]}
+                domain={[0, 100]}
+                tickFormatter={(v) => `${v}%`}
+                tick={{ fill: "#9ca3af", fontSize: 11 }}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#1e293b",
+                  border: "none",
+                  borderRadius: "10px",
+                  color: "white",
+                  fontSize: "13px",
+                  padding: "8px 12px",
+                }}
+                formatter={(v) => [`${v}%`, "Completion"]}
+                labelStyle={{ color: "#94a3b8", marginBottom: 2 }}
+              />
+              <Area
+                type="monotone"
+                dataKey="completion"
+                stroke="#086ACE"
+                strokeWidth={2.5}
+                fill="url(#completionGradient)"
+                dot={false}
+                activeDot={{ r: 5, fill: "#086ACE", strokeWidth: 2, stroke: "#fff" }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </CardContent>
     </Card>
-
-   
   );
 }

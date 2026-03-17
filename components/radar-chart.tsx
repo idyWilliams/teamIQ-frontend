@@ -1,13 +1,11 @@
 "use client";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts";
-
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
 import {
   ChartConfig,
@@ -16,55 +14,66 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-
-export const description = "A radar chart";
-
 const chartData = [
   { skill: "Micro Services", percentage: 50 },
-  { skill: "Typescript", percentage: 75 },
+  { skill: "TypeScript", percentage: 75 },
   { skill: "Python", percentage: 60 },
   { skill: "Communication", percentage: 70 },
   { skill: "Design", percentage: 50 },
-  { skill: "React", percentage: 50 },
+  { skill: "React", percentage: 80 },
 ];
 
 const chartConfig = {
   desktop: {
-    label: "percentage",
-    color: "var(--chart-1)",
+    label: "Proficiency",
+    color: "#086ACE",
   },
 } satisfies ChartConfig;
 
-
-
 export default function ChartRadarDefault() {
   return (
-    <Card className="shadow-none h-full">
-      <CardHeader className="items-center pb-4">
-        <CardTitle className="max-sm:text-[16px] text-[20px]">Skill Proficiency</CardTitle>
-        <CardDescription className="max-sm:text-[14px] text-[18px]">Overall score 70/100</CardDescription>
+    <Card className="shadow-none h-full border border-gray-100 rounded-xl">
+      <CardHeader className="items-center pb-2 px-5 pt-5">
+        <CardTitle className="text-base font-semibold text-gray-900">
+          Skill Proficiency
+        </CardTitle>
+        <CardDescription className="text-sm text-gray-500">
+          Overall score — 70/100
+        </CardDescription>
       </CardHeader>
-      <CardContent className="pb-0">
-        <ChartContainer config={chartConfig} className="mx-auto  size-[400px] max-sm:size-[300px] ">
+      <CardContent className="pb-4 px-5">
+        <ChartContainer
+          config={chartConfig}
+          className="mx-auto size-[340px] max-sm:size-[260px]"
+        >
           <RadarChart data={chartData}>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <PolarAngleAxis dataKey="skill" />
-            <PolarGrid />
-            <Radar dataKey="percentage" fill="#086ACE" fillOpacity={0.6} />
+            <PolarAngleAxis
+              dataKey="skill"
+              tick={{ fontSize: 11, fill: "#6b7280" }}
+            />
+            <PolarGrid stroke="#e5e7eb" />
+            <Radar
+              dataKey="percentage"
+              fill="#086ACE"
+              fillOpacity={0.15}
+              stroke="#086ACE"
+              strokeWidth={2}
+            />
           </RadarChart>
         </ChartContainer>
+        <div className="mt-2 grid grid-cols-2 gap-2 max-lg:hidden">
+          {chartData.map((data, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#EBF4FF] border border-[#086ACE]/10"
+            >
+              <span className="text-xs font-medium text-gray-700">{data.skill}</span>
+              <span className="text-xs font-bold text-[#086ACE]">{data.percentage}%</span>
+            </div>
+          ))}
+        </div>
       </CardContent>
-      <CardFooter className="flex-col gap-2 items-start justify-items-start ">
-        <div className="flex gap-2 justify-self-start items-start flex-wrap max-sm:hidden">
-          {chartData.map((data, i) =>
-
-          
-          (<div key={i} className=" max-lg:hidden text-[#086ACE] flex justify-between p-3 w-[220px] h-[44px] items-center rounded-[8px] bg-[#f3f8ff] ">
-            <p>{data.skill} </p>
-            <span>{data.percentage}</span>
-          </div>))}
-          </div>
-      </CardFooter>
     </Card>
   );
 }

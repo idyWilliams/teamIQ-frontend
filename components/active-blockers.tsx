@@ -1,12 +1,7 @@
 "use client";
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ShieldAlert } from "lucide-react";
 
 interface Blocker {
   id: number;
@@ -19,33 +14,42 @@ interface ActiveBlockersProps {
   blockers?: Blocker[];
 }
 
+const statusColors = ["bg-red-500", "bg-orange-500", "bg-amber-500"];
+
 export default function ActiveBlockers({ blockers = [] }: ActiveBlockersProps) {
   return (
     <div className="h-full">
-      <Card className="shadow-none h-full">
-        <CardHeader>
-          <CardTitle>Active Blockers</CardTitle>
+      <Card className="shadow-none h-full border border-gray-100 rounded-xl">
+        <CardHeader className="px-5 pt-5 pb-3">
+          <div className="flex items-center gap-2">
+            <ShieldAlert className="size-4 text-red-500" />
+            <CardTitle className="text-base font-semibold text-gray-900">
+              Active Blockers
+            </CardTitle>
+          </div>
         </CardHeader>
-        <CardContent className="flex flex-col gap-5">
-          {blockers.map((blocker, i) => (
-            <div
-              key={i}
-              className="flex justify-between gap-5 px-[25px] items-start rounded-xl py-3 border-l-2 border-blue-500 bg-[#F7F7F7] "
-            >
-              <div>
-                <p className="font-semibold">{blocker.name}</p>
-                <p className="text-sm">{blocker.blockedOn}</p>
-              </div>
-              <div className="flex gap-1 items-center whitespace-nowrap">
-                <Avatar className="size-3">
-                  <AvatarImage src="images/deadline.svg" alt="time" />
-                </Avatar>
-                <p className="text-sm text-[#626262]">
+        <CardContent className="flex flex-col gap-3 px-5 pb-5">
+          {blockers.length === 0 ? (
+            <p className="text-sm text-gray-400 text-center py-6">
+              No active blockers 🎉
+            </p>
+          ) : (
+            blockers.map((blocker, i) => (
+              <div
+                key={i}
+                className="flex items-start gap-3 p-3 rounded-lg border border-gray-100 bg-red-50/30 hover:bg-red-50/50 transition-colors"
+              >
+                <div className={`mt-1.5 size-2 rounded-full shrink-0 ${statusColors[i % statusColors.length]}`} />
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm text-gray-800 truncate">{blocker.name}</p>
+                  <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{blocker.blockedOn}</p>
+                </div>
+                <span className="text-[11px] text-gray-400 whitespace-nowrap shrink-0 mt-0.5">
                   {blocker.time}
-                </p>
+                </span>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </CardContent>
       </Card>
     </div>
