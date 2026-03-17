@@ -67,7 +67,7 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
       onClose();
     } catch (error) {
       console.error(error, 'failed to send');
-      toast.error('Error occur while sending');
+      // toast.error('Error occur while sending');
     }
   };
 
@@ -80,9 +80,8 @@ const InviteTeamMemberModal = ({ open, onClose }: CloseModalProp) => {
       {/* close button */}
       <div
         onClick={e => e.stopPropagation()}
-        className={`relative w-full max-w-md transform rounded-xl bg-white p-6 shadow-lg transition-transform duration-300 ease-out sm:mx-0 ${
-          open ? 'translate-y-0' : 'translate-y-full'
-        }`}
+        className={`relative w-full max-w-md transform rounded-xl bg-white p-6 shadow-lg transition-transform duration-300 ease-out sm:mx-0 ${open ? 'translate-y-0' : 'translate-y-full'
+          }`}
       >
         <button
           onClick={onClose}

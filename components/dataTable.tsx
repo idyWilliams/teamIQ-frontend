@@ -19,6 +19,7 @@ import {
   TableCell,
 } from '@/components/ui/table';
 import { TeamMember } from '@/constants/team-member';
+import InviteTeamMemberModal from './organizational-settings-component/member-group/InviteTeamMemberModal';
 
 interface DataTableProps {
   columns: ColumnDef<TeamMember>[];
@@ -27,6 +28,8 @@ interface DataTableProps {
 
 export function DataTable({ columns, data }: DataTableProps) {
   const [globalFilter, setGlobalFilter] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+
 
   const table = useReactTable({
     data,
@@ -45,6 +48,11 @@ export function DataTable({ columns, data }: DataTableProps) {
     },
   });
 
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+
   return (
     <div className="space-y-4">
       {/* Search and Add Button */}
@@ -59,7 +67,9 @@ export function DataTable({ columns, data }: DataTableProps) {
             className="w-full rounded-md border border-gray-300 py-2 pr-4 pl-10 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
-        <button className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-blue-500 transition-colors hover:bg-blue-200">
+        <button
+          onClick={openModal}
+          className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-blue-500 transition-colors hover:bg-blue-200">
           <Image
             src="/images/useradd.png"
             alt="add user icon"
@@ -81,9 +91,9 @@ export function DataTable({ columns, data }: DataTableProps) {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -169,6 +179,13 @@ export function DataTable({ columns, data }: DataTableProps) {
           </div>
         </div>
       </div>
+
+      {
+        <InviteTeamMemberModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+        />
+      }
     </div>
   );
 }

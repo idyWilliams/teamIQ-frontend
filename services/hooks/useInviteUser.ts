@@ -9,7 +9,7 @@ export const useInviteUser = () => {
 
   return useMutation({
     mutationFn: async (payload: { email: string; role: string }) => {
-      console.log('User invitation', userInvitation.register);
+      console.log('User invitation ooo', userInvitation.register);
       const res = await axiosInstance.post(userInvitation.register, {
         ...payload,
         role: 'intern',
@@ -19,6 +19,10 @@ export const useInviteUser = () => {
     onSuccess: () => {
       toast.success('Invited sent sucessfully!');
       queryClient.invalidateQueries({ queryKey: ['get-assinged-users'] });
+    },
+    onError: (error: any) => {
+      // console.log('Errors ooo', error.response.data.detail);
+      toast.error(error.response.data.detail);
     },
   });
 };
