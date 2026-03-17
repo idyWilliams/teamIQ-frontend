@@ -10,6 +10,7 @@ import { Bell, Search } from 'lucide-react';
 import { SidebarInput, SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 import { useAuthStore } from '@/store/useAuthStore';
+import OnboardingBanner from '@/components/onboarding-banner';
 
 export default function OrganizationDashboardLayout({
   children,
@@ -29,6 +30,7 @@ export default function OrganizationDashboardLayout({
         <AppSidebar />
         <SidebarInset className="flex h-screen flex-row overflow-hidden">
           <div className="flex min-h-0 grow flex-col overflow-hidden">
+            <OnboardingBanner />
             <header className="h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
               <div className="flex items-center gap-2 px-4">
                 <SidebarTrigger className="-ml-1" />
