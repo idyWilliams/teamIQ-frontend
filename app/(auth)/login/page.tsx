@@ -31,6 +31,7 @@ export default function Login() {
   const { isPending, mutate } = useLogin();
   const authenticate = useAuthStore(state => state.authorize);
   const router = useRouter();
+  const [isRedirecting, setIsRedirecting] = React.useState(false);
 
   // Initializing react-hook-form with Yup
   const {
@@ -54,6 +55,7 @@ export default function Login() {
     mutate(data, {
       onSuccess: res => {
         toast.success('Login successful!');
+        setIsRedirecting(true);
 
         const role = res?.data?.organization?.role || res?.data?.user?.role;
         authenticate({
@@ -79,6 +81,20 @@ export default function Login() {
       },
     });
   };
+
+  if (isRedirecting) {
+    return (
+      <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0B0F1A]">
+        <div className="relative flex flex-col items-center">
+          <div className="size-16 animate-spin rounded-full border-4 border-blue-500 border-t-transparent shadow-lg shadow-blue-500/20" />
+          <div className="mt-8 flex flex-col items-center gap-2">
+            <h2 className="text-2xl font-bold tracking-tight text-white">Preparing your dashboard</h2>
+            <p className="text-slate-400 font-medium">Setting up your team intelligence workspace...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
