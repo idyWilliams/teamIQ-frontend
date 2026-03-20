@@ -2,6 +2,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShieldAlert } from "lucide-react";
+import { Button } from "./ui/button";
 
 interface Blocker {
   id: number;
@@ -30,9 +31,18 @@ export default function ActiveBlockers({ blockers = [] }: ActiveBlockersProps) {
         </CardHeader>
         <CardContent className="flex flex-col gap-3 px-5 pb-5">
           {blockers.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-6">
-              No active blockers 🎉
-            </p>
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+             
+              <p className="text-sm font-semibold text-gray-800">
+                You&apos;re all clear!
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                You&apos;re good to go. Add a blocker if something is slowing you down.
+              </p>
+              <Button className="bg-red-500 mt-3 text-xs text-[#fff] font-medium hover:bg-red-500 cursor-pointer">
+                + Report a blocker
+              </Button>
+            </div>
           ) : (
             blockers.map((blocker, i) => (
               <div
