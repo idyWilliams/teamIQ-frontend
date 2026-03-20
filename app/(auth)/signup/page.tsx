@@ -23,16 +23,17 @@ export default function SignUp() {
       </div>
 
       <Tabs value={mode} onValueChange={setMode}>
-        <TabsList className="mb-6 grid w-full grid-cols-2 gap-2 rounded-xl bg-slate-900/50 p-1 shadow-inner border border-white/5 md:mb-8">
+        <TabsList className="mb-6 flex w-full rounded-xl bg-slate-900/50 p-1 border border-white/5 overflow-hidden md:mb-8">
           {['individual', 'organization'].map(tab => (
             <TabsTrigger
               key={tab}
               value={tab}
               className={cn(
-                'relative rounded-lg capitalize transition-all duration-300',
-                'min-h-[44px] w-full min-w-0 px-0 py-2 text-center text-sm sm:py-2 sm:text-base text-slate-400 font-medium',
-                'data-[state=active]:bg-white/10 data-[state=active]:text-white data-[state=active]:shadow-md',
-                'ring-0 outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-0'
+                "flex-1 relative z-10 rounded-lg px-3 py-2 text-sm sm:text-base font-medium transition-all duration-300",
+                "text-slate-400",
+                "data-[state=active]:bg-slate-800 data-[state=active]:text-white",
+                "data-[state=active]:shadow-sm",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
               )}
             >
               <span className="md:hidden">
@@ -42,7 +43,7 @@ export default function SignUp() {
             </TabsTrigger>
           ))}
         </TabsList>
-        <div className="bg-white/5 rounded-2xl p-6 border border-white/10 shadow-xl backdrop-blur-xl [&_label]:text-slate-300 [&_input]:!bg-slate-900/50 [&_input]:!border-white/10 [&_input]:!text-white [&_input]:placeholder:text-slate-500 [&_input:focus-visible]:!border-blue-500/50 [&_h3]:text-white [&_span.text-[#0B0B0B]]:text-white [&_span.text-iq-900]:text-white [&_select]:!bg-slate-900/50 [&_select]:!text-white">
+        <div className="bg-white/5 rounded-2xl p-6 border border-white/10 shadow-xl backdrop-blur-xl overflow-hidden relative [&_label]:text-slate-300 [&_input]:!bg-slate-900/50 [&_input]:!border-white/10 [&_input]:!text-white [&_input]:placeholder:text-slate-500 [&_input:focus-visible]:!border-blue-500/50 [&_h3]:text-white [&_span.text-[#0B0B0B]]:text-white [&_span.text-iq-900]:text-white [&_select]:!bg-slate-900 [&_select]:!text-white [&_select]:!border-white/10 [&_select]:!text-white">
           <TabsContent value="individual" className="w-full mt-0 outline-none ring-0">
             <IndividualForm />
           </TabsContent>
