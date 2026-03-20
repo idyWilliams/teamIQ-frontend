@@ -7,7 +7,7 @@ import { WaveProgressCard } from '../../../../../components/wave-progress';
 import CardItem from '../../../../../components/cardItem';
 import { useOrganizationUsers } from '@/services/hooks/useUsers';
 
-export default function matrix() {
+export default function Matrix() {
   const { data: users, isLoading, error } = useOrganizationUsers();
   const cardData = [
     {
