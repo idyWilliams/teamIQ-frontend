@@ -34,10 +34,10 @@ export default function ActiveBlockers({ blockers = [] }: ActiveBlockersProps) {
             <div className="flex flex-col items-center justify-center py-8 text-center">
              
               <p className="text-sm font-semibold text-gray-800">
-                You're all clear!
+                You&apos;re all clear!
               </p>
               <p className="text-xs text-gray-500 mt-1">
-                You're good to go. Add a blocker if something is slowing you down.
+                You&apos;re good to go. Add a blocker if something is slowing you down.
               </p>
               <Button className="bg-red-500 mt-3 text-xs text-[#fff] font-medium hover:bg-red-500 cursor-pointer">
                 + Report a blocker
