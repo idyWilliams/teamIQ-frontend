@@ -54,7 +54,7 @@ const ConnectionTool = ({
   const updateProjectStep4 = useUpdateProjectStep4(projectId || 0);
   const setStep4Data = useProjectStore(state => state.setStep4Data);
 
-  const { handleSubmit, setValue, watch, register } =
+  const { handleSubmit, setValue, watch } =
     useForm<ConnectionToolFormData>({
       defaultValues: {
         channelType: 'new-channel',
@@ -160,7 +160,7 @@ const ConnectionTool = ({
     }
 
     updateProjectStep4.mutate(apiData, {
-      onSuccess: responseData => {
+      onSuccess: () => {
         toast.success('Communication tool configured!');
         onSubmit();
       },

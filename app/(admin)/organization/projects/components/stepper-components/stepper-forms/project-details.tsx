@@ -25,7 +25,7 @@ import { Textarea } from '@/components/ui/textarea';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import StepHeader from '../steps/step-header';
+// import StepHeader from '../steps/step-header';
 import { Badge } from '@/components/ui/badge';
 import {
   Popover,
@@ -47,7 +47,6 @@ import { toast } from 'sonner';
 import { useProjectStore } from '@/store/useProjectstore';
 import {
   useOrganizationUsers,
-  type User as ApiUser,
 } from '@/services/hooks/useUsers'; // Add this import
 import { DatePicker } from '@/components/date-picker';
 
@@ -215,7 +214,6 @@ const NewProjectDetails = ({
     resetField,
     trigger,
     handleSubmit,
-    getValues,
   } = useForm<FormValues>({
     resolver: isReviewMode ? undefined : yupResolver(schema),
     defaultValues: defaultValues

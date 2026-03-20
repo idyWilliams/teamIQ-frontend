@@ -48,7 +48,7 @@ export default function Dashboard() {
         <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
           Welcome back, {user?.first_name || 'Member'}
         </h2>
-        <p className="text-gray-500 text-sm font-medium">Here's what's happening with your projects today.</p>
+        <p className="text-gray-500 text-sm font-medium">Here&apos;s what&apos;s happening with your projects today.</p>
       </div>
 
       {/* Stats Grid */}

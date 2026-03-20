@@ -62,6 +62,7 @@
   --color-iq-700: oklch(0.3031 0.0838 252.74);
   --color-iq-800: oklch(0.2586 0.0695 253.17);
   --color-iq-900: oklch(0.2227 0.0558 250.86);
+  --color-iq-950: #0B0B0B;
 
   /* Success and its shades */
   --color-iq-suc: oklch(0.85 0.1335 180.01);

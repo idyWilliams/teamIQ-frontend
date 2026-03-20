@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 
 import React from 'react';
 // import Tracks from '@/components/tracks';
-import OrganizationTeamMember from '@/components/organizationTeamMember';
+// import OrganizationTeamMember from '@/components/organizationTeamMember';
 import OrganizationTeamMembersTabLayout from '@/components/organizationTeamMembersTabLayout';
 import OrgTeamOverviewTab from '@/components/OrgTeamOverviewTab';
 import { useOrganizationTeamMember } from '@/services/hooks/useOrgProfile';
@@ -16,8 +16,8 @@ function TeamPage() {
   const searchparams = useSearchParams();
   const activeTab = searchparams.get('tab') || 'overview';
 
-  const { data: project, isLoading, error } = useOrganizationTeamMember();
-    console.log("data");
+  // const { data: project, isLoading, error } = useOrganizationTeamMember();
+  // console.log("data");
 
   return (
     <section className="">

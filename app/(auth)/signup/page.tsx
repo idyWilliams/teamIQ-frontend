@@ -42,7 +42,7 @@ export default function SignUp() {
             </TabsTrigger>
           ))}
         </TabsList>
-        <div className="bg-white/5 rounded-2xl p-6 border border-white/10 shadow-xl backdrop-blur-xl [&_label]:text-slate-300 [&_input]:!bg-slate-900/50 [&_input]:!border-white/10 [&_input]:!text-white [&_input]:placeholder:text-slate-500 [&_input:focus-visible]:!border-blue-500/50 [&_h3]:text-white [&_span.text-[#0B0B0B]]:text-white [&_span.text-iq-900]:text-white [&_select]:!bg-slate-900/50 [&_select]:!text-white">
+        <div className="bg-white/5 rounded-2xl p-6 border border-white/10 shadow-xl backdrop-blur-xl [&_label]:text-slate-300 [&_input]:!bg-slate-900/50 [&_input]:!border-white/10 [&_input]:!text-white [&_input]:placeholder:text-slate-500 [&_input:focus-visible]:!border-blue-500/50 [&_h3]:text-white [&_span.text-iq-950]:text-white [&_span.text-iq-900]:text-white [&_select]:!bg-slate-900/50 [&_select]:!text-white">
           <TabsContent value="individual" className="w-full mt-0 outline-none ring-0">
             <IndividualForm />
           </TabsContent>

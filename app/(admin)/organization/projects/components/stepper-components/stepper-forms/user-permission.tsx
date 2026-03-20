@@ -3,13 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Check, Search, Loader, AlertCircle, User } from 'lucide-react';
+import { Check, Search, Loader } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useUpdateProjectStep5 } from '@/services/hooks/useProject';
 import {
   useOrganizationUsers,
-  type User as ApiUser,
 } from '@/services/hooks/useUsers';
 import { toast } from 'sonner';
 import { useProjectStore } from '@/store/useProjectstore';
@@ -49,7 +48,7 @@ const UserPermission = ({
   const updateProjectStep5 = useUpdateProjectStep5(projectId || 0);
   const setStep5Data = useProjectStore(state => state.setStep5Data);
 
-  const { data: users, isLoading, error } = useOrganizationUsers();
+  const { data: users, isLoading } = useOrganizationUsers();
 
   const { handleSubmit, setValue, watch } = useForm<FormData>({
     defaultValues: {
@@ -60,7 +59,6 @@ const UserPermission = ({
   });
 
   const selectedMembers = watch('selectedMembers');
-  const projectLead = watch('projectLead');
 
   const [teamList, setTeamList] = useState<TeamMember[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -199,7 +197,7 @@ const UserPermission = ({
     }
 
     updateProjectStep5.mutate(apiData, {
-      onSuccess: responseData => {
+      onSuccess: () => {
         toast.success('Team members added successfully!');
         if (onSubmit) onSubmit();
       },
@@ -229,23 +227,6 @@ const UserPermission = ({
       .toUpperCase()
       .slice(0, 2);
   };
-
-  // Count selected members (excluding lead)
-  const selectedMembersCount = teamList.filter(
-    member => member.checked && !member.lead
-  ).length;
-
-  // Get project lead info
-  const projectLeadInfo = teamList.find(member => member.lead);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <Loader className="mr-2 h-6 w-6 animate-spin" />
-        <span>Loading team members...</span>
-      </div>
-    );
-  }
 
   // if (error) {
   //   return (

@@ -430,7 +430,7 @@ export default function ProjectsPage() {
         },
       }),
     ],
-    [router]
+    [router, columnHelper]
   );
 
   const table = useReactTable({
