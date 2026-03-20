@@ -3,12 +3,12 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '@/services/axios';
 import { projects } from '@/services/api';
-import { useInviteUser } from '@/services/hooks/useInviteUser';
+// import { useInviteUser } from '@/services/hooks/useInviteUser';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TabsContent } from '@radix-ui/react-tabs';
 
 export default function TestPage() {
-  const { data, isLoading, isError } = useQuery({
+  useQuery({
     queryKey: ['projects'],
     queryFn: async () => {
       const res = await api.get(projects.list);
