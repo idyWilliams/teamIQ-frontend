@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import NextTopLoader from 'nextjs-toploader';
+// import NextTopLoader from 'nextjs-toploader';
 import localFont from 'next/font/local';
 import { cn } from '@/lib/utils';
 import { AuthProvider } from '@/components/providers/AuthProvider';
