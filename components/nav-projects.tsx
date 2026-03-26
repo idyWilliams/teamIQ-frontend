@@ -22,7 +22,7 @@ export function NavProjects({ projects }: NavProjectsProps) {
   const pathname = usePathname();
 
   return (
-    <SidebarGroup className="py-3">
+    <SidebarGroup className="pt-3 pb-1">
       {/* Pages Label */}
       <h3 className="mb-2 px-6 text-[13px] font-medium text-gray-400 group-data-[collapsible=icon]:hidden">
         Pages

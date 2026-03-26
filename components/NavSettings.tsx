@@ -38,7 +38,7 @@ export default function NavSettings({ settings }: NavSettingsProp) {
   const pathname = usePathname();
   return (
     <>
-      <SidebarGroup>
+      <SidebarGroup className="pt-1 pb-3">
         <SidebarMenu>
           {settings.map(item => {
             const isActive = pathname === item.url;
