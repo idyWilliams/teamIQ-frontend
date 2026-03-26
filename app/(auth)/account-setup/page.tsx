@@ -20,6 +20,8 @@ import { Camera, Loader2 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'nextjs-toploader/app';
 import { users } from '@/services/api';
+import { toast } from 'sonner';
+
 
 // ✅ Yup validation schema
 const schema = yup.object({
@@ -52,6 +54,7 @@ export default function AccountSetup() {
   const { user, updateUser } = useAuthStore();
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [theStack, setTheStack] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -98,10 +101,12 @@ export default function AccountSetup() {
         imageUrl = uploadResponse?.data?.data?.url;
       }
 
+      setTheStack(data.stack.split(',').map((s: string) => s.trim()));
+
       // Prepare final payload
       const final = {
         track: data.track,
-        stacks: data.stack || [],
+        stacks: theStack,
         profile_image: imageUrl || user?.profile_img,
       };
 
@@ -117,7 +122,8 @@ export default function AccountSetup() {
       const msg =
         error?.response?.data?.detail?.[0]?.msg ||
         'Failed to update profile. Try again.';
-      alert(`❌ ${msg}`);
+      // alert(`❌ ${msg}`);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -138,9 +144,9 @@ export default function AccountSetup() {
     <section className="mx-4 w-full max-w-lg">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-12 text-center">
-          <h1 className="text-2xl font-semibold text-black">Account setup</h1>
+          <h1 className="text-2xl font-semibold text-white">Account setup</h1>
           <p className="mt-2 text-[14px] font-normal md:text-[18px]">
-            Welcome James, personalize your account.
+            Welcome {user?.first_name}, personalize your account.
           </p>
 
           <div className="mt-5 flex items-center justify-center">
@@ -190,7 +196,8 @@ export default function AccountSetup() {
               Select Track
             </Label>
             <Select onValueChange={val => setValue('track', val)}>
-              <SelectTrigger className="w-full border-0 border-b border-[#B3C4D6] bg-[#F7F7F7]">
+
+              <SelectTrigger className="w-full border-0 border-b border-[#B3C4D6] bg-[#020618]">
                 <SelectValue placeholder="Frontend Developer" />
               </SelectTrigger>
               <SelectContent>
@@ -226,7 +233,7 @@ export default function AccountSetup() {
               id="stack"
               placeholder="E.g: JavaScript, React, Python"
               {...register('stack')}
-              className="border-0 border-b border-[#B3C4D6] bg-[#F7F7F7] px-4 py-3"
+              className="border-0 border-b border-[#B3C4D6] bg-[#020618] px-4 py-3"
             />
             {errors.track && (
               <p className="mt-1 text-sm text-red-500">
