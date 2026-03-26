@@ -128,9 +128,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <Link
           href="/organization"
-          className="inline-flex items-center gap-3 text-xl font-bold text-blue-500"
+          className="flex items-center gap-3 px-4 py-2 text-xl font-bold text-blue-500 group-data-[collapsible=icon]:justify-center"
         >
-          <Brain /> TeamIQ
+          <Brain className="shrink-0" />
+
+          <span className="group-data-[collapsible=icon]:hidden">TeamIQ</span>
         </Link>
       </SidebarHeader>
 
@@ -142,8 +144,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarFooter className="border-t border-gray-100 py-3">
         <Button onClick={() => logout()}>
-          <LogOut />
-          Log out
+          <LogOut className="shrink-0" />
+          <span className="group-data-[collapsible=icon]:hidden">Log out</span>
         </Button>
       </SidebarFooter>
 
