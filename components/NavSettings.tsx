@@ -56,6 +56,7 @@ export default function NavSettings({ settings }: NavSettingsProp) {
                       tooltip={item.title}
                       className={cn(
                         'relative flex cursor-pointer items-center gap-3 rounded-md px-5 py-2.5 text-[14px] transition-all duration-200',
+                        'group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2',
                         isActive
                           ? 'bg-blue-50 font-medium !text-blue-600'
                           : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
@@ -64,11 +65,13 @@ export default function NavSettings({ settings }: NavSettingsProp) {
                       {item.icon && (
                         <span className={cn(item.icon, 'size-5')}></span>
                       )}
-                      <span>{item.title}</span>
-                      <ChevronRight className="ml-auto transition-transform duration-300 group-data-[state=open]/collapsible:rotate-90" />
+                      <span className="group-data-[collapsible=icon]:hidden">
+                        {item.title}
+                      </span>
+                      <ChevronRight className="ml-auto transition-transform duration-300 group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:hidden" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
-                  <CollapsibleContent>
+                  <CollapsibleContent className="group-data-[collapsible=icon]:hidden">
                     <SidebarMenuSub>
                       {item.items?.map(subItem => (
                         <SidebarMenuSubItem key={subItem.title}>
