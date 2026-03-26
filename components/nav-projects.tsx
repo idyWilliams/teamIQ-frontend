@@ -32,6 +32,7 @@ export function NavProjects({ projects }: NavProjectsProps) {
         {projects.map(item => {
           // ✅ Active when current path starts with item.url
           const isActive = pathname === item.url;
+          const Icon = item.icon;
 
           return (
             <SidebarMenuItem key={item.name}>
@@ -54,7 +55,7 @@ export function NavProjects({ projects }: NavProjectsProps) {
                   )}
 
                   {/* Icon */}
-                  <span className={cn(item.icon, 'size-[18px]')} />
+                  <Icon size="18" />
 
                   {/* Label */}
 

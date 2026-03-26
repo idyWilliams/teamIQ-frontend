@@ -42,6 +42,8 @@ export default function NavSettings({ settings }: NavSettingsProp) {
         <SidebarMenu>
           {settings.map(item => {
             const isActive = pathname === item.url;
+            const Icon = item.icon;
+
             return (
               <Collapsible
                 key={item.title}
@@ -62,9 +64,7 @@ export default function NavSettings({ settings }: NavSettingsProp) {
                           : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                       )}
                     >
-                      {item.icon && (
-                        <span className={cn(item.icon, 'size-5')}></span>
-                      )}
+                      {Icon && <Icon size="20" />}
                       <span className="group-data-[collapsible=icon]:hidden">
                         {item.title}
                       </span>

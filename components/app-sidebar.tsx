@@ -21,6 +21,12 @@ import {
 import { Button } from './ui/button';
 import { useAuthStore } from '@/store/useAuthStore';
 import Link from 'next/link';
+import IdentificationBadge from '@/components/icons/IdentificationBadge';
+import IdCardOutlined from '@/components/icons/IdCardOutlined';
+import UserGroup from '@/components/icons/UserGroup';
+import Solana from '@/components/icons/Solana';
+import Settings from '@/components/icons/Settings';
+import Grid from '@/components/icons/Grid';
 
 const data = {
   user: {
@@ -70,30 +76,30 @@ const data = {
   // ],
   others: [
     {
-      icon: 'icon-[ph--identification-badge]',
+      icon: IdentificationBadge,
       name: 'Dashboard',
       url: '/organization',
     },
     {
-      icon: 'icon-[ant-design--idcard-outlined]',
+      icon: IdCardOutlined,
       name: 'Projects',
       url: '/organization/projects',
     },
     {
-      icon: 'icon-[hugeicons--user-group]',
+      icon: UserGroup,
       name: 'Team',
       url: '/organization/team',
     },
     {
-      icon: 'icon-[formkit--solana]',
+      icon: Solana,
       name: 'Team Matrix',
       url: '/organization/team-matrix',
     },
-    { icon: 'icon-[proicons--grid]', name: 'Apps', url: '/organization/app' },
+    { icon: Grid, name: 'Apps', url: '/organization/app' },
   ],
   settings: [
     {
-      icon: 'icon-[ep--setting]',
+      icon: Settings,
       title: 'Settings',
       url: '/organization/settings',
       items: [
