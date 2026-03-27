@@ -67,7 +67,8 @@ export default function Login() {
         if (role === 'organization') {
           router.push('/organization');
         } else {
-          if (!res?.data?.user?.profile_image) router.push('/account-setup');
+          
+          if (!res?.data?.user?.onboarding_completed) router.push('/account-setup');
           else router.push('/member');
         }
 

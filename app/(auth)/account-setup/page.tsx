@@ -83,23 +83,25 @@ export default function AccountSetup() {
   };
 
   const onSubmit = async (data: FormData | any) => {
+    const selectedFile = fileInputRef.current?.files?.[0];
+    let newStack = data.stack.split(',').map((s: string) => s.trim());
+
     try {
       setLoading(true);
       let imageUrl = user?.profile_image;
-
       // Only upload if user selected a new file
-      if (data.profile) {
+      if (selectedFile) {
         const formData = new FormData();
-        formData.append('file', data.profile);
+        formData.append('file', selectedFile);
         formData.append('image_type', 'profile');
         formData.append('update_db', 'true');
 
         const uploadResponse = await axiosInstance.post('/image', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
-
         imageUrl = uploadResponse?.data?.data?.url;
       }
+
 
       setTheStack(data.stack.split(',').map((s: string) => s.trim()));
 
