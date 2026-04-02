@@ -34,28 +34,40 @@ export default function Matrix() {
   ];
 
   return (
-    <>
-      <div className="grid w-full grid-cols-4 gap-2 px-6">
-        {cardData.map((item, i) => (
-          <CardItem
-            key={i}
-            title={item.title}
-            avatarUrl={item.avatarUrl}
-            content={item.content}
-          />
-        ))}
-      </div>
-      <div className="flex ">
-        <div className='flex-2'>
-          <WaveProgressCard title="Skill Gap Analysis" />
-          <TeamSkillStrength />
-          <ProjectReadiness />
+    <div className="w-full max-w-full px-4 py-6 overflow-hidden">
+        {/* Constrain width for clean center alignment */}
+      <div className="w-full space-y-6">
+
+        {/* Top Cards */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {cardData.map((item, i) => (
+            <CardItem
+              key={i}
+              title={item.title}
+              avatarUrl={item.avatarUrl}
+              content={item.content}
+            />
+          ))}
         </div>
-        <div className='flex-1'>
-        <TeamRecommendation />
+
+          {/* Main Layout */}
+         <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+                
+                {/* Left Content */}
+                <div className="xl:col-span-2 space-y-6">
+                  <WaveProgressCard title="Skill Gap Analysis" />
+                  <TeamSkillStrength />
+                  <ProjectReadiness />
+                </div>
+
+                {/* Right Sidebar */}
+                <div className="space-y-6">
+                  <TeamRecommendation />
+                </div>
+
+         </div>
         </div>
-      </div>
-    </>
+    </div>
   );
 }
 

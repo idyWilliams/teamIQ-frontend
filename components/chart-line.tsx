@@ -37,8 +37,8 @@ const chartData = [
 
 export default function ChartLineDefault() {
   return (
-    <Card className="flex flex-col shadow-none h-full border border-gray-100 rounded-xl">
-      <CardHeader className="items-start pb-4 px-5 pt-5">
+    <Card className="flex flex-col shadow-none border border-gray-100 rounded-xl">
+      <CardHeader className="items-start pb-2 px-4 pt-0">
         <div className="flex items-center justify-between w-full">
           <div>
             <CardTitle className="text-base font-semibold text-gray-900">
@@ -57,7 +57,7 @@ export default function ChartLineDefault() {
         </div>
       </CardHeader>
       <CardContent className="flex-1 pb-4 px-5">
-        <div className="h-64 w-full">
+        <div className="h-44 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
               <defs>

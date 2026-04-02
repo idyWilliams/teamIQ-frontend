@@ -90,11 +90,16 @@ function FormField() {
     },
   });
   useEffect(() => {
-    console.log(email, invitation_code);
+    //console.log(email, invitation_code);
+    //reset({
+    //email: encodeURI(email?.trim()?.replaceAll('/', '') || ''),
+    //Only set email if it exists (from invite link), otherwise don’t reset:
+    if (email) {
     reset({
-      email: encodeURI(email?.trim()?.replaceAll('/', '') || ''),
+      email: encodeURI(email.trim().replaceAll('/', '')),
     });
-  }, [email, reset]);
+  }
+}, [email, reset]);
 
   const password = useWatch({ control, name: 'password' });
   const repeatpassword = useWatch({ control, name: 'repeatpassword' });
@@ -209,7 +214,7 @@ function FormField() {
             className={styleInput}
             autoComplete="email"
             aria-invalid={!!errors.email}
-            disabled
+            //disabled
           />
           {errors.email && (
             <span className="text-iq-err-300 mt-1 block text-xs leading-snug">
