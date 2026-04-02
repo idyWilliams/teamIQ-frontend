@@ -1,82 +1,221 @@
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { Card, CardContent } from '../../../../../components/ui/card';
 import { Button } from '../../../../../components/ui/button';
-import { CircleCheck, FlaskConical, TriangleAlert } from 'lucide-react';
-import Image from 'next/image';
+import {
+  CircleCheck,
+  FlaskConical,
+  TriangleAlert,
+  Code,
+  Cpu,
+  Server,
+} from 'lucide-react';
 
-export default function projectReadiness() {
+export default function ProjectReadiness() {
+  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [openModal, setOpenModal] = useState(false);
+  
+
+  /* =========================
+     HANDLE CLICK
+  ========================= */
+  const handleViewProject = (project: any) => {
+    setSelectedProject(project);
+    setOpenModal(true);
+  };
+
+  useEffect(() => {
+  const handleEsc = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      setOpenModal(false);
+    }
+  };
+
+  if (openModal) {
+    window.addEventListener('keydown', handleEsc);
+  }
+
+  return () => {
+    window.removeEventListener('keydown', handleEsc);
+  };
+}, [openModal]);
+
   return (
-    <>
-      <div className="m-6 items-center rounded-3xl border border-gray-200">
-        <h4 className="m-6 text-base font-semibold">Project Readiness</h4>
-        <div className="m-6 grid grid-cols-1 gap-2 lg:grid-cols-3">
-          {projectUpdates.map(projectStatus => (
-            <Card
-              key={projectStatus.id}
-              className={`px-4 py-6 text-white ${
-                projectStatus.id === 0 ? 'bg-pink-600' : 'bg-purple-600'
-              }`}
-            >
-              <CardContent className="gap-2">
-                <h4 className="text-lg font-bold">{projectStatus.title}</h4>
-                <p className="">{projectStatus.status}</p>
-                <div>
-                  {Object.entries(projectStatus.skills).map(
-                    ([skill, value]) => {
-                      const normalizedSkill = skill.toLowerCase();
-                      const iconSource =
-                        projectStatus.id === 0
-                          ? CircleCheck
-                          : skillsIcons[normalizedSkill] || CircleCheck;
+    <div className="w-full rounded-3xl border border-gray-200 bg-white p-6">
+      
+      {/* HEADER */}
+      <div className="mb-6 flex items-center justify-between">
+        <h4 className="text-lg font-semibold text-gray-900">
+          Project Readiness
+        </h4>
+      </div>
 
-                      return (
-                        <p key={skill} className="flex items-center gap-2">
-                          {typeof iconSource === 'string' ? (
-                            <Image
-                              src={iconSource}
-                              alt={skill}
-                              width={5}
-                              height={5}
-                            />
-                          ) : (
-                            React.createElement(iconSource, {
-                              className: 'w-5 h-5',
-                            })
-                          )}
-                          <span className="capitalize">{skill}:</span>
-                          <span>{value} People</span>
-                        </p>
-                      );
-                    }
-                  )}
+      {/* GRID → SHOW ALL (AUTO WRAP) */}
+      <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+        {projectUpdates.map((project) => {
+          const statusStyle = statusStyles[project.statusType];
+
+          return (
+            <Card
+              key={project.id}
+              className={`border-0 bg-gray-50 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 ${statusStyle.bg}`}
+            >
+              <CardContent className="p-3">
+                
+                {/* TITLE */}
+                <h4 className="text-lg font-semibold text-gray-900">
+                  {project.title}
+                </h4>
+
+                {/* STATUS */}
+                <div className="mt-2">
+                  <span className={`inline-block px-2 py-1 text-xs rounded-full bg-white ${statusStyle.text}`}>
+                    {statusStyle.label}
+                  </span>
+                </div>
+
+                {/* SKILLS */}
+                <div className="mt-3 space-y-1.5">
+                  {Object.entries(project.skills).slice(0, 3).map(([skill, value]) => {
+                    const Icon =
+                      skillsIcons[skill.toLowerCase()] || CircleCheck;
+
+                    return (
+                      <div
+                        key={skill}
+                        className="flex items-center justify-between text-sm text-gray-700"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Icon className="h-4 w-4 text-gray-500" />
+                          <span className="capitalize">{skill}</span>
+                        </div>
+                        <span className="font-medium">{value} people</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </CardContent>
-              <Button
-                className={`bg-white hover:bg-gray-100 ${
-                  projectStatus.id === 0 ? 'text-pink-600' : 'text-purple-600'
-                }`}
-              >
-                View
-              </Button>
+
+              {/* BUTTON */}
+              <div className="px-3 pb-2 pt-1">
+                <Button
+                  onClick={() => handleViewProject(project)}
+                  className="w-full text-xs bg-iq-500 hover:bg-iq-300 mt-1 cursor-pointer"
+                >
+                  View Details
+                </Button>
+              </div>
             </Card>
-          ))}
-        </div>
+          );
+        })}
       </div>
-    </>
+
+      {/* =========================
+         MODAL
+      ========================= */}
+      {openModal && selectedProject && (
+        <div
+          onClick={() => setOpenModal(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4"
+        >
+          
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-3xl rounded-2xl bg-white p-6 shadow-xl"
+          >
+
+            {/* CLOSE */}
+            <button
+              onClick={() => setOpenModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-lg"
+            >
+              ✕
+            </button>
+
+            {/* HEADER */}
+            <h2 className="text-2xl font-bold text-gray-900">
+              {selectedProject.title}
+            </h2>
+
+            <p className="mt-1 text-sm text-gray-500">
+              Status: {statusStyles[selectedProject.statusType].label}
+            </p>
+
+            {/* SKILLS DETAIL */}
+            <div className="mt-6 space-y-3">
+              {Object.entries(selectedProject.skills).map(
+                ([skill, value]) => {
+                  const Icon =
+                    skillsIcons[skill.toLowerCase()] || CircleCheck;
+
+                  return (
+                    <div
+                      key={skill}
+                      className="flex items-center justify-between border-b pb-2 text-sm"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Icon className="h-4 w-4 text-gray-600" />
+                        <span className="capitalize">{skill}</span>
+                      </div>
+                      <span className="font-semibold text-gray-900">
+                        {value} people
+                      </span>
+                    </div>
+                  );
+                }
+              )}
+            </div>
+
+            {/* FOOTER ACTION */}
+            <div className="mt-6">
+              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                Assign Team / Manage Project
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
+
+/* =========================
+   ICON MAP (PROPER MATCHING)
+========================= */
 const skillsIcons: Record<string, React.ElementType> = {
-  // python: '/images/teenyicons_tick-circle-outline.png',
   python: FlaskConical,
-  React: CircleCheck,
-  Need: TriangleAlert,
+  react: Code,
+  java: Cpu,
+  backend: Server,
+  testing: CircleCheck,
+  need: TriangleAlert,
 };
 
+/* =========================
+   STATUS STYLES
+========================= */
+const statusStyles = {
+  ready: {
+    label: 'Ready',
+    bg: 'bg-gradient-to-br from-green-50 to-emerald-100',
+    text: 'text-emerald-600',
+  },
+  not_ready: {
+    label: 'Not Ready',
+    bg: 'bg-gradient-to-br from-red-50 to-rose-100',
+    text: 'text-rose-600',
+  },
+};
+
+/* =========================
+   DATA (SCALES TO 10+)
+========================= */
 const projectUpdates = [
   {
     id: 0,
     title: 'Goldies',
-    status: `Status - Ready`,
+    statusType: 'ready',
     skills: {
       Python: 9,
       React: 5,
@@ -86,11 +225,21 @@ const projectUpdates = [
   {
     id: 1,
     title: 'Elevero',
-    status: `Status - Not Ready`,
+    statusType: 'not_ready',
     skills: {
       Python: 9,
       React: 5,
       Need: 1,
+    },
+  },
+  {
+    id: 2,
+    title: 'NovaX',
+    statusType: 'ready',
+    skills: {
+      Java: 6,
+      Backend: 4,
+      Testing: 2,
     },
   },
 ];

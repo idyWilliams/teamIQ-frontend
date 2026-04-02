@@ -71,14 +71,14 @@ const DashboardOverview = () => {
 
   return (
     <div className="space-y-6 py-6 px-4 lg:px-0">
-      {/* 🟩 Dashboard cards */}
+      {/* Dashboard cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {dashboardCards.map((card, i) => (
           <CardItem key={i} {...card} />
         ))}
       </div>
 
-      {/* 🟦 Charts and blockers */}
+      {/* Charts and blockers */}
       <div className="flex flex-col gap-6 lg:flex-row">
         <div className="min-w-0 flex-1 space-y-6">
           <WaveProgressCard zeroMargin={true} />
