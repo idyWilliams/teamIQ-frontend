@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { CircleX } from 'lucide-react';
-import { TeamMember } from '../../../../(user)/member/projects/components/assigned-team-member';
+import { TeamMember } from '@/app/(user)/member/projects/components/assigned-team-member';
 
 interface TeamProfileModalProps {
   member: TeamMember | null;
