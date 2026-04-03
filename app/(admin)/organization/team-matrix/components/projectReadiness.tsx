@@ -1,6 +1,5 @@
 'use client';
-import React, { useState } from 'react';
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '../../../../../components/ui/card';
 import { Button } from '../../../../../components/ui/button';
 import {
@@ -12,34 +11,40 @@ import {
   Server,
 } from 'lucide-react';
 
+type Project = {
+  id: number;
+  title: string;
+  statusType: 'ready' | 'not_ready';
+  skills: Record<string, number>;
+};
+
 export default function ProjectReadiness() {
-  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [openModal, setOpenModal] = useState(false);
-  
 
   /* =========================
      HANDLE CLICK
   ========================= */
-  const handleViewProject = (project: any) => {
+  const handleViewProject = (project: Project) => {
     setSelectedProject(project);
     setOpenModal(true);
   };
 
   useEffect(() => {
-  const handleEsc = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      setOpenModal(false);
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpenModal(false);
+      }
+    };
+
+    if (openModal) {
+      window.addEventListener('keydown', handleEsc);
     }
-  };
 
-  if (openModal) {
-    window.addEventListener('keydown', handleEsc);
-  }
-
-  return () => {
-    window.removeEventListener('keydown', handleEsc);
-  };
-}, [openModal]);
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, [openModal]);
 
   return (
     <div className="w-full rounded-3xl border border-gray-200 bg-white p-6">
@@ -51,10 +56,11 @@ export default function ProjectReadiness() {
         </h4>
       </div>
 
-      {/* GRID → SHOW ALL (AUTO WRAP) */}
+      {/* GRID */}
       <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
         {projectUpdates.map((project) => {
-          const statusStyle = statusStyles[project.statusType];
+          const statusStyle = 
+            statusStyles[project.statusType] || statusStyles.not_ready;
 
           return (
             <Card
@@ -78,8 +84,7 @@ export default function ProjectReadiness() {
                 {/* SKILLS */}
                 <div className="mt-3 space-y-1.5">
                   {Object.entries(project.skills).slice(0, 3).map(([skill, value]) => {
-                    const Icon =
-                      skillsIcons[skill.toLowerCase()] || CircleCheck;
+                    const Icon = skillsIcons[skill.toLowerCase()] || CircleCheck;
 
                     return (
                       <div
@@ -111,20 +116,16 @@ export default function ProjectReadiness() {
         })}
       </div>
 
-      {/* =========================
-         MODAL
-      ========================= */}
+      {/* MODAL */}
       {openModal && selectedProject && (
         <div
           onClick={() => setOpenModal(false)}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4"
         >
-          
           <div
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-3xl rounded-2xl bg-white p-6 shadow-xl"
           >
-
             {/* CLOSE */}
             <button
               onClick={() => setOpenModal(false)}
@@ -139,32 +140,29 @@ export default function ProjectReadiness() {
             </h2>
 
             <p className="mt-1 text-sm text-gray-500">
-              Status: {statusStyles[selectedProject.statusType].label}
+              Status: {statusStyles[selectedProject.statusType]?.label || 'Unknown'}
             </p>
 
             {/* SKILLS DETAIL */}
             <div className="mt-6 space-y-3">
-              {Object.entries(selectedProject.skills).map(
-                ([skill, value]) => {
-                  const Icon =
-                    skillsIcons[skill.toLowerCase()] || CircleCheck;
+              {Object.entries(selectedProject.skills).map(([skill, value]) => {
+                const Icon = skillsIcons[skill.toLowerCase()] || CircleCheck;
 
-                  return (
-                    <div
-                      key={skill}
-                      className="flex items-center justify-between border-b pb-2 text-sm"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Icon className="h-4 w-4 text-gray-600" />
-                        <span className="capitalize">{skill}</span>
-                      </div>
-                      <span className="font-semibold text-gray-900">
-                        {value} people
-                      </span>
+                return (
+                  <div
+                    key={skill}
+                    className="flex items-center justify-between border-b pb-2 text-sm"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Icon className="h-4 w-4 text-gray-600" />
+                      <span className="capitalize">{skill}</span>
                     </div>
-                  );
-                }
-              )}
+                    <span className="font-semibold text-gray-900">
+                      {value} people
+                    </span>
+                  </div>
+                );
+              })}
             </div>
 
             {/* FOOTER ACTION */}
@@ -181,7 +179,7 @@ export default function ProjectReadiness() {
 }
 
 /* =========================
-   ICON MAP (PROPER MATCHING)
+   ICON MAP
 ========================= */
 const skillsIcons: Record<string, React.ElementType> = {
   python: FlaskConical,
@@ -206,12 +204,12 @@ const statusStyles = {
     bg: 'bg-gradient-to-br from-red-50 to-rose-100',
     text: 'text-rose-600',
   },
-};
+} as const;
 
 /* =========================
-   DATA (SCALES TO 10+)
+   DATA
 ========================= */
-const projectUpdates = [
+const projectUpdates: Project[] = [
   {
     id: 0,
     title: 'Goldies',
