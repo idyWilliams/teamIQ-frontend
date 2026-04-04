@@ -127,7 +127,7 @@ export function WaveProgressCard({
     });
   }, [data, activeCategory, search]);
 
-  const displayed = showAll ? filtered : filtered.slice(0, 8);
+  const displayed = showAll ? filtered : filtered.slice(0, 4);
 
   // Summary stats
   const avg = Math.round(data.reduce((a, s) => a + s.proficiency, 0) / data.length);
@@ -136,10 +136,10 @@ export function WaveProgressCard({
   const growingSkills = data.filter(s => s.trend === 'up').length;
 
   return (
-    <div className={`${zeroMargin ? '' : 'm-6'}`}>
+    <div className={`${zeroMargin ? '' : 'm-0'}`}>
       <Card className="shadow-none border border-gray-100 rounded-xl">
         {/* ── Header ── */}
-        <CardHeader className="px-5 pt-5 pb-3">
+        <CardHeader className="px-3 pt-0 pb-3">
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-base font-semibold text-gray-900">
@@ -150,7 +150,7 @@ export function WaveProgressCard({
               </p>
             </div>
             {showButton && (
-              <button className="flex items-center gap-1 text-xs font-medium text-[#086ACE] hover:text-blue-700 transition-colors group">
+              <button className="flex items-center gap-1 text-xs font-medium text-[#086ACE] hover:text-blue-700 transition-colors group cursor-pointer">
                 <span>View Details</span>
                 <ChevronRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
               </button>
@@ -260,12 +260,12 @@ export function WaveProgressCard({
               })}
 
               {/* Show more / less */}
-              {filtered.length > 8 && (
+              {filtered.length > 4 && (
                 <button
                   onClick={() => setShowAll(prev => !prev)}
                   className="w-full mt-1 py-2 rounded-xl border border-dashed border-gray-200 text-xs font-medium text-gray-400 hover:border-[#086ACE] hover:text-[#086ACE] transition-colors"
                 >
-                  {showAll ? 'Show less' : `Show ${filtered.length - 8} more skills`}
+                  {showAll ? 'Show less' : `Show ${filtered.length - 4} more skills`}
                 </button>
               )}
             </div>

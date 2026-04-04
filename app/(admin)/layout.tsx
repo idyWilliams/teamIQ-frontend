@@ -28,8 +28,8 @@ export default function OrganizationDashboardLayout({
     <RequireAuth>
       <SidebarProvider>
         <AppSidebar />
-        <SidebarInset className="flex h-screen flex-row overflow-hidden">
-          <div className="flex min-h-0 grow flex-col overflow-hidden">
+        <SidebarInset className="flex h-screen w-full overflow-hidden">
+          <div className="flex min-h-0 flex-1 flex-col min-w-0 overflow-hidden">
             <OnboardingBanner />
             <header className="h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
               <div className="flex items-center gap-2 px-4">
@@ -81,14 +81,20 @@ export default function OrganizationDashboardLayout({
             </header>
 
             {/* 1. overflow-auto; 2. min-w-full,w-max */}
-            <div className="hide-scrollbar min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
+            <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
               <div className="w-full">{children}</div>
             </div>
           </div>
           {showNotification && (
-            <div className="bg-background hide-scrollbar hidden h-full w-[20%] shrink-0 overflow-auto border-l md:hidden lg:block">
-              <Notification />
-            </div>
+            <>
+              <div
+                className="fixed inset-0 z-40 bg-black/30"
+                onClick={() => setShowNotification(false)}
+              />
+              <div className="fixed inset-y-0 right-0 z-50 w-[320px] bg-background border-l shadow-lg">
+                <Notification />
+              </div>
+            </>
           )}
         </SidebarInset>
       </SidebarProvider>

@@ -40,12 +40,15 @@ const CountrySelect = ({ control, name, label, errors }) => {
                   variant="outline"
                   role="combobox"
                   className={cn(
-                    'h-auto w-full justify-between rounded-md border-0 border-b border-[#B3C4D6] bg-[#F7F7F7] px-4 py-2 text-sm shadow-none outline-0 md:py-3',
-                    !field.value && 'text-muted-foreground'
+                    '!placeholder:text-[#B3C4D6] placeholder:text-sm md:placeholder:text-base border-[#B3C4D6] border-0 border-b shadow-none outline-0 py-2 md:py-3 px-4 h-auto rounded-md focus-visible:bg-[#F0F6FC] focus-visible:border-b-[#B3C4D6] focus-visible:ring-0',
+                    'flex items-center justify-between w-full',
+                    
+                    // ✅ BACKGROUND LOGIC (THIS IS THE FIX)
+                    !field.value ? 'bg-[#F7F7F7] text-[#B3C4D6]' : 'bg-white text-black'
                   )}
                 >
                   {selectedCountry ? (
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center gap-2 text-black">
                       <img
                         src={selectedCountry.flag}
                         alt={selectedCountry.name}
@@ -60,14 +63,14 @@ const CountrySelect = ({ control, name, label, errors }) => {
                 </Button>
               </PopoverTrigger>
 
-              <PopoverContent className="w-[280px] p-0">
-                <Command>
+              <PopoverContent className="w-[280px] p-0 bg-[#F7F7F7] text-black border border-[#B3C4D6] shadow-sm z-50">
+                <Command className="bg-[#F7F7F7] text-black">
                   <CommandInput placeholder="Search country..." />
                   <CommandList>
                     <CommandEmpty>No country found.</CommandEmpty>
                     <CommandGroup>
                       {countryList.map(country => (
-                        <CommandItem
+                        <CommandItem className="text-black hover:bg-[#F0F6FC]"
                           key={country.code}
                           value={country.name}
                           onSelect={() => {
@@ -81,7 +84,7 @@ const CountrySelect = ({ control, name, label, errors }) => {
                               alt={country.name}
                               className="h-4 w-5 object-cover"
                             />
-                            <span>{country.name}</span>
+                            <span className="text-black">{country.name}</span>
                           </div>
                         </CommandItem>
                       ))}

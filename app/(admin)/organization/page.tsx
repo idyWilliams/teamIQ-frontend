@@ -2,7 +2,7 @@
 
 
 import React from 'react';
-import DashbordOverview from '@/components/overview';
+import DashboardOverview from '@/components/overview';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ProjectStatus from '@/components/project-status';
 import Team from '@/components/team';
@@ -10,7 +10,7 @@ import Team from '@/components/team';
 export default function OverviewPage() {
   return (
     <div className="h-full">
-      <Tabs defaultValue="overview" className="flex h-full flex-col px-6 ">
+      <Tabs defaultValue="overview" className="px-6 ">
         <TabsList className="w-full grow justify-start  gap-2 rounded-none border-t-0 border-r-0 border-b border-l-0 border-gray-200 bg-transparent p-0">
           <TabsTrigger
             value="overview"
@@ -34,22 +34,16 @@ export default function OverviewPage() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="mt-4 min-h-0 flex-1">
-          <div className="h-full overflow-auto">
-            <DashbordOverview />
-          </div>
+        <TabsContent value="overview" className="mt-4">
+            <DashboardOverview />
         </TabsContent>
 
-        <TabsContent value="project-status" className="mt-4 min-h-0 flex-1">
-          <div className="h-full overflow-auto">
+        <TabsContent value="project-status" className="mt-4">
             <ProjectStatus />
-          </div>
         </TabsContent>
 
-        <TabsContent value="team" className="mt-4 min-h-0 flex-1">
-          <div className="h-full overflow-auto">
+        <TabsContent value="team" className="mt-4">
             <Team />
-          </div>
         </TabsContent>
       </Tabs>
     </div>
