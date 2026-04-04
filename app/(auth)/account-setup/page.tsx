@@ -84,7 +84,7 @@ export default function AccountSetup() {
 
   const onSubmit = async (data: FormData | any) => {
     const selectedFile = fileInputRef.current?.files?.[0];
-    let newStack = data.stack.split(',').map((s: string) => s.trim());
+    const newStack = data.stack.split(',').map((s: string) => s.trim());
 
     try {
       setLoading(true);
