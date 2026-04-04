@@ -145,7 +145,7 @@ export default function ProjectReadiness() {
             {/* SKILLS DETAIL */}
             <div className="mt-6 space-y-3">
               {Object.entries(selectedProject.skills).map(
-                ([skill, value]) => {
+                ([skill, value]: [string, any]) => {
                   const Icon =
                     skillsIcons[skill.toLowerCase()] || CircleCheck;
 
@@ -195,7 +195,7 @@ const skillsIcons: Record<string, React.ElementType> = {
 /* =========================
    STATUS STYLES
 ========================= */
-const statusStyles = {
+const statusStyles: Record<string, { label: string; bg: string; text: string }> = {
   ready: {
     label: 'Ready',
     bg: 'bg-gradient-to-br from-green-50 to-emerald-100',
