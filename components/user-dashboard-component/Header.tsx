@@ -1,88 +1,81 @@
 'use client';
 
-import React, { SetStateAction } from 'react';
+import React from 'react';
+import { Search, Bell, Brain, Menu } from 'lucide-react';
 import { Input } from '../ui/input';
-import { Search, Bell, X, Menu, Brain } from 'lucide-react';
-import { useAuthStore } from '@/store/useAuthStore';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useAuthStore } from '@/store/useAuthStore';
 import Link from 'next/link';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 type HeaderProps = {
-    toggleNotification: () => void;
-  onOpenNotification: () => void;
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<SetStateAction<boolean>>;
+  toggleNotification: () => void;
+  openSidebar: () => void;
 };
 
-const Header = ({toggleNotification, onOpenNotification, isOpen, setIsOpen }: HeaderProps) => {
+const Header = ({ toggleNotification, openSidebar }: HeaderProps) => {
   const { user } = useAuthStore();
-  return (
-    <header className="flex items-center justify-between">
-      {/* Mobile menu toggle button */}
 
-      <div className="inline-flex items-center gap-3 xl:hidden">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="z-50 w-6 xl:hidden"
-        >
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
-        <Link
-          href="/member"
-          className="z-50 inline-flex items-center gap-3 text-xl font-bold text-blue-500 xl:hidden"
-        >
-          <Brain /> TeamIQ
-        </Link>
-      </div>
-      {/* Mobile View */}
-      <div className="flex items-center justify-end gap-4 xl:hidden">
-        {/* Left - Initials */}
-        <Avatar>
-          <AvatarImage src={user?.profile_image} alt="Profile" />
+  return (
+    <header className="flex h-full w-full items-center gap-3 px-4">
+      
+      {/* MOBILE MENU */}
+      <button
+        onClick={openSidebar}
+        className="md:hidden -ml-1 p-2 rounded-md hover:bg-gray-100"
+        aria-label="close sidebar"
+      >
+        <Menu size={28} />
+      </button>
+
+      {/* MOBILE LOGO */}
+      <Link
+        href="/member"
+        className="flex items-center gap-2 text-xl font-bold text-blue-500 md:hidden"
+      >
+        <Brain size={24} />
+        TeamIQ
+      </Link>
+
+      {/* DESKTOP COLLAPSE */}
+      <SidebarTrigger className="hidden md:block -ml-1" />
+
+      {/* DESKTOP USER */}
+      <div className="hidden md:flex items-center gap-3">
+        <Avatar className="size-8">
+          <AvatarImage src={user?.profile_image} />
           <AvatarFallback>
-            {user?.first_name?.[0]}
-            {user?.last_name?.[0]}
+            {user?.first_name?.[0]}{user?.last_name?.[0]}
           </AvatarFallback>
         </Avatar>
+        <span className="font-semibold text-neutral-800 hidden lg:block">
+          {user?.first_name} {user?.last_name}
+        </span>
+      </div>
 
-        {/* Right - Bell Icon */}
-        <div className="flex items-center gap-4">
-          <button onClick={onOpenNotification}>
-            <Bell className="h-6 w-6 cursor-pointer text-[#292d32]" />
+      <div className="flex-1 flex justify-end items-center gap-4">
+        {/* DESKTOP */}
+        <div className="hidden md:flex items-center gap-3 lg:gap-4">
+          <div className="relative w-[160px] lg:w-[280px]">
+            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Input type="text" placeholder="Search for anything" className="h-9 pl-10" />
+          </div>
+          <button onClick={toggleNotification} className="p-2 hover:bg-gray-100 rounded-md" aria-label="Open notifications">
+            <Bell className="h-5 w-5 text-gray-600" />
           </button>
         </div>
-      </div>
-      {/* // Desktop View */}
-      <div className="hidden items-center justify-end gap-4 lg:justify-between xl:flex xl:grow">
-        {/* Left - Initials + Full Name */}
-        <div className="inline-flex items-center gap-2">
-          <Avatar>
-            <AvatarImage src={user?.profile_image} alt="Profile" />
+
+        {/* MOBILE */}
+        <div className="flex items-center gap-3 md:hidden">
+          <button onClick={toggleNotification} className="p-2 hover:bg-gray-100 rounded-md" aria-label="Open notifications">
+            <Bell className="h-6 w-6 text-[#292d32]" />
+          </button>
+          <Avatar className="size-8">
+            <AvatarImage src={user?.profile_image} />
             <AvatarFallback>
-              {user?.first_name?.[0]}
-              {user?.last_name?.[0]}
+              {user?.first_name?.[0]}{user?.last_name?.[0]}
             </AvatarFallback>
           </Avatar>
-          <span className="font-bold text-neutral-800">
-            <span className="font-bold text-neutral-800">
-              {user?.first_name} {user?.last_name}
-            </span>
-          </span>
-        </div>
-
-        {/* Right - Search Input + Bell */}
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-[#bac0cc]" />
-            <Input
-              type="text"
-              placeholder="Search for anything"
-              className="w-[348px] pl-10 text-[#393939] placeholder:text-[#bac0cc] focus:ring-0"
-            />
-          </div>
-          <button onClick={toggleNotification}>
-            <Bell className="h-6 w-6 cursor-pointer text-[#86898c]" />
-          </button>
         </div>
       </div>
     </header>
