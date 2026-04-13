@@ -9,7 +9,7 @@ import RequireAuth from '@/components/auth/RequireAuth';
 
 export default function TeamDashboardLayout({ children }: { children: React.ReactNode }) {
   const [showNotification, setShowNotification] = useState(false);
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false); // ✅ ADD THIS
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false); 
 
   useEffect(() => {
     const closeNotif = () => setShowNotification(false);
@@ -23,7 +23,7 @@ export default function TeamDashboardLayout({ children }: { children: React.Reac
     <RequireAuth>
       <SidebarProvider>
 
-        {/* ✅ PASS CONTROL */}
+        {/* PASS CONTROL */}
         <UserSidebar
           isOpen={mobileSidebarOpen}
           closeSidebar={() => setMobileSidebarOpen(false)}
@@ -35,7 +35,7 @@ export default function TeamDashboardLayout({ children }: { children: React.Reac
             <header className="h-16 shrink-0 border-b bg-white px-4 flex items-center">
               <Header
                 toggleNotification={toggleNotification}
-                openSidebar={() => setMobileSidebarOpen(true)} // ✅ ADD THIS
+                openSidebar={() => setMobileSidebarOpen(true)} 
               />
             </header>
 

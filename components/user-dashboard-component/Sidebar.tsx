@@ -19,16 +19,16 @@ import {
 } from '@/components/ui/sidebar';
 
 type SidebarProps = {
-  isOpen?: boolean;        // ✅ mobile control
+  isOpen?: boolean;        
   closeSidebar?: () => void;
 };
 
 export default function UserSidebar({ isOpen, closeSidebar }: SidebarProps) {
   const pathname = usePathname();
   const { logout } = useAuthStore();
-  const { state, isMobile } = useSidebar();
+  const { state } = useSidebar();
 
-  console.log({ isMobile, isOpen }); // ✅ ADD HERE
+  console.log({ isOpen });
 
   const isCollapsed = state === 'collapsed';
   const [isParentOpen, setIsParentOpen] = useState<string | null>(null);
@@ -51,15 +51,17 @@ export default function UserSidebar({ isOpen, closeSidebar }: SidebarProps) {
   };
 
   const handleLinkClick = () => {
-    if (isMobile) closeSidebar?.(); // ✅ only mobile closes
+    if (window.innerWidth < 768) {
+      closeSidebar?.();
+    }
   };
 
   return (
     <>
-      {/* ✅ OVERLAY */}
-      {isMobile && isOpen && (
+      {/* OVERLAY */}
+      {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50"
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
           onClick={closeSidebar}
         />
       )}
@@ -69,25 +71,25 @@ export default function UserSidebar({ isOpen, closeSidebar }: SidebarProps) {
         className={`
           border-r border-gray-200 bg-white
           fixed top-0 left-0 z-50 h-full
-          w-[260px]                         /* ✅ VERY IMPORTANT */
+          flex flex-col
+
+          w-[75%] max-w-[320px]
+          md:w-[260px]
+
           transition-transform duration-300 ease-in-out
 
-          ${isMobile 
-            ? (isOpen ? 'translate-x-0' : '-translate-x-full') 
-            : 'translate-x-0'
-          }
-
-          lg:static lg:translate-x-0
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          md:translate-x-0 md:static
         `}
       >
         {/* HEADER */}
-        <SidebarHeader className="relative">
+        <SidebarHeader className="relative pt-4">
 
-          {/* ✅ CLOSE BUTTON (mobile only when open) */}
-          {isMobile && isOpen && (
+          {/* CLOSE BUTTON (mobile only when open) */}
+          {isOpen && (
             <button
               onClick={closeSidebar}
-              className="absolute right-4 top-4 z-50 rounded-full p-2 hover:bg-gray-100"
+              className="absolute right-4 top-4 z-50 rounded-full p-2 hover:bg-gray-100 md:hidden"
             >
               <X size={26} />
             </button>
@@ -106,7 +108,7 @@ export default function UserSidebar({ isOpen, closeSidebar }: SidebarProps) {
         </SidebarHeader>
 
         {/* CONTENT */}
-        <SidebarContent>
+        <SidebarContent className="flex-1 overflow-y-auto">
           <SidebarGroup>
             {!isCollapsed && <SidebarGroupLabel>Pages</SidebarGroupLabel>}
 
@@ -126,7 +128,7 @@ export default function UserSidebar({ isOpen, closeSidebar }: SidebarProps) {
         </SidebarContent>
 
         {/* FOOTER */}
-        <SidebarFooter className="border-t border-gray-100">
+        <SidebarFooter className="mt-auto">
           <Button
             variant="ghost"
             className="w-full justify-start gap-2"
@@ -147,7 +149,7 @@ export default function UserSidebar({ isOpen, closeSidebar }: SidebarProps) {
 }
 
 //
-// ✅ SidebarLinkItem (FIX INCLUDED)
+// SidebarLinkItem (FIX INCLUDED)
 //
 const SidebarLinkItem = ({
   link,
