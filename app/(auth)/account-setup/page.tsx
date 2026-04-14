@@ -3,7 +3,7 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -16,7 +16,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import axiosInstance from '@/services/axios';
-import { Camera, Loader2 } from 'lucide-react';
+import { Camera } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'nextjs-toploader/app';
 import { users } from '@/services/api';
@@ -83,23 +83,25 @@ export default function AccountSetup() {
   };
 
   const onSubmit = async (data: FormData | any) => {
+    const selectedFile = fileInputRef.current?.files?.[0];
+    const newStack = data.stack.split(',').map((s: string) => s.trim());
+
     try {
       setLoading(true);
       let imageUrl = user?.profile_image;
-
       // Only upload if user selected a new file
-      if (data.profile) {
+      if (selectedFile) {
         const formData = new FormData();
-        formData.append('file', data.profile);
+        formData.append('file', selectedFile);
         formData.append('image_type', 'profile');
         formData.append('update_db', 'true');
 
         const uploadResponse = await axiosInstance.post('/image', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
-
         imageUrl = uploadResponse?.data?.data?.url;
       }
+
 
       setTheStack(data.stack.split(',').map((s: string) => s.trim()));
 

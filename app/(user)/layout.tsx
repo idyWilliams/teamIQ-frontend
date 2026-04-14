@@ -1,91 +1,59 @@
 'use client';
 
-import React, { useState } from 'react';
-import RightSideBar from '@/components/user-dashboard-component/RightSideBar';
+import React, { useState, useEffect } from 'react';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import Header from '@/components/user-dashboard-component/Header';
-import Sidebar from '@/components/user-dashboard-component/Sidebar';
-import RightSidebarModal from '@/components/user-dashboard-component/modals/RightSidebarModal';
-import { Button } from '@/components/ui/button';
-import { Bell } from 'lucide-react';
+import UserSidebar from '@/components/user-dashboard-component/Sidebar';
+import UserNotification from '@/components/Notifications/UserNotification';
 import RequireAuth from '@/components/auth/RequireAuth';
 
-// type props for children
-type LayoutProps = {
-  children: React.ReactNode;
-};
+export default function TeamDashboardLayout({ children }: { children: React.ReactNode }) {
+  const [showNotification, setShowNotification] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-export default function TeamDashboardLayout({ children }: LayoutProps) {
-  const [isOpen, setIsOpen] = useState<boolean>(false); // mobile menu and close icon
-  const [desktopNotifications, setDesktopNotifications] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false); // for notification mobile view
-  // const pathname = usePathname();
+  useEffect(() => {
+    const closeNotif = () => setShowNotification(false);
+    window.addEventListener('closeNotification', closeNotif);
+    return () => window.removeEventListener('closeNotification', closeNotif);
+  }, []);
 
-  // Dashboard route
-  // const isDashboardRoute =
-  //   pathname === '/member' || pathname.startsWith('/member/dashboard');
-
-  // toggle notification panel for desktop
-  const toggleNotification = () => {
-    setDesktopNotifications(prev => !prev);
-  };
+  const toggleNotification = () => setShowNotification(prev => !prev);
 
   return (
     <RequireAuth>
-      <div className="flex h-screen overflow-hidden">
-        {/* MOBILE SIDEBAR */}
-        <aside
-          className={`fixed top-0 left-0 z-40 h-screen w-full transform border-r text-[#a6a2a2] transition-transform duration-300 xl:hidden ${
-            isOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
-        >
-          <Sidebar closeSidebar={() => setIsOpen(false)} />
-        </aside>
+      <SidebarProvider>
 
-        {isOpen && <div className="fixed inset-0 z-30 bg-black/70 xl:hidden" />}
+        {/* PASS CONTROL */}
+        <UserSidebar
+          isOpen={mobileSidebarOpen}
+          closeSidebar={() => setMobileSidebarOpen(false)}
+        />
 
-        {/* LEFT SIDEBAR (15%) */}
-        <div className="hidden w-[15%] border-r xl:block">
-          <Sidebar closeSidebar={() => setIsOpen(false)} />
-        </div>
+        <SidebarInset className="flex h-screen w-full overflow-hidden">
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
 
-        {/* MAIN AREA */}
-        <div
-          className={`flex flex-col transition-all duration-300 ${
-            desktopNotifications ? 'xl:w-[70%]' : 'xl:w-[85%]'
-          } w-full px-4 pt-4 lg:p-6`}
-        >
-          <Header
-            toggleNotification={toggleNotification}
-            onOpenNotification={() => setShowNotifications(true)}
-            {...{ isOpen, setIsOpen }}
-          />
+            <header className="h-16 shrink-0 border-b bg-white px-4 flex items-center">
+              <Header
+                toggleNotification={toggleNotification}
+                openSidebar={() => setMobileSidebarOpen(true)}
+              />
+            </header>
 
-          <main className="flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {children}
-          </main>
-        </div>
-
-        {/* RIGHT SIDEBAR (15%) - only when notifications open */}
-        {desktopNotifications && (
-          <div className="hidden w-[15%] border-l xl:block">
-            <RightSideBar />
+            <main className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar px-4 lg:px-6 py-6">
+              {children}
+            </main>
           </div>
-        )}
+        </SidebarInset>
 
-        {/* MOBILE FLOATING BELL ICON */}
-        <Button
-          onClick={() => setShowNotifications(true)}
-          className="fixed right-4 bottom-4 cursor-pointer rounded-full bg-[#5395dc] p-3 text-white shadow-lg xl:hidden"
-        >
-          <Bell size={24} />
-        </Button>
-
-        {/* MOBILE NOTIFICATION MODAL */}
-        {showNotifications && (
-          <RightSidebarModal onClose={() => setShowNotifications(false)} />
+        {showNotification && (
+          <>
+            <div className="fixed inset-0 z-50 bg-black/50" onClick={() => setShowNotification(false)} />
+            <div className="fixed inset-y-0 right-0 z-50 w-full max-w-[380px] bg-white shadow-2xl">
+              <UserNotification />
+            </div>
+          </>
         )}
-      </div>
+      </SidebarProvider>
     </RequireAuth>
   );
 }
-

@@ -29,6 +29,9 @@
 
 # debug
 npm-debug.log*
+build-log.txt
+build-results.txt
+lint-results.txt
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
