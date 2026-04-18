@@ -1,383 +1,260 @@
-import React, { useState, useCallback, useMemo, Suspense } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
+'use client';
+
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { sidebarLinks, SidebarLinkType } from './data/sideLink';
-import { ChevronDown, ChevronUp, LogOut, User } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { Brain, LogOut, ChevronDown, X } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useAuthStore } from '@/store/useAuthStore';
+import { sidebarLinks, SidebarLinkType } from './data/sideLink';
+
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  useSidebar,
+} from '@/components/ui/sidebar';
 
 type SidebarProps = {
+  isOpen?: boolean;
   closeSidebar?: () => void;
-  className?: string;
 };
 
-// Constants for consistent styling
-const STYLES = {
-  active: 'bg-iq-500/5 text-iq-500 border-l-4 border-iq-500  ',
-  inactive: 'text-neutral-800 hover:bg-gray-100',
-  activeChild: 'font-medium text-iq-500',
-  inactiveChild: 'text-neutral-800',
-} as const;
-
-const SidebarMain = ({ closeSidebar, className = '' }: SidebarProps) => {
+export default function UserSidebar({ isOpen, closeSidebar }: SidebarProps) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [isParentActiveOpen, setIsParentActiveOpen] = useState<string | null>(
-    null
-  );
+  const { logout } = useAuthStore();
+  const { state } = useSidebar();
 
-  // Extract project ID from URL if we're on a project page
-  const getProjectId = useCallback(() => {
-    const projectMatch = pathname.match(/\/member\/projects\/([^\/\?]+)/);
-    return projectMatch ? projectMatch[1] : null;
-  }, [pathname]);
+  const isCollapsed = state === 'collapsed';
+  const [isParentOpen, setIsParentOpen] = useState<string | null>(null);
 
-  // Memoized path checking function
-  const isPathActive = useCallback(
-    (link: SidebarLinkType): boolean => {
-      if (pathname === link.url) return true;
-      if (link.children) {
-        return link.children.some(child => {
-          // Handle query parameters in URLs
-          const childUrl = child.url.split('?')[0];
-          const currentPath = pathname.split('?')[0];
-          return currentPath.startsWith(childUrl);
-        });
-      }
-      return false;
-    },
-    [pathname]
-  );
+  const memoizedLinks: SidebarLinkType[] = useMemo(() => sidebarLinks, []);
 
-  // Helper function to check if a child link is active
-  const isChildActive = useCallback(
-    (childUrl: string): boolean => {
-      // For URLs with query parameters, reconstruct the current URL and compare
-      if (childUrl.includes('?')) {
-        const currentUrl =
-          pathname +
-          (searchParams.toString() ? `?${searchParams.toString()}` : '');
-        return currentUrl === childUrl;
-      }
+  const isLinkActive = (url: string): boolean => {
+    if (!url) return false;
+    return pathname.split('?')[0] === url.split('?')[0];
+  };
 
-      // For URLs without query parameters, use exact path match
-      return pathname === childUrl;
-    },
-    [pathname, searchParams]
-  );
+  const isParentActive = (link: SidebarLinkType): boolean => {
+    if (isLinkActive(link.url)) return true;
+    return link.children?.some(child => isLinkActive(child.url)) || false;
+  };
 
-  // Memoized toggle handler
-  const handleParentToggle = useCallback((label: string) => {
-    setIsParentActiveOpen(prevLabel => (prevLabel === label ? null : label));
-  }, []);
-
-  // Memoized sidebar links with dynamic children based on project ID
-  const memoizedSidebarLinks = useMemo(() => {
-    const projectId = getProjectId();
-    return sidebarLinks.map(link => {
-      if (link.dynamicChildren && projectId) {
-        return {
-          ...link,
-          children: link.dynamicChildren(projectId),
-        };
-      }
-      // For Projects link, only show children when on a specific project page
-      if (link.label === 'Projects' && !projectId) {
-        return {
-          ...link,
-          children: undefined, // No children when not on a specific project
-        };
-      }
-      return link;
-    });
-  }, [getProjectId]);
+  const handleLinkClick = () => {
+    if (window.innerWidth < 768) closeSidebar?.();
+  };
 
   return (
-    <aside
-      className={`flex h-screen flex-col border-r bg-white ${className}`}
-      role="navigation"
-      aria-label="Main navigation"
-    >
-      <SidebarHeader />
-      <SidebarNavigation
-        links={memoizedSidebarLinks}
-        pathname={pathname}
-        isParentActiveOpen={isParentActiveOpen}
-        onParentToggle={handleParentToggle}
-        isPathActive={isPathActive}
-        isChildActive={isChildActive}
-        onLinkClick={closeSidebar}
-      />
-    </aside>
-  );
-};
+    <>
+      {/* MOBILE OVERLAY */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          onClick={closeSidebar}
+        />
+      )}
 
-const Sidebar = ({ closeSidebar, className }: SidebarProps) => {
+      {/* MOBILE (CUSTOM CONTROL ONLY) */}
+      <div
+        className={`
+          md:hidden
+          fixed top-0 left-0 z-50 h-full w-[75%] max-w-[320px]
+          bg-white border-r border-gray-200 flex flex-col
+          transition-transform duration-300
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        `}
+      >
+        <SidebarInner
+          {...{
+            isCollapsed: false,
+            isParentOpen,
+            setIsParentOpen,
+            memoizedLinks,
+            isLinkActive,
+            isParentActive,
+            handleLinkClick,
+            logout,
+            closeSidebar,
+            showClose: true,
+          }}
+        />
+      </div>
+
+      {/* DESKTOP / TABLET (REAL SIDEBAR) */}
+      <Sidebar
+        collapsible="icon"
+        className="hidden md:flex border-r bg-white"
+      >
+        <SidebarInner
+          {...{
+            isCollapsed,
+            isParentOpen,
+            setIsParentOpen,
+            memoizedLinks,
+            isLinkActive,
+            isParentActive,
+            handleLinkClick,
+            logout,
+            showClose: false,
+          }}
+        />
+      </Sidebar>
+    </>
+  );
+}
+
+//
+// SHARED CONTENT (DRY)
+//
+const SidebarInner = ({
+  isCollapsed,
+  isParentOpen,
+  setIsParentOpen,
+  memoizedLinks,
+  isLinkActive,
+  isParentActive,
+  handleLinkClick,
+  logout,
+  closeSidebar,
+  showClose,
+}: any) => {
   return (
-    <Suspense fallback={<>Loading SideBar</>}>
-      <SidebarMain closeSidebar={closeSidebar} className={className} />
-    </Suspense>
-  );
-};
+    <>
+      {/* HEADER */}
+      <SidebarHeader className="relative pt-4">
+        {showClose && (
+          <button
+            onClick={closeSidebar}
+            aria-label="close sidebar"
+            className="absolute right-4 top-4 p-2 md:hidden"
+          >
+            <X size={26} />
+          </button>
+        )}
 
-// Sidebar Header Component
-const SidebarHeader = React.memo(() => (
-  <div className="mb-5 flex items-center gap-2 p-4">
-    <User className="h-5 w-5 rounded-full text-[#000009]" aria-hidden="true" />
-    <span className="font-medium text-[#555555]">Logo</span>
-  </div>
-));
-
-SidebarHeader.displayName = 'SidebarHeader';
-
-// Sidebar Navigation Component
-type SidebarNavigationProps = {
-  links: SidebarLinkType[];
-  pathname: string;
-  isParentActiveOpen: string | null;
-  onParentToggle: (label: string) => void;
-  isPathActive: (link: SidebarLinkType) => boolean;
-  isChildActive: (childUrl: string) => boolean;
-  onLinkClick?: () => void;
-};
-
-const SidebarNavigation = React.memo(
-  ({
-    links,
-    pathname,
-    isParentActiveOpen,
-    onParentToggle,
-    isPathActive,
-    isChildActive,
-    onLinkClick,
-  }: SidebarNavigationProps) => {
-    const { logout } = useAuthStore();
-
-    return (
-      <>
-        <p className="px-4 py-3 text-sm text-[#a2a3a4]">Pages</p>
-        <nav
-          className="flex flex-1 flex-col gap-1 overflow-y-auto px-2"
-          role="navigation"
-          aria-label="Sidebar navigation"
+        <Link
+          href="/member"
+          onClick={handleLinkClick}
+          className={`
+            flex items-center py-2 text-xl font-bold text-blue-500
+            ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}
+            `}
         >
-          {links.map(link => (
+          <Brain className={`${isCollapsed ? 'size-8' : 'size-5'}`} />
+          {!isCollapsed && <span>TeamIQ</span>}
+        </Link>
+      </SidebarHeader>
+
+      {/* CONTENT */}
+      <SidebarContent className="flex-1 overflow-y-auto">
+        <SidebarGroup>
+          {!isCollapsed && <SidebarGroupLabel>Pages</SidebarGroupLabel>}
+
+          {memoizedLinks.map((link: SidebarLinkType) => (
             <SidebarLinkItem
               key={link.label}
               link={link}
-              pathname={pathname}
-              isParentActiveOpen={isParentActiveOpen}
-              onParentToggle={onParentToggle}
-              isPathActive={isPathActive}
-              isChildActive={isChildActive}
-              onLinkClick={onLinkClick}
+              isCollapsed={isCollapsed}
+              isParentOpen={isParentOpen}
+              setIsParentOpen={setIsParentOpen}
+              isLinkActive={isLinkActive}
+              isParentActive={isParentActive}
+              onLinkClick={handleLinkClick}
             />
           ))}
-          <Button
-            onClick={() => logout()}
-            className="text-iq-500 flex cursor-pointer items-center justify-start rounded-md border-0 bg-transparent p-0 pl-16 text-sm shadow-none transition-colors hover:bg-transparent focus:outline-none"
-          >
-            <LogOut />
-            Log out
-          </Button>
-        </nav>
-      </>
-    );
-  }
-);
+        </SidebarGroup>
+      </SidebarContent>
 
-SidebarNavigation.displayName = 'SidebarNavigation';
-
-// Individual Sidebar Link Item Component
-type SidebarLinkItemProps = {
-  link: SidebarLinkType;
-  pathname: string;
-  isParentActiveOpen: string | null;
-  onParentToggle: (label: string) => void;
-  isPathActive: (link: SidebarLinkType) => boolean;
-  isChildActive: (childUrl: string) => boolean;
-  onLinkClick?: () => void;
+      {/* FOOTER */}
+      <SidebarFooter className="mt-auto">
+        <Button
+          variant="ghost"
+          className="w-full justify-start gap-2"
+          onClick={() => {
+            logout();
+            closeSidebar?.();
+          }}
+        >
+          <LogOut className={`${isCollapsed ? 'size-6' : ''}`} />
+          {!isCollapsed && <span>Log out</span>}
+        </Button>
+      </SidebarFooter>
+    </>
+  );
 };
 
-const SidebarLinkItem = React.memo(
-  ({
-    link,
-    pathname,
-    isParentActiveOpen,
-    onParentToggle,
-    isPathActive,
-    isChildActive,
-    onLinkClick,
-  }: SidebarLinkItemProps) => {
-    if (link.children) {
-      return (
-        <ParentLinkItem
-          link={link}
-          isParentActiveOpen={isParentActiveOpen}
-          onParentToggle={onParentToggle}
-          isPathActive={isPathActive}
-          isChildActive={isChildActive}
-          onLinkClick={onLinkClick}
-        />
-      );
-    }
+//
+// SidebarLinkItem (UPDATED ICON SIZE)
+//
+const SidebarLinkItem = ({
+  link,
+  isLinkActive,
+  isParentActive,
+  isParentOpen,
+  setIsParentOpen,
+  onLinkClick,
+  isCollapsed,
+}: any) => {
+  const isOpen = isParentOpen === link.label;
+  const active = isParentActive(link);
 
-    return (
-      <SimpleLinkItem
-        link={link}
-        pathname={pathname}
-        onLinkClick={onLinkClick}
-      />
-    );
-  }
-);
+  const iconClass = isCollapsed ? 'size-6' : '';
 
-SidebarLinkItem.displayName = 'SidebarLinkItem';
-
-// Parent Link Item Component (with children)
-type ParentLinkItemProps = {
-  link: SidebarLinkType;
-  isParentActiveOpen: string | null;
-  onParentToggle: (label: string) => void;
-  isPathActive: (link: SidebarLinkType) => boolean;
-  isChildActive: (childUrl: string) => boolean;
-  onLinkClick?: () => void;
-};
-
-const ParentLinkItem = React.memo(
-  ({
-    link,
-    isParentActiveOpen,
-    onParentToggle,
-    isPathActive,
-    isChildActive,
-    onLinkClick,
-  }: ParentLinkItemProps) => {
-    const isCurrentParent = isParentActiveOpen === link.label;
-    const isParentActive = isPathActive(link);
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        onParentToggle(link.label);
-      }
-    };
-
+  if (link.children) {
     return (
       <div>
-        <div
-          className={`flex w-full cursor-pointer items-center justify-between rounded-md p-2 text-sm transition-colors ${
-            isParentActive ? STYLES.active : STYLES.inactive
+        <button
+          onClick={() => setIsParentOpen(isOpen ? null : link.label)}
+          className={`flex w-full items-center gap-3 p-2.5 text-sm ${
+            active ? 'text-iq-500' : 'hover:bg-gray-100'
           }`}
-          role="button"
-          tabIndex={0}
-          aria-expanded={isCurrentParent}
-          aria-controls={`submenu-${link.label}`}
-          onKeyDown={handleKeyDown}
         >
-          <button
-            onClick={() => onParentToggle(link.label)}
-            className="mr-2 rounded-sm p-1 focus:outline-none"
-            aria-label={`${isCurrentParent ? 'Collapse' : 'Expand'} ${link.label} submenu`}
-          >
-            {isCurrentParent ? (
-              <ChevronUp size={16} aria-hidden="true" />
-            ) : (
-              <ChevronDown size={16} aria-hidden="true" />
-            )}
-          </button>
-          <Link
-            href={link.url}
-            className="flex flex-1 items-center gap-3"
-            onClick={onLinkClick}
-          >
-            {link.icon}
-            <span>{link.label}</span>
-          </Link>
-        </div>
+          <span className={iconClass}>{link.icon}</span>
+          {!isCollapsed && <span>{link.label}</span>}
+          {!isCollapsed && (
+            <ChevronDown
+              className={`ml-auto ${isOpen ? 'rotate-180' : ''}`}
+            />
+          )}
+        </button>
 
-        {isCurrentParent && (
-          <div
-            id={`submenu-${link.label}`}
-            className="ml-4"
-            role="group"
-            aria-label={`${link.label} submenu`}
-          >
-            {link.children?.map(child => (
-              <ChildLinkItem
+        {isOpen && !isCollapsed && (
+          <div className="ml-6 mt-1 space-y-1">
+            {link.children.map((child: any) => (
+              <Link
                 key={child.label}
-                child={child}
-                isChildActive={isChildActive}
-                onLinkClick={onLinkClick}
-              />
+                href={child.url}
+                onClick={onLinkClick}
+                className={`block px-3 py-2 ${
+                  isLinkActive(child.url)
+                    ? 'text-iq-500'
+                    : 'hover:bg-gray-100'
+                }`}
+              >
+                {child.label}
+              </Link>
             ))}
           </div>
         )}
       </div>
     );
   }
-);
 
-ParentLinkItem.displayName = 'ParentLinkItem';
-
-// Child Link Item Component
-type ChildLinkItemProps = {
-  child: SidebarLinkType;
-  isChildActive: (childUrl: string) => boolean;
-  onLinkClick?: () => void;
+  return (
+    <Link
+      href={link.url}
+      onClick={onLinkClick}
+      className={`flex items-center gap-3 p-2.5 ${
+        isLinkActive(link.url)
+          ? 'text-iq-500'
+          : 'hover:bg-gray-100'
+      }`}
+    >
+      <span className={iconClass}>{link.icon}</span>
+      {!isCollapsed && <span>{link.label}</span>}
+    </Link>
+  );
 };
-
-const ChildLinkItem = React.memo(
-  ({ child, isChildActive, onLinkClick }: ChildLinkItemProps) => {
-    const isActiveChild = isChildActive(child.url);
-
-    return (
-      <Link
-        href={child.url}
-        onClick={onLinkClick}
-        className={`hover:text-iq-500 m-1 flex items-center rounded-md py-2 pl-8 text-sm font-normal transition-colors focus:outline-none ${
-          isActiveChild ? STYLES.activeChild : STYLES.inactiveChild
-        }`}
-        aria-current={isActiveChild ? 'page' : undefined}
-      >
-        {child.label}
-      </Link>
-    );
-  }
-);
-
-ChildLinkItem.displayName = 'ChildLinkItem';
-
-// Simple Link Item Component (without children)
-type SimpleLinkItemProps = {
-  link: SidebarLinkType;
-  pathname: string;
-  onLinkClick?: () => void;
-};
-
-const SimpleLinkItem = React.memo(
-  ({ link, pathname, onLinkClick }: SimpleLinkItemProps) => {
-    const isActive = pathname === link.url;
-
-    return (
-      <Link
-        href={link.url}
-        onClick={onLinkClick}
-        className={`flex items-center rounded-md p-2 text-sm transition-colors focus:outline-none ${
-          isActive ? STYLES.active : STYLES.inactive
-        }`}
-        aria-current={isActive ? 'page' : undefined}
-      >
-        <span className="mr-2 flex size-6"></span>
-        <span className="inline-flex gap-2">
-          {link.icon}
-          <span>{link.label}</span>
-        </span>
-      </Link>
-    );
-  }
-);
-
-SimpleLinkItem.displayName = 'SimpleLinkItem';
-
-export default Sidebar;

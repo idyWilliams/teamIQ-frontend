@@ -1,123 +1,82 @@
-"use client";
-import React from "react";
-import { useState, useEffect, useRef } from "react";
-import CardItem from "@/components/cardItem";
-import RadarChart from "@/components/radar-chart";
-import RadialChart from "@/components/radial-chart";
-import RecentCard from "@/components/recent-card";
-import Deadline from "@/components/deadline-card";
-import Loading from "@/components/dashboardSkeleton"
-import { useAuthStore } from "@/store/useAuthStore";
+'use client';
+import React from 'react';
+import { useState, useEffect } from 'react';
+import CardItem from '@/components/cardItem';
+import RadarChart from '@/components/radar-chart';
+import RadialChart from '@/components/radial-chart';
+import RecentCard from '@/components/recent-card';
+import Deadline from '@/components/deadline-card';
+import Loading from '@/components/dashboardSkeleton';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
-  const {user} = useAuthStore()
-  console.log("user", user)
+  const { user } = useAuthStore();
 
   // simulate API fetch delay
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000); // 2 seconds
+    const timer = setTimeout(() => setLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
 
   // mock data for the cards
   const cards = [
-    { title: "Active Project", avatarUrl: "images/3dcube.svg", content: "22" },
-    { title: "Overall Progress", avatarUrl: "images/chart.svg", content: "22" },
-    { title: "Skill Tracked", avatarUrl: "images/3square.svg", content: "3" },
+    { title: 'Active Projects', avatarUrl: 'images/3dcube.svg', content: '22', trend: '+2' },
+    { title: 'Overall Progress', avatarUrl: 'images/chart.svg', content: '85%', trend: '+5%' },
+    { title: 'Skills Tracked', avatarUrl: 'images/3square.svg', content: '12', trend: '+1' },
     {
-      title: "Completed Project",
-      avatarUrl: "images/document-text.svg",
-      content: "22",
+      title: 'Completed Projects',
+      avatarUrl: 'images/document-text.svg',
+      content: '45',
+      trend: '+12'
     },
     {
-      title: "Pending Project",
-      avatarUrl: "images/document.svg",
-      content: "3",
+      title: 'Pending Tasks',
+      avatarUrl: 'images/document.svg',
+      content: '8',
+      trend: '-2'
     },
   ];
-
-  // for mobile carousel
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const scrollRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    const container = scrollRef.current;
-    if (!container) return;
-
-    const onScroll = () => {
-      const cardWidth = container.clientWidth;
-      const scrollLeft = container.scrollLeft;
-      const index = Math.round(scrollLeft / cardWidth);
-      setActiveIndex(index);
-    };
-
-    container.addEventListener("scroll", onScroll);
-    return () => container.removeEventListener("scroll", onScroll);
-  }, [loading]);
 
   if (loading) {
     return <Loading />;
   }
+
   return (
-    <div className="px-6">
-      <h2 className="font-semibold pt-5 pb-9 text-2xl max-sm:text-xl">
-        Welcome back, {user?.first_name} {user?.last_name}
-      </h2>
-      {/* desktop card display */}
-      <div className="hidden gap-4 sm:flex mb-12 max-lg:flex-wrap ">
+    <div className="py-6 space-y-8 animate-in fade-in duration-700">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
+          Welcome back, {user?.first_name || 'Member'}
+        </h2>
+        <p className="text-gray-500 text-sm font-medium">Here&apos;s what&apos;s happening with your projects today.</p>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {cards.map((card, i) => (
           <CardItem key={i} {...card} />
         ))}
       </div>
 
-      {/* card display in mobile */}
-      <div className="mb-8 sm:hidden">
-        <div
-          ref={scrollRef}
-          className="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scrollbar"
-        >
-          {cards.map((card, i) => (
-            <div key={i} className="snap-center shrink-0 w-full">
-              <CardItem {...card} />
-            </div>
-          ))}
-        </div>
-        {/* indicator button container */}
-        <div className="flex gap-2 justify-center mt-4">
-          {cards.map((_, i) => (
-            <button
-              key={i}
-              className={`w-2 h-2 rounded-full ${
-                i === activeIndex ? "bg-blue-500" : "bg-gray-300"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-      {/* Chart section */}
-      <div className="flex gap-6 items-stretch max-sm:flex-col mb-12">
-        <div className="lg:flex-2/3 flex-1 ">
+      {/* Intelligence Section */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
           <RadarChart />
         </div>
-        <div className="lg:flex-1/3 flex-1">
+        <div className="lg:col-span-1">
           <RadialChart />
         </div>
       </div>
-      <div>
-        <div className="flex gap-6 items-stretch max-sm:flex-col mb-12">
-          <div className="lg:flex-2/3 flex-1 ">
-            <RecentCard />
-          </div>
-          <div className="lg:flex-1/3 flex-1">
-            <Deadline />
-          </div>
-          <div>
-           
-          </div>
+
+      {/* Activity Section */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <RecentCard />
+        </div>
+        <div className="lg:col-span-1">
+          <Deadline />
         </div>
       </div>
-      
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { data } from '../../../utils/data';
 import { Trash2 } from 'lucide-react';
 import {
   Table,
@@ -14,16 +13,18 @@ import {
 
 interface InviteTableProps {
   activeUsers?: Array<{
-    id: number,
-    email: string,
-    role: string,
-    status: string,
-    track: string   
-    accepted: boolean 
-  }>,
+    id: number;
+    email: string;
+    role: string;
+    status: string;
+    track: string;
+    accepted: boolean;
+  }>;
+  isLoading?: boolean;
 }
 
-const InviteTable = ({activeUsers} : InviteTableProps) => {
+const InviteTable = ({ activeUsers, isLoading }: InviteTableProps) => {
+  if (isLoading) return <p>Loading...</p>;
   return (
     <div className="mx-auto w-[70%]">
       <Table className="h-[60%] w-full">
@@ -31,9 +32,7 @@ const InviteTable = ({activeUsers} : InviteTableProps) => {
           <TableRow className="w-full">
             <TableHead className="h-[20px] border-l p-2">Email</TableHead>
             <TableHead className="h-[20px] border-l p-2">Track</TableHead>
-            <TableHead className="h-[20px] border-l p-2">
-              Role
-            </TableHead>
+            <TableHead className="h-[20px] border-l p-2">Role</TableHead>
             <TableHead className="h-[20px] border-l p-2">Status</TableHead>
           </TableRow>
         </TableHeader>

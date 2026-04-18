@@ -1,12 +1,16 @@
 'use client';
 
 import * as React from 'react';
-import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react';
-import { NavMain } from '@/components/nav-main';
+import {
+  AudioWaveform,
+  Brain,
+  Command,
+  GalleryVerticalEnd,
+  LogOut,
+} from 'lucide-react';
 import { NavProjects } from '@/components/nav-projects';
 import NavSettings from './NavSettings';
-import { NavUser } from '@/components/nav-user';
-import { TeamSwitcher } from '@/components/team-switcher';
+
 import {
   Sidebar,
   SidebarContent,
@@ -14,6 +18,15 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar';
+import { Button } from './ui/button';
+import { useAuthStore } from '@/store/useAuthStore';
+import Link from 'next/link';
+import IdentificationBadge from '@/components/icons/IdentificationBadge';
+import IdCardOutlined from '@/components/icons/IdCardOutlined';
+import UserGroup from '@/components/icons/UserGroup';
+import Solana from '@/components/icons/Solana';
+import Settings from '@/components/icons/Settings';
+import Grid from '@/components/icons/Grid';
 
 const data = {
   user: {
@@ -63,30 +76,30 @@ const data = {
   // ],
   others: [
     {
-      icon: 'icon-[ph--identification-badge]',
+      icon: IdentificationBadge,
       name: 'Dashboard',
       url: '/organization',
     },
     {
-      icon: 'icon-[ant-design--idcard-outlined]',
+      icon: IdCardOutlined,
       name: 'Projects',
       url: '/organization/projects',
     },
     {
-      icon: 'icon-[hugeicons--user-group]',
+      icon: UserGroup,
       name: 'Team',
       url: '/organization/team',
     },
     {
-      icon: 'icon-[formkit--solana]',
+      icon: Solana,
       name: 'Team Matrix',
       url: '/organization/team-matrix',
     },
-    { icon: 'icon-[proicons--grid]', name: 'Apps', url: '/organization/app' },
+    { icon: Grid, name: 'Apps', url: '/organization/app' },
   ],
   settings: [
     {
-      icon: 'icon-[ep--setting]',
+      icon: Settings,
       title: 'Settings',
       url: '/organization/settings',
       items: [
@@ -105,15 +118,28 @@ const data = {
   ],
 };
 
+interface LogoProps {
+  label: string;
+}
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { logout } = useAuthStore();
+
   return (
     <Sidebar
       collapsible="icon"
       className="border-r border-gray-200 bg-white"
       {...props}
     >
-      <SidebarHeader className="border-b border-gray-100 py-3">
-        <TeamSwitcher teams={data.teams} />
+      <SidebarHeader>
+        <Link
+          href="/organization"
+          className="flex items-center gap-3 px-4 py-2 text-xl font-bold text-blue-500 group-data-[collapsible=icon]:justify-center"
+        >
+          <Brain className="shrink-0" />
+
+          <span className="group-data-[collapsible=icon]:hidden">TeamIQ</span>
+        </Link>
       </SidebarHeader>
 
       <SidebarContent className="mt-2 gap-y-0">
@@ -123,7 +149,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-gray-100 py-3">
-        <NavUser user={data.user} />
+        <Button onClick={() => logout()}>
+          <LogOut className="shrink-0" />
+          <span className="group-data-[collapsible=icon]:hidden">Log out</span>
+        </Button>
       </SidebarFooter>
 
       <SidebarRail />

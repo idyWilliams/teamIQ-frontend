@@ -30,7 +30,7 @@ export default function TasksPage() {
 
   return (
     <>
-      <section className="p-4">
+      <section className="py-4">
         <Subnavbar />
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
           <div className="flex gap-6 overflow-x-auto pb-4">

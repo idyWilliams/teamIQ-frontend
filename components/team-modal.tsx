@@ -13,7 +13,7 @@ import {
   DialogDescription,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { teamMembers, TeamMember } from '@/constants';
+import {  TeamMember } from '@/constants';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -45,9 +45,9 @@ export const TeamModal: React.FC<{
         {/* Header */}
         <div className="mb-8 flex items-start gap-6">
           {/* Replace Image with Initials */}
-          {selectedMember.avatar ? (
+          {selectedMember.profile_picture ? (
             <Image
-              src={selectedMember.avatar}
+              src={selectedMember.profile_picture}
               alt={selectedMember.name}
               width={96}
               height={96}

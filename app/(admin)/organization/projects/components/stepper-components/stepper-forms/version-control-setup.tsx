@@ -117,8 +117,6 @@ const VersionControlSetup = ({
   // Set default values when they are provided
   useEffect(() => {
     if (defaultValues) {
-      console.log('🔄 Setting Version Control default values:', defaultValues);
-
       setValue('app', defaultValues.app);
       setValue('integrationMethod', defaultValues.integrationMethod);
       setValue('permissions', defaultValues.permissions || 'read');
@@ -138,9 +136,6 @@ const VersionControlSetup = ({
   }, [defaultValues, setValue]);
 
   const handleFormSubmit = async (data: FormValues) => {
-    console.log('STEP 3 FORM DATA:', data);
-    console.log('Project ID for Step 3:', projectId);
-
     // Transform form data to match API schema
     const getIntegrationMethod = (method: string): 'oauth2' | 'api_key' => {
       if (method === 'OAuth') return 'oauth2';
@@ -157,11 +152,9 @@ const VersionControlSetup = ({
         data.integrationMethod === 'OAuth' ? data.token : undefined,
     };
 
-    console.log('📤 STEP 3 API PAYLOAD:', apiData);
     setStep3Data(apiData);
 
     if (!projectId) {
-      console.log('No projectId available, skipping API call');
       toast.success('Version control setup saved locally');
       if (onSubmit) onSubmit();
       return;
@@ -169,12 +162,10 @@ const VersionControlSetup = ({
 
     updateProjectStep3.mutate(apiData, {
       onSuccess: responseData => {
-        console.log('Step 3 completed successfully:', responseData);
         toast.success('Version control configured!');
         if (onSubmit) onSubmit();
       },
       onError: (error: any) => {
-        console.error('Step 3 failed:', error);
         const errorMessage =
           error.response?.data?.detail ||
           error.response?.data?.message ||

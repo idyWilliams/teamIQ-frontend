@@ -38,10 +38,12 @@ export default function NavSettings({ settings }: NavSettingsProp) {
   const pathname = usePathname();
   return (
     <>
-      <SidebarGroup>
+      <SidebarGroup className="pt-1 pb-3">
         <SidebarMenu>
           {settings.map(item => {
             const isActive = pathname === item.url;
+            const Icon = item.icon;
+
             return (
               <Collapsible
                 key={item.title}
@@ -55,20 +57,21 @@ export default function NavSettings({ settings }: NavSettingsProp) {
                       onClick={() => router.push(item.url)}
                       tooltip={item.title}
                       className={cn(
-                        'relative flex items-center gap-3 rounded-md px-5 py-2.5 text-[14px] transition-all duration-200',
+                        'relative flex cursor-pointer items-center gap-3 rounded-md px-5 py-2.5 text-[14px] transition-all duration-200',
+                        'group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2',
                         isActive
                           ? 'bg-blue-50 font-medium !text-blue-600'
                           : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                       )}
                     >
-                      {item.icon && (
-                        <span className={cn(item.icon, 'size-5')}></span>
-                      )}
-                      <span>{item.title}</span>
-                      <ChevronRight className="ml-auto transition-transform duration-300 group-data-[state=open]/collapsible:rotate-90" />
+                      {Icon && <Icon size="20" />}
+                      <span className="group-data-[collapsible=icon]:hidden">
+                        {item.title}
+                      </span>
+                      <ChevronRight className="ml-auto transition-transform duration-300 group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:hidden" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
-                  <CollapsibleContent>
+                  <CollapsibleContent className="group-data-[collapsible=icon]:hidden">
                     <SidebarMenuSub>
                       {item.items?.map(subItem => (
                         <SidebarMenuSubItem key={subItem.title}>

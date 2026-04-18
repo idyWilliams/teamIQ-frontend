@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 import {
   Select,
   SelectContent,
@@ -31,7 +32,7 @@ const validationSchema = yup.object().shape({
     .required('Organization name is required')
     .min(3, 'Organization name must be at least 3 characters')
     .max(20, 'Organization name must not exceed 20 characters')
-    .matches(/^[a-zA-Z ]+$/, 'Only letters are allowed'),
+    .matches(/^[A-Za-z]+(?: [A-Za-z]+)*$/, 'Only letters and a single space between words are allowed'),
 
   team_size: yup
     .string()
@@ -67,7 +68,7 @@ function OrganizationForm() {
     reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
-    mode: 'onBlur',
+    mode: 'onChange',
     reValidateMode: 'onChange',
     defaultValues: {
       organization_name: '',
@@ -167,18 +168,20 @@ function OrganizationForm() {
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger
-                    className={`${styleInput} w-full`}
-                    aria-invalid={!!errors.team_size}
+                    className={cn(
+                    `${styleInput} w-full`,
+                    !field.value ? 'bg-[#F7F7F7] text-[#B3C4D6]' : 'bg-white text-black'
+                  )}
                   >
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
-                  <SelectContent className="max-h-60 overflow-auto">
-                    <SelectItem value="1-10">1-10</SelectItem>
-                    <SelectItem value="11-50">11-50</SelectItem>
-                    <SelectItem value="51-200">51-200</SelectItem>
-                    <SelectItem value="201-500">201-500</SelectItem>
+                  <SelectContent className="max-h-60 overflow-auto bg-[#F7F7F7] text-black border border-[#B3C4D6] shadow-sm z-50">
+                    <SelectItem value="1-10" className="text-black hover:bg-[#F0F6FC]">1-10</SelectItem>
+                    <SelectItem value="11-50" className="text-black hover:bg-[#F0F6FC]">11-50</SelectItem>
+                    <SelectItem value="51-200" className="text-black hover:bg-[#F0F6FC]">51-200</SelectItem>
+                    <SelectItem value="201-500" className="text-black hover:bg-[#F0F6FC]">201-500</SelectItem>
                     <SelectItem value="501-1000">501-1000</SelectItem>
-                    <SelectItem value="1000+">1000+</SelectItem>
+                    <SelectItem value="1000+" className="text-black hover:bg-[#F0F6FC]">1000+</SelectItem>
                   </SelectContent>
                 </Select>
               )}

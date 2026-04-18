@@ -1,77 +1,93 @@
 "use client";
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Clock, AlertCircle } from "lucide-react";
 
-// we get mock deadline data here
 const mockTasks = [
   {
     id: 1,
     task: "Build the dashboard layout",
-    assigner: "project manager",
+    assigner: "Project Manager",
     assignedAt: "2025-09-23T10:00:00Z",
     deadline: "2025-09-30T10:00:00Z",
+    priority: "high",
   },
-
+  {
+    id: 2,
+    task: "Build the organization architecture",
+    assigner: "Project Manager",
+    assignedAt: "2025-09-23T10:00:00Z",
+    deadline: "2025-09-30T10:00:00Z",
+    priority: "medium",
+  },
   {
     id: 3,
-    task: "Build the organization architecture",
-    assigner: "project manager",
-    assignedAt: "2025-09-23T10:00:00Z",
-    deadline: "2025-09-30T10:00:00Z",
-  },
-
-  {
-    id: 1,
     task: "Build the design system",
-    assigner: "ux lead ",
+    assigner: "UX Lead",
     assignedAt: "2025-09-23T10:00:00Z",
     deadline: "2025-09-30T10:00:00Z",
+    priority: "low",
   },
 ];
 
-// function that reads the deadline due period
 function deadlineCalc(dateString: string): string {
   const now = new Date();
   const deadline = new Date(dateString);
   const diff = Math.floor((deadline.getTime() - now.getTime()) / 1000);
 
-  if (diff <= 0) return "deadline passed";
-  if (diff < 3600) return `${Math.floor(diff / 60)} minute${Math.floor(diff / 60) === 1 ? "" : "s"}`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)} hour${Math.floor(diff / 3600) === 1 ? "" : "s"}`;
-  return `${Math.floor(diff / 86400)} day${Math.floor(diff / 86400) === 1 ? "" : "s"}`;
+  if (diff <= 0) return "Overdue";
+  if (diff < 3600) return `${Math.floor(diff / 60)}m left`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h left`;
+  return `${Math.floor(diff / 86400)}d left`;
 }
 
-// rendering deadline into a card
+function deadlineColor(dateString: string): string {
+  const now = new Date();
+  const deadline = new Date(dateString);
+  const diff = Math.floor((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  if (diff <= 0) return "text-red-600 bg-red-50";
+  if (diff <= 2) return "text-orange-600 bg-orange-50";
+  return "text-[#086ACE] bg-blue-50";
+}
+
+const priorityStyles: Record<string, string> = {
+  high: "bg-red-100 text-red-700",
+  medium: "bg-amber-100 text-amber-700",
+  low: "bg-emerald-100 text-emerald-700",
+};
+
 export default function Deadline() {
   return (
     <div className="h-full">
-      <Card className="shadow-none h-full">
-        <CardHeader>
-          <CardTitle className="text-xl max-sm:text-[16px]">Upcoming Deadlines</CardTitle>
+      <Card className="shadow-none h-full border border-gray-100 rounded-xl">
+        <CardHeader className="pb-3 px-5 pt-5">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base font-semibold text-gray-900">
+              Upcoming Deadlines
+            </CardTitle>
+            <AlertCircle className="size-4 text-gray-400" />
+          </div>
         </CardHeader>
-        <CardContent className="flex flex-col gap-5">
-          {mockTasks.map((tasks, i) => (
+        <CardContent className="flex flex-col gap-3 px-5 pb-5">
+          {mockTasks.map((task, i) => (
             <div
               key={i}
-              className=" max-sm:flex-col flex justify-between gap-5 px-[25px] items-start rounded-xl py-3 border-l-2 border-blue-500 bg-[#F7F7F7] "
+              className="flex flex-col gap-2 p-3 rounded-lg border border-gray-100 bg-gray-50/50 hover:bg-gray-50 transition-colors"
             >
-              <div>
-                <p className="font-semibold text-[16px] max-sm:text-sm">{tasks.task}</p>
-                <p className="text-[12px]">{tasks.assigner}</p>
-              </div>
-              <div className="flex gap-1 items-center whitespace-nowrap">
-                <Avatar className="size-3">
-                  <AvatarImage src="images/deadline.svg" alt="deadline" />
-                </Avatar>
-                <p className="text-[12px] text-blue-500">
-                  {deadlineCalc(tasks.deadline)}
+              <div className="flex items-start justify-between gap-2">
+                <p className="font-medium text-sm text-gray-800 leading-snug flex-1">
+                  {task.task}
                 </p>
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full capitalize shrink-0 ${priorityStyles[task.priority]}`}>
+                  {task.priority}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-gray-500">{task.assigner}</p>
+                <span className={`flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${deadlineColor(task.deadline)}`}>
+                  <Clock className="size-3" />
+                  {deadlineCalc(task.deadline)}
+                </span>
               </div>
             </div>
           ))}

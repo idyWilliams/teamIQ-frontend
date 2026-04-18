@@ -65,14 +65,14 @@ const app = [
   },
   {
     name: 'Figma',
-    logo: '/images/figma.svg',
+    logo: '/images/Figma.svg',
     description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
             senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
             cursus lectus diam sit convallis dui nunc.`,
     integrations: [
       {
         title: 'Isentry Website',
-        logo: '/images/figma.svg',
+        logo: '/images/Figma.svg',
         member: 3,
         description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
               senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,
@@ -81,14 +81,14 @@ const app = [
   },
   {
     name: 'Slack',
-    logo: '/images/slack.svg',
+    logo: '/images/Slack.svg',
     description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
             senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna
             cursus lectus diam sit convallis dui nunc.`,
     integrations: [
       {
         title: 'Isentry Website',
-        logo: '/images/slack.svg',
+        logo: '/images/Slack.svg',
         member: 3,
         description: `Lorem ipsum dolor sit amet consectetur. Pulvinar amet at neque
               senectus. Ipsum mattis ac consequat felis lectus tortor. Cursus urna cursus lectus diam sit convallis dui nunc.`,

@@ -1,191 +1,93 @@
-// import React from 'react';
-// import CardItem from './cardItem';
-// import ChartLineDefault from './chart-line';
-// import ActiveBlockers from './active-blockers';
-// import { useState } from 'react';
-// import { WaveProgressCard } from './wave-progress';
-// import { dashboardCards, activeBlockers, progressData } from '@/constants';
-// import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-// import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-// import OrganizationalDetails from './org-onboarding-comps/organizationalOnboarding';
-// import OnboardingSuccess from './org-onboarding-comps/onboardingSuccess';
-
-// const DashbordOverview = () => {
-//   const [isModalOpen, setIsModalOpen] = useState(false);
-//     const [showCard, setShowCard] = useState(true);
-//    const [showSuccessModal, setShowSuccessModal] = useState(false);
-
-//   const handleComplete = () => {
-//     setShowSuccessModal(false);
-// setIsModalOpen(false);
-//     setShowCard(false); // ✅ hides the card
-//   };
-
-//   return (
-//     <div className="space-y-6 p-4">
-//       <div>
-//          {showCard && (
-//         <div id ='completed' className="bg-iq-war-100 border-iq-war-300 mb-[48px] flex items-center justify-between rounded-[10px] border px-[56px] py-[26px]">
-//           <div className="flex items-center gap-[10px]">
-//             <Avatar>
-//               <AvatarImage src="/images/danger.svg" alt="danger-icon" />
-//               <AvatarFallback>D</AvatarFallback>
-//             </Avatar>
-//             <p className="text-[16px] text-neutral-950">
-//               Complete your organization details to unlock full access.
-//             </p>
-//           </div>
-
-//           <button
-//             onClick={() => { setIsModalOpen(true); }}
-
-//             className="bg-iq-600 hover:bg-iq-800 cursor-pointer rounded-[8px] p-[10px] text-neutral-50 duration-500"
-//           >
-//             Complete Now
-//           </button>
-//         </div>
-//          )}
-//         <div className="hidden gap-3 max-lg:flex-wrap sm:flex">
-//           {dashboardCards.map((card, i) => (
-//             <CardItem key={i} {...card} />
-//           ))}
-//         </div>
-//       </div>
-
-//       <div className="flex gap-4">
-//         <div className="grow space-y-4 lg:col-span-2">
-//           <WaveProgressCard progressData={progressData} />
-//           <div className="mt-6">
-//             <ChartLineDefault />
-//           </div>
-//         </div>
-
-//         <div className="space-y-4 lg:col-span-1">
-//           <ActiveBlockers blockers={activeBlockers} />
-//         </div>
-//       </div>
-//       {/* Fill form */}
-//       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-//         <DialogContent className="max-h-[90vh] w-[900px] overflow-y-auto !pt-0 sm:!max-w-[900px] [&>button]:hidden">
-//           <OrganizationalDetails onClose={() => setIsModalOpen(false)} />
-//         </DialogContent>
-//       </Dialog>
-
-//         {showSuccessModal && (
-//         <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
-//           <DialogTitle></DialogTitle>
-//           <DialogContent className="max-h-[90vh] w-[900px] overflow-y-auto !pt-0 sm:!max-w-[900px] [&>button]:hidden">
-//             <OnboardingSuccess  onClose={handleComplete} />
-//           </DialogContent>
-//         </Dialog>
-//       )}
-//     </div>
-
-//   );
-// };
-
-// export default DashbordOverview;
-
 'use client';
-import React, { useEffect, useState } from 'react';
+
+import React from 'react';
 import CardItem from './cardItem';
 import ChartLineDefault from './chart-line';
 import ActiveBlockers from './active-blockers';
 import { WaveProgressCard } from './wave-progress';
-import { dashboardCards, activeBlockers, progressData } from '@/constants';
-import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import OrganizationalDetails from './org-onboarding-comps/organizationalOnboarding';
-import OnboardingSuccess from './org-onboarding-comps/onboardingSuccess';
-import { useAuthStore } from '@/store/useAuthStore';
+import { activeBlockers } from '@/constants';
+import { useOrganizationUsers } from '@/services/hooks/useUsers';
+import { useProjects } from '@/services/hooks/useProjectGet';
 
 const DashboardOverview = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showCard, setShowCard] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const { user } = useAuthStore();
+  const { data: users, isLoading, error } = useOrganizationUsers();
+  const { data: apiProjects } = useProjects();
 
-  const handleComplete = () => {
-    setShowSuccessModal(false);
-    setIsModalOpen(false);
-    setShowCard(false); // ✅ hides the card after onboarding
-  };
+  // Dynamic dashboard cards based on real data
+  const dashboardCards = [
+    { 
+      title: "Team Members", 
+      avatarUrl: "images/team-member.svg", 
+      content: users ? `${users.length}` : "0",
+      trend: "+12%"
+    },
+    { 
+      title: "Active Projects", 
+      avatarUrl: "images/active-task.svg", 
+      content: apiProjects ? `${apiProjects.length}` : "0",
+      trend: "+5%"
+    },
+    {
+      title: "Completed Projects",
+      avatarUrl: "images/completed-task.svg",
+      content: apiProjects ? `${apiProjects.filter((p: any) => p.status === 'completed').length}` : "0",
+      trend: "+8%"
+    },
+    {
+      title: "Pending Projects",
+      avatarUrl: "images/pending-task.svg",
+      content: apiProjects ? `${apiProjects.filter((p: any) => p.status === 'pending').length}` : "0",
+      trend: "-2%"
+    },
+    { 
+      title: "Unassigned Tasks", 
+      avatarUrl: "images/pending-task.svg", 
+      content: "5",
+      trend: "+0%"
+    },
+  ];
 
-  useEffect(() => {
-    if (user && !user?.domain_link) {
-      setShowCard(true);
-    }
-  }, [user]);
-
-  return (
-    <div className="space-y-6 p-4">
-      <div>
-        {/* 🟨 Card */}
-        {showCard && (
-          <div
-            id="completed"
-            className="bg-iq-war-100 border-iq-war-300 mb-[48px] flex items-center justify-between rounded-[10px] border px-[56px] py-[26px]"
-          >
-            <div className="flex items-center gap-[10px]">
-              <Avatar>
-                <AvatarImage src="/images/danger.svg" alt="danger-icon" />
-                <AvatarFallback>D</AvatarFallback>
-              </Avatar>
-              <p className="text-[16px] text-neutral-950">
-                Complete your organization details to unlock full access.
-              </p>
-            </div>
-
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="bg-iq-600 hover:bg-iq-800 cursor-pointer rounded-[8px] p-[10px] text-neutral-50 duration-500"
-            >
-              Complete Now
-            </button>
-          </div>
-        )}
-
-        {/* 🟩 Dashboard cards */}
-        <div className="hidden gap-3 max-lg:flex-wrap sm:flex">
-          {dashboardCards.map((card, i) => (
-            <CardItem key={i} {...card} />
-          ))}
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <div className="flex flex-col items-center gap-2">
+          <div className="size-8 animate-spin rounded-full border-2 border-[#086ACE] border-t-transparent" />
+          <p className="text-sm text-gray-500 font-medium">Loading intelligence data...</p>
         </div>
       </div>
+    );
+  }
 
-      {/* 🟦 Charts and blockers */}
-      <div className="flex gap-4">
-        <div className="grow space-y-4 lg:col-span-2">
-          <WaveProgressCard progressData={progressData} />
-          <div className="mt-6">
-            <ChartLineDefault />
-          </div>
+  if (error) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <div className="rounded-xl border border-red-100 bg-red-50 p-6 text-center">
+          <p className="text-sm font-semibold text-red-800">Error loading dashboard</p>
+          <p className="mt-1 text-xs text-red-600 opacity-80">Please check your connection or try again later.</p>
         </div>
-        <div className="space-y-4 lg:col-span-1">
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6 py-6 px-4 lg:px-0">
+      {/* Dashboard cards */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        {dashboardCards.map((card, i) => (
+          <CardItem key={i} {...card} />
+        ))}
+      </div>
+
+      {/* Charts and blockers */}
+      <div className="flex flex-col gap-6 lg:flex-row">
+        <div className="min-w-0 flex-1 space-y-6">
+          <WaveProgressCard zeroMargin={true} />
+          <ChartLineDefault />
+        </div>
+        <div className="w-full shrink-0 lg:w-80">
           <ActiveBlockers blockers={activeBlockers} />
         </div>
       </div>
-
-      {/* 🧩 Onboarding Modal */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-h-[90vh] w-[900px] overflow-y-auto !pt-0 sm:!max-w-[900px] [&>button]:hidden">
-          <OrganizationalDetails
-            onClose={() => setIsModalOpen(false)}
-            onSuccess={() => {
-              setShowSuccessModal(true);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
-
-      {/* 🎉 Success Modal */}
-      {showSuccessModal && (
-        <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
-          <DialogContent className="max-h-[90vh] w-[900px] overflow-y-auto !pt-0 sm:!max-w-[900px] [&>button]:hidden">
-            <OnboardingSuccess onClose={handleComplete} />
-          </DialogContent>
-        </Dialog>
-      )}
     </div>
   );
 };

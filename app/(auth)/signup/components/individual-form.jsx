@@ -25,7 +25,7 @@ const validationSchema = yup.object().shape({
     .required('First name is required')
     .min(3, 'First name must be at least 3 characters')
     .max(20, 'First name must not exceed 20 characters')
-    .matches(/^[a-zA-Z]+$/, 'Only letters are allowed'),
+    .matches(/^[A-Za-z]+(?: [A-Za-z]+)*$/, 'Only letters and a single space between words are allowed'),
 
   last_name: yup
     .string()
@@ -90,11 +90,16 @@ function FormField() {
     },
   });
   useEffect(() => {
-    console.log(email, invitation_code);
+    //console.log(email, invitation_code);
+    //reset({
+    //email: encodeURI(email?.trim()?.replaceAll('/', '') || ''),
+    //Only set email if it exists (from invite link), otherwise don’t reset:
+    if (email) {
     reset({
-      email: encodeURI(email?.trim()?.replaceAll('/', '') || ''),
+      email: encodeURI(email.trim().replaceAll('/', '')),
     });
-  }, [email, reset]);
+  }
+}, [email, reset]);
 
   const password = useWatch({ control, name: 'password' });
   const repeatpassword = useWatch({ control, name: 'repeatpassword' });
@@ -209,7 +214,7 @@ function FormField() {
             className={styleInput}
             autoComplete="email"
             aria-invalid={!!errors.email}
-            disabled
+            //disabled
           />
           {errors.email && (
             <span className="text-iq-err-300 mt-1 block text-xs leading-snug">

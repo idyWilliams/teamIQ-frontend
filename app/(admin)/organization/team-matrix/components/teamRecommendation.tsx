@@ -8,7 +8,7 @@ import {
 export default function teamRecommendation() {
   return (
     <>
-      <div className="m-6 w-[416px] rounded-3xl border border-gray-200 p-6">
+      <div className="w-full rounded-3xl border border-gray-200 p-6">
         <h4 className="mb-8 text-lg font-semibold">Team Recommendation</h4>
         <div className="flex flex-col gap-8">
           {recommendations.map((rec, i) => (

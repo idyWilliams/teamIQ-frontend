@@ -32,7 +32,7 @@ export default function NotificationsSettings() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full pb-10">
       <div className="bg-white">
         {/* Title */}
         <div className="mb-8 border-b border-gray-200 pb-8">
@@ -45,7 +45,7 @@ export default function NotificationsSettings() {
         </div>
 
         {/* Push Notifications */}
-        <div className="mb-8 flex items-start justify-between border-b border-gray-200 pb-8">
+        <div className="mb-8 flex flex-col items-start justify-between gap-4 border-b border-gray-200 pb-8 sm:flex-row">
           <div>
             <h2 className="mb-1 text-base font-semibold text-gray-900">
               Push Notifications
@@ -103,7 +103,7 @@ export default function NotificationsSettings() {
         </div>
 
         {/* Email Notifications */}
-        <div className="mb-8 flex items-start justify-between border-b border-gray-200 pb-8">
+        <div className="mb-8 flex flex-col items-start justify-between gap-4 border-b border-gray-200 pb-8 sm:flex-row">
           <div className="max-w-sm">
             <h2 className="mb-1 text-base font-semibold text-gray-900">
               Email Notifications
@@ -113,7 +113,7 @@ export default function NotificationsSettings() {
             </p>
           </div>
 
-          <div className="flex w-[572px] flex-col gap-6">
+          <div className="flex flex-col gap-6 lg:w-[572px]">
             {[
               {
                 key: 'emailTeamUpdates',
@@ -131,7 +131,10 @@ export default function NotificationsSettings() {
                 desc: 'Receive a summary of daily progress and updates.',
               },
             ].map(({ key, title, desc }) => (
-              <div key={key} className="flex items-center justify-between">
+              <div
+                key={key}
+                className="flex items-center justify-between gap-4"
+              >
                 <div>
                   <h3 className="mb-1 text-sm font-medium text-gray-900">
                     {title}
@@ -151,7 +154,7 @@ export default function NotificationsSettings() {
         </div>
 
         {/* In-App Notifications */}
-        <div className="flex items-start justify-between">
+        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
           <div className="max-w-sm">
             <h2 className="mb-1 text-base font-semibold text-gray-900">
               In-App Notifications
@@ -161,7 +164,7 @@ export default function NotificationsSettings() {
             </p>
           </div>
 
-          <div className="flex w-[572px] flex-col gap-4">
+          <div className="flex flex-col gap-4 lg:w-[572px]">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="mb-1 text-sm font-medium text-gray-900">

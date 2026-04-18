@@ -25,7 +25,7 @@ import { Textarea } from '@/components/ui/textarea';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import StepHeader from '../steps/step-header';
+// import StepHeader from '../steps/step-header';
 import { Badge } from '@/components/ui/badge';
 import {
   Popover,
@@ -47,7 +47,6 @@ import { toast } from 'sonner';
 import { useProjectStore } from '@/store/useProjectstore';
 import {
   useOrganizationUsers,
-  type User as ApiUser,
 } from '@/services/hooks/useUsers'; // Add this import
 import { DatePicker } from '@/components/date-picker';
 
@@ -215,7 +214,6 @@ const NewProjectDetails = ({
     resetField,
     trigger,
     handleSubmit,
-    getValues,
   } = useForm<FormValues>({
     resolver: isReviewMode ? undefined : yupResolver(schema),
     defaultValues: defaultValues
@@ -235,7 +233,6 @@ const NewProjectDetails = ({
   useEffect(() => {
     if (defaultValues) {
       setIsReviewMode(true);
-      console.log('🔄 Setting default values:', defaultValues);
     }
   }, [defaultValues]);
 
@@ -272,8 +269,6 @@ const NewProjectDetails = ({
   };
 
   const handleFormSubmit = async (formData: FormValues) => {
-    console.log('📝 FORM DATA RECEIVED:', formData);
-
     // Skip API call in review mode
     if (isReviewMode) {
       if (onSubmit) {
@@ -309,18 +304,12 @@ const NewProjectDetails = ({
       is_visible: formData.visibility,
     };
 
-    console.log('FINAL API PAYLOAD:', apiData);
-
     setStep1Data(apiData);
 
     createProjectMutation.mutate(apiData, {
       onSuccess: responseData => {
-        console.log('Project creation successful:', responseData);
-
         const projectId = responseData.data.project_id;
         const projectData = responseData.data.project;
-
-        console.log('Created Project ID:', projectId);
 
         toast.success('Project created successfully!');
 
@@ -333,7 +322,6 @@ const NewProjectDetails = ({
         }
       },
       onError: (error: any) => {
-        console.error('Project creation failed:', error);
         const errorMessage =
           error.response?.data?.detail ||
           error.response?.data?.message ||
@@ -371,8 +359,6 @@ const NewProjectDetails = ({
 
   useEffect(() => {
     if (defaultValues) {
-      console.log('🔄 Setting default values:', defaultValues);
-
       setValue('projectName', defaultValues.projectName);
       setValue('description', defaultValues.description);
       setValue('stack', defaultValues.stack);
@@ -387,7 +373,6 @@ const NewProjectDetails = ({
   }, [defaultValues, setValue]);
 
   useEffect(() => {
-    console.log('Current stacks:', stacks);
     setValue('stack', stacks, { shouldValidate: true });
   }, [stacks, setValue]);
 
@@ -447,7 +432,7 @@ const NewProjectDetails = ({
               />
             ) : defaultValues ? (
               <div className="text-center">
-                <span className="icon-[et--check-circle] size-7 text-green-500"></span>
+                <span className="icon-[material-symbols--check-circle] size-7 text-green-500"></span>
                 <p className="text-[14px] text-green-600">Image uploaded</p>
               </div>
             ) : (

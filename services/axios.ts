@@ -1,6 +1,6 @@
-// services/axios.ts
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { jwtDecode } from "jwt-decode";
+import { useAuthStore } from '@/store/useAuthStore';
+import { isTokenExpired } from '@/utils/jwtUtils';
 
 const axiosInstance = axios.create({
   baseURL:
@@ -9,100 +9,40 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-export default axiosInstance;
-
-const TOKEN_KEY = 'auth-storage';
-
-// helper function to get the token from the local storage
-export const tokenStorage = {
-  get: (): string | null => {
-    if (typeof window === 'undefined') return null;
-    console.log(
-      JSON.parse(localStorage.getItem(TOKEN_KEY) as string)?.state?.token ||
-        JSON.parse(sessionStorage.getItem(TOKEN_KEY) as string)?.state?.token
-    );
-
-    return (
-      JSON.parse(localStorage.getItem(TOKEN_KEY) as string)?.state?.token ||
-      JSON.parse(sessionStorage.getItem(TOKEN_KEY) as string)?.state?.token
-    );
-  },
-  set: (token: string, persist: boolean = true) => {
-    if (typeof window === 'undefined') return;
-    if (persist) {
-      return (
-        JSON.parse(localStorage.getItem(TOKEN_KEY) as string) ||
-        JSON.parse(sessionStorage.getItem(TOKEN_KEY) as string)
-      );
-    } else {
-      return (
-        JSON.parse(sessionStorage.getItem(TOKEN_KEY) as string) ||
-        JSON.parse(sessionStorage.getItem(TOKEN_KEY) as string)
-      );
-    }
-  },
-  remove: () => {
-    if (typeof window === 'undefined') return;
-    localStorage.removeItem(TOKEN_KEY);
-    sessionStorage.removeItem(TOKEN_KEY);
-  },
-};
-
-// check if token is expired
-const isTokenExpired = (token: string): boolean => {
-  try {
-    const decoded = jwtDecode(token);
-    if (!decoded.exp) return false;
-    const currentTime = Math.floor(Date.now() / 1000);
-    return decoded.exp < currentTime;
-  } catch {
-    return true; // if we cant decode consider it expire
-  }
-};
-
-// request interceptor to add authorization header
+// REQUEST INTERCEPTOR
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = tokenStorage.get();
+    const token = useAuthStore.getState().token;
 
-    // Check if token exists and is not expired
     if (token) {
       if (isTokenExpired(token)) {
-        // whn token expire cancel request and redirect to login
-        tokenStorage.remove();
+        useAuthStore.getState().logout();
         window.location.href = '/login';
-        return Promise.reject(new Error('Token has expired'));
+        throw new Error('Token expired');
       }
 
-      if (config.headers) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+      config.headers.Authorization = `Bearer ${token}`;
     }
 
     return config;
   },
-  (err: AxiosError) => Promise.reject(err)
+  error => Promise.reject(error)
 );
 
-// response interceptor yto handle token expiration
+// RESPONSE INTERCEPTOR
 axiosInstance.interceptors.response.use(
   res => res,
   async (err: AxiosError) => {
-    const originalRequest = err.config as InternalAxiosRequestConfig & {
-      _retry?: boolean;
-    };
+    const originalRequest: any = err.config;
 
-    // handle 401 unauthorised when token expired or invalid
-    if (err.response?.status === 401 && !originalRequest._retry) {
+    if (err.response?.status === 401 && !originalRequest?._retry) {
       originalRequest._retry = true;
-
-      //clear token from storage
-      tokenStorage.remove();
-
-      //redirect to login page
+      useAuthStore.getState().logout();
       window.location.href = '/login';
     }
 
     return Promise.reject(err);
   }
 );
+
+export default axiosInstance;

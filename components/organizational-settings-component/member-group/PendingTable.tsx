@@ -1,5 +1,8 @@
-import React from 'react';
-import { pendingData } from '../../../utils/data';
+import React, { useState } from 'react';
+import { useResendInvite } from '@/services/hooks/useInviteUser';
+import { useRevokeInvite } from '@/services/hooks/useInviteUser';
+// import { pendingData } from '../../../utils/data';
+import { toast } from 'sonner';
 import {
   Table,
   TableBody,
@@ -9,10 +12,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import {
-  useResendInvite,
-  useRevokeInvite,
-} from '@/services/hooks/useInviteUser';
 
 interface PendingUsersProps {
   pendingUsers?: Array<{
@@ -27,8 +26,8 @@ interface PendingUsersProps {
 }
 
 const PendingTable = ({ pendingUsers = [] }: PendingUsersProps) => {
-  const { mutate: resendInvite } = useResendInvite();
-  const { mutate: revokeInvite } = useRevokeInvite();
+  const { mutate: resendInvite, isPending: isSending } = useResendInvite();
+  const { mutate: revokeInvite, isPending: isRevoking } = useRevokeInvite();
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -37,13 +36,14 @@ const PendingTable = ({ pendingUsers = [] }: PendingUsersProps) => {
     });
   };
 
-  const handleResend = (invitationId: number) => {
-    resendInvite(invitationId);
+  const handleResend = (invitation_Id: number) => {
+    resendInvite(invitation_Id);
   };
 
-  const handleRevoke = (invitationId: number) => {
-    revokeInvite(invitationId);
+  const handleRevoke = (invitation_Id: number) => {
+    revokeInvite(invitation_Id);
   };
+
   return (
     <div className="w-[70%] overflow-x-auto">
       <Table className="">
@@ -73,16 +73,16 @@ const PendingTable = ({ pendingUsers = [] }: PendingUsersProps) => {
                   <Button
                     size="sm"
                     className="w-[120px] cursor-pointer bg-[#086ace] whitespace-nowrap text-[#ffffff] hover:bg-transparent hover:text-[#086ace]"
-                    onClick={() => handleResend(row?.id)}
+                    onClick={() => handleResend(row.id)}
                   >
-                    Resend Invite
+                    {isSending ? 'Resending Invite' : 'Resend Invite'}
                   </Button>
                   <Button
                     size="sm"
                     className="w-[120px] cursor-pointer border border-[#086ace] bg-[#ffffff] whitespace-nowrap text-[#086ace] hover:bg-[#086ace] hover:text-[#ffffff]"
-                    onClick={() => handleRevoke(row?.id)}
+                    onClick={() => handleRevoke(row.id)}
                   >
-                    Revoke Invite
+                    {isRevoking ? 'Revoking Invite' : 'Revoke Invite'}
                   </Button>
                 </div>
               </TableCell>

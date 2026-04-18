@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import NextTopLoader from 'nextjs-toploader';
+// import NextTopLoader from 'nextjs-toploader';
 import localFont from 'next/font/local';
 import { cn } from '@/lib/utils';
+import { AuthProvider } from '@/components/providers/AuthProvider';
 import Providers from './providers';
 import { Toaster } from '@/components/ui/sonner';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -52,16 +53,18 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <body className={cn('antialiased', hellix.className)}>
-        <NextTopLoader color="#2299DD" showSpinner />
+        {/* <NextTopLoader color="#2299DD" showSpinner /> */}
         <Toaster richColors expand={true} position="top-right" />
 
         {/* Wrap app with QueryClientProvider */}
-        <Providers>
-          {children}
-          <ReactQueryDevtools initialIsOpen={false} />
-        </Providers>
+        <AuthProvider>
+          <Providers>
+            {children}
+            <ReactQueryDevtools initialIsOpen={false} />
+          </Providers>
+        </AuthProvider>
       </body>
     </html>
   );

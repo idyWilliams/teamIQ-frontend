@@ -3,13 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Check, Search, Loader, AlertCircle, User } from 'lucide-react';
+import { Check, Search, Loader } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useUpdateProjectStep5 } from '@/services/hooks/useProject';
 import {
   useOrganizationUsers,
-  type User as ApiUser,
 } from '@/services/hooks/useUsers';
 import { toast } from 'sonner';
 import { useProjectStore } from '@/store/useProjectstore';
@@ -49,7 +48,7 @@ const UserPermission = ({
   const updateProjectStep5 = useUpdateProjectStep5(projectId || 0);
   const setStep5Data = useProjectStore(state => state.setStep5Data);
 
-  const { data: users, isLoading, error } = useOrganizationUsers();
+  const { data: users, isLoading } = useOrganizationUsers();
 
   const { handleSubmit, setValue, watch } = useForm<FormData>({
     defaultValues: {
@@ -60,7 +59,6 @@ const UserPermission = ({
   });
 
   const selectedMembers = watch('selectedMembers');
-  const projectLead = watch('projectLead');
 
   const [teamList, setTeamList] = useState<TeamMember[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -70,7 +68,6 @@ const UserPermission = ({
   useEffect(() => {
     if (defaultValues) {
       setIsReviewMode(true);
-      console.log('🔄 Setting User Permission default values:', defaultValues);
     }
   }, [defaultValues]);
 
@@ -90,17 +87,13 @@ const UserPermission = ({
           name: `${user.first_name} ${user.last_name}`.trim(),
           email: user.email,
           job: user.role || 'Team Member',
-          avatar: user.profile_image || undefined,
+          avatar: user.profile_picture || undefined,
           checked: isSelected,
           lead: isLead,
         };
       });
 
       setTeamList(transformedUsers);
-      console.log(
-        '🔄 Transformed team list with default values:',
-        transformedUsers
-      );
 
       // Set form values from defaultValues
       if (defaultValues) {
@@ -161,9 +154,6 @@ const UserPermission = ({
   };
 
   const handleFormSubmit = async (data: FormData) => {
-    console.log('STEP 5 FORM DATA:', data);
-    console.log('Project ID for Step 5:', projectId);
-
     // Prepare API payload
     const apiData = {
       members: [
@@ -186,12 +176,9 @@ const UserPermission = ({
       ],
     };
 
-    console.log('STEP 5 API PAYLOAD:', apiData);
-
     setStep5Data(apiData);
 
     if (!projectId) {
-      console.log('No projectId available, skipping API call');
       toast.success('Team members saved locally');
       if (onSubmit) onSubmit();
       return;
@@ -210,13 +197,11 @@ const UserPermission = ({
     }
 
     updateProjectStep5.mutate(apiData, {
-      onSuccess: responseData => {
-        console.log('Step 5 completed successfully:', responseData);
+      onSuccess: () => {
         toast.success('Team members added successfully!');
         if (onSubmit) onSubmit();
       },
       onError: (error: any) => {
-        console.error('Step 5 failed:', error);
         const errorMessage =
           error.response?.data?.detail ||
           error.response?.data?.message ||
@@ -242,23 +227,6 @@ const UserPermission = ({
       .toUpperCase()
       .slice(0, 2);
   };
-
-  // Count selected members (excluding lead)
-  const selectedMembersCount = teamList.filter(
-    member => member.checked && !member.lead
-  ).length;
-
-  // Get project lead info
-  const projectLeadInfo = teamList.find(member => member.lead);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <Loader className="mr-2 h-6 w-6 animate-spin" />
-        <span>Loading team members...</span>
-      </div>
-    );
-  }
 
   // if (error) {
   //   return (

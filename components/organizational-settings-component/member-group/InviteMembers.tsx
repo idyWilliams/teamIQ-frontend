@@ -8,7 +8,7 @@ type OpenModalProp = {
 const InviteMembers = ({ onOpen }: OpenModalProp) => {
   return (
     <div className="w-[25%] p-1">
-      <h1 className="h-[20px] w-[70px] leading-tight font-medium text-[#0B0B0B]">
+      <h1 className="h-[20px] w-[70px] leading-tight font-medium text-iq-950">
         Members
       </h1>
       <p className="h-[40px] w-[230px] text-sm font-normal text-[#626262]">

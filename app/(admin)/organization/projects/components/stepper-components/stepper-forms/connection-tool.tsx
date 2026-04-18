@@ -54,7 +54,7 @@ const ConnectionTool = ({
   const updateProjectStep4 = useUpdateProjectStep4(projectId || 0);
   const setStep4Data = useProjectStore(state => state.setStep4Data);
 
-  const { handleSubmit, setValue, watch, register } =
+  const { handleSubmit, setValue, watch } =
     useForm<ConnectionToolFormData>({
       defaultValues: {
         channelType: 'new-channel',
@@ -78,8 +78,6 @@ const ConnectionTool = ({
   // Set default values when they are provided (for review mode)
   useEffect(() => {
     if (defaultValues) {
-      console.log('🔄 Setting Connection Tool default values:', defaultValues);
-
       // Set all form values from defaultValues
       Object.entries(defaultValues).forEach(([key, value]) => {
         if (value !== undefined) {
@@ -115,8 +113,6 @@ const ConnectionTool = ({
   };
 
   const handleFormSubmit = async (data: ConnectionToolFormData) => {
-    console.log('STEP 4 FORM DATA:', data);
-
     // Skip validation in review mode
     if (!defaultValues && !validateForm(data)) {
       return;
@@ -149,12 +145,9 @@ const ConnectionTool = ({
       },
     };
 
-    console.log('STEP 4 API PAYLOAD:', apiData);
-
     setStep4Data(apiData);
 
     if (!projectId) {
-      console.log('No projectId available, skipping API call');
       toast.success('Communication tool setup saved locally');
       onSubmit();
       return;
@@ -167,13 +160,11 @@ const ConnectionTool = ({
     }
 
     updateProjectStep4.mutate(apiData, {
-      onSuccess: responseData => {
-        console.log('Step 4 completed successfully:', responseData);
+      onSuccess: () => {
         toast.success('Communication tool configured!');
         onSubmit();
       },
       onError: (error: any) => {
-        console.error('Step 4 failed:', error);
         const errorMessage =
           error.response?.data?.detail ||
           error.response?.data?.message ||

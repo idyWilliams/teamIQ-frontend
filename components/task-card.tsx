@@ -21,6 +21,9 @@ type TaskCardProps = {
 export function TaskCard({ task }: TaskCardProps) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task.id,
+    data: {
+      columnId: task.status,
+    },
   });
 
   const style = transform
