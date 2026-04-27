@@ -65,7 +65,7 @@ export function AppDetailModal({
     saveApiKey({
         apiKey,
         provider: app.id,
-        organizationId,
+        orgId: organizationId,
     }, {
         onSuccess: () => {
             setConnectionSuccess(true);
@@ -375,13 +375,18 @@ export function AppDetailModal({
                 >
                   <input
                     type="text"
-                    placeholder={`Enter your ${app.name} API Key`}
+                    placeholder={app.id === 'trello' ? 'Format: your_api_key:your_token' : `Enter your ${app.name} API Key`}
                     value={apiKey}
                     onChange={e => setApiKey(e.target.value)}
                     required
                     disabled={isConnecting}
                     className="input"
                   />
+                  {app.id === 'trello' && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      For Trello, please enter your API key and token separated by a colon (:).
+                    </p>
+                  )}
                   <button
                     type="submit"
                     disabled={!agreed || isConnecting || !apiKey}

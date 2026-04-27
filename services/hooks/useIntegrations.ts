@@ -62,7 +62,7 @@ export const useSyncIntegration = () => {
 // Hook to save API key
 export const useSaveApiKey = () => {
   const queryClient = useQueryClient();
-  return useMutation<void, Error, { apiKey: string; provider: string; organizationId: string }>({
+  return useMutation<void, Error, { apiKey: string; provider: string; orgId: string }>({
     mutationFn: async (data) => {
       await axiosInstance.post(integrations.saveApiKey, data);
     },
