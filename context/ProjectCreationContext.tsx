@@ -3,29 +3,26 @@
 import React, {
   createContext,
   useContext,
-  useState,
   useCallback,
   useMemo,
 } from 'react';
-import { useIntegrations } from '@/context/IntegrationContext';
 import { useRouter } from 'next/navigation';
 import axiosInstance from '@/services/axios';
 import { projects } from '@/services/api';
+import { useProjectCreationStore } from '@/store/useProjectCreationStore';
 
 interface ProjectCreationContextType {
-  // Step 1: Project Details
-  projectId?: number; // Optional: for edit mode
+  projectId?: number;
+
   projectName: string;
   setProjectName: (name: string) => void;
   projectDescription: string;
   setProjectDescription: (desc: string) => void;
 
-  // Step 2: Select Resources
   selectedResources: SelectedResource[];
   addResource: (resource: SelectedResource) => void;
   removeResource: (connectionId: string, resourceId: string) => void;
 
-  // Step 3: Team Members
   selectedMembers: ProjectMemberInput[];
   teamLead: ProjectMemberInput | null;
   setTeamLead: (userId: string) => void;
@@ -38,12 +35,10 @@ interface ProjectCreationContextType {
     externalId: string
   ) => void;
 
-  // Validation helpers
   getMemberMappingStatus: (userId: string) => MappingStatus;
   getRequiredProviders: () => string[];
   canMemberBeTracked: (userId: string) => boolean;
 
-  // Step management
   currentStep: number;
   nextStep: () => void;
   prevStep: () => void;
@@ -51,12 +46,10 @@ interface ProjectCreationContextType {
   canProceed: boolean;
   validationErrors: string[];
 
-  // Project creation
   createProject: () => Promise<void>;
   isCreating: boolean;
   error: string | null;
 
-  // Reset
   reset: () => void;
 }
 
@@ -99,131 +92,43 @@ export function ProjectCreationProvider({
   projectId?: number;
 }) {
   const router = useRouter();
-  const { connections } = useIntegrations();
 
-  // Step 1
-  const [projectName, setProjectName] = useState('');
-  const [projectDescription, setProjectDescription] = useState('');
+  const {
+    projectName,
+    projectDescription,
+    selectedResources,
+    selectedMembers,
+    currentStep,
+    isCreating,
+    error,
 
-  // Step 2
-  const [selectedResources, setSelectedResources] = useState<
-    SelectedResource[]
-  >([]);
+    setProjectName,
+    setProjectDescription,
+    addResource,
+    removeResource,
+    addMember,
+    removeMember,
+    setTeamLead,
+    updateMemberRole,
+    updateMemberMapping,
+    setCurrentStep,
+    setIsCreating,
+    setError,
+    reset,
+  } = useProjectCreationStore();
 
-  // Step 3
-  const [selectedMembers, setSelectedMembers] = useState<ProjectMemberInput[]>(
-    []
-  );
-
-  // State
-  const [currentStep, setCurrentStep] = useState(1);
-  const [isCreating, setIsCreating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // Get providers from selected resources
   const requiredProviders = useMemo(() => {
     return Array.from(new Set(selectedResources.map(r => r.provider)));
   }, [selectedResources]);
 
-  // Team Lead
   const teamLead = useMemo(() => {
     return selectedMembers.find(m => m.role === 'team_lead') || null;
   }, [selectedMembers]);
 
-  // Resource management
-  const addResource = useCallback((resource: SelectedResource) => {
-    setSelectedResources(prev => {
-      const exists = prev.some(
-        r =>
-          r.connectionId === resource.connectionId &&
-          r.resourceId === resource.resourceId
-      );
-      if (exists) return prev;
-      return [...prev, resource];
-    });
-  }, []);
-
-  const removeResource = useCallback(
-    (connectionId: string, resourceId: string) => {
-      setSelectedResources(prev =>
-        prev.filter(
-          r => !(r.connectionId === connectionId && r.resourceId === resourceId)
-        )
-      );
-    },
-    []
-  );
-
-  // Member management
-  const addMember = useCallback((member: ProjectMemberInput) => {
-    setSelectedMembers(prev => {
-      const exists = prev.some(m => m.userId === member.userId);
-      if (exists) return prev;
-      return [...prev, member];
-    });
-  }, []);
-
-  const removeMember = useCallback((userId: string) => {
-    setSelectedMembers(prev => prev.filter(m => m.userId !== userId));
-  }, []);
-
-  const setTeamLead = useCallback((userId: string) => {
-    setSelectedMembers(prev =>
-      prev.map(member => ({
-        ...member,
-        role:
-          member.userId === userId
-            ? 'team_lead'
-            : member.role === 'team_lead'
-              ? 'member'
-              : member.role,
-      }))
-    );
-  }, []);
-
-  const updateMemberRole = useCallback((userId: string, role: ProjectRole) => {
-    setSelectedMembers(prev => {
-      if (role === 'team_lead') {
-        return prev.map(member => ({
-          ...member,
-          role:
-            member.userId === userId
-              ? 'team_lead'
-              : member.role === 'team_lead'
-                ? 'member'
-                : member.role,
-        }));
-      }
-      return prev.map(member =>
-        member.userId === userId ? { ...member, role } : member
-      );
-    });
-  }, []);
-
-  const updateMemberMapping = useCallback(
-    (userId: string, provider: string, externalId: string) => {
-      setSelectedMembers(prev =>
-        prev.map(member => {
-          if (member.userId === userId) {
-            return {
-              ...member,
-              externalMappings: {
-                ...member.externalMappings,
-                [provider]: externalId,
-              },
-            };
-          }
-          return member;
-        })
-      );
-    },
-    []
-  );
-
-  // Validation helpers
   const getMemberMappingStatus = useCallback(
     (userId: string): MappingStatus => {
       const member = selectedMembers.find(m => m.userId === userId);
+
       if (!member) {
         return {
           isMapped: false,
@@ -237,6 +142,7 @@ export function ProjectCreationProvider({
           requiredProviders.includes(provider) &&
           member.externalMappings[provider]
       );
+
       const missingProviders = requiredProviders.filter(
         provider => !member.externalMappings[provider]
       );
@@ -250,38 +156,26 @@ export function ProjectCreationProvider({
     [selectedMembers, requiredProviders]
   );
 
-  const getRequiredProviders = useCallback(
-    () => requiredProviders,
-    [requiredProviders]
-  );
+  const getRequiredProviders = useCallback(() => requiredProviders, [
+    requiredProviders,
+  ]);
 
   const canMemberBeTracked = useCallback(
-    (userId: string): boolean => {
-      const status = getMemberMappingStatus(userId);
-      return status.isMapped;
-    },
+    (userId: string) => getMemberMappingStatus(userId).isMapped,
     [getMemberMappingStatus]
   );
 
-  // Step-specific validation
   const validationErrors = useMemo(() => {
     const errors: string[] = [];
 
-    // Step 1: Project Details
-    if (currentStep === 1) {
-      if (projectName.trim().length < 3) {
-        errors.push('Project name must be at least 3 characters');
-      }
+    if (currentStep === 1 && projectName.trim().length < 3) {
+      errors.push('Project name must be at least 3 characters');
     }
 
-    // Step 2: Link Resources
-    if (currentStep === 2) {
-      if (selectedResources.length === 0) {
-        errors.push('At least one resource must be linked');
-      }
+    if (currentStep === 2 && selectedResources.length === 0) {
+      errors.push('At least one resource must be linked');
     }
 
-    // Step 3: Add Team Members
     if (currentStep === 3) {
       if (selectedMembers.length === 0) {
         errors.push('At least one team member must be added');
@@ -291,23 +185,12 @@ export function ProjectCreationProvider({
       }
     }
 
-    // Step 4: Review & Create - Final validation before creation
     if (currentStep === 4) {
-      // Re-check all previous validations
-      if (projectName.trim().length < 3) {
-        errors.push('Project name is invalid');
-      }
-      if (selectedResources.length === 0) {
-        errors.push('No resources linked');
-      }
-      if (selectedMembers.length === 0) {
-        errors.push('No team members added');
-      }
-      if (!teamLead) {
-        errors.push('No team lead assigned');
-      }
+      if (projectName.trim().length < 3) errors.push('Project name is invalid');
+      if (selectedResources.length === 0) errors.push('No resources linked');
+      if (selectedMembers.length === 0) errors.push('No team members added');
+      if (!teamLead) errors.push('No team lead assigned');
 
-      // Critical: Check if all members have proper mappings
       const unmappedMembers = selectedMembers.filter(member => {
         const status = getMemberMappingStatus(member.userId);
         return !status.isMapped && requiredProviders.length > 0;
@@ -315,8 +198,7 @@ export function ProjectCreationProvider({
 
       if (unmappedMembers.length > 0) {
         errors.push(
-          `${unmappedMembers.length} member${unmappedMembers.length > 1 ? 's' : ''} not mapped to external accounts. ` +
-            `All members must be mapped to track their contributions.`
+          `${unmappedMembers.length} member(s) not mapped to external accounts.`
         );
       }
     }
@@ -332,47 +214,38 @@ export function ProjectCreationProvider({
     requiredProviders,
   ]);
 
-  const canProceed = useMemo(() => {
-    return validationErrors.length === 0;
-  }, [validationErrors]);
+  const canProceed = validationErrors.length === 0;
 
-  // Step navigation
   const nextStep = useCallback(() => {
     if (canProceed && currentStep < 4) {
-      setCurrentStep(prev => prev + 1);
+      setCurrentStep(currentStep + 1);
     }
-  }, [canProceed, currentStep]);
+  }, [canProceed, currentStep, setCurrentStep]);
 
   const prevStep = useCallback(() => {
-    if (currentStep > 1) setCurrentStep(prev => prev - 1);
-  }, [currentStep]);
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  }, [currentStep, setCurrentStep]);
 
-  const goToStep = useCallback((step: number) => {
-    if (step >= 1 && step <= 4) setCurrentStep(step);
-  }, []);
+  const goToStep = useCallback(
+    (step: number) => {
+      if (step >= 1 && step <= 4) {
+        setCurrentStep(step);
+      }
+    },
+    [setCurrentStep]
+  );
 
-  // Project creation (only called from Step 4)
   const createProject = useCallback(async () => {
-    // Final validation
     if (!teamLead) {
       setError('A team lead must be assigned');
       return;
     }
 
-    // Ensure all members can be tracked
-    const untrackableMembers = selectedMembers.filter(
-      m => !canMemberBeTracked(m.userId)
-    );
-    if (untrackableMembers.length > 0) {
-      setError(
-        `Cannot create project: ${untrackableMembers.length} member(s) are not mapped to external accounts. ` +
-          `All team members must be mapped to track contributions.`
-      );
-      return;
-    }
-
     setIsCreating(true);
     setError(null);
+
     try {
       const { data: project } = await axiosInstance.post(projects.create, {
         organization_id: organizationId,
@@ -383,17 +256,15 @@ export function ProjectCreationProvider({
         team_lead_id: teamLead.userId,
       });
 
-      // Success - redirect to project page
-      router.push(`/organization/projects/${project.id}`);
       reset();
+      router.push(`/organization/projects/${project.id}`);
     } catch (err: any) {
-      const errorMessage =
+      setError(
         err.response?.data?.detail ||
-        err.response?.data?.message ||
-        err.message ||
-        'Failed to create project';
-      setError(errorMessage);
-      // throw err; // Optional: re-throw if needed by caller, but currently void
+          err.response?.data?.message ||
+          err.message ||
+          'Failed to create project'
+      );
     } finally {
       setIsCreating(false);
     }
@@ -404,18 +275,11 @@ export function ProjectCreationProvider({
     selectedResources,
     selectedMembers,
     teamLead,
-    canMemberBeTracked,
     router,
+    reset,
+    setError,
+    setIsCreating,
   ]);
-
-  const reset = useCallback(() => {
-    setProjectName('');
-    setProjectDescription('');
-    setSelectedResources([]);
-    setSelectedMembers([]);
-    setCurrentStep(1);
-    setError(null);
-  }, []);
 
   const value: ProjectCreationContextType = {
     projectId,
@@ -457,9 +321,12 @@ export function ProjectCreationProvider({
 
 export function useProjectCreation() {
   const context = useContext(ProjectCreationContext);
-  if (!context)
+
+  if (!context) {
     throw new Error(
       'useProjectCreation must be used within ProjectCreationProvider'
     );
+  }
+
   return context;
 }
