@@ -597,9 +597,10 @@ function ProviderAccountSelector({
          r.connectionId === connectionId
   );
 
-
   const resource = providerResources?.[0];
-  const resourceIdentifier = resource?.resourceName || resource?.resourceId;
+  const resourceIdentifier = provider === 'slack' 
+  ? resource?.resourceId    
+  : (resource?.resourceName || resource?.resourceId);
 
   console.log('🔍 ProviderAccountSelector Debug:', {
     provider,

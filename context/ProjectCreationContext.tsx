@@ -11,6 +11,7 @@ import { useIntegrations } from '@/context/IntegrationContext';
 import { useRouter } from 'next/navigation';
 import axiosInstance from '@/services/axios';
 import { projects } from '@/services/api';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface ProjectCreationContextType {
   // Step 1: Project Details
@@ -100,6 +101,7 @@ export function ProjectCreationProvider({
 }) {
   const router = useRouter();
   const { connections } = useIntegrations();
+  const queryClient = useQueryClient();
 
   // Step 1
   const [projectName, setProjectName] = useState('');
@@ -383,8 +385,10 @@ export function ProjectCreationProvider({
         team_lead_id: teamLead.userId,
       });
 
+      queryClient.invalidateQueries({ queryKey: ['created-projects'] });
+
       // Success - redirect to project page
-      router.push(`/organization/projects/${project.id}`);
+      router.push(`/organization/projects`);
       reset();
     } catch (err: any) {
       const errorMessage =
