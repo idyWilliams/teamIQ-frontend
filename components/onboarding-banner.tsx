@@ -15,6 +15,7 @@ export default function OnboardingBanner() {
   const [isVisible, setIsVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  console.log("user onboarding", user)
 
   useEffect(() => {
     // Show banner if organization details are incomplete
