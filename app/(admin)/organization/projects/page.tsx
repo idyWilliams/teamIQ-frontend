@@ -42,9 +42,9 @@ import {
 import {
   useCreatedProjects,
   useDeleteProject,
-  type CreatedProject,
 } from '@/services/hooks/useProjectGet';
 import StepperModal from './components/stepper-components/steps/stepper-modal';
+import { useIntegrations } from '@/context/IntegrationContext';
 import { useRouter } from 'next/navigation';
 
 /* ----------------------------------------------------------------------
@@ -222,6 +222,17 @@ export default function ProjectsPage() {
   const [sorting, setSorting] = useState([{ id: 'progress', desc: true }]);
   const columnHelper = createColumnHelper<TableProject>();
   const router = useRouter();
+  const { connections, loading: integrationsLoading } = useIntegrations();
+  const hasIntegrations =
+    Array.isArray(connections) && connections.length > 0;
+  const handleCreateProject = () => {
+    if (!hasIntegrations) {
+      router.push('/organization/settings?tab=integrated-apps');
+      return;
+    }
+
+    router.push('/organization/projects/create');
+  };
 
   // Use the projects hook
   const { data: apiProjects, isLoading, error } = useCreatedProjects();
@@ -399,7 +410,7 @@ export default function ProjectsPage() {
                 <DropdownMenuContent align="end" className="w-[160px] bg-white z-50">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-``
+
                   <DropdownMenuItem
                     onClick={() => router.push(`/organization/projects/${project.id}`)}
                     className="cursor-pointer"
@@ -444,6 +455,14 @@ export default function ProjectsPage() {
     initialState: { pagination: { pageIndex: 0, pageSize: 5 } },
   });
 
+  if (integrationsLoading) {
+    return (
+      <div className="flex items-center justify-center py-10">
+        <Loader className="h-6 w-6 animate-spin" />
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="w-full overflow-hidden rounded-lg bg-white p-6 shadow-sm">
@@ -482,7 +501,7 @@ export default function ProjectsPage() {
         </h1>
         {projects.length > 0 && (
           <Button
-            onClick={() => router.push('/organization/projects/create')}
+            onClick={handleCreateProject}
             className="flex items-center gap-2"
           >
             <Plus size={18} /> New Project
@@ -492,12 +511,27 @@ export default function ProjectsPage() {
 
       {projects.length === 0 ? (
         <div className="py-12 text-center">
-          <div className="mb-4 text-lg text-gray-500">No projects found</div>
+          <div className="mb-4 text-lg text-gray-500">
+            {hasIntegrations
+              ? 'No projects found'
+              : 'No integrations connected'}
+          </div>
+
+          {!hasIntegrations && (
+            <p className="mb-6 text-sm text-gray-600">
+              Connect at least one integration before creating a project.
+            </p>
+          )}
+
           <Button
-            onClick={() => router.push('/organization/projects/create')}
+            onClick={handleCreateProject}
             className="mx-auto flex items-center gap-2"
           >
-            <Plus size={18} /> Create Your First Project
+            <Plus size={18} />
+
+            {hasIntegrations
+              ? 'Create Your First Project'
+              : 'Go to Integrations'}
           </Button>
         </div>
       ) : (
