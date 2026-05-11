@@ -194,7 +194,7 @@ export const apps = [
     ],
     permissions: ['Read tasks', 'Access time logs', 'View team data'],
     pricing: 'Free',
-    authType: 'apikey', // Only API key!
+    authType: 'oauth',
   },
   {
     id: 'notion',

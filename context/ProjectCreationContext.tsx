@@ -9,7 +9,6 @@ import React, {
 import { useRouter } from 'next/navigation';
 import axiosInstance from '@/services/axios';
 import { projects } from '@/services/api';
-import { useProjectCreationStore } from '@/store/useProjectCreationStore';
 
 interface ProjectCreationContextType {
   projectId?: number;
@@ -92,31 +91,28 @@ export function ProjectCreationProvider({
   projectId?: number;
 }) {
   const router = useRouter();
+  const { connections } = useIntegrations();
 
-  const {
-    projectName,
-    projectDescription,
-    selectedResources,
-    selectedMembers,
-    currentStep,
-    isCreating,
-    error,
+  // Step 1
+  const [projectName, setProjectName] = useState('');
+  const [projectDescription, setProjectDescription] = useState('');
 
-    setProjectName,
-    setProjectDescription,
-    addResource,
-    removeResource,
-    addMember,
-    removeMember,
-    setTeamLead,
-    updateMemberRole,
-    updateMemberMapping,
-    setCurrentStep,
-    setIsCreating,
-    setError,
-    reset,
-  } = useProjectCreationStore();
+  // Step 2
+  const [selectedResources, setSelectedResources] = useState<
+    SelectedResource[]
+  >([]);
 
+  // Step 3
+  const [selectedMembers, setSelectedMembers] = useState<ProjectMemberInput[]>(
+    []
+  );
+
+  // State
+  const [currentStep, setCurrentStep] = useState(1);
+  const [isCreating, setIsCreating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Get providers from selected resources
   const requiredProviders = useMemo(() => {
     return Array.from(new Set(selectedResources.map(r => r.provider)));
   }, [selectedResources]);
@@ -256,8 +252,11 @@ export function ProjectCreationProvider({
         team_lead_id: teamLead.userId,
       });
 
-      reset();
+      queryClient.invalidateQueries({ queryKey: ['created-projects'] });
+
+      // Success - redirect to project page
       router.push(`/organization/projects/${project.id}`);
+      reset();
     } catch (err: any) {
       setError(
         err.response?.data?.detail ||
