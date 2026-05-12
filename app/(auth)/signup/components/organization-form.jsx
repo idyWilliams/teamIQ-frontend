@@ -1,6 +1,6 @@
 'use client';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/useAuthStore';
+//import { useRouter } from 'next/navigation';
+//import { useAuthStore } from '@/store/useAuthStore';
 import React from 'react';
 import CountrySelect from './country-select';
 import { Button } from '@/components/ui/button';
@@ -85,8 +85,8 @@ function OrganizationForm() {
 
   const { status } = calculateStrength(password || '', 8);
 
-  const router = useRouter();
-  const authStore = useAuthStore(state => state.authorize);
+  //const router = useRouter();
+  //const authStore = useAuthStore(state => state.authorize);
 
   const { mutate: signupOrg, isPending } = useSignupOrg();
 
@@ -98,16 +98,7 @@ function OrganizationForm() {
       },
       {
         onSuccess: () => {
-          // Step 1: Success message
-          toast.success(
-            'Organization created successfully! Redirecting to login...'
-          );
-
-          // Step 2: Reset form
           reset();
-
-          // Step 3: Redirect to login page
-          router.push('/login');
         },
 
         onError: error => {

@@ -1,12 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
-// import NextTopLoader from 'nextjs-toploader';
 import localFont from 'next/font/local';
 import { cn } from '@/lib/utils';
 import { AuthProvider } from '@/components/providers/AuthProvider';
 import Providers from './providers';
 import { Toaster } from '@/components/ui/sonner';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const hellix = localFont({
   src: [
@@ -41,7 +39,6 @@ const hellix = localFont({
       style: 'normal',
     },
   ],
-  // variable: "--font-hellix",
 });
 
 export const metadata: Metadata = {
@@ -55,15 +52,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className={cn('antialiased', hellix.className)}>
-        {/* <NextTopLoader color="#2299DD" showSpinner /> */}
-        <Toaster richColors expand={true} position="top-right" />
+        <Toaster richColors expand position="top-right" />
 
-        {/* Wrap app with QueryClientProvider */}
         <AuthProvider>
-          <Providers>
-            {children}
-            <ReactQueryDevtools initialIsOpen={false} />
-          </Providers>
+          <Providers>{children}</Providers>
         </AuthProvider>
       </body>
     </html>

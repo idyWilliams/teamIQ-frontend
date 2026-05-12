@@ -12,11 +12,11 @@ import { useState, useRef, ChangeEvent } from 'react';
 import { useOnboardingComplete } from '@/services/hooks/useAuth';
 import axiosInstance from '@/services/axios';
 import { toast } from 'sonner';
-import OnboardingSuccess from './onboardingSuccess';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+//import OnboardingSuccess from './onboardingSuccess';
+//import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useAuthStore } from '@/store/useAuthStore';
-import { users } from '@/services/api';
-import { DialogTitle } from '@radix-ui/react-dialog';
+//import { users } from '@/services/api';
+//import { DialogTitle } from '@radix-ui/react-dialog';
 
 // Regex
 const nameRegex = /^[A-Z][a-zA-Z]*(?: [A-Z][a-zA-Z]*)*$/;
@@ -156,7 +156,7 @@ const OrganizationalDetails = ({
     try {
       setLoading(true);
 
-      // 1️⃣ Upload image to /image endpoint
+      // Upload image to /image endpoint
       const formData = new FormData();
       formData.append('file', data.organization_image);
       formData.append('image_type', 'organization_image');
@@ -168,8 +168,8 @@ const OrganizationalDetails = ({
 
       const imageUrl = uploadResponse?.data?.data?.url; // depends on backend response shape
 
-      // 2️⃣ Get user_id (replace with actual logic or state)
-      const userId = user?.id; // You’ll likely get this from auth context or local storage
+      // Get user_id (replace with actual logic or state)
+      //const userId = user?.id; // You’ll likely get this from auth context or local storage
       if (!imageUrl) return;
       const final = {
         ...data,
@@ -186,12 +186,21 @@ const OrganizationalDetails = ({
         },
       };
 
-      // 3️⃣
       onboarding.mutate(final, {
         onSuccess: () => {
+
+          updateUser({
+            ...user,
+            domain_link: data.domain_link,
+            organization_name: data.organization_name,
+            organization_image: imageUrl,
+            sector: data.sector,
+          });
+
           toast.success('Onboarding completed successfully!');
           onSuccess?.();
         },
+
         onError: (error: any) => {
           toast.error(
             error?.response?.data?.message || 'Failed to complete onboarding.'
@@ -421,7 +430,7 @@ const OrganizationalDetails = ({
 
         <div>
           <Label htmlFor="tools" className="mb-4 font-normal">
-            Favourite Tools
+            Favorite Tools
           </Label>
           <Input
             type="text"
