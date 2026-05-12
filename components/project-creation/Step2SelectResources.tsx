@@ -221,6 +221,9 @@ export function Step2SelectResources() {
                     </div>
                   </div>
                   <button
+                    type="button"
+                    aria-label="condition"
+                    title="Condition"
                     onClick={() =>
                       removeResource(resource.connectionId, resource.resourceId)
                     }
@@ -258,7 +261,7 @@ function ConnectionResourceSelector({
   searchQuery,
 }: any) {
   const [isExpanded, setIsExpanded] = useState(false);
-  // ✅ Fetch resources for this specific connection
+  // Fetch resources for this specific connection
   const { data: resources = [], isLoading: loading, error } = useGetIntegrationResources(
     isExpanded ? connection.id : null,
     provider
@@ -348,60 +351,63 @@ function ConnectionResourceSelector({
                     r.resourceId === resource.id
                 );
                 return (
-                  <button
+                  <label
                     key={resource.id}
-                    onClick={() => {
-                      if (isSelected) {
-                        onRemoveResource(String(connection.id), resource.id);
-                      } else {
-                        onAddResource({
-                          connectionId: String(connection.id), // Ensure string for context
-                          provider,
-                          resourceId: resource.id,
-                          resourceName: resource.name,
-                          resourceType: resource.type,
-                          metadata: resource.metadata,
-                        });
-                      }
-                    }}
-                    className={`w-full rounded-lg border-2 p-3 text-left transition ${
+                    htmlFor={`resource-${resource.id}`}
+                    className={`flex cursor-pointer items-center gap-3 rounded-lg border-2 p-3 transition ${
                       isSelected
                         ? 'border-green-500 bg-green-50'
                         : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={() => {}}
-                        className="h-4 w-4 rounded border-gray-300 text-blue-500"
-                      />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">{resource.name}</p>
-                        {resource.metadata?.description && (
-                          <p className="mt-0.5 line-clamp-1 text-xs text-gray-600">
-                            {resource.metadata.description}
-                          </p>
-                        )}
-                      </div>
-                      {isSelected && (
-                        <svg
-                          className="h-5 w-5 flex-shrink-0 text-green-500"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
+                    <input
+                      id={`resource-${resource.id}`}
+                      type="checkbox"
+                      aria-label={`Select ${resource.name}`}
+                      checked={isSelected}
+                      onChange={() => {
+                        if (isSelected) {
+                          onRemoveResource(String(connection.id), resource.id);
+                        } else {
+                          onAddResource({
+                            connectionId: String(connection.id),
+                            provider,
+                            resourceId: resource.id,
+                            resourceName: resource.name,
+                            resourceType: resource.type,
+                            metadata: resource.metadata,
+                          });
+                        }
+                      }}
+                      className="h-4 w-4 rounded border-gray-300 text-blue-500"
+                    />
+
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{resource.name}</p>
+
+                      {resource.metadata?.description && (
+                        <p className="mt-0.5 line-clamp-1 text-xs text-gray-600">
+                          {resource.metadata.description}
+                        </p>
                       )}
                     </div>
-                  </button>
+
+                    {isSelected && (
+                      <svg
+                        className="h-5 w-5 flex-shrink-0 text-green-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    )}
+                  </label>
                 );
               })}
             </div>

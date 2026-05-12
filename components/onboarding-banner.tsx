@@ -3,7 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { AlertCircle, ArrowRight, X } from 'lucide-react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import OrganizationalDetails from './org-onboarding-comps/organizationalOnboarding';
 import OnboardingSuccess from './org-onboarding-comps/onboardingSuccess';
 
@@ -14,7 +18,8 @@ export default function OnboardingBanner() {
   const { user } = useAuthStore();
   const [isVisible, setIsVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  //const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
     // Show banner if organization details are incomplete
@@ -28,7 +33,7 @@ export default function OnboardingBanner() {
   if (!isVisible) return null;
 
   const handleComplete = () => {
-    setShowSuccessModal(false);
+    setIsSuccess(false);
     setIsModalOpen(false);
     setIsVisible(false);
   };
@@ -57,7 +62,10 @@ export default function OnboardingBanner() {
             Complete Setup
             <ArrowRight className="size-4" />
           </button>
-          <button 
+          <button
+            type="button"
+            aria-label="Close onboarding banner"
+            title="Close onboarding banner"
             onClick={() => setIsVisible(false)}
             className="p-1 hover:bg-amber-100 rounded-full transition-colors text-amber-400 hover:text-amber-600"
           >
@@ -67,21 +75,35 @@ export default function OnboardingBanner() {
       </div>
 
       {/* Onboarding Modal */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-h-[90vh] w-[900px] overflow-y-auto !pt-0 sm:!max-w-[900px] [&>button]:hidden">
-          <OrganizationalDetails
-            onClose={() => setIsModalOpen(false)}
-            onSuccess={() => {
-              setShowSuccessModal(true);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+      <Dialog
+        open={isModalOpen}
+        onOpenChange={(open) => {
+          setIsModalOpen(open);
 
-      {/* Success Modal */}
-      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+          if (!open) {
+            setIsSuccess(false);
+          }
+        }}
+      >
         <DialogContent className="max-h-[90vh] w-[900px] overflow-y-auto !pt-0 sm:!max-w-[900px] [&>button]:hidden">
-          <OnboardingSuccess onClose={handleComplete} />
+          
+          <DialogTitle className="sr-only">
+            Organization Onboarding
+          </DialogTitle>
+
+          {!isSuccess ? (
+            <OrganizationalDetails
+              onClose={() => {
+                setIsModalOpen(false);
+                setIsSuccess(false);
+              }}
+              onSuccess={() => {
+                setIsSuccess(true);
+              }}
+            />
+          ) : (
+            <OnboardingSuccess onClose={handleComplete} />
+          )}
         </DialogContent>
       </Dialog>
     </>

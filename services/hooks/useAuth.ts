@@ -77,7 +77,7 @@ export const useSignupOrg = () => {
     },
     //if request is successful
     onSuccess: responseData => {
-      toast.success('Organization created successfully! Redirecting...');
+      toast.success('Organization created successfully!');
 
       // Step 1: Extract tokens and user info (adjust keys if needed)
       const { organization, access_token } = responseData.data || responseData;
