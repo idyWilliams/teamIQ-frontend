@@ -76,12 +76,21 @@ const ProjectOverview = ({ project }: ProjectOverviewProps) => {
 
   // Get integrated apps
   const getIntegratedApps = () => {
+    if ((project as any).integrated_apps) {
+      return (project as any).integrated_apps.map((app: any) => ({
+        imgSrc: app.logo_url || iconMap[app.name.toLowerCase()] || '/images/default-app.png',
+        stack: app.name,
+        isActive: app.is_active,
+      }));
+    }
+
     const apps = [];
     if (project.pm_tool) {
       apps.push({
         imgSrc:
           iconMap[project.pm_tool.toLowerCase()] || '/images/default-app.png',
         stack: project.pm_tool,
+        isActive: true,
       });
     }
     if (project.vc_tool) {
@@ -89,6 +98,7 @@ const ProjectOverview = ({ project }: ProjectOverviewProps) => {
         imgSrc:
           iconMap[project.vc_tool.toLowerCase()] || '/images/default-app.png',
         stack: project.vc_tool,
+        isActive: true,
       });
     }
     if (project.comm_tool) {
@@ -96,6 +106,7 @@ const ProjectOverview = ({ project }: ProjectOverviewProps) => {
         imgSrc:
           iconMap[project.comm_tool.toLowerCase()] || '/images/default-app.png',
         stack: project.comm_tool,
+        isActive: true,
       });
     }
     return apps;
@@ -150,7 +161,7 @@ const ProjectOverview = ({ project }: ProjectOverviewProps) => {
           </h2>
           <ProgresWithDate
             date={formatDateRange()}
-            percentageProgress={project.pct_complete}
+            percentageProgress={(project as any).completion_percentage ?? project.pct_complete}
           />
         </div>
 
@@ -167,7 +178,14 @@ const ProjectOverview = ({ project }: ProjectOverviewProps) => {
             <h2 className="mb-3 text-[14px] font-bold lg:text-[16px]">
               Integrated Apps
             </h2>
-            <IconList data={integratedApps} />
+            <div className="flex flex-wrap gap-4">
+              {integratedApps.map((app: any, idx) => (
+                <div key={idx} className={`flex items-center gap-2 p-3 rounded-xl border border-gray-100 bg-gray-50/50 ${!app.isActive ? 'grayscale opacity-50' : ''}`}>
+                  <Image src={app.imgSrc} alt={app.stack} width={24} height={24} className="object-contain" />
+                  <span className="text-sm font-medium text-gray-700">{app.stack}</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
         {linkedDocs.length > 0 && (

@@ -51,35 +51,33 @@ export function TaskCard({ task }: TaskCardProps) {
               {task.title}
             </h6>
             <div className="flex gap-2">
-              <FileCheckFill size="20" color={task.fileBackground} />
-              <p className={`${task.fileColor} font-extrabold text-sm`}>
-                {task?.files}
+              <FileCheckFill size="20" color={task.category_color} />
+              <p className="font-extrabold text-sm" style={{ color: task.category_color }}>
+                {task.file_count ?? task.files}
               </p>
             </div>
           </div>
 
           <div>
             <div className="flex gap-2 pb-4">
-              {task.taskId && (
-                <Badge
-                  className={
-                    statusBadgeColors[task.status] ||
-                    "bg-gray-100 text-gray-800"
-                  }
-                >
-                  {task.taskId}
-                </Badge>
-              )}
+              <Badge
+                style={{ backgroundColor: `${task.status_color}1A`, color: task.status_color, border: `1px solid ${task.status_color}` }}
+                className="shadow-none"
+              >
+                {task.display_task_id || task.taskId}
+              </Badge>
               {task.category && (
-                <Badge className={task.categoryColor}>{task.category}</Badge>
-              )}
-              {task.status && (
-                <Badge className={task.statusColor}>{task.status}</Badge>
+                <Badge 
+                  style={{ backgroundColor: `${task.category_color}1A`, color: task.category_color }}
+                  className="shadow-none border-none"
+                >
+                  {task.category}
+                </Badge>
               )}
             </div>
             <div className="mt-4 flex justify-between items-center">
               <div className="*:data-[slot=avatar]:ring-background flex -space-x-2 *:data-[slot=avatar]:ring-2">
-                {task.avatars?.map((avatar, index) => (
+                {task.avatars?.slice(0, 3).map((avatar, index) => (
                   <Avatar key={index}>
                     {avatar.src ? (
                       <AvatarImage
@@ -105,21 +103,22 @@ export function TaskCard({ task }: TaskCardProps) {
                 <div className="flex gap-2">
                   <FileAttachmentFilled
                     size="20"
-                    color={task.attahmentBackground}
+                    color={task.status_color}
                   />
                   <p
-                    className={`${task.attachmentColor} font-extrabold text-sm`}
+                    className="font-extrabold text-sm"
+                    style={{ color: task.status_color }}
                   >
-                    {task?.attachments}
+                    {task.attachment_count ?? task.attachments}
                   </p>
                 </div>
                 <div className="flex gap-2">
                   <MessageTextAltSolid
                     size="20"
-                    color={task.messageBackground}
+                    color={task.category_color}
                   />
-                  <p className={`${task.messageColor} font-extrabold text-sm`}>
-                    {task?.messages}
+                  <p className="font-extrabold text-sm" style={{ color: task.category_color }}>
+                    {task.message_count ?? task.messages}
                   </p>
                 </div>
               </div>

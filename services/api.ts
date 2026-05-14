@@ -45,6 +45,8 @@ const api = {
     list: '/projects/',
     create: '/projects/create',
     byId: (project_id: number) => `/projects/${project_id}`,
+    comprehensive: (project_id: string | number) => `/projects/${project_id}/comprehensive-data`,
+    integrated: (project_id: string | number) => `/projects/${project_id}/integrated-data`,
     projectUsers: (project_id: number) => `/projects/${project_id}/users`,
     deleteProject: (project_id: number) => `/projects/${project_id}`,
   },
@@ -56,6 +58,8 @@ const api = {
 
   dashboard: {
     home: '/dashboard/home',
+    organization: '/dashboard/organization',
+    user: '/dashboard/user',
     mentor: (internId: string) => `/dashboard/mentor/${internId}`,
     org: (orgId: string) => `/dashboard/org/${orgId}`,
   },
