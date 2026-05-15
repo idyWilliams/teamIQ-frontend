@@ -4,13 +4,23 @@ import {
   ProjectCreationProvider,
   useProjectCreation,
 } from '@/context/ProjectCreationContext';
-import { IntegrationProvider } from '@/context/IntegrationContext';
+import { IntegrationProvider, useIntegrations } from '@/context/IntegrationContext';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Step1ProjectDetails } from '@/components/project-creation/Step1ProjectDetails';
 import { Step3TeamMembers } from '@/components/project-creation/Step3TeamMembers';
 import { Step4ReviewCreate } from '@/components/project-creation/Step4ReviewCreate';
 import { useRouter } from 'next/navigation';
 import { Step2SelectResources } from '@/components/project-creation/Step2SelectResources';
+import { useState, useEffect } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { AlertCircle, ArrowRight, Settings } from 'lucide-react';
 
 export default function CreateProjectPage() {
   const organizationId = useAuthStore(
@@ -36,6 +46,14 @@ function CreateProjectFlow() {
     reset,
     validationErrors,
   } = useProjectCreation();
+  const { connections, loading } = useIntegrations();
+  const [showIntegrationsModal, setShowIntegrationsModal] = useState(false);
+
+  useEffect(() => {
+    if (!loading && connections.length === 0) {
+      setShowIntegrationsModal(true);
+    }
+  }, [loading, connections]);
 
   const steps = [
     {
@@ -68,6 +86,39 @@ function CreateProjectFlow() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <Dialog open={showIntegrationsModal} onOpenChange={setShowIntegrationsModal}>
+        <DialogContent className="sm:max-w-[425px]" showCloseButton={false}>
+          <DialogHeader>
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-100">
+              <AlertCircle className="h-6 w-6 text-amber-600" />
+            </div>
+            <DialogTitle className="mt-4 text-center text-xl font-bold">
+              Integrations Required
+            </DialogTitle>
+            <DialogDescription className="mt-2 text-center text-gray-600">
+              You must integrate at least one tool (Communication, Version Control, or Project Management) to create a project and track progress.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-6 flex flex-col gap-3">
+            <Button
+              onClick={() => router.push('/organization/settings?tab=integrated-apps')}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md"
+            >
+              <Settings className="h-5 w-5" />
+              Go to Integrated Apps
+              <ArrowRight className="h-5 w-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => router.push('/organization/projects')}
+              className="w-full text-gray-500 hover:text-gray-700"
+            >
+              Back to Projects
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Header */}
       <div className="sticky top-0 z-40 border-b bg-white shadow-sm">
         <div className="mx-auto max-w-7xl px-6 py-5">

@@ -30,10 +30,12 @@ type Organization = {
 interface AuthState {
   user: User | Organization | null;
   token: string | null;
+  refresh_token: string | null;
   isAuthenticated: boolean;
   hasOnboarding: boolean;
   isLoading: boolean;
-  authorize: (data: { user?: User; organization?: Organization; token: string }) => void;
+  authorize: (data: { user?: User; organization?: Organization; token: string; refresh_token?: string }) => void;
+  setTokens: (tokens: { access_token: string; refresh_token: string }) => void;
   logout: (showToast?: boolean) => void;
   updateUser: (data: Partial<User | Organization>) => void;
   validateToken: () => Promise<void>;
@@ -44,22 +46,28 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       user: null,
       token: null,
+      refresh_token: null,
       isAuthenticated: false,
       hasOnboarding: false,
       isLoading: true,
 
-      authorize: ({ user, organization, token }) => {
+      authorize: ({ user, organization, token, refresh_token }) => {
         const entity = user || organization;
         set({
           user: entity,
           token,
+          refresh_token: refresh_token || null,
           isAuthenticated: true,
           isLoading: false,
         });
       },
 
+      setTokens: ({ access_token, refresh_token }) => {
+        set({ token: access_token, refresh_token });
+      },
+
       logout: (showToast = true) => {
-        set({ user: null, token: null, isAuthenticated: false, isLoading: false });
+        set({ user: null, token: null, refresh_token: null, isAuthenticated: false, isLoading: false });
         if (showToast) {
           toast.error('Session expired. Please login again.');
         }

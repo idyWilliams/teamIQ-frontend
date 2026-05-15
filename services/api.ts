@@ -11,6 +11,7 @@ const api = {
     loginOrg: '/auth/login/organization',
     loginGoogle: '/auth/login/google',
     callbackGoogle: '/auth/callback/google',
+    refresh: '/auth/refresh',
     passwordReset: '/auth/password-reset',
     confirmPasswordReset: '/auth/password-reset/confirm',
   },

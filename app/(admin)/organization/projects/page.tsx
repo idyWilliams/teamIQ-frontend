@@ -22,6 +22,8 @@ import {
   MoreHorizontal,
   Pencil,
   Trash2,
+  Settings as SettingsIcon,
+  ArrowRight,
 } from 'lucide-react';
 import {
   Dialog,
@@ -223,11 +225,14 @@ export default function ProjectsPage() {
   const columnHelper = createColumnHelper<TableProject>();
   const router = useRouter();
   const { connections, loading: integrationsLoading } = useIntegrations();
+  const [showIntegrationsModal, setShowIntegrationsModal] = useState(false);
+
   const hasIntegrations =
     Array.isArray(connections) && connections.length > 0;
+  
   const handleCreateProject = () => {
     if (!hasIntegrations) {
-      router.push('/organization/settings?tab=integrated-apps');
+      setShowIntegrationsModal(true);
       return;
     }
 
@@ -637,6 +642,40 @@ export default function ProjectsPage() {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-h-[90vh] w-[900px] overflow-y-auto !pt-0 sm:!max-w-[900px] [&>button]:hidden">
           <StepperModal onClose={() => setIsModalOpen(false)} />
+        </DialogContent>
+      </Dialog>
+
+      {/* Integrations Required Modal */}
+      <Dialog open={showIntegrationsModal} onOpenChange={setShowIntegrationsModal}>
+        <DialogContent className="sm:max-w-[425px]" showCloseButton={false}>
+          <DialogHeader>
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-100">
+              <AlertCircle className="h-6 w-6 text-amber-600" />
+            </div>
+            <DialogTitle className="mt-4 text-center text-xl font-bold">
+              Integrations Required
+            </DialogTitle>
+            <DialogDescription className="mt-2 text-center text-gray-600">
+              You must integrate at least one tool (Communication, Version Control, or Project Management) to create a project and track progress.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-6 flex flex-col gap-3">
+            <Button
+              onClick={() => router.push('/organization/settings?tab=integrated-apps')}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md"
+            >
+              <SettingsIcon className="h-5 w-5" />
+              Go to Integrated Apps
+              <ArrowRight className="h-5 w-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => setShowIntegrationsModal(false)}
+              className="w-full text-gray-500 hover:text-gray-700"
+            >
+              Close
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 
