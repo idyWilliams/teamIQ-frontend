@@ -50,25 +50,6 @@ function CreateProjectFlow() {
   const { connections, loading } = useIntegrations();
   const [showIntegrationsModal, setShowIntegrationsModal] = useState(false);
 
-  useEffect(() => {
-    if (!loading && connections.length === 0) {
-      setShowIntegrationsModal(true);
-    }
-  }, [loading, connections]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-        if (canProceed && currentStep < steps.length) {
-          nextStep();
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [canProceed, currentStep, nextStep, steps.length]);
-
   const steps = [
     {
       number: 1,
@@ -89,6 +70,25 @@ function CreateProjectFlow() {
       component: Step3TeamMembers,
     },
   ];
+
+  useEffect(() => {
+    if (!loading && connections.length === 0) {
+      setShowIntegrationsModal(true);
+    }
+  }, [loading, connections]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        if (canProceed && currentStep < steps.length) {
+          nextStep();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [canProceed, currentStep, nextStep, steps.length]);
 
   const CurrentStepComponent = steps[currentStep - 1]?.component || steps[0].component;
 
