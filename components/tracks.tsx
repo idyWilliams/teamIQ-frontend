@@ -1,47 +1,6 @@
 'use client';
 
 import React from 'react';
-// import { CheckCircle, Wrench, FileText, Box } from 'lucide-react';
-import { TeamMember } from '@/constants/team-member';
-import Image from 'next/image';
-
-// TODO: Replace this mock data with your actual team members import if available
-// const teamMembers: TeamMember[] = [
-//   {
-//     id: 1,
-//     name: 'Alice',
-//     avatar: '/images/alice.png',
-//     role: 'Designer',
-//     tasks: [],
-//     lastSeen: new Date().toISOString(),
-//   },
-//   {
-//     id: 2,
-//     name: 'Bob',
-//     avatar: '/images/bob.png',
-//     role: 'Engineer',
-//     tasks: [],
-//     lastSeen: new Date().toISOString(),
-//   },
-//   {
-//     id: 3,
-//     name: 'Charlie',
-//     avatar: '/images/charlie.png',
-//     role: 'Content Writer',
-//     tasks: [],
-//     lastSeen: new Date().toISOString(),
-//   },
-//   {
-//     id: 4,
-//     name: 'Diana',
-//     avatar: '/images/diana.png',
-//     role: 'Product Manager',
-//     tasks: [],
-//     lastSeen: new Date().toISOString(),
-//   },
-// ];
-
-import { TeamMember } from '@/constants/team-member';
 import Image from 'next/image';
 import { TrackData } from '@/types/dashboard';
 import { getFallbackInitials } from '@/lib/utils';
@@ -112,27 +71,4 @@ function Tracks({ tracks = [] }: TracksProps) {
   );
 }
 
-// const allTracks = [
-//   {
-//     icon: <CheckCircle />,
-//     name: 'Design Team',
-//     status: '10 uncompleted tasks',
-//     members: [],
-//   },
-//   {
-//     icon: <Wrench />,
-//     name: 'Engineering',
-//     status: '10 uncompleted tasks',
-//   },
-//   {
-//     icon: <FileText />,
-//     name: 'Content Team',
-//     status: '10 uncompleted tasks',
-//   },
-//   {
-//     icon: <Box />,
-//     name: 'Product',
-//     status: '10 uncompleted tasks',
-//   },
-// ];
 export default Tracks;

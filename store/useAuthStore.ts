@@ -90,22 +90,19 @@ export const useAuthStore = create<AuthState>()(
         try {
           const decode: { sub: string; exp: number; entity_type: 'user' | 'organization' } = jwtDecode(token);
           if (!decode || typeof decode !== 'object') {
-            toast.error('Invalid token format. Logging out...');
-            set({ isAuthenticated: false, isLoading: false });
+            get().logout(false);
             return;
           }
           if (decode.exp) {
             const currentTime = Math.floor(Date.now() / 1000);
             if (decode.exp < currentTime) {
-              toast.error('Token has expired. Logging out...');
-              set({ isAuthenticated: false, isLoading: false });
+              get().logout(false);
               return;
             }
           }
           set({ isAuthenticated: true, isLoading: false });
         } catch {
-          toast.error('Failed to decode token.');
-          set({ isAuthenticated: false, isLoading: false });
+          get().logout(false);
         }
       },
     }),

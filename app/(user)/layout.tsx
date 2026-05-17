@@ -6,8 +6,12 @@ import Header from '@/components/user-dashboard-component/Header';
 import UserSidebar from '@/components/user-dashboard-component/Sidebar';
 import UserNotification from '@/components/Notifications/UserNotification';
 import RequireAuth from '@/components/auth/RequireAuth';
+import { IntegrationProvider } from '@/context/IntegrationContext';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function TeamDashboardLayout({ children }: { children: React.ReactNode }) {
+  const { user } = useAuthStore();
+  const organizationId = user?.organization_id || user?.id || '';
   const [showNotification, setShowNotification] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 

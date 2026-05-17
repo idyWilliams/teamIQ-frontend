@@ -3,7 +3,7 @@
 import { useProjectCreation } from '@/context/ProjectCreationContext';
 import { FormInput } from '@/components/ui/FormInput';
 import { FormTextArea } from '../ui/FormTextArea';
-
+import { Layout, FileText, Info } from 'lucide-react';
 
 export function Step1ProjectDetails() {
   const {
@@ -17,66 +17,66 @@ export function Step1ProjectDetails() {
   const nameError = validationErrors.find(e => e.includes('Project name'));
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <div>
-        <h2 className="mb-2 text-2xl font-bold text-gray-900">
-          Project Details
-        </h2>
-        <p className="text-gray-600">
-          Give your project a name and description
-        </p>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+      <div className="space-y-6">
+        <div className="space-y-4">
+          <FormInput
+            label="Project Name"
+            value={projectName}
+            onChange={e => setProjectName(e.target.value)}
+            placeholder="e.g., Mobile App Redesign"
+            required
+            maxLength={100}
+            error={nameError}
+            className="text-lg font-semibold"
+          />
+
+          <FormTextArea
+            label="Project Description"
+            value={projectDescription}
+            onChange={e => setProjectDescription(e.target.value)}
+            placeholder="What are the goals of this project?"
+            rows={4}
+            maxLength={500}
+          />
+        </div>
+
+        <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex gap-3">
+          <Info className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
+          <div className="text-xs text-blue-700 leading-relaxed">
+            <p className="font-bold mb-1">Efficiency Tip</p>
+            <p>You can skip the description for now and add it later in settings. A clear project name helps team members identify it quickly.</p>
+          </div>
+        </div>
       </div>
 
-      <FormInput
-        label="Project Name"
-        value={projectName}
-        onChange={e => setProjectName(e.target.value)}
-        placeholder="e.g., Mobile App Redesign Q1 2025"
-        required
-        maxLength={100}
-        error={nameError}
-        helperText={`${projectName.length}/100 characters`}
-      />
-
-      <FormTextArea
-        label="Description"
-        value={projectDescription}
-        onChange={e => setProjectDescription(e.target.value)}
-        placeholder="Describe what this project tracks and its objectives..."
-        rows={5}
-        maxLength={500}
-        helperText={`${projectDescription.length}/500 characters`}
-      />
-
-      <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
-        <div className="flex gap-3">
-          <svg
-            className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <div className="text-sm text-blue-800">
-            <p className="mb-1 font-medium">What&apos;s next?</p>
-            <ul className="space-y-1 text-blue-700">
-              <li>
-                • Link repositories, boards, and channels from your integrated
-                tools
-              </li>
-              <li>
-                • Add team members and map them to their external accounts
-              </li>
-              <li>
-                • TeamIQ will automatically sync and track all project activity
-              </li>
-            </ul>
+      {/* Preview Card */}
+      <div className="hidden md:block">
+        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Live Preview</h3>
+        <div className="bg-white border rounded-2xl shadow-sm overflow-hidden ring-4 ring-gray-50">
+          <div className="h-24 bg-gradient-to-br from-blue-500 to-blue-700 p-6 flex items-end">
+            <div className="h-12 w-12 bg-white/20 backdrop-blur-md rounded-xl border border-white/30 flex items-center justify-center">
+              <Layout className="h-6 w-6 text-white" />
+            </div>
+          </div>
+          <div className="p-6 space-y-4">
+            <div>
+              <div className={`h-6 rounded bg-gray-100 mb-2 transition-all ${projectName ? 'bg-transparent h-auto' : 'w-3/4'}`}>
+                {projectName && <h4 className="text-xl font-bold text-gray-900">{projectName}</h4>}
+              </div>
+              <div className={`h-3 rounded bg-gray-50 transition-all ${projectDescription ? 'bg-transparent h-auto' : 'w-full'}`}>
+                {projectDescription && <p className="text-xs text-gray-500 line-clamp-3 leading-relaxed">{projectDescription}</p>}
+              </div>
+            </div>
+            
+            <div className="pt-4 border-t flex items-center gap-4">
+              <div className="flex -space-x-2">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="h-6 w-6 rounded-full bg-gray-200 border-2 border-white" />
+                ))}
+              </div>
+              <div className="h-2 w-24 bg-gray-100 rounded" />
+            </div>
           </div>
         </div>
       </div>

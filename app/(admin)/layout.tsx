@@ -11,6 +11,7 @@ import { SidebarInput, SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 import { useAuthStore } from '@/store/useAuthStore';
 import OnboardingBanner from '@/components/onboarding-banner';
+import { IntegrationProvider } from '@/context/IntegrationContext';
 
 export default function OrganizationDashboardLayout({
   children,
@@ -18,6 +19,7 @@ export default function OrganizationDashboardLayout({
   children: React.ReactNode;
 }) {
   const { user } = useAuthStore();
+  const organizationId = user?.organization_id || user?.id || '';
   const [showNotification, setShowNotification] = useState(false);
 
   const toggleNotification = () => {
@@ -26,9 +28,10 @@ export default function OrganizationDashboardLayout({
 
   return (
     <RequireAuth>
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset className="flex h-screen w-full overflow-hidden">
+      <IntegrationProvider organizationId={organizationId}>
+        <SidebarProvider>
+          <AppSidebar />
+          <SidebarInset className="flex h-screen w-full overflow-hidden">
           <div className="flex min-h-0 flex-1 flex-col min-w-0 overflow-hidden">
             <OnboardingBanner />
             <header className="h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
@@ -97,7 +100,9 @@ export default function OrganizationDashboardLayout({
             </>
           )}
         </SidebarInset>
-      </SidebarProvider>
-    </RequireAuth>
-  );
-}
+        </SidebarProvider>
+        </IntegrationProvider>
+        </RequireAuth>
+        );
+        }
+

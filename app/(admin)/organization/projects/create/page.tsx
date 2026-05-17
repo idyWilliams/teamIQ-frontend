@@ -8,7 +8,6 @@ import { IntegrationProvider, useIntegrations } from '@/context/IntegrationConte
 import { useAuthStore } from '@/store/useAuthStore';
 import { Step1ProjectDetails } from '@/components/project-creation/Step1ProjectDetails';
 import { Step3TeamMembers } from '@/components/project-creation/Step3TeamMembers';
-import { Step4ReviewCreate } from '@/components/project-creation/Step4ReviewCreate';
 import { useRouter } from 'next/navigation';
 import { Step2SelectResources } from '@/components/project-creation/Step2SelectResources';
 import { useState, useEffect } from 'react';
@@ -36,6 +35,8 @@ export default function CreateProjectPage() {
   );
 }
 
+import { ProjectManifest } from '@/components/project-creation/ProjectManifest';
+
 function CreateProjectFlow() {
   const router = useRouter();
   const {
@@ -54,6 +55,19 @@ function CreateProjectFlow() {
       setShowIntegrationsModal(true);
     }
   }, [loading, connections]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        if (canProceed && currentStep < steps.length) {
+          nextStep();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [canProceed, currentStep, nextStep, steps.length]);
 
   const steps = [
     {
@@ -74,18 +88,12 @@ function CreateProjectFlow() {
       description: 'Select members and map accounts',
       component: Step3TeamMembers,
     },
-    {
-      number: 4,
-      title: 'Review & Create',
-      description: 'Confirm and start sync',
-      component: Step4ReviewCreate,
-    },
   ];
 
-  const CurrentStepComponent = steps[currentStep - 1].component;
+  const CurrentStepComponent = steps[currentStep - 1]?.component || steps[0].component;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="flex h-[calc(100vh-64px)] bg-gray-50 overflow-hidden">
       <Dialog open={showIntegrationsModal} onOpenChange={setShowIntegrationsModal}>
         <DialogContent className="sm:max-w-[425px]" showCloseButton={false}>
           <DialogHeader>
@@ -119,33 +127,27 @@ function CreateProjectFlow() {
         </DialogContent>
       </Dialog>
 
-      {/* Header */}
-      <div className="sticky top-0 z-40 border-b bg-white shadow-sm">
-        <div className="mx-auto max-w-7xl px-6 py-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="flex items-center gap-3 text-3xl font-bold text-gray-900">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600">
-                  <svg
-                    className="h-6 w-6 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                    />
-                  </svg>
-                </div>
-                Create New Project
-              </h1>
-              <p className="mt-2 text-sm text-gray-600">
-                Link your tools and team to start tracking progress
-                automatically
-              </p>
+      {/* Configuration Column */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <header className="bg-white border-b px-8 py-4 flex items-center justify-between shrink-0">
+          <div>
+            <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+              <span className="p-1.5 bg-blue-600 rounded-lg">
+                <Settings className="h-4 w-4 text-white" />
+              </span>
+              Project Builder
+            </h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              {steps.map((step) => (
+                <div
+                  key={step.number}
+                  className={`h-1.5 w-8 rounded-full transition-all ${
+                    currentStep >= step.number ? 'bg-blue-600' : 'bg-gray-200'
+                  }`}
+                />
+              ))}
             </div>
             <button
               onClick={() => {
@@ -154,178 +156,54 @@ function CreateProjectFlow() {
                   router.push('/organization/projects');
                 }
               }}
-              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
+              className="text-sm font-medium text-gray-500 hover:text-gray-700"
             >
               Cancel
             </button>
           </div>
-        </div>
-      </div>
+        </header>
 
-      {/* Progress Stepper */}
-      <div className="border-b bg-white shadow-sm">
-        <div className="mx-auto max-w-7xl px-6 py-6">
-          <div className="relative flex items-center justify-between">
-            {/* Progress Line */}
-            <div className="absolute top-5 right-0 left-0 -z-10 h-0.5 bg-gray-200">
-              <div
-                className="h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-500"
-                style={{
-                  width: `${((currentStep - 1) / (steps.length - 1)) * 100}%`,
-                }}
-              />
+        <main className="flex-1 overflow-y-auto p-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-8">
+              <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Step {currentStep} of {steps.length}</span>
+              <h2 className="text-2xl font-bold text-gray-900 mt-1">{steps[currentStep - 1].title}</h2>
+              <p className="text-gray-500 text-sm">{steps[currentStep - 1].description}</p>
             </div>
 
-            {steps.map((step, index) => {
-              const isCompleted = currentStep > step.number;
-              const isCurrent = currentStep === step.number;
-              const isUpcoming = currentStep < step.number;
+            <div className="bg-white rounded-2xl border shadow-sm p-8">
+              <CurrentStepComponent />
+            </div>
 
-              return (
-                <div
-                  key={step.number}
-                  className="relative flex flex-1 flex-col items-center"
-                >
-                  <button
-                    onClick={() => {
-                      if (step.number < currentStep) {
-                        // Allow going back
-                        while (currentStep > step.number) prevStep();
-                      }
-                    }}
-                    disabled={step.number >= currentStep}
-                    className={`flex h-10 w-10 items-center justify-center rounded-full font-bold transition-all duration-300 ${
-                      isCompleted
-                        ? 'scale-110 bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg'
-                        : isCurrent
-                          ? 'scale-125 bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-xl ring-4 ring-blue-200'
-                          : 'bg-gray-200 text-gray-500'
-                    } ${step.number < currentStep ? 'cursor-pointer hover:scale-115' : 'cursor-not-allowed'}`}
-                  >
-                    {isCompleted ? (
-                      <svg
-                        className="h-6 w-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={3}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                    ) : (
-                      step.number
-                    )}
-                  </button>
-                  <div
-                    className={`mt-3 text-center transition-all duration-300 ${isCurrent ? 'scale-105' : ''}`}
-                  >
-                    <p
-                      className={`text-sm font-semibold ${
-                        isCompleted || isCurrent
-                          ? 'text-gray-900'
-                          : 'text-gray-500'
-                      }`}
-                    >
-                      {step.title}
-                    </p>
-                    <p
-                      className={`mt-0.5 text-xs ${
-                        isCurrent
-                          ? 'font-medium text-blue-600'
-                          : 'text-gray-500'
-                      }`}
-                    >
-                      {step.description}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="mx-auto max-w-7xl px-6 py-8">
-        <div className="min-h-[600px] rounded-2xl border bg-white p-8 shadow-lg">
-          <CurrentStepComponent />
-        </div>
-      </div>
-
-      {/* Footer Navigation */}
-      {currentStep < 4 && (
-        <div className="fixed right-0 bottom-0 left-0 z-50 border-t bg-white shadow-2xl">
-          <div className="mx-auto max-w-7xl px-6 py-4">
-            <div className="flex items-center justify-between">
-              <button
+            <div className="mt-8 flex items-center justify-between">
+              <Button
+                variant="ghost"
                 onClick={prevStep}
                 disabled={currentStep === 1}
-                className={`flex items-center gap-2 rounded-lg px-6 py-3 font-semibold transition-all ${
-                  currentStep === 1
-                    ? 'cursor-not-allowed text-gray-400'
-                    : 'text-gray-700 hover:bg-gray-100 hover:shadow-md'
-                }`}
+                className="gap-2"
               >
-                <svg
-                  className="h-5 w-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
+                <ArrowRight className="h-4 w-4 rotate-180" />
                 Previous
-              </button>
-
-              <div className="text-center">
-                <p className="text-sm font-medium text-gray-700">
-                  Step {currentStep} of {steps.length}
-                </p>
-                {validationErrors.length > 0 && (
-                  <p className="mt-1 text-xs text-red-600">
-                    {validationErrors.length} issue
-                    {validationErrors.length > 1 ? 's' : ''} to fix
-                  </p>
-                )}
-              </div>
-
-              <button
-                onClick={nextStep}
-                disabled={!canProceed}
-                className={`flex items-center gap-2 rounded-lg px-6 py-3 font-semibold shadow-lg transition-all ${
-                  canProceed
-                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 hover:shadow-xl'
-                    : 'cursor-not-allowed bg-gray-200 text-gray-400'
-                }`}
-              >
-                Next
-                <svg
-                  className="h-5 w-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              </Button>
+              {currentStep < steps.length && (
+                <Button
+                  onClick={nextStep}
+                  disabled={!canProceed}
+                  className="bg-blue-600 hover:bg-blue-700 gap-2 px-8"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
+                  Continue
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              )}
             </div>
           </div>
-        </div>
-      )}
+        </main>
+      </div>
+
+      {/* Manifest Column */}
+      <aside className="w-[320px] shrink-0 hidden lg:block">
+        <ProjectManifest />
+      </aside>
     </div>
   );
 }
