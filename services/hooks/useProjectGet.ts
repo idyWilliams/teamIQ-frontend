@@ -177,6 +177,21 @@ export const useWebhookInstructions = (projectId: string | number | undefined) =
   });
 };
 
+export const useGenerateAiSummary = (projectId: string | number | undefined) => {
+  return useMutation({
+    mutationFn: async () => {
+      if (!projectId) throw new Error('Project ID is required');
+      const response = await api.post<APIResponse<string>>(
+        projectsApi.generateAiSummary(projectId)
+      );
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Failed to generate AI summary');
+      }
+      return response.data.data;
+    },
+  });
+};
+
 export const useGetMyProjects = () => {
   return useQuery({
     queryKey: ['user-projects'],

@@ -68,9 +68,9 @@ const mapProjectTaskToTask = (pt: ProjectTask): Task => ({
   attachment_count: pt.attachment_count,
   message_count: pt.message_count,
   avatars: pt.assignees?.map(a => ({
-    src: a.avatar_url || undefined,
-    name: a.display_name,
-    fallback: a.display_name?.charAt(0) || 'U',
+    src: a?.avatar_url || undefined,
+    name: a?.display_name || 'Unknown',
+    fallback: a?.display_name?.charAt(0) || 'U',
   })) || [],
 });
 
@@ -122,17 +122,20 @@ const ProjectOverview = ({ project, comprehensiveData }: ProjectOverviewProps) =
   const linkedDocs: string[] = [];
 
   const activities = comprehensiveData?.activities?.map(act => ({
-    user: act.user.display_name,
+    user: act.user?.display_name || 'System',
     action: act.content,
-    timestamp: new Date(act.created_at).toLocaleString(), 
-    avatar: { src: act.user.avatar_url || undefined, fallback: act.user.display_name.charAt(0) }
+    timestamp: act.created_at ? new Date(act.created_at).toLocaleString() : 'Recent', 
+    avatar: { 
+      src: act.user?.avatar_url || undefined, 
+      fallback: act.user?.display_name?.charAt(0) || 'S' 
+    }
   })) || [];
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 pb-10">
       {/* Left hand side */}
       <div className="flex w-full flex-col gap-[32px] lg:w-[70%]">
-        {isMobile && <AiSummary />}
+        {isMobile && <AiSummary projectId={project.id} />}
 
         <div>
           <div className="mb-2 flex items-center justify-between">
@@ -182,10 +185,12 @@ const ProjectOverview = ({ project, comprehensiveData }: ProjectOverviewProps) =
               {comprehensiveData.pull_requests.map(pr => (
                 <div key={pr.id} className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
                   <div className="flex flex-col">
-                    <span className="font-semibold text-gray-800">{pr.title}</span>
-                    <span className="text-xs text-gray-500">by {pr.author} • {new Date(pr.created_at).toLocaleDateString()}</span>
+                    <span className="font-semibold text-gray-800">{pr.title || 'Untitled PR'}</span>
+                    <span className="text-xs text-gray-500">by {pr.author || 'Unknown'} • {pr.created_at ? new Date(pr.created_at).toLocaleDateString() : 'Recent'}</span>
                   </div>
-                  <a href={pr.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline text-sm">View PR</a>
+                  {pr.url && (
+                    <a href={pr.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline text-sm">View PR</a>
+                  )}
                 </div>
               ))}
             </div>
@@ -232,7 +237,7 @@ const ProjectOverview = ({ project, comprehensiveData }: ProjectOverviewProps) =
             <span className="icon-[fluent--sparkle-48-filled] size-5 text-blue-500"></span>
             <h2 className="text-[18px] font-bold">AI Summary</h2>
           </div>
-          <AiSummary />
+          <AiSummary projectId={project.id} />
         </div>
       )}
     </div>

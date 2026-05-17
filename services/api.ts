@@ -48,6 +48,7 @@ const api = {
     byId: (project_id: string | number) => `/projects/${project_id}`,
     comprehensive: (project_id: string | number) => `/projects/${project_id}/comprehensive-data`,
     myData: (project_id: string | number) => `/projects/${project_id}/my-data`,
+    generateAiSummary: (project_id: string | number) => `/projects/${project_id}/generate-ai-summary`,
     webhookInstructions: (project_id: string | number) => `/projects/${project_id}/webhook-setup-instructions`,
     integrated: (project_id: string | number) => `/projects/${project_id}/integrated-data`,
     projectUsers: (project_id: number) => `/projects/${project_id}/users`,

@@ -72,11 +72,32 @@ export interface ProjectActivity {
   created_at: string;
 }
 
+export interface EngineeringHealthData {
+  velocity: {
+    label: string;
+    value: number;
+    trend: 'up' | 'down' | 'stable';
+    data: { name: string; value: number }[];
+  }[];
+  code_quality: {
+    test_coverage: number;
+    maintainability: number;
+    reliability: number;
+    technical_debt_hours: number;
+  };
+  team_health: {
+    burnout_risk: 'low' | 'medium' | 'high';
+    collaboration_score: number;
+    skill_distribution: { skill: string; percentage: number }[];
+  };
+}
+
 export interface ComprehensiveProjectData {
   project: ProjectResponse;
   tasks: ProjectTask[];
   pull_requests: PullRequest[];
   activities: ProjectActivity[];
+  engineering_health?: EngineeringHealthData;
 }
 
 export interface PersonalStats {
