@@ -132,7 +132,8 @@ const transformProject = (apiProject: any): TableProject => {
   // Check integrated_apps array
   if (Array.isArray(apiProject.integrated_apps)) {
     apiProject.integrated_apps.forEach((app: any) => {
-      if (app.provider) apps.add(app.provider.toLowerCase());
+      const appName = (app.name || app.provider || '').toLowerCase();
+      if (appName) apps.add(appName);
     });
   }
 
@@ -172,26 +173,27 @@ const transformProject = (apiProject: any): TableProject => {
 
   if (apiProject.project_lead_name) {
     leadName = apiProject.project_lead_name;
-    // We might need to find the avatar from members array if name matches
-    const leadUser = apiProject.members?.find((m: any) => m.user_name === leadName || m.name === leadName);
-    if (leadUser) leadAvatar = leadUser.user_avatar || leadUser.profile_image || leadAvatar;
+    // Find the lead user from members array if available to get avatar
+    const leadUser = apiProject.members?.find((m: any) => 
+      m.display_name === leadName || m.user_name === leadName || m.name === leadName
+    );
+    if (leadUser) leadAvatar = leadUser.avatar_url || leadUser.profile_image || leadAvatar;
   } else if (Array.isArray(apiProject.members)) {
     const leadMember = apiProject.members.find((m: any) =>
       m.role === 'team_lead' || m.role === 'lead'
     );
     if (leadMember) {
-      leadName = leadMember.user_name || getFullName(leadMember);
-      leadAvatar = leadMember.user_avatar || leadMember.profile_image || leadAvatar;
+      leadName = leadMember.display_name || leadMember.user_name || getFullName(leadMember);
+      leadAvatar = leadMember.avatar_url || leadMember.profile_image || leadAvatar;
     }
   }
 
   // 6. Map Team Members
-  // Your example has a 'teamMembers' array with detailed user info. Use that.
-  const members = Array.isArray(apiProject.teamMembers)
-    ? apiProject.teamMembers.map((m: any) => ({
+  const members = Array.isArray(apiProject.members)
+    ? apiProject.members.map((m: any) => ({
       id: m.id,
-      name: getFullName(m),
-      avatar: m.profile_image || '/images/member.png'
+      name: m.display_name || getFullName(m),
+      avatar: m.avatar_url || m.profile_image || '/images/member.png'
     }))
     : [];
 
@@ -207,7 +209,7 @@ const transformProject = (apiProject: any): TableProject => {
     startDate: formatDate(apiProject.start_date),
     endDate: formatDate(apiProject.end_date),
     status: status,
-    progress: apiProject.pct_complete || 0,
+    progress: apiProject.completion_percentage || apiProject.pct_complete || 0,
   };
 };
 

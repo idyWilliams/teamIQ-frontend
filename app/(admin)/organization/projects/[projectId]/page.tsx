@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Suspense } from 'react';
 import AssignedTeamMembers from '@/app/(user)/member/projects/components/assigned-team-member';
 import ProjectOverview from '@/components/project-overview';
-import { useProject } from '@/services/hooks/useProjectGet';
+import { useProject, useComprehensiveProjectData } from '@/services/hooks/useProjectGet';
 import { useOrganizationTeamMember } from '@/services/hooks/useOrgProfile';
 
 function ProjectDetails() {
@@ -26,8 +26,9 @@ function ProjectDetails() {
   const projectId = params?.projectId as string;
 
   // Fetch project data at parent level
-  const { data: project, isLoading, error } = useProject(projectId);
-  console.log("data", project);
+  const { data: comprehensiveData, isLoading, error } = useComprehensiveProjectData(projectId);
+  const project = comprehensiveData?.project;
+  
   const { data } = useOrganizationTeamMember();
 
   // Loading state
@@ -36,7 +37,7 @@ function ProjectDetails() {
       <div className="flex h-[400px] items-center justify-center">
         <div className="flex items-center gap-3">
           <Loader className="h-8 w-8 animate-spin text-blue-500" />
-          <span className="text-lg text-gray-600">Loading project...</span>
+          <span className="text-lg text-gray-600">Loading project data...</span>
         </div>
       </div>
     );
@@ -65,7 +66,7 @@ function ProjectDetails() {
       label: 'Project Overview',
       href: '/organization/projects?tab=overview',
       value: 'overview',
-      content: <ProjectOverview project={project} />,
+      content: <ProjectOverview project={project} comprehensiveData={comprehensiveData} />,
     },
     {
       label: 'Tasks Allocation',

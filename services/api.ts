@@ -45,8 +45,10 @@ const api = {
   projects: {
     list: '/projects/',
     create: '/projects/create',
-    byId: (project_id: number) => `/projects/${project_id}`,
+    byId: (project_id: string | number) => `/projects/${project_id}`,
     comprehensive: (project_id: string | number) => `/projects/${project_id}/comprehensive-data`,
+    myData: (project_id: string | number) => `/projects/${project_id}/my-data`,
+    webhookInstructions: (project_id: string | number) => `/projects/${project_id}/webhook-setup-instructions`,
     integrated: (project_id: string | number) => `/projects/${project_id}/integrated-data`,
     projectUsers: (project_id: number) => `/projects/${project_id}/users`,
     deleteProject: (project_id: number) => `/projects/${project_id}`,

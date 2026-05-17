@@ -397,7 +397,7 @@ export function ProjectCreationProvider({
     setIsCreating(true);
     setError(null);
     try {
-      const { data: project } = await axiosInstance.post(projects.create, {
+      const response = await axiosInstance.post(projects.create, {
         organization_id: organizationId,
         name: projectName,
         description: projectDescription,
@@ -406,10 +406,16 @@ export function ProjectCreationProvider({
         team_lead_id: teamLead.userId,
       });
 
+      const data = response.data;
+      if (!data.success) {
+        throw new Error(data.message || 'Failed to create project');
+      }
+
+      const newProject = data.data;
       queryClient.invalidateQueries({ queryKey: ['created-projects'] });
 
-      // Success - redirect to project page
-      router.push(`/organization/projects`);
+      // Success - redirect to setup guide
+      router.push(`/organization/projects/${newProject.id}/setup-guide`);
       reset();
     } catch (err: any) {
       const errorMessage =

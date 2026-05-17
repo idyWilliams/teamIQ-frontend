@@ -25,12 +25,20 @@ export interface ProjectTask {
   file_count: number;
   attachment_count: number;
   assignees: UserOut[];
+  created_at: string;
+  updated_at: string;
   comments: {
     id: string;
     content: string;
     user: UserOut;
     created_at: string;
   }[];
+}
+
+export interface IntegratedApp {
+  name: string;
+  is_active: boolean;
+  logo_url: string;
 }
 
 export interface ProjectResponse {
@@ -42,11 +50,59 @@ export interface ProjectResponse {
   completion_percentage: number;
   members: UserOut[];
   tasks: ProjectTask[];
-  integrated_apps: {
-    name: string;
-    is_active: boolean;
-    logo_url: string;
-  }[];
+  integrated_apps: IntegratedApp[];
+  project_lead_name: string;
+  created_at: string;
+}
+
+export interface PullRequest {
+  id: string;
+  title: string;
+  status: string;
+  url: string;
+  author: string;
+  created_at: string;
+}
+
+export interface ProjectActivity {
+  id: string;
+  type: string;
+  content: string;
+  user: UserOut;
+  created_at: string;
+}
+
+export interface ComprehensiveProjectData {
+  project: ProjectResponse;
+  tasks: ProjectTask[];
+  pull_requests: PullRequest[];
+  activities: ProjectActivity[];
+}
+
+export interface PersonalStats {
+  contribution_percentage: number;
+  completion_rate: number;
+}
+
+export interface ProjectProgress {
+  total: number;
+  completed: number;
+}
+
+export interface MyProjectData {
+  project_progress: ProjectProgress;
+  my_stats: PersonalStats;
+}
+
+export interface WebhookStep {
+  step_number: number;
+  instruction: string;
+  webhook_url?: string;
+  event_checkboxes?: string[];
+}
+
+export interface WebhookSetupInstructions {
+  steps: WebhookStep[];
 }
 
 export interface IntegratedData {
