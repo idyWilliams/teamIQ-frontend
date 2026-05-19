@@ -25,6 +25,7 @@ const schema = yup.object().shape({
     .email('Please enter a valid email address')
     .required('Email is required'),
   password: yup.string().required('Password is required'),
+  remember_me: yup.boolean().default(false),
 });
 
 export default function Login() {
@@ -46,6 +47,7 @@ export default function Login() {
     defaultValues: {
       email: '',
       password: '',
+      remember_me: false,
     },
   });
 
@@ -63,6 +65,7 @@ export default function Login() {
           organization: res?.data?.organization,
           token: res?.data?.access_token,
           onboarding_completed: res?.data?.onboarding_completed,
+          refresh_token: res?.data?.refresh_token || res?.data?.tokens?.refresh_token,
         });
 
         if (role === 'organization') {
@@ -177,10 +180,21 @@ export default function Login() {
           </Button>
 
           <div className="mt-6 flex items-center justify-between">
-            <Label htmlFor="remember" className="flex items-center gap-2 font-medium text-slate-300 cursor-pointer">
-              <Checkbox id="remember" className="rounded-md border-white/20 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white" />
-              <span className="text-sm">Remember me</span>
-            </Label>
+            <Controller
+              name="remember_me"
+              control={control}
+              render={({ field }) => (
+                <Label htmlFor="remember" className="flex items-center gap-2 font-medium text-slate-300 cursor-pointer">
+                  <Checkbox 
+                    id="remember" 
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    className="rounded-md border-white/20 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white" 
+                  />
+                  <span className="text-sm">Remember me</span>
+                </Label>
+              )}
+            />
             <Link href="/forget-password" className="text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors">
               Forgot password?
             </Link>

@@ -1,33 +1,33 @@
 export type TaskStatus = 'BACKLOG' | 'TODO' | 'IN_PROGRESS' | 'DONE';
 
+export type TaskAvatar = {
+  src?: string;
+  alt?: string;
+  name?: string;
+  email?: string;
+  fallback: string;
+};
+
 export type Task = {
   id: string;
+  display_task_id: string;
   status: TaskStatus;
-  statusColor?: string;
-  taskIdColor?: string;
-  categoryColor?: string;
+  status_color: string;
+  category_color: string;
   title: string;
   description: string;
-  taskId?: string;
   category?: string;
   priority?: string;
+  file_count: number;
+  attachment_count: number;
+  message_count: number;
+  avatars?: TaskAvatar[];
+  // Keep legacy fields for compatibility if needed during transition, 
+  // but prioritize new ones.
+  taskId?: string; 
   files?: number;
-  fileColor?: string;
-  fileBackground?: string;
   attachments?: number;
-  attachmentColor?: string;
-  attahmentBackground?: string;
   messages?: number;
-  messageColor?: string;
-  messageBackground?: string;
-  avatars?: {
-    src?: string;
-    alt?: string;
-    name?: string;
-    email?: string;
-    fallback: string;
-  }[];
-
 };
 
 export type Column = {

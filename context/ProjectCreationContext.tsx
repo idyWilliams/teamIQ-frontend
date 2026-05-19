@@ -38,6 +38,7 @@ interface ProjectCreationContextType {
     provider: string,
     externalId: string
   ) => void;
+  smartMapAll: (allExternalAccounts: Record<string, any[]>) => Promise<void>;
 
   // Validation helpers
   getMemberMappingStatus: (userId: string) => MappingStatus;
@@ -244,13 +245,33 @@ export function ProjectCreationProvider({
       );
 
       return {
-        isMapped: missingProviders.length === 0 && requiredProviders.length > 0,
+        isMapped: missingProviders.length === 0 || requiredProviders.length === 0,
         missingProviders,
         mappedProviders,
       };
     },
     [selectedMembers, requiredProviders]
   );
+
+  const smartMapAll = useCallback(async (allExternalAccounts: Record<string, any[]>) => {
+    setSelectedMembers(prev => prev.map(member => {
+      const newMappings = { ...member.externalMappings };
+      
+      requiredProviders.forEach(provider => {
+        if (!newMappings[provider]) {
+          const providerAccounts = allExternalAccounts[provider] || [];
+          const match = providerAccounts.find(
+            acc => acc.email?.toLowerCase() === member.userEmail.toLowerCase()
+          );
+          if (match) {
+            newMappings[provider] = match.id;
+          }
+        }
+      });
+
+      return { ...member, externalMappings: newMappings };
+    }));
+  }, [requiredProviders]);
 
   const getRequiredProviders = useCallback(
     () => requiredProviders,
@@ -376,7 +397,7 @@ export function ProjectCreationProvider({
     setIsCreating(true);
     setError(null);
     try {
-      const { data: project } = await axiosInstance.post(projects.create, {
+      const response = await axiosInstance.post(projects.create, {
         organization_id: organizationId,
         name: projectName,
         description: projectDescription,
@@ -385,10 +406,16 @@ export function ProjectCreationProvider({
         team_lead_id: teamLead.userId,
       });
 
+      const data = response.data;
+      if (!data.success) {
+        throw new Error(data.message || 'Failed to create project');
+      }
+
+      const newProject = data.data;
       queryClient.invalidateQueries({ queryKey: ['created-projects'] });
 
-      // Success - redirect to project page
-      router.push(`/organization/projects`);
+      // Success - redirect to setup guide
+      router.push(`/organization/projects/${newProject.id}/setup-guide`);
       reset();
     } catch (err: any) {
       const errorMessage =
@@ -437,6 +464,7 @@ export function ProjectCreationProvider({
     removeMember,
     updateMemberRole,
     updateMemberMapping,
+    smartMapAll,
     getMemberMappingStatus,
     getRequiredProviders,
     canMemberBeTracked,

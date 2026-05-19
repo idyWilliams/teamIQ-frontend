@@ -18,8 +18,8 @@ interface SignupOrgData {
 
 // Login Individual & Organization
 export const useLogin = () => {
-  return useMutation<any, AxiosError, { email: string; password: string }>({
-    mutationFn: async (payload: { email: string; password: string }) => {
+  return useMutation<any, AxiosError, { email: string; password: string; remember_me?: boolean }>({
+    mutationFn: async (payload) => {
       console.log('Payload being sent:', payload);
       const { data } = await axiosInstance.post(auth.login, payload);
       return data;
@@ -77,13 +77,17 @@ export const useSignupOrg = () => {
     },
     //if request is successful
     onSuccess: responseData => {
-      toast.success('Organization created successfully! Redirecting...');
+      toast.success('Organization created successfully!');
 
       // Step 1: Extract tokens and user info (adjust keys if needed)
-      const { organization, access_token } = responseData.data || responseData;
+      const { organization, access_token, refresh_token } = responseData.data || responseData;
 
       // Step 2: Save them in Zustand
-      authorize({ user: organization as any, token: access_token });
+      authorize({ 
+        user: organization as any, 
+        token: access_token, 
+        refresh_token: refresh_token || (responseData.data || responseData).tokens?.refresh_token 
+      });
 
       // Step 3: Invalidate queries and redirect
       queryClient.invalidateQueries({ queryKey: ['organizations'] });

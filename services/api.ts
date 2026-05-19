@@ -11,6 +11,7 @@ const api = {
     loginOrg: '/auth/login/organization',
     loginGoogle: '/auth/login/google',
     callbackGoogle: '/auth/callback/google',
+    refresh: '/auth/refresh',
     passwordReset: '/auth/password-reset',
     confirmPasswordReset: '/auth/password-reset/confirm',
   },
@@ -44,7 +45,12 @@ const api = {
   projects: {
     list: '/projects/',
     create: '/projects/create',
-    byId: (project_id: number) => `/projects/${project_id}`,
+    byId: (project_id: string | number) => `/projects/${project_id}`,
+    comprehensive: (project_id: string | number) => `/projects/${project_id}/comprehensive-data`,
+    myData: (project_id: string | number) => `/projects/${project_id}/my-data`,
+    generateAiSummary: (project_id: string | number) => `/projects/${project_id}/generate-ai-summary`,
+    webhookInstructions: (project_id: string | number) => `/projects/${project_id}/webhook-setup-instructions`,
+    integrated: (project_id: string | number) => `/projects/${project_id}/integrated-data`,
     projectUsers: (project_id: number) => `/projects/${project_id}/users`,
     deleteProject: (project_id: number) => `/projects/${project_id}`,
   },
@@ -56,6 +62,8 @@ const api = {
 
   dashboard: {
     home: '/dashboard/home',
+    organization: '/dashboard/organization',
+    user: '/dashboard/user',
     mentor: (internId: string) => `/dashboard/mentor/${internId}`,
     org: (orgId: string) => `/dashboard/org/${orgId}`,
   },

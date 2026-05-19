@@ -5,6 +5,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Search, TrendingUp, TrendingDown, Minus, Users, AlertTriangle, Star, ChevronRight } from 'lucide-react';
+import { SkillAnalysis } from '@/types/dashboard';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -109,10 +110,11 @@ interface WaveProgressCardProps {
 
 export function WaveProgressCard({
   skills,
+  skillAnalysis,
   title,
   showButton = true,
   zeroMargin = false,
-}: WaveProgressCardProps) {
+}: WaveProgressCardProps & { skillAnalysis?: SkillAnalysis }) {
   const data = skills?.length ? skills : DEFAULT_SKILLS;
 
   const [activeCategory, setActiveCategory] = useState<Category>('All');
@@ -129,9 +131,9 @@ export function WaveProgressCard({
 
   const displayed = showAll ? filtered : filtered.slice(0, 4);
 
-  // Summary stats
-  const avg = Math.round(data.reduce((a, s) => a + s.proficiency, 0) / data.length);
-  const gaps = data.filter(s => s.proficiency < 55).length;
+  // Summary stats using backend data if available
+  const avg = skillAnalysis?.avg_proficiency ?? Math.round(data.reduce((a, s) => a + s.proficiency, 0) / data.length);
+  const gaps = skillAnalysis?.skill_gaps?.length ?? data.filter(s => s.proficiency < 55).length;
   const topSkill = [...data].sort((a, b) => b.proficiency - a.proficiency)[0];
   const growingSkills = data.filter(s => s.trend === 'up').length;
 
@@ -163,7 +165,12 @@ export function WaveProgressCard({
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div className="rounded-xl bg-[#EBF4FF] px-4 py-3 flex flex-col gap-0.5">
               <span className="text-[10px] font-semibold uppercase tracking-wide text-[#086ACE]">Avg Proficiency</span>
-              <span className="text-2xl font-bold text-gray-900">{avg}%</span>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-bold text-gray-900">{avg}%</span>
+                {skillAnalysis?.trend && (
+                  <TrendBadge trend={skillAnalysis.trend} delta={0} />
+                )}
+              </div>
               <span className="text-[11px] text-gray-500">across {data.length} skills</span>
             </div>
             <div className="rounded-xl bg-emerald-50 px-4 py-3 flex flex-col gap-0.5">
@@ -174,7 +181,7 @@ export function WaveProgressCard({
             <div className="rounded-xl bg-amber-50 px-4 py-3 flex flex-col gap-0.5">
               <span className="text-[10px] font-semibold uppercase tracking-wide text-amber-700">Skill Gaps</span>
               <span className="text-2xl font-bold text-gray-900">{gaps}</span>
-              <span className="text-[11px] text-gray-500">skills below 55%</span>
+              <span className="text-[11px] text-gray-500">skills requiring attention</span>
             </div>
             <div className="rounded-xl bg-purple-50 px-4 py-3 flex flex-col gap-0.5">
               <span className="text-[10px] font-semibold uppercase tracking-wide text-purple-700">Improving</span>

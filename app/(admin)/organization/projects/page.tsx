@@ -22,6 +22,8 @@ import {
   MoreHorizontal,
   Pencil,
   Trash2,
+  Settings as SettingsIcon,
+  ArrowRight,
 } from 'lucide-react';
 import {
   Dialog,
@@ -42,9 +44,9 @@ import {
 import {
   useCreatedProjects,
   useDeleteProject,
-  type CreatedProject,
 } from '@/services/hooks/useProjectGet';
 import StepperModal from './components/stepper-components/steps/stepper-modal';
+import { useIntegrations } from '@/context/IntegrationContext';
 import { useRouter } from 'next/navigation';
 
 /* ----------------------------------------------------------------------
@@ -130,7 +132,8 @@ const transformProject = (apiProject: any): TableProject => {
   // Check integrated_apps array
   if (Array.isArray(apiProject.integrated_apps)) {
     apiProject.integrated_apps.forEach((app: any) => {
-      if (app.provider) apps.add(app.provider.toLowerCase());
+      const appName = (app.name || app.provider || '').toLowerCase();
+      if (appName) apps.add(appName);
     });
   }
 
@@ -170,26 +173,27 @@ const transformProject = (apiProject: any): TableProject => {
 
   if (apiProject.project_lead_name) {
     leadName = apiProject.project_lead_name;
-    // We might need to find the avatar from members array if name matches
-    const leadUser = apiProject.members?.find((m: any) => m.user_name === leadName || m.name === leadName);
-    if (leadUser) leadAvatar = leadUser.user_avatar || leadUser.profile_image || leadAvatar;
+    // Find the lead user from members array if available to get avatar
+    const leadUser = apiProject.members?.find((m: any) => 
+      m.display_name === leadName || m.user_name === leadName || m.name === leadName
+    );
+    if (leadUser) leadAvatar = leadUser.avatar_url || leadUser.profile_image || leadAvatar;
   } else if (Array.isArray(apiProject.members)) {
     const leadMember = apiProject.members.find((m: any) =>
       m.role === 'team_lead' || m.role === 'lead'
     );
     if (leadMember) {
-      leadName = leadMember.user_name || getFullName(leadMember);
-      leadAvatar = leadMember.user_avatar || leadMember.profile_image || leadAvatar;
+      leadName = leadMember.display_name || leadMember.user_name || getFullName(leadMember);
+      leadAvatar = leadMember.avatar_url || leadMember.profile_image || leadAvatar;
     }
   }
 
   // 6. Map Team Members
-  // Your example has a 'teamMembers' array with detailed user info. Use that.
-  const members = Array.isArray(apiProject.teamMembers)
-    ? apiProject.teamMembers.map((m: any) => ({
+  const members = Array.isArray(apiProject.members)
+    ? apiProject.members.map((m: any) => ({
       id: m.id,
-      name: getFullName(m),
-      avatar: m.profile_image || '/images/member.png'
+      name: m.display_name || getFullName(m),
+      avatar: m.avatar_url || m.profile_image || '/images/member.png'
     }))
     : [];
 
@@ -205,7 +209,7 @@ const transformProject = (apiProject: any): TableProject => {
     startDate: formatDate(apiProject.start_date),
     endDate: formatDate(apiProject.end_date),
     status: status,
-    progress: apiProject.pct_complete || 0,
+    progress: apiProject.completion_percentage || apiProject.pct_complete || 0,
   };
 };
 
@@ -222,6 +226,20 @@ export default function ProjectsPage() {
   const [sorting, setSorting] = useState([{ id: 'progress', desc: true }]);
   const columnHelper = createColumnHelper<TableProject>();
   const router = useRouter();
+  const { connections, loading: integrationsLoading } = useIntegrations();
+  const [showIntegrationsModal, setShowIntegrationsModal] = useState(false);
+
+  const hasIntegrations =
+    Array.isArray(connections) && connections.length > 0;
+  
+  const handleCreateProject = () => {
+    if (!hasIntegrations) {
+      setShowIntegrationsModal(true);
+      return;
+    }
+
+    router.push('/organization/projects/create');
+  };
 
   // Use the projects hook
   const { data: apiProjects, isLoading, error } = useCreatedProjects();
@@ -399,7 +417,7 @@ export default function ProjectsPage() {
                 <DropdownMenuContent align="end" className="w-[160px] bg-white z-50">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-``
+
                   <DropdownMenuItem
                     onClick={() => router.push(`/organization/projects/${project.id}`)}
                     className="cursor-pointer"
@@ -444,6 +462,14 @@ export default function ProjectsPage() {
     initialState: { pagination: { pageIndex: 0, pageSize: 5 } },
   });
 
+  if (integrationsLoading) {
+    return (
+      <div className="flex items-center justify-center py-10">
+        <Loader className="h-6 w-6 animate-spin" />
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="w-full overflow-hidden rounded-lg bg-white p-6 shadow-sm">
@@ -482,7 +508,7 @@ export default function ProjectsPage() {
         </h1>
         {projects.length > 0 && (
           <Button
-            onClick={() => router.push('/organization/projects/create')}
+            onClick={handleCreateProject}
             className="flex items-center gap-2"
           >
             <Plus size={18} /> New Project
@@ -492,12 +518,27 @@ export default function ProjectsPage() {
 
       {projects.length === 0 ? (
         <div className="py-12 text-center">
-          <div className="mb-4 text-lg text-gray-500">No projects found</div>
+          <div className="mb-4 text-lg text-gray-500">
+            {hasIntegrations
+              ? 'No projects found'
+              : 'No integrations connected'}
+          </div>
+
+          {!hasIntegrations && (
+            <p className="mb-6 text-sm text-gray-600">
+              Connect at least one integration before creating a project.
+            </p>
+          )}
+
           <Button
-            onClick={() => router.push('/organization/projects/create')}
+            onClick={handleCreateProject}
             className="mx-auto flex items-center gap-2"
           >
-            <Plus size={18} /> Create Your First Project
+            <Plus size={18} />
+
+            {hasIntegrations
+              ? 'Create Your First Project'
+              : 'Go to Integrations'}
           </Button>
         </div>
       ) : (
@@ -603,6 +644,40 @@ export default function ProjectsPage() {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-h-[90vh] w-[900px] overflow-y-auto !pt-0 sm:!max-w-[900px] [&>button]:hidden">
           <StepperModal onClose={() => setIsModalOpen(false)} />
+        </DialogContent>
+      </Dialog>
+
+      {/* Integrations Required Modal */}
+      <Dialog open={showIntegrationsModal} onOpenChange={setShowIntegrationsModal}>
+        <DialogContent className="sm:max-w-[425px]" showCloseButton={false}>
+          <DialogHeader>
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-100">
+              <AlertCircle className="h-6 w-6 text-amber-600" />
+            </div>
+            <DialogTitle className="mt-4 text-center text-xl font-bold">
+              Integrations Required
+            </DialogTitle>
+            <DialogDescription className="mt-2 text-center text-gray-600">
+              You must integrate at least one tool (Communication, Version Control, or Project Management) to create a project and track progress.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-6 flex flex-col gap-3">
+            <Button
+              onClick={() => router.push('/organization/settings?tab=integrated-apps')}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md"
+            >
+              <SettingsIcon className="h-5 w-5" />
+              Go to Integrated Apps
+              <ArrowRight className="h-5 w-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => setShowIntegrationsModal(false)}
+              className="w-full text-gray-500 hover:text-gray-700"
+            >
+              Close
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 
