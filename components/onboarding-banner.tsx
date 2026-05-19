@@ -11,7 +11,7 @@ import OnboardingSuccess from './org-onboarding-comps/onboardingSuccess';
 // if they are strictly inside a specific directory. Let me check where they are.
 
 export default function OnboardingBanner() {
-  const { user } = useAuthStore();
+  const { user, hasOnboarding } = useAuthStore();
   const [isVisible, setIsVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -19,7 +19,7 @@ export default function OnboardingBanner() {
 
   useEffect(() => {
     // Show banner if organization details are incomplete
-    if (user && !user?.domain_link) {
+    if (user && !hasOnboarding) {
       setIsVisible(true);
     } else {
       setIsVisible(false);

@@ -62,6 +62,7 @@ export default function Login() {
           user: res?.data?.user,
           organization: res?.data?.organization,
           token: res?.data?.access_token,
+          onboarding_completed: res?.data?.onboarding_completed,
         });
 
         if (role === 'organization') {
