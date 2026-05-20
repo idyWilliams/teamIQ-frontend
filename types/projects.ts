@@ -53,6 +53,14 @@ export interface ProjectResponse {
   integrated_apps: IntegratedApp[];
   project_lead_name: string;
   created_at: string;
+  start_date?: string;
+  end_date?: string;
+  pct_complete?: number;
+  pm_tool?: string;
+  vc_tool?: string;
+  comm_tool?: string;
+  stacks?: string[];
+  updated_at?: string;
 }
 
 export interface PullRequest {

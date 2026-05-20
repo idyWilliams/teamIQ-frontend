@@ -219,7 +219,7 @@ const ProjectOverview = ({ project, comprehensiveData }: ProjectOverviewProps) =
           <div>
             <h2 className="mb-3 text-[16px] font-bold">Integrated Apps</h2>
             <div className="flex flex-wrap gap-4">
-              {integratedApps.map((app: any, idx) => (
+              {integratedApps.map((app: any, idx: number) => (
                 <div key={idx} className={`flex items-center gap-2 p-3 rounded-xl border border-gray-100 bg-gray-50/50 ${!app.isActive ? 'grayscale opacity-50' : ''}`}>
                   <Image src={app.imgSrc} alt={app.stack} width={24} height={24} className="object-contain" />
                   <span className="text-sm font-medium text-gray-700">{app.stack}</span>

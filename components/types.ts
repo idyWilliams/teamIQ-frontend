@@ -13,7 +13,7 @@ export type Task = {
   display_task_id: string;
   status: TaskStatus;
   status_color: string;
-  category_color: string;
+  category_color?: string;
   title: string;
   description: string;
   category?: string;

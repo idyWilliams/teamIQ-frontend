@@ -51,19 +51,13 @@ export const TaskForm: React.FC<TaskFormProps> = ({
         title: data.title,
         description: data.description,
         status: defaultStatus, 
-        taskId: `#U${Math.floor(Math.random() * 1000)}`,
-        // category: "Development",
-        files: 0,
-        attachments: 0,
-        messages: 0,
-        fileColor: "text-gray-600",
-        fileBackground: "text-gray-400",
-        attachmentColor: "#DADEE5",
-        attahmentBackground: "#DADEE5",
-        messageColor:"#DADEE5",
-        messageBackground: "#DADEE5",
+        display_task_id: `#U${Math.floor(Math.random() * 1000)}`,
+        file_count: 0,
+        attachment_count: 0,
+        message_count: 0,
         avatars: [],
-        statusColor: "bg-blue-100 text-blue-800",
+        status_color: "bg-blue-100 text-blue-800",
+        category_color: "#3B82F6", // Default color
       };
       addTask(newTask);
       toast.success("Task added successfully!");
