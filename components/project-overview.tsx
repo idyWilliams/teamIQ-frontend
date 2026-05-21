@@ -132,7 +132,7 @@ const ProjectOverview = ({ project, comprehensiveData }: ProjectOverviewProps) =
   })) || [];
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 pb-10">
+    <div className="flex flex-col lg:flex-row gap-8 pb-10 pl-6">
       {/* Left hand side */}
       <div className="flex w-full flex-col gap-[32px] lg:w-[70%]">
         {isMobile && <AiSummary projectId={project.id} />}

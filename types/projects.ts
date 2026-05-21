@@ -35,6 +35,20 @@ export interface ProjectTask {
   }[];
 }
 
+export interface ProjectMember {
+  id: number;
+  user_id: number;
+  user_name: string;
+  user_email: string;
+  role: string;
+  external_mappings?: {
+    github?: string;
+    slack?: string;
+    clickup?: string;
+  };
+}
+
+
 export interface IntegratedApp {
   name: string;
   is_active: boolean;
@@ -61,6 +75,7 @@ export interface ProjectResponse {
   comm_tool?: string;
   stacks?: string[];
   updated_at?: string;
+  status?: string
 }
 
 export interface PullRequest {
@@ -102,6 +117,7 @@ export interface EngineeringHealthData {
 
 export interface ComprehensiveProjectData {
   project: ProjectResponse;
+  members:  ProjectMember[];
   tasks: ProjectTask[];
   pull_requests: PullRequest[];
   activities: ProjectActivity[];

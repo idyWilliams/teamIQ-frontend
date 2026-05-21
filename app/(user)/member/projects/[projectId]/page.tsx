@@ -78,7 +78,18 @@ function ProjectDetails() {
       label: 'Assign Team Member',
       href: '/member/projects?tab=assign-team-member',
       value: 'assign-team-member',
-      content: <AssignedTeamMembers />,
+      content: (
+    <AssignedTeamMembers
+      teamMembers={
+        comprehensiveData?.members?.map(member => ({
+          name: member.user_name,
+          role: member.role,
+          email: member.user_email,
+          slack: member.external_mappings?.slack,
+        })) || []
+      }
+    />
+  ),
     },
   ];
 

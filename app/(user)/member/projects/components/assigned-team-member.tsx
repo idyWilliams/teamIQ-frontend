@@ -13,16 +13,16 @@ interface TopSkill {
 export interface TeamMember {
   name: string;
   role: string;
-  avatar: string;
-  rating: number;
-  status: string;
+  avatar?: string;
+  rating?: number;
+  status?: string;
   email: string;
-  slack: string;
-  skills: string[];
-  specialties: string[];
-  tasksCompleted: number;
-  monthlyKPI: number;
-  topSkills: TopSkill[];
+  slack?: string;
+  skills?: string[];
+  specialties?: string[];
+  tasksCompleted?: number;
+  monthlyKPI?: number;
+  topSkills?: TopSkill[];
 }
 
 interface AssignedTeamMembersProps {
@@ -154,13 +154,19 @@ export default function AssignedTeamMembers({
 
                   {/* Header */}
                   <div className="mb-8 flex items-start gap-6">
-                    <Image
-                      src={selectedMember.avatar}
-                      alt={`${selectedMember.name} profile picture`}
-                      width={96}
-                      height={96}
-                      className="h-24 w-24 rounded-full object-cover"
-                    />
+                    {selectedMember.avatar ? (
+                      <Image
+                        src={selectedMember.avatar}
+                        alt={`${selectedMember.name} profile picture`}
+                        width={96}
+                        height={96}
+                        className="h-24 w-24 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-2xl font-bold">
+                        {selectedMember.name.charAt(0)}
+                      </div>
+                    )}
                     <div className="flex-1">
                       <div className="mb-2 flex items-center gap-3">
                         <h2 className="text-2xl font-bold text-gray-900">
@@ -237,7 +243,7 @@ export default function AssignedTeamMembers({
                           Top Skill Rating
                         </h3>
                         <div className="mb-4 space-y-3">
-                          {selectedMember.topSkills.map((skill, index) => (
+                          {selectedMember.topSkills?.map((skill, index) => (
                             <div
                               key={index}
                               className="flex items-center gap-4"
@@ -286,7 +292,7 @@ export default function AssignedTeamMembers({
                           Skill
                         </h3>
                         <div className="flex flex-wrap gap-2">
-                          {selectedMember.skills.map(skill => (
+                          {selectedMember.skills?.map(skill => (
                             <span
                               key={skill}
                               className="rounded-lg bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600"
@@ -303,7 +309,7 @@ export default function AssignedTeamMembers({
                           Specialties
                         </h3>
                         <ul className="space-y-2">
-                          {selectedMember.specialties.map(specialty => (
+                          {selectedMember.specialties?.map(specialty => (
                             <li
                               key={specialty}
                               className="flex items-center gap-2 text-gray-700"

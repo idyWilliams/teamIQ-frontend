@@ -3,7 +3,7 @@ import Image from 'next/image';
 interface TeamMemberCardProps {
   name: string;
   role: string;
-  avatar: string;
+  avatar?: string;
   onClick?: () => void;
   className?: string;
 }
@@ -20,13 +20,19 @@ export default function TeamMemberCard({
       onClick={onClick}
       className={`flex cursor-pointer flex-col items-center rounded-lg border border-gray-200 bg-white p-4 transition-all hover:border-blue-500 hover:shadow-md ${className}`}
     >
-      <Image
-        src={avatar}
-        alt={`${name} profile picture`}
-        width={64}
-        height={64}
-        className="mb-3 h-16 w-16 rounded-full object-cover"
-      />
+      {avatar ? (
+        <Image
+          src={avatar}
+          alt={`${name} profile picture`}
+          width={64}
+          height={64}
+          className="mb-3 h-16 w-16 rounded-full object-cover"
+        />
+      ) : (
+        <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-lg font-semibold text-blue-600">
+          {name.charAt(0).toUpperCase()}
+        </div>
+      )}
       <div className="w-full text-center">
         <h3 className="mb-1 truncate text-sm font-semibold text-gray-900">
           {name}
