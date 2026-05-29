@@ -6,7 +6,6 @@ import { FormTextArea } from '../ui/FormTextArea';
 import { Layout, FileText, Info, Upload, X, File, Image as ImageIcon, Check } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 import { useState, useRef } from 'react';
 import axiosInstance from '@/services/axios';
 import { Badge } from '@/components/ui/badge';

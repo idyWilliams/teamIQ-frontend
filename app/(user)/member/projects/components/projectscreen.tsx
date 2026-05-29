@@ -2,7 +2,6 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { useRouter } from 'nextjs-toploader/app';
-import Image from 'next/image';
 import { useGetMyProjects } from '@/services/hooks/useProjectGet';
 import { Badge } from '@/components/ui/badge';
 import { Layout } from 'lucide-react';
@@ -32,7 +31,7 @@ export default function ProjectScreen() {
           <Layout className="h-12 w-12 text-gray-300" />
         </div>
         <h3 className="text-lg font-semibold text-gray-900">No projects yet</h3>
-        <p className="text-sm text-gray-500 max-w-xs">You haven't been added to any projects or haven't created one yet.</p>
+        <p className="text-sm text-gray-500 max-w-xs">You haven&apos;t been added to any projects or haven&apos;t created one yet.</p>
       </div>
     );
   }

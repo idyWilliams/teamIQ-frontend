@@ -4,7 +4,7 @@ import { useProjectCreation } from '@/context/ProjectCreationContext';
 import { apps } from '@/components/apps/appCards';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Layers, Globe, Zap, File } from 'lucide-react';
+import { FileText, Globe, Zap, File } from 'lucide-react';
 
 export function Step4ReviewCreate() {
   const {

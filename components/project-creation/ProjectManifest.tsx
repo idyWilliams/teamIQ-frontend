@@ -2,7 +2,7 @@
 
 import { useProjectCreation } from '@/context/ProjectCreationContext';
 import { apps } from '@/components/apps/appCards';
-import { CheckCircle2, AlertCircle, Users, Box, Info } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Box, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
