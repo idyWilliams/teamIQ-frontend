@@ -4,11 +4,13 @@ import { useProjectCreation } from '@/context/ProjectCreationContext';
 import { apps } from '@/components/apps/appCards';
 import { CheckCircle2, AlertCircle, Users, Box, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 
 export function ProjectManifest() {
   const {
     projectName,
+    projectType,
     selectedResources,
     selectedMembers,
     teamLead,
@@ -47,10 +49,15 @@ export function ProjectManifest() {
               <button onClick={() => goToStep(1)} className="text-[10px] text-blue-600 hover:underline">Fix</button>
             )}
           </div>
-          <div className="p-3 rounded-lg border bg-gray-50">
+          <div className="p-3 rounded-lg border bg-gray-50 space-y-2">
             <p className="text-sm font-medium text-gray-900 truncate">
               {projectName || <span className="text-gray-400 italic">Untitled Project</span>}
             </p>
+            {projectName && (
+              <Badge variant="outline" className="text-[10px] bg-white capitalize">
+                {projectType.replace('_', ' ')}
+              </Badge>
+            )}
           </div>
         </section>
 

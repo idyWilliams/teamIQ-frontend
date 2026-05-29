@@ -20,6 +20,19 @@ interface ProjectCreationContextType {
   setProjectName: (name: string) => void;
   projectDescription: string;
   setProjectDescription: (desc: string) => void;
+  projectType: string;
+  setProjectType: (type: string) => void;
+  industry: string;
+  setIndustry: (industry: string) => void;
+  methodology: string;
+  setMethodology: (methodology: string) => void;
+  projectImage: string;
+  setProjectImage: (url: string) => void;
+  linkedDocuments: LinkedDocument[];
+  addDocument: (doc: LinkedDocument) => void;
+  removeDocument: (url: string) => void;
+  techStacks: string[];
+  setTechStacks: (stacks: string[]) => void;
 
   // Step 2: Select Resources
   selectedResources: SelectedResource[];
@@ -81,6 +94,13 @@ interface ProjectMemberInput {
   externalMappings: Record<string, string>;
 }
 
+interface LinkedDocument {
+  name: string;
+  url: string;
+  type: string;
+  size: number;
+}
+
 interface MappingStatus {
   isMapped: boolean;
   missingProviders: string[];
@@ -107,6 +127,12 @@ export function ProjectCreationProvider({
   // Step 1
   const [projectName, setProjectName] = useState('');
   const [projectDescription, setProjectDescription] = useState('');
+  const [projectType, setProjectType] = useState('software_development');
+  const [industry, setIndustry] = useState('');
+  const [methodology, setMethodology] = useState('Agile');
+  const [projectImage, setProjectImage] = useState('');
+  const [linkedDocuments, setLinkedDocuments] = useState<LinkedDocument[]>([]);
+  const [techStacks, setTechStacks] = useState<string[]>([]);
 
   // Step 2
   const [selectedResources, setSelectedResources] = useState<
@@ -122,6 +148,15 @@ export function ProjectCreationProvider({
   const [currentStep, setCurrentStep] = useState(1);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Document management
+  const addDocument = useCallback((doc: LinkedDocument) => {
+    setLinkedDocuments(prev => [...prev, doc]);
+  }, []);
+
+  const removeDocument = useCallback((url: string) => {
+    setLinkedDocuments(prev => prev.filter(d => d.url !== url));
+  }, []);
 
   // Get providers from selected resources
   const requiredProviders = useMemo(() => {
@@ -295,6 +330,9 @@ export function ProjectCreationProvider({
       if (projectName.trim().length < 3) {
         errors.push('Project name must be at least 3 characters');
       }
+      if (!projectType) {
+        errors.push('Project type is required');
+      }
     }
 
     // Step 2: Link Resources
@@ -348,6 +386,7 @@ export function ProjectCreationProvider({
   }, [
     currentStep,
     projectName,
+    projectType,
     selectedResources,
     selectedMembers,
     teamLead,
@@ -401,6 +440,12 @@ export function ProjectCreationProvider({
         organization_id: organizationId,
         name: projectName,
         description: projectDescription,
+        project_type: projectType,
+        industry: industry,
+        methodology: methodology,
+        project_image: projectImage,
+        linked_documents: linkedDocuments,
+        tech_stacks: techStacks,
         resources: selectedResources,
         members: selectedMembers,
         team_lead_id: teamLead.userId,
@@ -432,6 +477,12 @@ export function ProjectCreationProvider({
     organizationId,
     projectName,
     projectDescription,
+    projectType,
+    industry,
+    methodology,
+    projectImage,
+    linkedDocuments,
+    techStacks,
     selectedResources,
     selectedMembers,
     teamLead,
@@ -442,6 +493,12 @@ export function ProjectCreationProvider({
   const reset = useCallback(() => {
     setProjectName('');
     setProjectDescription('');
+    setProjectType('software_development');
+    setIndustry('');
+    setMethodology('Agile');
+    setProjectImage('');
+    setLinkedDocuments([]);
+    setTechStacks([]);
     setSelectedResources([]);
     setSelectedMembers([]);
     setCurrentStep(1);
@@ -454,6 +511,19 @@ export function ProjectCreationProvider({
     setProjectName,
     projectDescription,
     setProjectDescription,
+    projectType,
+    setProjectType,
+    industry,
+    setIndustry,
+    methodology,
+    setMethodology,
+    projectImage,
+    setProjectImage,
+    linkedDocuments,
+    addDocument,
+    removeDocument,
+    techStacks,
+    setTechStacks,
     selectedResources,
     addResource,
     removeResource,

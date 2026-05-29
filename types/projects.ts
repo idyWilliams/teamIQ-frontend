@@ -45,7 +45,16 @@ export interface ProjectResponse {
   id: string;
   name: string;
   description: string;
+  project_type?: string;
+  industry?: string;
+  methodology?: string;
   project_image_url: string | null;
+  linked_documents?: {
+    name: string;
+    url: string;
+    type: string;
+    size: number;
+  }[];
   visibility: 'public' | 'private';
   completion_percentage: number;
   members: UserOut[];
