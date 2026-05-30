@@ -3,12 +3,19 @@
 import { useProjectCreation } from '@/context/ProjectCreationContext';
 import { FormInput } from '@/components/ui/FormInput';
 import { FormTextArea } from '../ui/FormTextArea';
-import { Layout, FileText, Info, Upload, X, File, Image as ImageIcon, Check } from 'lucide-react';
+import { Layout, FileText, Info, Upload, X, File, Image as ImageIcon, Check, Zap, Plus } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { useState, useRef } from 'react';
 import axiosInstance from '@/services/axios';
 import { Badge } from '@/components/ui/badge';
+import { useIntegrations } from '@/context/IntegrationContext';
+import { apps } from '@/components/apps/appCards';
+import { AppDetailModal } from '@/components/marketPlace/AppDetailModal';
+import { useAuthStore } from '@/store/useAuthStore';
+import { Apps } from '@/types/integrations';
+import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 
 const PROJECT_TYPES = [
   { id: 'software_development', label: 'Software Development', description: 'Apps, Websites, Backend' },
@@ -21,6 +28,15 @@ const PROJECT_TYPES = [
 
 const METHODOLOGIES = ['Agile', 'Scrum', 'Waterfall', 'Lean', 'Kanban'];
 const TECH_STACK_OPTIONS = ['React', 'Next.js', 'Node.js', 'Python', 'Django', 'PostgreSQL', 'AWS', 'Docker', 'Kubernetes', 'TypeScript'];
+
+const SUGGESTIONS_MAP: Record<string, string[]> = {
+  software_development: ['github', 'jira', 'slack', 'linear'],
+  business_management: ['clickup', 'asana', 'slack', 'notion'],
+  strategy_consulting: ['notion', 'slack', 'teams'],
+  marketing_creative: ['figma', 'slack', 'clickup', 'asana'],
+  research_development: ['github', 'notion', 'slack', 'teams'],
+  other: ['slack', 'trello'],
+};
 
 export function Step1ProjectDetails() {
   const {
@@ -44,12 +60,23 @@ export function Step1ProjectDetails() {
     validationErrors,
   } = useProjectCreation();
 
+  const { connections } = useIntegrations();
+  const organizationId = useAuthStore(state => state.user?.id?.toString() || '');
+  
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isUploadingDoc, setIsUploadingDoc] = useState(false);
+  const [selectedApp, setSelectedApp] = useState<Apps | null>(null);
+  
   const imageInputRef = useRef<HTMLInputElement>(null);
   const docInputRef = useRef<HTMLInputElement>(null);
 
   const nameError = validationErrors.find(e => e.includes('Project name'));
+
+  const suggestedApps = (SUGGESTIONS_MAP[projectType] || [])
+    .map(id => apps.find(a => a.id === id))
+    .filter(Boolean) as any[];
+
+  const isConnected = (appId: string) => connections.some(c => c.provider === appId);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -134,6 +161,59 @@ export function Step1ProjectDetails() {
               </SelectContent>
             </Select>
           </div>
+
+          {/* Smart Suggestions */}
+          {suggestedApps.length > 0 && (
+            <div className="bg-gradient-to-br from-blue-50/50 to-white border border-blue-100 rounded-2xl p-5 space-y-4 shadow-sm animate-in fade-in slide-in-from-top-2 duration-500">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-bold text-blue-900 flex items-center gap-2">
+                    <Zap className="h-4 w-4 text-blue-500 fill-blue-500" />
+                    Recommended Stack
+                  </h4>
+                  <p className="text-[10px] text-blue-600">Perfect for {PROJECT_TYPES.find(t => t.id === projectType)?.label} projects</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {suggestedApps.map(app => (
+                  <div 
+                    key={app.id} 
+                    className={`bg-white border rounded-xl p-3 flex items-center justify-between group transition-all ${
+                      isConnected(app.id) ? 'border-green-100 bg-green-50/20' : 'hover:border-blue-300 hover:shadow-md cursor-pointer'
+                    }`}
+                    onClick={() => !isConnected(app.id) && setSelectedApp(app)}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="h-8 w-8 relative flex-shrink-0">
+                        {typeof app.logo === 'string' ? (
+                          <span className="text-xl flex items-center justify-center h-full w-full">{app.logo}</span>
+                        ) : (
+                          <Image src={app.logo} alt={app.name} fill className="object-contain" />
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-gray-900 truncate">{app.name}</p>
+                        <p className="text-[9px] text-gray-500 truncate capitalize">{app.category}</p>
+                      </div>
+                    </div>
+                    {isConnected(app.id) ? (
+                      <div className="bg-green-100 p-1 rounded-full">
+                        <Check className="h-3 w-3 text-green-600" />
+                      </div>
+                    ) : (
+                      <div className="text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Plus className="h-4 w-4" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center justify-between pt-1">
+                <p className="text-[9px] text-gray-400 italic">Connecting tools here will help us sync data faster.</p>
+                <button className="text-[9px] font-bold text-blue-600 hover:underline">View All Tools</button>
+              </div>
+            </div>
+          )}
 
           <FormTextArea
             label="Project Description"
@@ -347,6 +427,14 @@ export function Step1ProjectDetails() {
           </div>
         </div>
       </div>
+
+      {selectedApp && (
+        <AppDetailModal
+          app={selectedApp}
+          onClose={() => setSelectedApp(null)}
+          organizationId={organizationId}
+        />
+      )}
     </div>
   );
 }
