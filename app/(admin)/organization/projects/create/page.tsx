@@ -164,14 +164,14 @@ function CreateProjectFlow() {
         </header>
 
         <main className="flex-1 overflow-y-auto p-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="mb-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="mb-8 px-4">
               <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Step {currentStep} of {steps.length}</span>
-              <h2 className="text-2xl font-bold text-gray-900 mt-1">{steps[currentStep - 1].title}</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mt-1">{steps[currentStep - 1].title}</h2>
               <p className="text-gray-500 text-sm">{steps[currentStep - 1].description}</p>
             </div>
 
-            <div className="bg-white rounded-2xl border shadow-sm p-8">
+            <div className="bg-white rounded-2xl border shadow-sm p-10">
               <CurrentStepComponent />
             </div>
 
