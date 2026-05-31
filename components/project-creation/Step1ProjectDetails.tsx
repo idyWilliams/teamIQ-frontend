@@ -130,70 +130,71 @@ export function Step1ProjectDetails() {
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-12 gap-16">
-      <div className="xl:col-span-7 space-y-10">
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
-              <FormInput
-                label={<span>Project Name <span className="text-red-500">*</span></span> as any}
-                value={projectName}
-                onChange={e => setProjectName(e.target.value)}
-                placeholder="e.g., Mobile App Redesign"
-                required
-                maxLength={100}
-                error={nameError}
-                className="text-lg font-semibold h-12"
-              />
-            </div>
+      <div className="xl:col-span-7 space-y-12">
+        {/* Basic Info Group */}
+        <div className="space-y-8">
+          <div className="space-y-6">
+            <FormInput
+              label={<span>Project Name <span className="text-red-500">*</span></span> as any}
+              value={projectName}
+              onChange={e => setProjectName(e.target.value)}
+              placeholder="e.g., Mobile App Redesign"
+              required
+              maxLength={100}
+              error={nameError}
+              className="text-lg font-semibold h-14 w-full"
+            />
 
-            <div className="space-y-2">
-              <Label className="flex items-center gap-1">
-                Project Type <span className="text-red-500">*</span>
-              </Label>
-              <Select value={projectType} onValueChange={setProjectType}>
-                <SelectTrigger className="h-12">
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {PROJECT_TYPES.map(type => (
-                    <SelectItem key={type.id} value={type.id}>
-                      <div className="flex flex-col">
-                        <span className="font-medium">{type.label}</span>
-                        <span className="text-[10px] text-gray-500">{type.description}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="flex items-center gap-1">
-                Methodology <span className="text-red-500">*</span>
-              </Label>
-              <Select value={methodology} onValueChange={setMethodology}>
-                <SelectTrigger className="h-12">
-                  <SelectValue placeholder="Select methodology" />
-                </SelectTrigger>
-                <SelectContent>
-                  {METHODOLOGIES.map(m => (
-                    <SelectItem key={m} value={m}>{m}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {(projectType === 'business_management' || projectType === 'strategy_consulting' || projectType === 'research_development') && (
-              <div className="md:col-span-2 space-y-2">
-                <FormInput
-                  label="Industry"
-                  value={industry}
-                  onChange={e => setIndustry(e.target.value)}
-                  placeholder="e.g., Fintech, Healthcare"
-                  className="h-12"
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2.5">
+                <Label className="text-sm font-semibold text-gray-700 flex items-center gap-1">
+                  Project Type <span className="text-red-500">*</span>
+                </Label>
+                <Select value={projectType} onValueChange={setProjectType}>
+                  <SelectTrigger className="h-14 w-full bg-white border-gray-200 focus:ring-2 focus:ring-blue-500/20 transition-all">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PROJECT_TYPES.map(type => (
+                      <SelectItem key={type.id} value={type.id} className="py-3">
+                        <div className="flex flex-col gap-0.5">
+                          <span className="font-bold text-sm text-gray-900">{type.label}</span>
+                          <span className="text-[10px] text-gray-500 leading-tight">{type.description}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-            )}
+
+              <div className="space-y-2.5">
+                <Label className="text-sm font-semibold text-gray-700 flex items-center gap-1">
+                  Methodology <span className="text-red-500">*</span>
+                </Label>
+                <Select value={methodology} onValueChange={setMethodology}>
+                  <SelectTrigger className="h-14 w-full bg-white border-gray-200 focus:ring-2 focus:ring-blue-500/20 transition-all">
+                    <SelectValue placeholder="Select methodology" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {METHODOLOGIES.map(m => (
+                      <SelectItem key={m} value={m} className="py-3 font-medium text-sm text-gray-900">{m}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {(projectType === 'business_management' || projectType === 'strategy_consulting' || projectType === 'research_development') && (
+                <div className="md:col-span-2 space-y-2.5">
+                  <FormInput
+                    label="Industry"
+                    value={industry}
+                    onChange={e => setIndustry(e.target.value)}
+                    placeholder="e.g., Fintech, Healthcare, E-commerce"
+                    className="h-14 w-full"
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Smart Suggestions */}
