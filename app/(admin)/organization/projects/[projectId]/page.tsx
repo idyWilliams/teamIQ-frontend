@@ -12,7 +12,8 @@ import { Button } from '@/components/ui/button';
 import { Suspense } from 'react';
 import AssignedTeamMembers from '@/app/(user)/member/projects/components/assigned-team-member';
 import ProjectOverview from '@/components/project-overview';
-import { useProject } from '@/services/hooks/useProjectGet';
+import EngineeringHealthTab from '@/components/engineering-health-tab';
+import { useProject, useComprehensiveProjectData } from '@/services/hooks/useProjectGet';
 import { useOrganizationTeamMember } from '@/services/hooks/useOrgProfile';
 
 function ProjectDetails() {
@@ -26,8 +27,9 @@ function ProjectDetails() {
   const projectId = params?.projectId as string;
 
   // Fetch project data at parent level
-  const { data: project, isLoading, error } = useProject(projectId);
-  console.log("data", project);
+  const { data: comprehensiveData, isLoading, error } = useComprehensiveProjectData(projectId);
+  const project = comprehensiveData?.project;
+  
   const { data } = useOrganizationTeamMember();
 
   // Loading state
@@ -36,7 +38,7 @@ function ProjectDetails() {
       <div className="flex h-[400px] items-center justify-center">
         <div className="flex items-center gap-3">
           <Loader className="h-8 w-8 animate-spin text-blue-500" />
-          <span className="text-lg text-gray-600">Loading project...</span>
+          <span className="text-lg text-gray-600">Loading project data...</span>
         </div>
       </div>
     );
@@ -65,7 +67,13 @@ function ProjectDetails() {
       label: 'Project Overview',
       href: '/organization/projects?tab=overview',
       value: 'overview',
-      content: <ProjectOverview project={project} />,
+      content: <ProjectOverview project={project} comprehensiveData={comprehensiveData} />,
+    },
+    {
+      label: 'Engineering Health',
+      href: '/organization/projects?tab=health',
+      value: 'health',
+      content: <EngineeringHealthTab healthData={comprehensiveData?.engineering_health} />,
     },
     {
       label: 'Tasks Allocation',
@@ -103,7 +111,7 @@ function ProjectDetails() {
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className="relative w-fit rounded-none border-none bg-transparent px-2 py-2 text-gray-600 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#086ACE] after:transition-all after:duration-300 data-[state=active]:bg-transparent data-[state=active]:text-[#086ACE] data-[state=active]:shadow-none data-[state=active]:after:w-full"
+              className="relative w-fit rounded-none border-none bg-transparent px-6 py-4 text-sm font-semibold text-gray-500 transition-all after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#086ACE] after:transition-all after:duration-300 data-[state=active]:bg-transparent data-[state=active]:text-[#086ACE] data-[state=active]:shadow-none data-[state=active]:after:w-full hover:text-gray-700"
             >
               {tab.label}
             </TabsTrigger>
@@ -111,7 +119,7 @@ function ProjectDetails() {
         </TabsList>
 
         {projectsTabs.map(tab => (
-          <TabsContent key={tab.value} value={tab.value} className="ml-4 pt-10">
+          <TabsContent key={tab.value} value={tab.value} className="pt-8">
             {tab.content}
           </TabsContent>
         ))}

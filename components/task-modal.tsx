@@ -39,7 +39,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task }) => {
               </h1>
               <div className="flex items-center gap-2">
                 <p className="text-[#626262] font-medium text-base">Status</p>
-                <Badge className={task.statusColor}>{task.status}</Badge>
+                <Badge className={task.status_color}>{task.status}</Badge>
               </div>
             </div>
           </div>
@@ -71,18 +71,18 @@ const TaskModal: React.FC<TaskModalProps> = ({ task }) => {
             <div className="flex flex-col gap-2">
               <p className="text-md font-medium text-[#626262]">Label</p>
               <div className="flex items-center gap-2">
-                {task.taskId && (
+                {(task.display_task_id || task.taskId) && (
                   <Badge
                     className={
                       statusBadgeColors[task.status] ||
                       "bg-gray-100 text-gray-800"
                     }
                   >
-                    {task.taskId}
+                    {task.display_task_id || task.taskId}
                   </Badge>
                 )}
                 {task.category && (
-                  <Badge className={task.categoryColor}>{task.category}</Badge>
+                  <Badge className={task.category_color}>{task.category}</Badge>
                 )}
               </div>
             </div>

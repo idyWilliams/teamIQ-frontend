@@ -3,19 +3,17 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShieldAlert } from "lucide-react";
 import { Button } from "./ui/button";
-
-interface Blocker {
-  id: number;
-  name: string;
-  blockedOn: string;
-  time: string;
-}
+import { ActiveBlocker } from "@/types/dashboard";
 
 interface ActiveBlockersProps {
-  blockers?: Blocker[];
+  blockers?: ActiveBlocker[];
 }
 
-const statusColors = ["bg-red-500", "bg-orange-500", "bg-amber-500"];
+const severityColors: Record<string, string> = {
+  high: "bg-red-500",
+  medium: "bg-orange-500",
+  low: "bg-amber-500",
+};
 
 export default function ActiveBlockers({ blockers = [] }: ActiveBlockersProps) {
   return (
@@ -32,7 +30,7 @@ export default function ActiveBlockers({ blockers = [] }: ActiveBlockersProps) {
         <CardContent className="flex flex-col gap-3 px-5 pb-5">
           {blockers.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
-             
+
               <p className="text-sm font-semibold text-gray-800">
                 You&apos;re all clear!
               </p>
@@ -46,17 +44,19 @@ export default function ActiveBlockers({ blockers = [] }: ActiveBlockersProps) {
           ) : (
             blockers.map((blocker, i) => (
               <div
-                key={i}
+                key={blocker.id || i}
                 className="flex items-start gap-3 p-3 rounded-lg border border-gray-100 bg-red-50/30 hover:bg-red-50/50 transition-colors"
               >
-                <div className={`mt-1.5 size-2 rounded-full shrink-0 ${statusColors[i % statusColors.length]}`} />
+                <div className={`mt-1.5 size-2 rounded-full shrink-0 ${severityColors[blocker.severity] || "bg-gray-400"}`} />
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-sm text-gray-800 truncate">{blocker.name}</p>
-                  <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{blocker.blockedOn}</p>
+                  <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{blocker.project_name}</p>
                 </div>
-                <span className="text-[11px] text-gray-400 whitespace-nowrap shrink-0 mt-0.5">
-                  {blocker.time}
-                </span>
+                {blocker.time_active && (
+                  <span className="text-[11px] text-gray-400 whitespace-nowrap shrink-0 mt-0.5">
+                    {blocker.time_active}
+                  </span>
+                )}
               </div>
             ))
           )}

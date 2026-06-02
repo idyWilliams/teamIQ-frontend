@@ -193,10 +193,15 @@ export default function TeamPage() {
               onClick={() => handleMemberClick(member)}
             >
               <OrganizationMemberCard
-                name={member.name}
-                role={member.role ?? ''}
-                lastSeen={member.lastSeen}
-                avatar={member.avatar}
+                member={{
+                  id: String(member.id),
+                  email: member.email || '',
+                  display_name: member.name,
+                  job_title: member.role || '',
+                  avatar_url: member.avatar || null,
+                  online_status: 'offline',
+                  skills: [],
+                }}
               />
             </div>
           ))}

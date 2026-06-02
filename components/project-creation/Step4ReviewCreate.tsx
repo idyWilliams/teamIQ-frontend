@@ -3,11 +3,19 @@
 import { useProjectCreation } from '@/context/ProjectCreationContext';
 import { apps } from '@/components/apps/appCards';
 import Image from 'next/image';
+import { Badge } from '@/components/ui/badge';
+import { FileText, Globe, Zap, File } from 'lucide-react';
 
 export function Step4ReviewCreate() {
   const {
     projectName,
     projectDescription,
+    projectType,
+    industry,
+    methodology,
+    projectImage,
+    linkedDocuments,
+    techStacks,
     selectedResources,
     selectedMembers,
     teamLead,
@@ -80,37 +88,78 @@ export function Step4ReviewCreate() {
 
       {/* Project Details */}
       <div className="overflow-hidden rounded-xl border shadow-sm">
-        <div className="border-b bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-4">
+        <div className="border-b bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-4 flex items-center justify-between">
           <h3 className="flex items-center gap-2 text-sm font-semibold text-blue-900">
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
+            <FileText className="h-5 w-5" />
             Project Details
           </h3>
+          <Badge variant="secondary" className="bg-blue-200 text-blue-800 capitalize">
+            {projectType.replace('_', ' ')}
+          </Badge>
         </div>
-        <div className="space-y-4 bg-white p-6">
-          <div>
-            <p className="mb-1 text-xs font-medium text-gray-600">
-              Project Name
-            </p>
-            <p className="text-lg font-semibold text-gray-900">{projectName}</p>
+        <div className="bg-white p-6">
+          <div className="flex flex-col md:flex-row gap-6">
+            {projectImage && (
+              <div className="w-full md:w-48 h-32 rounded-lg overflow-hidden border flex-shrink-0">
+                <img src={projectImage} alt="Project Cover" className="w-full h-full object-cover" />
+              </div>
+            )}
+            <div className="flex-1 space-y-4">
+              <div>
+                <p className="mb-1 text-xs font-medium text-gray-600">Project Name</p>
+                <p className="text-lg font-semibold text-gray-900">{projectName}</p>
+              </div>
+              {projectDescription && (
+                <div>
+                  <p className="mb-1 text-xs font-medium text-gray-600">Description</p>
+                  <p className="text-sm text-gray-700 line-clamp-2">{projectDescription}</p>
+                </div>
+              )}
+            </div>
           </div>
-          {projectDescription && (
-            <div>
-              <p className="mb-1 text-xs font-medium text-gray-600">
-                Description
-              </p>
-              <p className="text-sm text-gray-700">{projectDescription}</p>
+
+          <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t">
+            {industry && (
+              <div>
+                <p className="mb-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Industry</p>
+                <div className="flex items-center gap-1.5 text-sm font-medium text-gray-900">
+                  <Globe className="h-3.5 w-3.5 text-gray-400" />
+                  {industry}
+                </div>
+              </div>
+            )}
+            {methodology && (
+              <div>
+                <p className="mb-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Methodology</p>
+                <div className="flex items-center gap-1.5 text-sm font-medium text-gray-900">
+                  <Zap className="h-3.5 w-3.5 text-gray-400" />
+                  {methodology}
+                </div>
+              </div>
+            )}
+            {techStacks.length > 0 && (
+              <div className="col-span-2">
+                <p className="mb-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Tech Stacks</p>
+                <div className="flex flex-wrap gap-1">
+                  {techStacks.map(s => (
+                    <Badge key={s} variant="outline" className="text-[10px] py-0">{s}</Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {linkedDocuments.length > 0 && (
+            <div className="mt-4 pt-4 border-t">
+              <p className="mb-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Documents</p>
+              <div className="flex flex-wrap gap-2">
+                {linkedDocuments.map((doc, idx) => (
+                  <div key={idx} className="flex items-center gap-1.5 px-2 py-1 bg-gray-50 border rounded text-[10px] font-medium text-gray-600">
+                    <File className="h-3 w-3" />
+                    {doc.name}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>

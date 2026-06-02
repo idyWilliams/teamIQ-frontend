@@ -2,8 +2,19 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
+
+export function getFallbackInitials(name: string): string {
+  if (!name) return '??';
+  return name
+    .split(' ')
+    .map(part => part[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
 
 // status color for the department column of the Team Members Table
 export const getTasksBadgeColor = (tasks?: string) => {
