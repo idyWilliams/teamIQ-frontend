@@ -35,6 +35,11 @@ function IntegrationsContent({
           duration: 5000,
         });
         setHasShownToast(true);
+
+        // redirect for Slack 
+        if (provider === 'slack') {
+          router.push('/organization/settings?tab=integrated-apps');
+        }
       } else if (status === 'error') {
         const providerConfig = provider ? getProviderConfig(provider) : null;
         const errorMsg = reason
@@ -44,9 +49,13 @@ function IntegrationsContent({
           duration: 8000,
         });
         setHasShownToast(true);
+
+        if (provider === 'slack') {
+          router.push('/organization/settings?tab=integrated-apps');
+        }
       }
     }
-  }, [status, provider, reason, hasShownToast]);
+  }, [status, provider, reason, hasShownToast, router]);
 
   useEffect(() => {
     // Fetch integrations after showing toast
@@ -105,7 +114,9 @@ function IntegrationsContent({
       <hr className="my-6" />
 
       {connections.length === 0 ? (
-        <EmptyState onAddApps={() => router.push('/organization/settings/market-place')} />
+        <EmptyState
+          onAddApps={() => router.push('/organization/settings/market-place')}
+        />
       ) : (
         <>
           {/* Stats Card */}
@@ -121,10 +132,13 @@ function IntegrationsContent({
               </div>
               <div className="text-right">
                 <p className="text-iq-800 text-3xl font-bold">
-                  {new Set(connections.map((c) => c.provider)).size}
+                  {new Set(connections.map(c => c.provider)).size}
                 </p>
                 <p className="text-iq-700 text-sm font-medium">
-                  Integrated App{new Set(connections.map((c) => c.provider)).size !== 1 ? 's' : ''}
+                  Integrated App
+                  {new Set(connections.map(c => c.provider)).size !== 1
+                    ? 's'
+                    : ''}
                 </p>
               </div>
               <div className="bg-iq-500/10 flex h-16 w-16 items-center justify-center rounded-full">
@@ -147,7 +161,7 @@ function IntegrationsContent({
 
           {/* Connections Grid */}
           <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5">
-            {connections.map((connection) => (
+            {connections.map(connection => (
               <ConnectionCard key={connection.id} connection={connection} />
             ))}
           </div>
@@ -161,7 +175,7 @@ function IntegrationsContent({
 function IntegrationsPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const user = useAuthStore((state) => state.user);
+  const user = useAuthStore(state => state.user);
 
   const orgId = searchParams.get('orgId');
   const provider = searchParams.get('provider');
@@ -222,32 +236,34 @@ function IntegrationsPageContent() {
 // Main page component with Suspense boundary
 export default function IntegrationsPage() {
   return (
-    <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="flex items-center gap-3">
-          <svg
-            className="text-iq-500 h-8 w-8 animate-spin"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            />
-          </svg>
-          <span className="text-muted-foreground">Loading...</span>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="flex items-center gap-3">
+            <svg
+              className="text-iq-500 h-8 w-8 animate-spin"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+            <span className="text-muted-foreground">Loading...</span>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <IntegrationsPageContent />
     </Suspense>
   );
