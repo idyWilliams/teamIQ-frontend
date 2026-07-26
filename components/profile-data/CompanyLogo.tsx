@@ -1,11 +1,13 @@
 import React from 'react';
 import Image from 'next/image';
+import { useAuthStore } from '@/store/useAuthStore';
 
 const CompanyLogo = () => {
+  const {user} = useAuthStore();
   return (
     <div className="flex flex-col items-center gap-3">
       <Image
-        src={'/images/isentry-logo.jpeg'}
+        src={user?.organization_image}
         alt="company logo"
         width={250}
         height={350}

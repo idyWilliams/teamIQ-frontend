@@ -44,7 +44,7 @@ export default function OrganizationDashboardLayout({
                 <div className="flex grow items-center justify-between">
                   <div className="flex items-center gap-3 py-3">
                     <Image
-                      src={user?.organization_image || '/images/avatar.jpg'}
+                      src={user?.organization?.organization_image || '/images/avatar.jpg'}
                       alt="avatar"
                       width={100}
                       height={100}

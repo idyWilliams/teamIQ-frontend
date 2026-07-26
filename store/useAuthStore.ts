@@ -34,7 +34,7 @@ interface AuthState {
   isAuthenticated: boolean;
   hasOnboarding: boolean;
   isLoading: boolean;
-  authorize: (data: { user?: User; organization?: Organization; token: string; refresh_token?: string }) => void;
+  authorize: (data: { user?: User; organization?: Organization; token: string; refresh_token?: string; onboarding_completed?: boolean }) => void;
   setTokens: (tokens: { access_token: string; refresh_token: string }) => void;
   logout: (showToast?: boolean) => void;
   updateUser: (data: Partial<User | Organization>) => void;
@@ -51,13 +51,14 @@ export const useAuthStore = create<AuthState>()(
       hasOnboarding: false,
       isLoading: true,
 
-      authorize: ({ user, organization, token, refresh_token }) => {
+      authorize: ({ user, organization, token, refresh_token, onboarding_completed }) => {
         const entity = user || organization;
         set({
           user: entity,
           token,
           refresh_token: refresh_token || null,
           isAuthenticated: true,
+          hasOnboarding: onboarding_completed || false,
           isLoading: false,
         });
       },
